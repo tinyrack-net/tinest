@@ -2,7 +2,6 @@ import 'package:app/l10n/gen/app_localizations.dart';
 import 'package:app/src/features/conversation/application/chat_timeline_model.dart';
 import 'package:app/src/features/conversation/application/chat_tool_presentation.dart';
 import 'package:app/src/features/conversation/presentation/chat_code_block.dart';
-import 'package:app/src/features/conversation/presentation/chat_diff_view.dart';
 import 'package:app/src/shared/presentation/tinest_icons.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:tinyrack_ui/tinyrack_ui.dart';
@@ -187,6 +186,5 @@ class _ChatToolBodyView extends StatelessWidget {
   Widget build(BuildContext context) => switch (body) {
     ChatToolEmptyBody() => const SizedBox.shrink(),
     ChatToolTextBody(:final text) => ChatCodeBlock(text: text),
-    ChatToolDiffBody(:final files) => ChatDiffView(files: files),
   };
 }

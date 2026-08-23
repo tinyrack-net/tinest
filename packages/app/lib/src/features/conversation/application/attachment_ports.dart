@@ -140,15 +140,6 @@ final attachmentExportProvider = Provider<AttachmentExportPort>(
   (ref) => export_platform.createAttachmentExport(),
 );
 
-/// Names a clipboard item that arrives without a filename.
-String defaultAttachmentName(String? mimeHint) => switch (mimeHint) {
-  'image/png' => 'pasted-image.png',
-  'image/jpeg' => 'pasted-image.jpg',
-  'image/webp' => 'pasted-image.webp',
-  'image/gif' => 'pasted-image.gif',
-  _ => 'pasted-file',
-};
-
 /// Derives a media type from a platform hint or a filename extension.
 ///
 /// The hint wins when the platform gave one: it looked at the file, and an

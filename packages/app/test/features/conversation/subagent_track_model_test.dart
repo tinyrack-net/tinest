@@ -110,7 +110,6 @@ void main() {
         createdAt: now.add(const Duration(seconds: 4)),
       ),
     ], 'root');
-    expect(runningSubagentCount(rows), 2);
     expect(isSubagentSession(rows.first.session), isTrue);
     expect(isSubagentSession(session('root')), isFalse);
   });
@@ -148,10 +147,7 @@ void main() {
     ]);
   });
 
-  test('a subagent waiting on the user does not count as running', () {
-    // Its lifecycle stays `running` while it is parked, so counting the
-    // lifecycle alone would report a stuck tree as a working one and let the
-    // same row be summarized twice.
+  test('a subagent waiting on the user appears in blocked rows', () {
     final rows = buildSubagentTrackRows(<SessionDto>[
       session('root'),
       session(
@@ -168,7 +164,6 @@ void main() {
         createdAt: now.add(const Duration(seconds: 1)),
       ),
     ], 'root');
-    expect(runningSubagentCount(rows), 1);
     expect(blockedSubagentRows(rows), hasLength(1));
   });
 }

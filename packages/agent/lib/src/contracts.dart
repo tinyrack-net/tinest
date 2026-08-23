@@ -418,15 +418,3 @@ final class AgentProviderDefinition {
   /// Optional documentation URL.
   final String? documentationUrl;
 }
-
-/// Agent definition marker kept independent from wire DTOs.
-final class AgentDefinitionContext {
-  /// Creates a definition context.
-  const AgentDefinitionContext({required this.id, this.value});
-
-  /// Stable definition identifier.
-  final String id;
-
-  /// Adapter-owned metadata opaque to the agent runtime.
-  final Object? value;
-}

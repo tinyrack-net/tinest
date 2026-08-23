@@ -7,16 +7,13 @@ import 'package:protocol/protocol.dart';
 import 'package:test/test.dart';
 
 void main() {
-  test('simple enums map by their modern canonical names', () {
-    for (final risk in ToolRisk.values) {
-      expect(protocolRisk(agentRisk(risk)).name, risk.name);
-    }
-    for (final flow in ProviderAuthFlow.values) {
-      expect(protocolAuthFlow(agentAuthFlow(flow)).name, flow.name);
+  test('agent risks map to protocol risks by their canonical names', () {
+    for (final risk in AgentToolRisk.values) {
+      expect(protocolRisk(risk).name, risk.name);
     }
   });
 
-  test('every typed model control maps in both directions', () {
+  test('every typed protocol model control maps to the agent domain', () {
     const protocol = <String, ModelControlValueDto>{
       'choice': ModelControlValueDto.stringValue(value: 'high'),
       'toggle': ModelControlValueDto.boolValue(value: true),
@@ -29,7 +26,6 @@ void main() {
     );
     expect((agent['toggle']! as AgentModelControlBoolValue).value, isTrue);
     expect((agent['integer']! as AgentModelControlIntValue).value, 7);
-    expect(protocolModelControls(agent), protocol);
   });
 
   test('optional pricing and limits preserve absence and every field', () {

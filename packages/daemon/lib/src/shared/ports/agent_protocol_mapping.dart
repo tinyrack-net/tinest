@@ -1,10 +1,6 @@
 import 'package:agent/agent.dart';
 import 'package:protocol/protocol.dart';
 
-/// Converts protocol risk to the agent domain.
-AgentToolRisk agentRisk(ToolRisk value) =>
-    AgentToolRisk.values.byName(value.name);
-
 /// Converts agent risk to the protocol contract.
 ToolRisk protocolRisk(AgentToolRisk value) =>
     ToolRisk.values.byName(value.name);
@@ -24,14 +20,6 @@ AgentAttachmentKind agentAttachmentKind(AttachmentKind value) =>
 /// Converts provider authentication kind to the agent domain.
 AgentProviderAuthKind agentAuthKind(ProviderAuthKind value) =>
     AgentProviderAuthKind.values.byName(value.name);
-
-/// Converts provider authorization flow to the agent domain.
-AgentProviderAuthFlow agentAuthFlow(ProviderAuthFlow value) =>
-    AgentProviderAuthFlow.values.byName(value.name);
-
-/// Converts provider authorization flow to the protocol contract.
-ProviderAuthFlow protocolAuthFlow(AgentProviderAuthFlow value) =>
-    ProviderAuthFlow.values.byName(value.name);
 
 /// Converts model capabilities to the agent domain.
 AgentModelCapabilities agentCapabilities(ModelCapabilitiesDto value) =>
@@ -124,22 +112,6 @@ Map<String, AgentModelControlValue> agentModelControls(
         value: value,
       ),
       ModelControlIntValueDto(:final value) => AgentModelControlIntValue(
-        value: value,
-      ),
-    },
-};
-
-/// Converts provider-neutral model-control values to protocol DTOs.
-Map<String, ModelControlValueDto> protocolModelControls(
-  Map<String, AgentModelControlValue> values,
-) => <String, ModelControlValueDto>{
-  for (final entry in values.entries)
-    entry.key: switch (entry.value) {
-      AgentModelControlStringValue(:final value) =>
-        ModelControlValueDto.stringValue(value: value),
-      AgentModelControlBoolValue(:final value) =>
-        ModelControlValueDto.boolValue(value: value),
-      AgentModelControlIntValue(:final value) => ModelControlValueDto.intValue(
         value: value,
       ),
     },
