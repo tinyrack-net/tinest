@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:app/src/features/conversation/application/chat_diff.dart';
 import 'package:app/src/features/conversation/application/chat_timeline_model.dart';
 
 /// Decoded shape of `tool.completed.output`, which some tools double-encode.
@@ -69,15 +68,6 @@ final class ChatToolTextBody extends ChatToolBody {
 
   /// The text to render.
   final String text;
-}
-
-/// A colored unified diff.
-final class ChatToolDiffBody extends ChatToolBody {
-  /// Creates a diff body.
-  const ChatToolDiffBody(this.files);
-
-  /// Parsed diff files.
-  final List<ChatDiffFile> files;
 }
 
 /// Icon family used by the collapsed tool row.
@@ -183,13 +173,6 @@ ChatToolBody prettyToolArgumentBody(ChatToolActivity activity) =>
     activity.arguments.isEmpty
     ? const ChatToolEmptyBody()
     : ChatToolTextBody(prettyJson(activity.arguments));
-
-/// Flattens decoded output back to text.
-String toolOutputText(ChatToolOutput output) => switch (output) {
-  ChatToolPlainText(:final value) => value,
-  ChatToolJsonObject(:final value) => prettyJson(value),
-  ChatToolJsonArray(:final value) => prettyJson(value),
-};
 
 /// Indents a decoded JSON value for the expanded view.
 String prettyJson(Object value) =>

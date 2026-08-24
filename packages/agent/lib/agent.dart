@@ -4,7 +4,6 @@ export 'src/host_ports.dart';
 export 'src/lua_code_mode.dart';
 export 'src/model.dart';
 export 'src/prompts/project_doc.dart';
-export 'src/prompts/template.dart';
 export 'src/provider_adapter.dart';
 export 'src/runtime.dart';
 export 'src/skills.dart';

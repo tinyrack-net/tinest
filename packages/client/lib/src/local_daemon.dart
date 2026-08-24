@@ -2,29 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:path/path.dart' as p;
-import 'package:protocol/local_host.dart';
-
 export 'package:protocol/local_host.dart';
-
-/// Production local-host environment backed by `dart:io`.
-final class IoLocalDaemonEnvironment implements LocalDaemonEnvironment {
-  /// Creates the production adapter.
-  const IoLocalDaemonEnvironment();
-
-  @override
-  Map<String, String> get values => Platform.environment;
-  @override
-  bool get isLinux => Platform.isLinux;
-  @override
-  bool get isMacOS => Platform.isMacOS;
-  @override
-  bool get isWindows => Platform.isWindows;
-}
-
-/// Resolves local daemon directories on the current machine.
-LocalDaemonDirectories resolveIoLocalDaemonDirectories({
-  LocalDaemonEnvironment environment = const IoLocalDaemonEnvironment(),
-}) => resolveLocalDaemonDirectories(environment: environment);
 
 /// Reads a daemon bearer token from the v5 owner-restricted secret document.
 Future<String?> readLocalDaemonBearerToken(String configDirectory) async {

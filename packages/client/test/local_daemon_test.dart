@@ -186,19 +186,6 @@ void main() {
         '.',
       );
     });
-
-    test('the IO adapter reports exactly one running platform', () {
-      const environment = IoLocalDaemonEnvironment();
-      expect(environment.values, isNotNull);
-      expect(
-        <bool>[
-          environment.isLinux,
-          environment.isMacOS,
-          environment.isWindows,
-        ].where((value) => value),
-        hasLength(1),
-      );
-    });
   });
 
   group('listen parsing', () {
