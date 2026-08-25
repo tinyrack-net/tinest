@@ -29,6 +29,7 @@ import 'package:app/src/features/workspace/presentation/widgets/worktree_hook_re
 import 'package:app/src/shared/presentation/client_error_alert.dart';
 import 'package:app/src/shared/presentation/tinest_icons.dart';
 import 'package:app/src/shared/presentation/tinest_select_presentation.dart';
+import 'package:app/src/shared/presentation/workspace_skeletons.dart';
 import 'package:client/client.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
@@ -128,6 +129,7 @@ class _NewWorkspacePaneState extends ConsumerState<NewWorkspacePane> {
   String? _worktreeId;
   String? _baseBranch;
   bool _submitting = false;
+  bool _registeringProject = false;
   // Which submit step is running, so the wait is narrated instead of the
   // composer merely appearing frozen while a worktree is checked out.
   _NewWorkspaceStage _stage = _NewWorkspaceStage.creatingWorktree;
@@ -171,14 +173,12 @@ class _NewWorkspacePaneState extends ConsumerState<NewWorkspacePane> {
     final home = hostId == null ? null : catalog?.homeSelection(hostId);
     final isGitProject = project?.workspace.kind == WorkspaceKind.git;
     final showGitTargets = project != null && isGitProject;
-    final branches = project == null || !isGitProject
-        ? const <GitBranchDto>[]
-        : ref
-                  .watch(
-                    gitBranchesProvider(project.hostId, project.workspace.id),
-                  )
-                  .value ??
-              const <GitBranchDto>[];
+    final branchesAsync = project == null || !isGitProject
+        ? const AsyncValue<List<GitBranchDto>>.data(<GitBranchDto>[])
+        : ref.watch(
+            gitBranchesProvider(project.hostId, project.workspace.id),
+          );
+    final branches = branchesAsync.value ?? const <GitBranchDto>[];
     // Remote refs win by default so a new branch starts from the latest push.
     final baseBranch = _baseBranch ?? defaultBaseBranch(branches);
     final worktree = project == null
@@ -246,9 +246,12 @@ class _NewWorkspacePaneState extends ConsumerState<NewWorkspacePane> {
     final target = project == null
         ? home != null
         : isGitProject || worktree != null;
+    final gitTargetReady =
+        !isGitProject || worktree != null || branchesAsync.hasValue;
     final ready =
         hostId != null &&
         target &&
+        gitTargetReady &&
         agent != null &&
         effectiveRunnable &&
         !_submitting;
@@ -290,9 +293,12 @@ class _NewWorkspacePaneState extends ConsumerState<NewWorkspacePane> {
             home: home,
             worktree: worktree,
             branches: branches,
+            branchesAsync: branchesAsync,
             showGitTargets: showGitTargets,
             baseBranch: baseBranch,
             anyDaemonConnected: anyDaemonConnected,
+            catalogLoading: catalogLoading,
+            registeringProject: _registeringProject,
           ),
           if (hostId != null && agent != null)
             AgentPluginUiSlot(
@@ -494,11 +500,42 @@ class _NewWorkspacePaneState extends ConsumerState<NewWorkspacePane> {
     required WorkspaceSelection? home,
     required WorktreeDto? worktree,
     required List<GitBranchDto> branches,
+    required AsyncValue<List<GitBranchDto>> branchesAsync,
     required bool showGitTargets,
     required String? baseBranch,
     required bool anyDaemonConnected,
+    required bool catalogLoading,
+    required bool registeringProject,
   }) {
     final l10n = AppLocalizations.of(context);
+    if (catalogLoading) {
+      return ListRowsSkeleton(
+        key: const ValueKey<String>('new-workspace-targets-loading'),
+        semanticLabel: l10n.workspaceCatalogLoading,
+        rows: 3,
+      );
+    }
+    if (registeringProject) {
+      return Semantics(
+        label: l10n.workspaceRegisteringProject,
+        liveRegion: true,
+        container: true,
+        child: ExcludeSemantics(
+          child: Row(
+            key: const ValueKey<String>('new-workspace-project-registering'),
+            children: <Widget>[
+              const TRSpinner(),
+              const SizedBox(width: TRSpacing.small),
+              TRText(
+                l10n.workspaceRegisteringProject,
+                variant: TRTextVariant.bodySm,
+                color: TRTextColor.muted,
+              ),
+            ],
+          ),
+        ),
+      );
+    }
     final narrow = MediaQuery.sizeOf(context).width < TRBreakpoints.small;
     final local = project == null ? null : _localCheckout(project);
     final selectors = <Widget>[
@@ -605,48 +642,83 @@ class _NewWorkspacePaneState extends ConsumerState<NewWorkspacePane> {
             onValueChange: _selectWorktree,
           ),
         ),
-        TRTooltip.controlled(
-          message: l10n.workspaceBaseBranchChipTooltip,
-          open: _branchTooltipOpen && !_branchSelectOpen,
-          onOpenChange: (open) => setState(() => _branchTooltipOpen = open),
-          child: TRSelect<String>.controlled(
-            key: const ValueKey('new-workspace-branch'),
-            searchable: true,
-            searchPlaceholder: l10n.selectSearchPlaceholder,
-            noResultsText: l10n.selectNoResults,
-            presentation: TinestSelectPresentation.resolve(context),
-            value: baseBranch,
-            leading: const Icon(TinestIcons.check),
-            placeholder: baseBranch ?? l10n.workspaceBaseBranchChip,
-            appearance: TRFieldAppearance.ghost,
-            width: narrow ? double.infinity : null,
-            enabled: project != null && worktree == null && !_submitting,
-            onOpen: () => setState(() {
-              _branchSelectOpen = true;
-              _branchTooltipOpen = false;
-            }),
-            onClose: () => setState(() => _branchSelectOpen = false),
-            items: <TRSelectItem<String>>[
-              for (final branch in branches.where((branch) => branch.isRemote))
-                TRSelectItem<String>(
-                  key: ValueKey('new-workspace-branch-${branch.name}'),
-                  value: branch.name,
-                  label: branch.name,
-                ),
-              for (final branch in branches.where(
-                (branch) => !branch.isRemote,
-              ))
-                TRSelectItem<String>(
-                  key: ValueKey('new-workspace-branch-${branch.name}'),
-                  value: branch.name,
-                  label: branch.name,
-                ),
+        if (branchesAsync.isLoading && !branchesAsync.hasValue)
+          Semantics(
+            label: l10n.workspaceBranchesLoading,
+            liveRegion: true,
+            container: true,
+            child: const ExcludeSemantics(
+              child: TRSkeleton(
+                key: ValueKey<String>('new-workspace-branch-loading'),
+                width: TRMeasurements.measureSm,
+              ),
+            ),
+          )
+        else if (branchesAsync.hasError)
+          TRAlert(
+            key: const ValueKey<String>('new-workspace-branch-error'),
+            variant: TRStatusVariant.danger,
+            title: TRText.inherit(l10n.workspaceBranchesFailed),
+            actions: <Widget>[
+              TRButton(
+                appearance: TRAppearance.outline,
+                onPressed: project == null
+                    ? null
+                    : () => ref.invalidate(
+                        gitBranchesProvider(
+                          project.hostId,
+                          project.workspace.id,
+                        ),
+                      ),
+                child: TRText.inherit(l10n.commonRetry),
+              ),
             ],
-            onValueChange: (chosen) {
-              if (chosen != null) _selectBranch(chosen);
-            },
+          )
+        else
+          TRTooltip.controlled(
+            message: l10n.workspaceBaseBranchChipTooltip,
+            open: _branchTooltipOpen && !_branchSelectOpen,
+            onOpenChange: (open) => setState(() => _branchTooltipOpen = open),
+            child: TRSelect<String>.controlled(
+              key: const ValueKey('new-workspace-branch'),
+              searchable: true,
+              searchPlaceholder: l10n.selectSearchPlaceholder,
+              noResultsText: l10n.selectNoResults,
+              presentation: TinestSelectPresentation.resolve(context),
+              value: baseBranch,
+              leading: const Icon(TinestIcons.check),
+              placeholder: baseBranch ?? l10n.workspaceBaseBranchChip,
+              appearance: TRFieldAppearance.ghost,
+              width: narrow ? double.infinity : null,
+              enabled: project != null && worktree == null && !_submitting,
+              onOpen: () => setState(() {
+                _branchSelectOpen = true;
+                _branchTooltipOpen = false;
+              }),
+              onClose: () => setState(() => _branchSelectOpen = false),
+              items: <TRSelectItem<String>>[
+                for (final branch in branches.where(
+                  (branch) => branch.isRemote,
+                ))
+                  TRSelectItem<String>(
+                    key: ValueKey('new-workspace-branch-${branch.name}'),
+                    value: branch.name,
+                    label: branch.name,
+                  ),
+                for (final branch in branches.where(
+                  (branch) => !branch.isRemote,
+                ))
+                  TRSelectItem<String>(
+                    key: ValueKey('new-workspace-branch-${branch.name}'),
+                    value: branch.name,
+                    label: branch.name,
+                  ),
+              ],
+              onValueChange: (chosen) {
+                if (chosen != null) _selectBranch(chosen);
+              },
+            ),
           ),
-        ),
       ],
     ];
     if (narrow) {
@@ -725,6 +797,10 @@ class _NewWorkspacePaneState extends ConsumerState<NewWorkspacePane> {
             initialPath: home ?? '/',
           );
     if (path == null || path.isEmpty || !mounted) return;
+    setState(() {
+      _registeringProject = true;
+      _failure = null;
+    });
     try {
       final result = await ref
           .read(workspaceCatalogControllerProvider.notifier)
@@ -739,6 +815,8 @@ class _NewWorkspacePaneState extends ConsumerState<NewWorkspacePane> {
     } on TinestClientException catch (error) {
       if (!mounted) return;
       setState(() => _failure = error);
+    } finally {
+      if (mounted) setState(() => _registeringProject = false);
     }
   }
 

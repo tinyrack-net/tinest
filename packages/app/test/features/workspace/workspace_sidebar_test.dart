@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:app/src/features/hosts/domain/host_models.dart';
 import 'package:app/src/features/workspace/application/workspace_controller.dart';
 import 'package:app/src/features/workspace/presentation/widgets/workspace_sidebar.dart';
@@ -83,6 +85,9 @@ void main() {
     onSelectSession,
     List<HomeSessionEntry> homeSessions = const <HomeSessionEntry>[],
     ThemeMode themeMode = ThemeMode.light,
+    Set<String> refreshingHostIds = const <String>{},
+    Map<String, Object> catalogErrors = const <String, Object>{},
+    bool settle = true,
   }) async {
     await tester.pumpWidget(
       ProviderScope(
@@ -104,6 +109,8 @@ void main() {
                     for (final item in hosts) item.id: item,
                   },
                   catalogs: catalogs,
+                  refreshingHostIds: refreshingHostIds,
+                  errors: catalogErrors,
                 ),
               ),
               homeSessions: AsyncValue<List<HomeSessionEntry>>.data(
@@ -123,7 +130,11 @@ void main() {
         ),
       ),
     );
-    await tester.pumpAndSettle();
+    if (settle) {
+      await tester.pumpAndSettle();
+    } else {
+      await tester.pump();
+    }
   }
 
   testWidgets('selecting a worktree expands its collapsed workspace', (
@@ -606,6 +617,176 @@ void main() {
       expect(find.text(testL10n.workspaceArchive), findsOneWidget);
     },
     tags: const <String>['feature_test__worktree_lifecycle__widget'],
+  );
+
+  testWidgets(
+    'archive safety inspection opens immediate progress before Git answers',
+    (tester) async {
+      await tester.binding.setSurfaceSize(const Size(400, 800));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+      final project = workspace('project', 'Project');
+      final gate = Completer<void>();
+      final api = FakeTinestApi(previewArchiveGate: gate);
+      await pump(
+        tester,
+        hosts: <HostRuntimeSnapshot>[host('up', 'Up daemon', api: api)],
+        catalogs: <String, WorkspaceCatalogDto>{
+          'up': WorkspaceCatalogDto(
+            workspaces: <WorkspaceDto>[project],
+            worktrees: <WorktreeDto>[
+              worktree('project-main', project.id, 'main'),
+              linkedWorktree('project-topic', project.id, 'topic'),
+            ],
+          ),
+        },
+      );
+
+      await clickWithMouse(
+        tester,
+        find.byKey(const ValueKey<String>('worktree-menu-project-topic')),
+      );
+      await tester.tap(find.text(testL10n.workspaceArchive));
+      await tester.pump();
+      await tester.pump();
+
+      expect(
+        find.byKey(const ValueKey<String>('worktree-archive-checking')),
+        findsOneWidget,
+      );
+      expect(find.byType(TRSpinner), findsOneWidget);
+      final progressSemantics = tester.widget<Semantics>(
+        find
+            .ancestor(
+              of: find.byKey(
+                const ValueKey<String>('worktree-archive-checking'),
+              ),
+              matching: find.byType(Semantics),
+            )
+            .first,
+      );
+      expect(progressSemantics.properties.label, '워크트리 확인 중…');
+
+      gate.complete();
+      await tester.pumpAndSettle();
+      expect(
+        find.byKey(const ValueKey<String>('worktree-archive-confirm')),
+        findsOneWidget,
+      );
+    },
+    tags: const <String>[
+      'feature_test__workspace_async_loading__widget',
+      'feature_test__worktree_lifecycle__widget',
+    ],
+  );
+
+  testWidgets(
+    'archive inspection failure stays in the dialog and retries',
+    (tester) async {
+      await tester.binding.setSurfaceSize(const Size(400, 800));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+      final project = workspace('project', 'Project');
+      final api = FakeTinestApi(
+        previewArchiveError: Exception('git status failed'),
+      );
+      await pump(
+        tester,
+        hosts: <HostRuntimeSnapshot>[host('up', 'Up daemon', api: api)],
+        catalogs: <String, WorkspaceCatalogDto>{
+          'up': WorkspaceCatalogDto(
+            workspaces: <WorkspaceDto>[project],
+            worktrees: <WorktreeDto>[
+              worktree('project-main', project.id, 'main'),
+              linkedWorktree('project-topic', project.id, 'topic'),
+            ],
+          ),
+        },
+      );
+
+      await clickWithMouse(
+        tester,
+        find.byKey(const ValueKey<String>('worktree-menu-project-topic')),
+      );
+      await tester.tap(find.text(testL10n.workspaceArchive));
+      await tester.pumpAndSettle();
+      expect(find.text(testL10n.workspaceArchiveFailed), findsOneWidget);
+      expect(
+        find.byKey(const ValueKey<String>('worktree-archive-retry')),
+        findsOneWidget,
+      );
+
+      api.previewArchiveError = null;
+      await tester.tap(
+        find.byKey(const ValueKey<String>('worktree-archive-retry')),
+      );
+      await tester.pumpAndSettle();
+      expect(
+        find.byKey(const ValueKey<String>('worktree-archive-confirm')),
+        findsOneWidget,
+      );
+    },
+    tags: const <String>[
+      'feature_test__workspace_async_loading__widget',
+      'feature_test__worktree_lifecycle__widget',
+    ],
+  );
+
+  testWidgets(
+    'a catalog refresh keeps the loaded tree and shows non-blocking progress',
+    (tester) async {
+      final project = workspace('project', 'Project');
+      await pump(
+        tester,
+        hosts: <HostRuntimeSnapshot>[host('up', 'Up daemon')],
+        catalogs: <String, WorkspaceCatalogDto>{
+          'up': WorkspaceCatalogDto(
+            workspaces: <WorkspaceDto>[project],
+            worktrees: <WorktreeDto>[
+              worktree('project-main', project.id, 'main'),
+            ],
+          ),
+        },
+        refreshingHostIds: const <String>{'up'},
+        settle: false,
+      );
+
+      expect(find.text('Project'), findsOneWidget);
+      expect(
+        find.byKey(
+          const ValueKey<String>('workspace-catalog-refreshing-up'),
+        ),
+        findsOneWidget,
+      );
+      expect(find.byType(TRSpinner), findsOneWidget);
+      expect(find.bySemanticsLabel('워크스페이스 목록 새로고침 중…'), findsOne);
+    },
+    tags: const <String>[
+      'feature_test__workspace_async_loading__widget',
+      'feature_test__workspace_catalog__widget',
+    ],
+  );
+
+  testWidgets(
+    'a catalog failure remains inline with an explicit retry action',
+    (tester) async {
+      await pump(
+        tester,
+        hosts: <HostRuntimeSnapshot>[host('up', 'Up daemon')],
+        catalogs: const <String, WorkspaceCatalogDto>{},
+        catalogErrors: <String, Object>{'up': Exception('git failed')},
+      );
+
+      expect(
+        find.byKey(const ValueKey<String>('workspace-catalog-error-up')),
+        findsOneWidget,
+      );
+      expect(find.text('워크스페이스 목록을 불러오지 못했습니다'), findsOne);
+      expect(find.widgetWithText(TRButton, '다시 시도'), findsOneWidget);
+      expect(find.text(testL10n.workspaceNoWorkspaces), findsNothing);
+    },
+    tags: const <String>[
+      'feature_test__workspace_async_loading__widget',
+      'feature_test__workspace_catalog__widget',
+    ],
   );
 
   testWidgets(

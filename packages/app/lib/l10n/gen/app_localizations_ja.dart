@@ -298,6 +298,24 @@ class AppLocalizationsJa extends AppLocalizations {
   String get workspaceCatalogLoading => 'ワークスペース一覧を読み込み中';
 
   @override
+  String get workspaceCatalogRefreshing => 'ワークスペース一覧を更新中…';
+
+  @override
+  String get workspaceCatalogFailed => 'ワークスペース一覧を読み込めませんでした';
+
+  @override
+  String get workspaceBranchesLoading => 'ブランチを読み込み中';
+
+  @override
+  String get workspaceBranchesFailed => 'ブランチを読み込めませんでした';
+
+  @override
+  String get workspaceRegisteringProject => 'プロジェクトを追加中…';
+
+  @override
+  String get workspaceArchiveChecking => 'ワークツリーを確認中…';
+
+  @override
   String get workspaceCreatingWorktree => 'ワークツリーを作成中…';
 
   @override

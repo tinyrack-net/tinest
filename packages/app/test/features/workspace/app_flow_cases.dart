@@ -258,6 +258,15 @@ void _registerWorkspaceAppFlows() {
       await tester.tap(find.widgetWithText(TRButton, 'Archive'));
       await tester.pump();
 
+      final confirm = find.byKey(
+        const ValueKey<String>('worktree-archive-confirm'),
+      );
+      expect(tester.widget<TRButton>(confirm).loading, isTrue);
+      expect(
+        find.descendant(of: confirm, matching: find.byType(TRSpinner)),
+        findsOneWidget,
+      );
+
       // A route change removes the sidebar while the daemon operation is still
       // running, but the keep-alive catalog controller must finish its refresh.
       router.go(const SettingsHomeRoute().location);

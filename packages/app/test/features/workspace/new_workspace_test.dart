@@ -500,6 +500,62 @@ void main() {
   );
 
   testWidgets(
+    'Git branches render a skeleton, then expose retry after a failure',
+    (tester) async {
+      await tester.binding.setSurfaceSize(const Size(1100, 900));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+      final gate = Completer<void>();
+      final api = FakeTinestApi(
+        workspaces: <WorkspaceDto>[workspace],
+        worktrees: <WorktreeDto>[checkout],
+        gitBranchesGate: gate,
+      );
+      final router = await _pump(tester, api);
+      addTearDown(router.dispose);
+
+      await tester.tap(find.byKey(const ValueKey('new-workspace-project')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.textContaining('Tinest ·').last);
+      await tester.pump();
+      await tester.pump();
+
+      expect(
+        find.byKey(const ValueKey<String>('new-workspace-branch-loading')),
+        findsOneWidget,
+      );
+      expect(find.bySemanticsLabel('branch 불러오는 중'), findsOneWidget);
+      expect(find.byKey(const ValueKey('new-workspace-branch')), findsNothing);
+
+      api.gitBranchesError = Exception('git failed');
+      gate.complete();
+      await tester.pumpAndSettle();
+      expect(
+        find.byKey(const ValueKey<String>('new-workspace-branch-error')),
+        findsOneWidget,
+      );
+      expect(find.widgetWithText(TRButton, '다시 시도'), findsOneWidget);
+
+      api
+        ..gitBranchesError = null
+        ..gitBranchesGate = null;
+      await tester.tap(find.widgetWithText(TRButton, '다시 시도'));
+      await tester.pumpAndSettle();
+      expect(
+        find.byKey(const ValueKey('new-workspace-branch')),
+        findsOneWidget,
+      );
+      expect(
+        find.byKey(const ValueKey<String>('new-workspace-branch-error')),
+        findsNothing,
+      );
+    },
+    tags: const <String>[
+      'feature_test__workspace_async_loading__widget',
+      'feature_test__worktree_lifecycle__widget',
+    ],
+  );
+
+  testWidgets(
     'a failed worktree keeps the user in the composer',
     (tester) async {
       await tester.binding.setSurfaceSize(const Size(1100, 900));
@@ -1218,14 +1274,30 @@ void main() {
       await tester.pump();
       await tester.pump();
 
+      expect(
+        find.byKey(
+          const ValueKey<String>('new-workspace-targets-loading'),
+        ),
+        findsOneWidget,
+      );
+      expect(find.byType(TRSkeleton), findsWidgets);
       expect(find.text('먼저 프로젝트를 추가하세요.'), findsNothing);
 
       gate.complete();
       await tester.pumpAndSettle();
 
+      expect(
+        find.byKey(
+          const ValueKey<String>('new-workspace-targets-loading'),
+        ),
+        findsNothing,
+      );
       expect(find.text('먼저 프로젝트를 추가하세요.'), findsOneWidget);
     },
-    tags: const <String>['feature_test__workspace_catalog__widget'],
+    tags: const <String>[
+      'feature_test__workspace_async_loading__widget',
+      'feature_test__workspace_catalog__widget',
+    ],
   );
 
   testWidgets(

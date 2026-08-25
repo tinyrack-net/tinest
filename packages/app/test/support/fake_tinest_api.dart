@@ -119,6 +119,13 @@ final class FakeTinestApi
     this.modelListGate,
     this.suggestDirectoriesGate,
     this.workspaceCatalogGate,
+    this.workspaceCatalogError,
+    this.gitBranchesGate,
+    this.gitBranchesError,
+    this.previewArchiveGate,
+    this.previewArchiveError,
+    this.archiveWorktreeError,
+    this.registerWorkspaceGate,
     this.agentDefinitionsGate,
     this.agentUpdateGate,
     this.terminalShellGate,
@@ -688,6 +695,27 @@ final class FakeTinestApi
   /// Optional gate used to keep the workspace catalog in its loading state.
   final Future<void>? workspaceCatalogGate;
 
+  /// Optional failure returned while loading the workspace catalog.
+  Exception? workspaceCatalogError;
+
+  /// Optional gate used to keep Git branch discovery in its loading state.
+  Completer<void>? gitBranchesGate;
+
+  /// Optional failure returned while loading Git branches.
+  Exception? gitBranchesError;
+
+  /// Optional gate used to keep archive safety inspection pending.
+  Completer<void>? previewArchiveGate;
+
+  /// Optional failure returned by archive safety inspection.
+  Exception? previewArchiveError;
+
+  /// Optional failure returned while archiving a worktree.
+  Exception? archiveWorktreeError;
+
+  /// Optional gate used to keep repository registration pending.
+  Completer<void>? registerWorkspaceGate;
+
   /// Optional gate used to keep agent definition discovery in its loading
   /// state. Tests may replace it after the initial catalog has loaded.
   Future<void>? agentDefinitionsGate;
@@ -1150,6 +1178,7 @@ final class FakeTinestApi
   Future<WorkspaceCatalogDto> getWorkspaceCatalog() async {
     workspaceCatalogCount += 1;
     await workspaceCatalogGate;
+    if (workspaceCatalogError case final error?) throw error;
     if (workspaceCatalogResponses.isNotEmpty) {
       return workspaceCatalogResponses.removeAt(0);
     }
@@ -1167,6 +1196,7 @@ final class FakeTinestApi
     required String name,
   }) async {
     registeredPaths.add(rootPath);
+    if (registerWorkspaceGate case final gate?) await gate.future;
     final workspace = WorkspaceDto(
       id: workspaceId,
       name: name,
@@ -1238,6 +1268,8 @@ final class FakeTinestApi
   @override
   Future<List<GitBranchDto>> listGitBranches(String workspaceId) async {
     listedGitBranchWorkspaceIds.add(workspaceId);
+    if (gitBranchesGate case final gate?) await gate.future;
+    if (gitBranchesError case final error?) throw error;
     return branches;
   }
 
@@ -1334,13 +1366,17 @@ final class FakeTinestApi
   @override
   Future<WorktreeArchivePreviewDto> previewWorktreeArchive(
     String worktreeId,
-  ) async => WorktreeArchivePreviewDto(
-    worktreeId: worktreeId,
-    dirty: false,
-    unpushedCommitCount: 0,
-    runningSessionCount: 0,
-    removesDirectory: true,
-  );
+  ) async {
+    if (previewArchiveGate case final gate?) await gate.future;
+    if (previewArchiveError case final error?) throw error;
+    return WorktreeArchivePreviewDto(
+      worktreeId: worktreeId,
+      dirty: false,
+      unpushedCommitCount: 0,
+      runningSessionCount: 0,
+      removesDirectory: true,
+    );
+  }
 
   @override
   Future<WorktreeResultDto> archiveWorktree(
@@ -1348,6 +1384,7 @@ final class FakeTinestApi
     bool force = false,
   }) async {
     if (archiveWorktreeGate case final gate?) await gate.future;
+    if (archiveWorktreeError case final error?) throw error;
     final index = _worktrees.indexWhere((item) => item.id == worktreeId);
     final archived = _worktrees[index].copyWith(archivedAt: _now);
     _worktrees.removeAt(index);

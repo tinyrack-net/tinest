@@ -132,6 +132,9 @@ class WorkspaceSidebar extends ConsumerWidget {
         hosts?.values.toList(growable: false) ?? const <HostRuntimeSnapshot>[];
     final catalogs =
         catalog.value?.catalogs ?? const <String, WorkspaceCatalogDto>{};
+    final catalogErrors = catalog.value?.errors ?? const <String, Object>{};
+    final refreshingHostIds =
+        catalog.value?.refreshingHostIds ?? const <String>{};
     final entries = _entries(l10n, runtimes, catalogs);
     final connected = runtimes.any((host) => host.connected);
     // Connected daemons whose catalog has not arrived yet: their sections are
@@ -205,6 +208,8 @@ class WorkspaceSidebar extends ConsumerWidget {
             connected,
             pendingHosts,
             entries,
+            catalogErrors,
+            refreshingHostIds,
           ),
         ),
       ],
@@ -219,6 +224,8 @@ class WorkspaceSidebar extends ConsumerWidget {
     bool connected,
     bool pendingHosts,
     List<_WorkspaceEntry> entries,
+    Map<String, Object> catalogErrors,
+    Set<String> refreshingHostIds,
   ) {
     // While the registry or the catalog is still resolving, the sidebar's
     // shape is unknown; a tree-shaped skeleton keeps it from misreporting
@@ -241,7 +248,7 @@ class WorkspaceSidebar extends ConsumerWidget {
       );
     }
     final loose = homeSessions.value ?? const <HomeSessionEntry>[];
-    if (entries.isEmpty && loose.isEmpty) {
+    if (entries.isEmpty && loose.isEmpty && catalogErrors.isEmpty) {
       if (pendingHosts) {
         return SidebarTreeSkeleton(
           semanticLabel: l10n.workspaceCatalogLoading,
@@ -311,6 +318,46 @@ class WorkspaceSidebar extends ConsumerWidget {
               );
             },
           ),
+        if (pendingHosts) ...<Widget>[
+          const SizedBox(height: TRSpacing.medium),
+          ListRowsSkeleton(
+            semanticLabel: l10n.workspaceCatalogLoading,
+            rows: 2,
+          ),
+        ],
+        for (final hostId in refreshingHostIds) ...<Widget>[
+          const SizedBox(height: TRSpacing.medium),
+          _CatalogRefreshing(
+            key: ValueKey<String>('workspace-catalog-refreshing-$hostId'),
+            label: l10n.workspaceCatalogRefreshing,
+          ),
+        ],
+        for (final error in catalogErrors.entries) ...<Widget>[
+          const SizedBox(height: TRSpacing.medium),
+          TRAlert(
+            key: ValueKey<String>('workspace-catalog-error-${error.key}'),
+            variant: TRStatusVariant.danger,
+            title: TRText.inherit(l10n.workspaceCatalogFailed),
+            description: TRText.inherit(
+              runtimes
+                      .where((runtime) => runtime.id == error.key)
+                      .firstOrNull
+                      ?.label ??
+                  error.key,
+            ),
+            actions: <Widget>[
+              TRButton(
+                appearance: TRAppearance.outline,
+                onPressed: () => unawaited(
+                  ref
+                      .read(workspaceCatalogControllerProvider.notifier)
+                      .retryHost(error.key),
+                ),
+                child: TRText.inherit(l10n.commonRetry),
+              ),
+            ],
+          ),
+        ],
       ],
     );
   }
@@ -411,76 +458,28 @@ class WorkspaceSidebar extends ConsumerWidget {
     WorktreeDto worktree,
   ) async {
     final l10n = AppLocalizations.of(context);
-    final preview = await entry.api.workspaces.previewWorktreeArchive(
-      worktree.id,
-    );
-    if (!context.mounted) return;
-    if (preview.runningSessionCount > 0) {
-      await showTRDialog<void>(
-        context: context,
-        builder: (context) => TRAlertDialog(
-          title: TRText.inherit(l10n.workspaceArchiveBlockedTitle),
-          content: TRText.inherit(
-            l10n.workspaceArchiveBlockedBody(preview.runningSessionCount),
-          ),
-          actions: <TRButton>[
-            TRButton(
-              appearance: TRAppearance.ghost,
-              onPressed: () => Navigator.pop(context),
-              child: TRText.inherit(l10n.commonConfirm),
-            ),
-          ],
-        ),
-      );
-      return;
-    }
-    final risky = preview.dirty || preview.unpushedCommitCount > 0;
-    final dirtyWarning = preview.dirty ? l10n.workspaceArchiveDirty : '';
-    final unpushedWarning = preview.unpushedCommitCount > 0
-        ? l10n.workspaceArchiveUnpushed(preview.unpushedCommitCount)
-        : '';
-    final removalWarning = l10n.workspaceArchiveRemovesDirectory;
-    final confirmed = await showTRDialog<bool>(
+    final archived = await showTRDialog<WorktreeResultDto>(
       context: context,
-      builder: (context) => TRAlertDialog(
-        title: TRText.inherit(l10n.workspaceArchiveTitle(worktree.name)),
-        content: TRText.inherit('$dirtyWarning$unpushedWarning$removalWarning'),
-        actions: <TRButton>[
-          TRButton(
-            appearance: TRAppearance.ghost,
-            onPressed: () => Navigator.pop(context, false),
-            child: TRText.inherit(l10n.commonCancel),
-          ),
-          TRButton(
-            key: const ValueKey<String>('worktree-archive-confirm'),
-            intent: TRIntent.primary,
-            onPressed: () => Navigator.pop(context, true),
-            child: TRText.inherit(
-              risky ? l10n.workspaceArchiveRisky : l10n.workspaceArchive,
-            ),
-          ),
-        ],
+      builder: (dialogContext) => _ArchiveWorktreeDialog(
+        worktree: worktree,
+        loadPreview: () => entry.api.workspaces.previewWorktreeArchive(
+          worktree.id,
+        ),
+        archive: ({required force}) => ref
+            .read(workspaceCatalogControllerProvider.notifier)
+            .archiveWorktree(entry.hostId, worktree.id, force: force),
       ),
     );
-    if (confirmed != true) return;
-    WorktreeResultDto? archived;
-    final succeeded = await ref
+    if (archived == null) return;
+    ref
         .read(toastMessengerProvider)
-        .run(
-          () async => archived = await ref
-              .read(workspaceCatalogControllerProvider.notifier)
-              .archiveWorktree(entry.hostId, worktree.id, force: risky),
-          failure: l10n.workspaceArchiveFailed,
-          success: l10n.commonDeleted,
-          id: 'worktree-archive',
-        );
-    if (!succeeded || archived == null) return;
+        .success(l10n.commonDeleted, id: 'worktree-archive');
     // The controller has already refreshed the catalog. Everything below is
     // presentation-only and must not retain an unmounted sidebar context.
     if (!context.mounted) return;
     // Teardown never blocks the archive, so surface failures afterwards.
     if (context.mounted) {
-      reportWorktreeHookFailure(context, archived!.hookRuns);
+      reportWorktreeHookFailure(context, archived.hookRuns);
     }
     if (context.mounted && selected?.worktreeId == worktree.id) {
       onArchivedSelection();
@@ -533,6 +532,216 @@ class WorkspaceSidebar extends ConsumerWidget {
     ref.invalidate(workspaceCatalogControllerProvider);
     if (selected?.workspaceId == workspace.id) onArchivedSelection();
   }
+}
+
+class _CatalogRefreshing extends StatelessWidget {
+  const _CatalogRefreshing({required this.label, super.key});
+
+  final String label;
+
+  @override
+  Widget build(BuildContext context) => Semantics(
+    label: label,
+    liveRegion: true,
+    container: true,
+    child: ExcludeSemantics(
+      child: Row(
+        children: <Widget>[
+          const TRSpinner(variant: TRSpinnerVariant.muted),
+          const SizedBox(width: TRSpacing.small),
+          Flexible(
+            child: TRText(
+              label,
+              variant: TRTextVariant.bodySm,
+              color: TRTextColor.muted,
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
+/// Keeps Git archive inspection and mutation visible inside one dialog.
+class _ArchiveWorktreeDialog extends StatefulWidget {
+  const _ArchiveWorktreeDialog({
+    required this.worktree,
+    required this.loadPreview,
+    required this.archive,
+  });
+
+  final WorktreeDto worktree;
+  final Future<WorktreeArchivePreviewDto> Function() loadPreview;
+  final Future<WorktreeResultDto> Function({required bool force}) archive;
+
+  @override
+  State<_ArchiveWorktreeDialog> createState() => _ArchiveWorktreeDialogState();
+}
+
+class _ArchiveWorktreeDialogState extends State<_ArchiveWorktreeDialog> {
+  WorktreeArchivePreviewDto? _preview;
+  Object? _error;
+  bool _loadingPreview = true;
+  bool _archiving = false;
+
+  @override
+  void initState() {
+    super.initState();
+    unawaited(_loadPreview());
+  }
+
+  Future<void> _loadPreview() async {
+    setState(() {
+      _loadingPreview = true;
+      _error = null;
+      _preview = null;
+    });
+    try {
+      final preview = await widget.loadPreview();
+      if (mounted) {
+        setState(() {
+          _preview = preview;
+          _loadingPreview = false;
+        });
+      }
+    } on Object catch (error) {
+      if (mounted) {
+        setState(() {
+          _error = error;
+          _loadingPreview = false;
+        });
+      }
+    }
+  }
+
+  Future<void> _archive() async {
+    final preview = _preview;
+    if (preview == null) return;
+    setState(() {
+      _archiving = true;
+      _error = null;
+    });
+    try {
+      final result = await widget.archive(
+        force: preview.dirty || preview.unpushedCommitCount > 0,
+      );
+      if (mounted) Navigator.pop(context, result);
+    } on Object catch (error) {
+      if (mounted) {
+        setState(() {
+          _error = error;
+          _archiving = false;
+        });
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final preview = _preview;
+    final error = _error;
+    if (_loadingPreview) {
+      return TRAlertDialog(
+        title: TRText.inherit(l10n.workspaceArchiveTitle(widget.worktree.name)),
+        content: _ArchiveProgress(label: l10n.workspaceArchiveChecking),
+        actions: <TRButton>[
+          TRButton(
+            appearance: TRAppearance.ghost,
+            onPressed: () => Navigator.pop(context),
+            child: TRText.inherit(l10n.commonCancel),
+          ),
+        ],
+      );
+    }
+    if (error != null) {
+      return TRAlertDialog(
+        title: TRText.inherit(l10n.workspaceArchiveFailed),
+        content: TRText.inherit('$error'),
+        actions: <TRButton>[
+          TRButton(
+            appearance: TRAppearance.ghost,
+            onPressed: () => Navigator.pop(context),
+            child: TRText.inherit(l10n.commonCancel),
+          ),
+          TRButton(
+            key: const ValueKey<String>('worktree-archive-retry'),
+            onPressed: preview == null
+                ? () => unawaited(_loadPreview())
+                : () => unawaited(_archive()),
+            child: TRText.inherit(l10n.commonRetry),
+          ),
+        ],
+      );
+    }
+    if (preview == null) return const SizedBox.shrink();
+    if (preview.runningSessionCount > 0) {
+      return TRAlertDialog(
+        title: TRText.inherit(l10n.workspaceArchiveBlockedTitle),
+        content: TRText.inherit(
+          l10n.workspaceArchiveBlockedBody(preview.runningSessionCount),
+        ),
+        actions: <TRButton>[
+          TRButton(
+            appearance: TRAppearance.ghost,
+            onPressed: () => Navigator.pop(context),
+            child: TRText.inherit(l10n.commonConfirm),
+          ),
+        ],
+      );
+    }
+    final risky = preview.dirty || preview.unpushedCommitCount > 0;
+    final dirtyWarning = preview.dirty ? l10n.workspaceArchiveDirty : '';
+    final unpushedWarning = preview.unpushedCommitCount > 0
+        ? l10n.workspaceArchiveUnpushed(preview.unpushedCommitCount)
+        : '';
+    return TRAlertDialog(
+      title: TRText.inherit(l10n.workspaceArchiveTitle(widget.worktree.name)),
+      content: TRText.inherit(
+        '$dirtyWarning$unpushedWarning${l10n.workspaceArchiveRemovesDirectory}',
+      ),
+      actions: <TRButton>[
+        TRButton(
+          appearance: TRAppearance.ghost,
+          onPressed: _archiving ? null : () => Navigator.pop(context),
+          child: TRText.inherit(l10n.commonCancel),
+        ),
+        TRButton(
+          key: const ValueKey<String>('worktree-archive-confirm'),
+          intent: TRIntent.primary,
+          loading: _archiving,
+          loadingLabel: l10n.workspaceArchive,
+          onPressed: _archiving ? null : () => unawaited(_archive()),
+          child: TRText.inherit(
+            risky ? l10n.workspaceArchiveRisky : l10n.workspaceArchive,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _ArchiveProgress extends StatelessWidget {
+  const _ArchiveProgress({required this.label});
+
+  final String label;
+
+  @override
+  Widget build(BuildContext context) => Semantics(
+    label: label,
+    liveRegion: true,
+    container: true,
+    child: ExcludeSemantics(
+      child: Row(
+        key: const ValueKey<String>('worktree-archive-checking'),
+        children: <Widget>[
+          const TRSpinner(),
+          const SizedBox(width: TRSpacing.small),
+          Flexible(child: TRText.inherit(label)),
+        ],
+      ),
+    ),
+  );
 }
 
 /// Heading that separates the project tree from sessions without a project.

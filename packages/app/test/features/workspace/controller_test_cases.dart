@@ -752,6 +752,55 @@ void _registerWorkspaceControllerTests() {
   );
 
   test(
+    'catalog refresh keeps stale data, exposes failure, and retries in place',
+    () async {
+      final api = FakeTinestApi(
+        workspaces: <WorkspaceDto>[workspace],
+        worktrees: <WorktreeDto>[worktree],
+      );
+      final container = _container(api);
+      addTearDown(container.dispose);
+      final subscription = container.listen(
+        workspaceCatalogControllerProvider,
+        (_, _) {},
+      );
+      addTearDown(subscription.close);
+      await container.read(hostRegistryControllerProvider.future);
+      await Future<void>.delayed(Duration.zero);
+      await container.read(workspaceCatalogControllerProvider.future);
+      await Future<void>.delayed(Duration.zero);
+
+      api.workspaceCatalogError = Exception('git unavailable');
+      await container
+          .read(workspaceCatalogControllerProvider.notifier)
+          .retryHost('server');
+      final failed = container
+          .read(workspaceCatalogControllerProvider)
+          .requireValue;
+      expect(failed.catalogs['server']?.worktrees, contains(worktree));
+      expect(failed.refreshingHostIds, isNot(contains('server')));
+      expect(failed.errors['server'], isA<Exception>());
+
+      api.workspaceCatalogError = null;
+      api.workspaceCatalogResponses.add(
+        WorkspaceCatalogDto(
+          workspaces: <WorkspaceDto>[workspace],
+          worktrees: const <WorktreeDto>[],
+        ),
+      );
+      await container
+          .read(workspaceCatalogControllerProvider.notifier)
+          .retryHost('server');
+      final recovered = container
+          .read(workspaceCatalogControllerProvider)
+          .requireValue;
+      expect(recovered.catalogs['server']?.worktrees, isEmpty);
+      expect(recovered.errors, isEmpty);
+    },
+    tags: const <String>['feature_test__workspace_catalog__unit'],
+  );
+
+  test(
     'archiving through the catalog controller refreshes the host snapshot',
     () async {
       final external = WorktreeDto(
