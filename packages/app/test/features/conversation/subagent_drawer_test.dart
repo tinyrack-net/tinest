@@ -3,6 +3,7 @@ library;
 
 import 'package:app/src/app/router/app_router.dart';
 import 'package:app/src/features/conversation/presentation/chat_approval_card.dart';
+import 'package:app/src/features/conversation/presentation/chat_timeline_view.dart';
 import 'package:app/src/features/conversation/presentation/widgets/session_composer.dart';
 import 'package:app/src/shared/presentation/tinest_icons.dart';
 import 'package:app/src/shared/presentation/tinest_list_row.dart';
@@ -270,6 +271,125 @@ void main() {
         find.byKey(const ValueKey('tr-tabs-close-child-a')),
         findsOneWidget,
       );
+    },
+  );
+
+  testWidgets(
+    'an expanded four-agent drawer fits above the composer in a short pane',
+    (tester) async {
+      await tester.binding.setSurfaceSize(const Size(1129, 453));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+      final children = <SessionDto>[
+        subagent(
+          'child-apps',
+          parentId: 'main-session',
+          taskName: 'investigate_apps',
+          agentPath: '/root/investigate_apps',
+        ),
+        subagent(
+          'child-games',
+          parentId: 'main-session',
+          taskName: 'investigate_game_packages',
+          agentPath: '/root/investigate_game_packages',
+        ),
+        subagent(
+          'child-root',
+          parentId: 'main-session',
+          taskName: 'investigate_root',
+          agentPath: '/root/investigate_root',
+        ),
+        subagent(
+          'child-tests',
+          parentId: 'main-session',
+          taskName: 'investigate_tests',
+          agentPath: '/root/investigate_tests',
+        ),
+      ];
+      final api = FakeTinestApi(
+        workspaces: <WorkspaceDto>[workspace],
+        worktrees: <WorktreeDto>[checkout],
+        agentDefinitions: const <AgentDefinitionDto>[drawerAgent],
+        plugins: const <PluginDescriptorDto>[drawerPlugin],
+        pluginUiDocuments: <String, PluginUiDocumentDto>{
+          drawerKey: drawerDocument(
+            title: '4 subagents',
+            summary: <Map<String, dynamic>>[
+              drawerBadge('4 running', 'info'),
+            ],
+            items: <Map<String, dynamic>>[
+              for (final child in children)
+                drawerItem(
+                  label: child.taskName!,
+                  description: child.agentPath!,
+                  status: 'running',
+                  sessionId: child.id,
+                ),
+            ],
+          ),
+        },
+        agents: <SessionDto>[root('main-session'), ...children],
+        timelines: <String, List<TimelineEventDto>>{
+          'main-session': <TimelineEventDto>[
+            TimelineEventDto(
+              sessionId: 'main-session',
+              sequence: 1,
+              turnId: 'turn-1',
+              type: 'user.message',
+              data: const <String, dynamic>{
+                'text': 'Investigate the workspace in parallel.',
+              },
+              createdAt: now,
+            ),
+          ],
+        },
+      );
+      final router = await pumpRoutedApp(
+        tester,
+        api,
+        initialLocation: sessionLocation('main-session'),
+        settle: false,
+      );
+      addTearDown(router.dispose);
+      await tester.pump(const Duration(seconds: 1));
+
+      await tester.tap(find.text('4 subagents'));
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
+
+      final pane = find.byKey(
+        const ValueKey<String>('conversation-pane-session:main-session'),
+      );
+      final timeline = find.byType(ChatTimelineView);
+      final composer = find.byType(SessionComposer);
+      final drawer = find.byKey(
+        const ValueKey<String>('agent-plugin-ui-composerDrawer'),
+      );
+      final drawerScrollArea = find.descendant(
+        of: drawer,
+        matching: find.byType(TRScrollArea),
+      );
+      expect(tester.takeException(), isNull);
+      expect(tester.getSize(timeline).height, greaterThan(0));
+      final paneRect = tester.getRect(pane);
+      final composerRect = tester.getRect(composer);
+      expect(composerRect.left, greaterThanOrEqualTo(paneRect.left));
+      expect(composerRect.right, lessThanOrEqualTo(paneRect.right));
+      expect(composerRect.bottom, lessThanOrEqualTo(paneRect.bottom));
+      expect(drawerScrollArea, findsOneWidget);
+
+      final lastPath = find.text('/root/investigate_tests');
+      await tester.ensureVisible(lastPath);
+      await tester.pump();
+      expect(
+        tester
+            .getRect(drawerScrollArea)
+            .contains(tester.getRect(lastPath).center),
+        isTrue,
+      );
+      await tester.tap(find.text('investigate_tests'));
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
+      expect(currentLocation(router), sessionLocation('child-tests'));
     },
   );
 
