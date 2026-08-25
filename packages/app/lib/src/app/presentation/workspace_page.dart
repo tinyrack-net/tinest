@@ -1851,199 +1851,183 @@ class _ConversationPaneState extends ConsumerState<_ConversationPane> {
                   maxHeight: constraints.maxHeight / 3,
                 ),
               ),
-            // Keep the auxiliary subagent track bounded so the composer retains
-            // its natural height and the timeline receives the remaining space.
+            // The drawer content owns its viewport-derived cap below. Let the
+            // complete composer keep its natural height so the preceding
+            // Expanded timeline receives the actual remaining space instead of
+            // imposing a second, conflicting cap around fixed drawer chrome and
+            // the input.
             if (!readOnly)
               _ConversationContentColumn(
                 key: const ValueKey<String>('conversation-composer'),
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(
-                    // tinyrack-check-ignore-next-line tokens/no-literal -- reserve half the viewport for the composer and timeline
-                    maxHeight: constraints.maxHeight / 2,
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      ComposerCompletionScope(
-                        hostId: widget.selection.hostId,
-                        workspaceId: widget.selection.workspaceId,
-                        worktreeId: widget.selection.worktreeId,
-                        builder: (context, completion) => SessionComposer(
-                          controller: _dropController,
-                          header: definition == null
-                              ? null
-                              : Column(
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.stretch,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: <Widget>[
-                                    AgentPluginUiSlot(
-                                      hostId: widget.selection.hostId,
-                                      agent: definition,
-                                      slot: PluginUiSlot.composerControl,
-                                      context: <String, dynamic>{
-                                        'sessionId': current.id,
-                                        'workspaceId':
-                                            widget.selection.workspaceId,
-                                        'worktreeId':
-                                            widget.selection.worktreeId,
-                                      },
-                                    ),
-                                    AgentPluginSessionControls(
-                                      hostId: widget.selection.hostId,
-                                      sessionId: current.id,
-                                      agent: definition,
-                                    ),
-                                    AgentPluginUiSlot(
-                                      hostId: widget.selection.hostId,
-                                      agent: definition,
-                                      slot: PluginUiSlot.composerDrawer,
-                                      // Viewport-derived cap: an expanded
-                                      // drawer never squeezes the input out,
-                                      // and the plugin never picks a height.
-                                      maxContentHeight:
-                                          constraints.maxHeight / 4,
-                                      onIntent: (intent) => _runPluginUiIntent(
-                                        context,
-                                        intent,
-                                        subagentRows,
-                                      ),
-                                      context: <String, dynamic>{
-                                        'sessionId': current.id,
-                                        'workspaceId':
-                                            widget.selection.workspaceId,
-                                        'worktreeId':
-                                            widget.selection.worktreeId,
-                                      },
-                                    ),
-                                  ],
-                                ),
-                          // A running turn never takes the keyboard away; the
-                          // prompt queues instead.
-                          enabled: effectiveRunnable,
-                          // The session status trails the daemon by an event,
-                          // so a prompt it has already accepted counts as busy
-                          // here: the next one queues rather than racing it.
-                          busy: busy || pending.isNotEmpty,
-                          contextTokens: current.contextTokens,
-                          contextWindow: current.contextWindow,
-                          totalCostUsd: current.totalCostUsd,
-                          providerConnectionId: effectiveRunnable
-                              ? connections
-                                    .where(
-                                      (connection) =>
-                                          effective.qualifiedModelId.startsWith(
-                                            '${connection.modelPrefix}/',
-                                          ),
-                                    )
-                                    .firstOrNull
-                                    ?.id
-                              : null,
-                          onLoadProviderUsage: () => ref
-                              .read(
-                                providerSettingsControllerProvider(
-                                  widget.selection.hostId,
-                                ).notifier,
-                              )
-                              .loadUsage(),
-                          queued: conversation.queued,
-                          onQueue: (submission) =>
-                              _conversation(ref, current.id).enqueueTurn(
-                                submission.text,
-                                attachments: submission.attachments,
-                              ),
-                          onQueuedEdit: (id) =>
-                              _conversation(ref, current.id).takeQueuedTurn(id),
-                          onQueuedSendNow: (id) => _conversation(
-                            ref,
-                            current.id,
-                          ).sendQueuedTurnNow(id),
-                          onSubmitAndInterrupt: (submission) async {
-                            await _conversation(ref, current.id).cancelTurn();
-                            await _send(current.id, submission);
-                          },
-                          onStop: () =>
-                              _conversation(ref, current.id).cancelTurn(),
-                          hint:
-                              (agentsLoading ||
-                                  providersLoading ||
-                                  modelSettingsLoading ||
-                                  effectiveRunnable)
-                              ? null
-                              : hasRunnableModel && effective != null
-                              ? AppLocalizations.of(
-                                  context,
-                                ).modelSettingsUnavailableDescription(
-                                  effective.modelId,
-                                )
-                              : AppLocalizations.of(
-                                  context,
-                                ).composerConnectProviderFirst,
-                          bar: SessionComposerBar(
-                            hostId: widget.selection.hostId,
-                            definitions: definitions,
-                            agentDefinitionId: current.agentDefinitionId,
-                            selection: effective,
-                            // Turn settings apply to the next turn, so they
-                            // stay reachable while one is running.
-                            agentEnabled: false,
-                            onAgentChanged: (_) {},
-                            onModelChanged: (model, controls) => unawaited(
-                              _applySessionSetting(
-                                () => _sessions(
-                                  ref,
-                                ).setModel(current.id, model, controls),
-                              ),
-                            ),
-                            modelControls: current.modelControls,
-                            onModelControlsChanged: (controls) => unawaited(
-                              _applySessionSetting(
-                                () => _sessions(
-                                  ref,
-                                ).setModelControls(current.id, controls),
-                              ),
-                            ),
-                            permissionMode: current.permissionMode,
-                            // Not routed through [_applySessionSetting]: the
-                            // permission mode is not read at turn start, so the
-                            // daemon never refuses it, and the composer already
-                            // reports a save failure on the control itself.
-                            onPermissionModeChanged: (mode) async {
-                              await _sessions(
-                                ref,
-                              ).setPermissionMode(current.id, mode);
-                            },
-                          ),
-                          attachmentInput: ref.read(attachmentInputProvider),
-                          commands: completion.commands,
-                          suggestions: completion.suggestions,
-                          onCompletionQueryChanged: completion.onQueryChanged,
-                          onClientCommand: (invocation) =>
-                              _runClientCommand(invocation, current),
-                          onSubmit: (submission) =>
-                              _send(current.id, submission),
-                          restoreSubmission: restoreSubmission,
-                          restoreKey: restoreKey,
-                          onRestoreConsumed: restoreSubmission == null
-                              ? null
-                              : () {
-                                  final entry = ref.read(
-                                    pendingFirstTurnsProvider,
-                                  )[current.id];
-                                  if (entry != null &&
-                                      entry.failed &&
-                                      entry.createdAt ==
-                                          pendingFirstTurn!.createdAt) {
-                                    ref
-                                        .read(
-                                          pendingFirstTurnsProvider.notifier,
-                                        )
-                                        .clear(current.id);
-                                  }
+                child: ComposerCompletionScope(
+                  hostId: widget.selection.hostId,
+                  workspaceId: widget.selection.workspaceId,
+                  worktreeId: widget.selection.worktreeId,
+                  builder: (context, completion) => SessionComposer(
+                    controller: _dropController,
+                    header: definition == null
+                        ? null
+                        : Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              AgentPluginUiSlot(
+                                hostId: widget.selection.hostId,
+                                agent: definition,
+                                slot: PluginUiSlot.composerControl,
+                                context: <String, dynamic>{
+                                  'sessionId': current.id,
+                                  'workspaceId': widget.selection.workspaceId,
+                                  'worktreeId': widget.selection.worktreeId,
                                 },
+                              ),
+                              AgentPluginSessionControls(
+                                hostId: widget.selection.hostId,
+                                sessionId: current.id,
+                                agent: definition,
+                              ),
+                              AgentPluginUiSlot(
+                                hostId: widget.selection.hostId,
+                                agent: definition,
+                                slot: PluginUiSlot.composerDrawer,
+                                // Viewport-derived cap: an expanded
+                                // drawer never squeezes the input out,
+                                // and the plugin never picks a height.
+                                maxContentHeight: constraints.maxHeight / 4,
+                                onIntent: (intent) => _runPluginUiIntent(
+                                  context,
+                                  intent,
+                                  subagentRows,
+                                ),
+                                context: <String, dynamic>{
+                                  'sessionId': current.id,
+                                  'workspaceId': widget.selection.workspaceId,
+                                  'worktreeId': widget.selection.worktreeId,
+                                },
+                              ),
+                            ],
+                          ),
+                    // A running turn never takes the keyboard away; the
+                    // prompt queues instead.
+                    enabled: effectiveRunnable,
+                    // The session status trails the daemon by an event,
+                    // so a prompt it has already accepted counts as busy
+                    // here: the next one queues rather than racing it.
+                    busy: busy || pending.isNotEmpty,
+                    contextTokens: current.contextTokens,
+                    contextWindow: current.contextWindow,
+                    totalCostUsd: current.totalCostUsd,
+                    providerConnectionId: effectiveRunnable
+                        ? connections
+                              .where(
+                                (connection) =>
+                                    effective.qualifiedModelId.startsWith(
+                                      '${connection.modelPrefix}/',
+                                    ),
+                              )
+                              .firstOrNull
+                              ?.id
+                        : null,
+                    onLoadProviderUsage: () => ref
+                        .read(
+                          providerSettingsControllerProvider(
+                            widget.selection.hostId,
+                          ).notifier,
+                        )
+                        .loadUsage(),
+                    queued: conversation.queued,
+                    onQueue: (submission) =>
+                        _conversation(ref, current.id).enqueueTurn(
+                          submission.text,
+                          attachments: submission.attachments,
+                        ),
+                    onQueuedEdit: (id) =>
+                        _conversation(ref, current.id).takeQueuedTurn(id),
+                    onQueuedSendNow: (id) => _conversation(
+                      ref,
+                      current.id,
+                    ).sendQueuedTurnNow(id),
+                    onSubmitAndInterrupt: (submission) async {
+                      await _conversation(ref, current.id).cancelTurn();
+                      await _send(current.id, submission);
+                    },
+                    onStop: () => _conversation(ref, current.id).cancelTurn(),
+                    hint:
+                        (agentsLoading ||
+                            providersLoading ||
+                            modelSettingsLoading ||
+                            effectiveRunnable)
+                        ? null
+                        : hasRunnableModel && effective != null
+                        ? AppLocalizations.of(
+                            context,
+                          ).modelSettingsUnavailableDescription(
+                            effective.modelId,
+                          )
+                        : AppLocalizations.of(
+                            context,
+                          ).composerConnectProviderFirst,
+                    bar: SessionComposerBar(
+                      hostId: widget.selection.hostId,
+                      definitions: definitions,
+                      agentDefinitionId: current.agentDefinitionId,
+                      selection: effective,
+                      // Turn settings apply to the next turn, so they
+                      // stay reachable while one is running.
+                      agentEnabled: false,
+                      onAgentChanged: (_) {},
+                      onModelChanged: (model, controls) => unawaited(
+                        _applySessionSetting(
+                          () => _sessions(
+                            ref,
+                          ).setModel(current.id, model, controls),
                         ),
                       ),
-                    ],
+                      modelControls: current.modelControls,
+                      onModelControlsChanged: (controls) => unawaited(
+                        _applySessionSetting(
+                          () => _sessions(
+                            ref,
+                          ).setModelControls(current.id, controls),
+                        ),
+                      ),
+                      permissionMode: current.permissionMode,
+                      // Not routed through [_applySessionSetting]: the
+                      // permission mode is not read at turn start, so the
+                      // daemon never refuses it, and the composer already
+                      // reports a save failure on the control itself.
+                      onPermissionModeChanged: (mode) async {
+                        await _sessions(
+                          ref,
+                        ).setPermissionMode(current.id, mode);
+                      },
+                    ),
+                    attachmentInput: ref.read(attachmentInputProvider),
+                    commands: completion.commands,
+                    suggestions: completion.suggestions,
+                    onCompletionQueryChanged: completion.onQueryChanged,
+                    onClientCommand: (invocation) =>
+                        _runClientCommand(invocation, current),
+                    onSubmit: (submission) => _send(current.id, submission),
+                    restoreSubmission: restoreSubmission,
+                    restoreKey: restoreKey,
+                    onRestoreConsumed: restoreSubmission == null
+                        ? null
+                        : () {
+                            final entry = ref.read(
+                              pendingFirstTurnsProvider,
+                            )[current.id];
+                            if (entry != null &&
+                                entry.failed &&
+                                entry.createdAt ==
+                                    pendingFirstTurn!.createdAt) {
+                              ref
+                                  .read(
+                                    pendingFirstTurnsProvider.notifier,
+                                  )
+                                  .clear(current.id);
+                            }
+                          },
                   ),
                 ),
               ),
