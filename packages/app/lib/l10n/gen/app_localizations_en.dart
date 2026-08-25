@@ -298,6 +298,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get workspaceCatalogLoading => 'Loading workspaces';
 
   @override
+  String get workspaceTargetsLoading => 'Loading workspace targets';
+
+  @override
   String get workspaceCatalogRefreshing => 'Refreshing workspaces…';
 
   @override

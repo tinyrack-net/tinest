@@ -298,6 +298,9 @@ class AppLocalizationsJa extends AppLocalizations {
   String get workspaceCatalogLoading => 'ワークスペース一覧を読み込み中';
 
   @override
+  String get workspaceTargetsLoading => 'ワークスペースの対象を読み込み中';
+
+  @override
   String get workspaceCatalogRefreshing => 'ワークスペース一覧を更新中…';
 
   @override

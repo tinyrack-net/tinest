@@ -511,7 +511,7 @@ class _NewWorkspacePaneState extends ConsumerState<NewWorkspacePane> {
     if (catalogLoading) {
       return ListRowsSkeleton(
         key: const ValueKey<String>('new-workspace-targets-loading'),
-        semanticLabel: l10n.workspaceCatalogLoading,
+        semanticLabel: l10n.workspaceTargetsLoading,
         rows: 3,
       );
     }

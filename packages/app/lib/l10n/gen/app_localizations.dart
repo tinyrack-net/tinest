@@ -634,6 +634,12 @@ abstract class AppLocalizations {
   /// **'Loading workspaces'**
   String get workspaceCatalogLoading;
 
+  /// Announced once for the project and worktree target skeleton in the new-workspace pane.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading workspace targets'**
+  String get workspaceTargetsLoading;
+
   /// Non-blocking status shown while a previously loaded daemon catalog refreshes.
   ///
   /// In en, this message translates to:

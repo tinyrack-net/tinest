@@ -298,6 +298,9 @@ class AppLocalizationsKo extends AppLocalizations {
   String get workspaceCatalogLoading => '워크스페이스 목록 불러오는 중';
 
   @override
+  String get workspaceTargetsLoading => '워크스페이스 대상 불러오는 중';
+
+  @override
   String get workspaceCatalogRefreshing => '워크스페이스 목록 새로고침 중…';
 
   @override
