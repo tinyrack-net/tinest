@@ -42,18 +42,25 @@ void main() {
     );
   });
 
-  testWidgets('ends its value on the same rail as a switch beside it', (
+  testWidgets('keeps the token inline inset on both sides while open', (
     tester,
   ) async {
     _useViewport(tester, _narrowPhone);
-    await tester.pumpWidget(_host(withSwitch: true));
+    await tester.pumpWidget(_host());
 
-    // The select used to carry a field inset on top of the row's own, so its
-    // chevron stopped short of where the switch ended and the two rows read
-    // as two different right edges.
+    final select = find.byType(TRSelect<String>);
+    await tester.tap(select);
+    await tester.pumpAndSettle();
+
+    final trigger = tester.getRect(
+      find.descendant(of: select, matching: find.byType(TextButton)),
+    );
+    final label = tester.getRect(
+      find.descendant(of: select, matching: find.text('다크')),
+    );
     final chevron = find
         .descendant(
-          of: find.byType(TRSelect<String>),
+          of: select,
           matching: find.byType(CustomPaint),
         )
         .evaluate()
@@ -67,8 +74,17 @@ void main() {
         // The chevron is the one square the size scale draws it at.
         .where((rect) => rect.width == TRSpacing.large)
         .single;
-    final control = tester.getRect(find.byType(TRSwitch));
-    expect(chevron.right, moreOrLessEquals(control.right, epsilon: 0.5));
+    final expectedInset =
+        TRControlMetrics.inlinePaddingOf(TRUiSize.md) +
+        TRControlMetrics.borderWidth;
+    expect(
+      label.left - trigger.left,
+      moreOrLessEquals(expectedInset, epsilon: 0.5),
+    );
+    expect(
+      trigger.right - chevron.right,
+      moreOrLessEquals(expectedInset, epsilon: 0.5),
+    );
   });
 
   testWidgets('keeps a value too long for the line inside the row', (
@@ -126,7 +142,6 @@ void _useViewport(WidgetTester tester, Size size) {
 Widget _host({
   String value = '다크',
   ValueChanged<String?>? onChanged = _ignore,
-  bool withSwitch = false,
 }) {
   final choice = TinestChoiceRow<String>(
     title: const TRText.inherit('테마'),
@@ -143,18 +158,7 @@ Widget _host({
   return MaterialApp(
     theme: TinyrackTheme.light(),
     home: Scaffold(
-      body: withSwitch
-          ? SettingsSection(
-              children: <Widget>[
-                choice,
-                TinestSwitchRow(
-                  title: const TRText.inherit('로그인 시 시작'),
-                  value: true,
-                  onChanged: (_) {},
-                ),
-              ],
-            )
-          : choice,
+      body: choice,
     ),
   );
 }

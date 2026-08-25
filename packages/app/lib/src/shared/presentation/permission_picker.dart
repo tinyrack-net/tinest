@@ -47,10 +47,7 @@ class PermissionSelect extends StatelessWidget {
   /// Design-system field appearance.
   final TRFieldAppearance appearance;
 
-  /// Whether the trigger adds the inline inset its size scale defines.
-  ///
-  /// A picker standing in for a value in a settings row passes
-  /// [TRFieldPadding.none], because the row supplies that inset already.
+  /// Design-system trigger padding.
   final TRFieldPadding padding;
 
   /// Design-system control density.

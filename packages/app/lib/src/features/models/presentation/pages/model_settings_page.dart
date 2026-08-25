@@ -59,10 +59,7 @@ class ModelSettingsPage extends ConsumerWidget {
           currentSelection: current,
           placeholder: current?.modelId ?? l10n.composerModel,
           enabled: !blocked,
-          // The row supplies the inline inset, so the value ends on the same
-          // rail as every other control in the pane.
           appearance: TRFieldAppearance.ghost,
-          padding: TRFieldPadding.none,
           leading: Icon(blocked ? TinestIcons.lock : TinestIcons.memory),
           onValueChange: (option) => unawaited(
             _set(context, ref, option.selection),

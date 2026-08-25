@@ -60,6 +60,15 @@ void main() {
       );
       await tester.pumpAndSettle();
 
+      expect(
+        tester
+            .widget<TRSelect<PermissionMode>>(
+              find.byType(TRSelect<PermissionMode>),
+            )
+            .padding,
+        TRFieldPadding.standard,
+      );
+
       await tester.tap(
         find.byKey(const ValueKey<String>('permission-settings-change')),
       );

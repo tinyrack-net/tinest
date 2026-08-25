@@ -85,9 +85,6 @@ class TinestChoiceRow<T> extends StatelessWidget {
         // Ghost, so the value reads as the row's own trailing copy rather than
         // as a field parked inside a list.
         appearance: TRFieldAppearance.ghost,
-        // The row already draws the inline inset, so the trigger adds none of
-        // its own and the value ends on the same rail as a switch beside it.
-        padding: TRFieldPadding.none,
         // No width: the trigger then shrinks to the value it is showing and
         // leaves the rest of the line to the label.
         presentation: TinestSelectPresentation.resolve(context),
