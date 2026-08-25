@@ -730,11 +730,11 @@ packages:
     dependency: transitive
     description:
       path: "packages/lua_tool_runtime"
-      ref: "8dbf6aaded2ffddaf9a036e9b8e0499c4e918228"
-      resolved-ref: "8dbf6aaded2ffddaf9a036e9b8e0499c4e918228"
+      ref: "866a29af27a9f3e077b1dd905f2f79d7ca2c2769"
+      resolved-ref: "866a29af27a9f3e077b1dd905f2f79d7ca2c2769"
       url: "https://github.com/tinyrack-net/dart-packages.git"
     source: git
-    version: "0.4.1"
+    version: "0.4.2"
   lucide_flutter:
     dependency: transitive
     description:
@@ -987,11 +987,11 @@ packages:
     dependency: transitive
     description:
       path: "packages/ptyworld"
-      ref: acd0bdf348e8a8a1886c66e65207fcd3087f7037
-      resolved-ref: acd0bdf348e8a8a1886c66e65207fcd3087f7037
+      ref: "866a29af27a9f3e077b1dd905f2f79d7ca2c2769"
+      resolved-ref: "866a29af27a9f3e077b1dd905f2f79d7ca2c2769"
       url: "https://github.com/tinyrack-net/dart-packages.git"
     source: git
-    version: "0.1.0"
+    version: "0.1.1"
   pub_semver:
     dependency: transitive
     description:

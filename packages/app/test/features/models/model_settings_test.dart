@@ -28,6 +28,10 @@ void main() {
 
       final select = find.byType(TRSelect<ModelPickerOption>);
       expect(select, findsOneWidget);
+      expect(
+        tester.widget<TRSelect<ModelPickerOption>>(select).padding,
+        TRFieldPadding.standard,
+      );
       expect(find.text('자동'), findsNothing);
       expect(find.text('기본 모델 사용'), findsNothing);
 
