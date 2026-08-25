@@ -634,6 +634,48 @@ abstract class AppLocalizations {
   /// **'Loading workspaces'**
   String get workspaceCatalogLoading;
 
+  /// Announced once for the project and worktree target skeleton in the new-workspace pane.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading workspace targets'**
+  String get workspaceTargetsLoading;
+
+  /// Non-blocking status shown while a previously loaded daemon catalog refreshes.
+  ///
+  /// In en, this message translates to:
+  /// **'Refreshing workspaces…'**
+  String get workspaceCatalogRefreshing;
+
+  /// Inline error title when a daemon workspace catalog cannot be loaded.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load workspaces'**
+  String get workspaceCatalogFailed;
+
+  /// Accessible label for the new-workspace branch skeleton.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading branches'**
+  String get workspaceBranchesLoading;
+
+  /// Inline error title when Git branch discovery fails.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load branches'**
+  String get workspaceBranchesFailed;
+
+  /// Progress label while Git repository metadata is discovered during registration.
+  ///
+  /// In en, this message translates to:
+  /// **'Adding project…'**
+  String get workspaceRegisteringProject;
+
+  /// Progress label while Git inspects archive safety.
+  ///
+  /// In en, this message translates to:
+  /// **'Checking worktree…'**
+  String get workspaceArchiveChecking;
+
   /// Progress label while the daemon checks out a new worktree and runs its hooks.
   ///
   /// In en, this message translates to:

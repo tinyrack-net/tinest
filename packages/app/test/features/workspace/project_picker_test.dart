@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:app/src/app/composition/app_providers.dart';
 import 'package:app/src/app/composition/app_services.dart';
 import 'package:app/src/app/router/app_router.dart';
@@ -112,6 +114,49 @@ void main() {
       expect(find.text('Daemon의 폴더 선택'), findsNothing);
     },
     tags: const <String>['feature_test__workspace_registration__widget'],
+  );
+
+  testWidgets(
+    'repository registration shows progress while Git discovery is pending',
+    (tester) async {
+      await tester.binding.setSurfaceSize(const Size(1100, 900));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+      final gate = Completer<void>();
+      final api = FakeTinestApi(
+        serverInfo: info(homeDirectory: home),
+        directories: directories,
+        registerWorkspaceGate: gate,
+      );
+      final picker = _FakeDirectoryPicker(result: '$home/projects/tinest');
+      final router = await _pump(tester, api, embedded: true, picker: picker);
+      addTearDown(router.dispose);
+
+      await tester.tap(find.byKey(const ValueKey('new-workspace-project')));
+      await tester.pumpAndSettle();
+      await tester.tap(
+        find.byKey(const ValueKey('new-workspace-project-add')),
+      );
+      await tester.pump();
+      await tester.pump();
+
+      expect(
+        find.byKey(
+          const ValueKey<String>('new-workspace-project-registering'),
+        ),
+        findsOneWidget,
+      );
+      expect(find.byType(TRSpinner), findsOneWidget);
+      expect(find.bySemanticsLabel('Project 추가 중…'), findsOneWidget);
+
+      gate.complete();
+      await tester.pumpAndSettle();
+      expect(api.registeredPaths, <String>['$home/projects/tinest']);
+      expect(find.text('tinest'), findsWidgets);
+    },
+    tags: const <String>[
+      'feature_test__workspace_async_loading__widget',
+      'feature_test__workspace_registration__widget',
+    ],
   );
 }
 

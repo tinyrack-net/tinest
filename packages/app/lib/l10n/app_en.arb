@@ -392,6 +392,34 @@
   "@workspaceCatalogLoading": {
     "description": "Announced once for the sidebar tree skeleton shown while daemon catalogs load."
   },
+  "workspaceTargetsLoading": "Loading workspace targets",
+  "@workspaceTargetsLoading": {
+    "description": "Announced once for the project and worktree target skeleton in the new-workspace pane."
+  },
+  "workspaceCatalogRefreshing": "Refreshing workspaces…",
+  "@workspaceCatalogRefreshing": {
+    "description": "Non-blocking status shown while a previously loaded daemon catalog refreshes."
+  },
+  "workspaceCatalogFailed": "Could not load workspaces",
+  "@workspaceCatalogFailed": {
+    "description": "Inline error title when a daemon workspace catalog cannot be loaded."
+  },
+  "workspaceBranchesLoading": "Loading branches",
+  "@workspaceBranchesLoading": {
+    "description": "Accessible label for the new-workspace branch skeleton."
+  },
+  "workspaceBranchesFailed": "Could not load branches",
+  "@workspaceBranchesFailed": {
+    "description": "Inline error title when Git branch discovery fails."
+  },
+  "workspaceRegisteringProject": "Adding project…",
+  "@workspaceRegisteringProject": {
+    "description": "Progress label while Git repository metadata is discovered during registration."
+  },
+  "workspaceArchiveChecking": "Checking worktree…",
+  "@workspaceArchiveChecking": {
+    "description": "Progress label while Git inspects archive safety."
+  },
   "workspaceCreatingWorktree": "Creating worktree…",
   "@workspaceCreatingWorktree": {
     "description": "Progress label while the daemon checks out a new worktree and runs its hooks."

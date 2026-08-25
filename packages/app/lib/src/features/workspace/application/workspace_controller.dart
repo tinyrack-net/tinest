@@ -27,6 +27,8 @@ final class UnifiedWorkspaceCatalogState {
   const UnifiedWorkspaceCatalogState({
     required this.hosts,
     required this.catalogs,
+    this.refreshingHostIds = const <String>{},
+    this.errors = const <String, Object>{},
   });
 
   /// Every host runtime, including offline hosts.
@@ -35,18 +37,30 @@ final class UnifiedWorkspaceCatalogState {
   /// Online daemon catalogs keyed by host profile ID.
   final Map<String, WorkspaceCatalogDto> catalogs;
 
+  /// Hosts revalidating a usable catalog in the background.
+  final Set<String> refreshingHostIds;
+
+  /// Last catalog failure per host, retained until a retry starts.
+  final Map<String, Object> errors;
+
   /// Whether any connected host has not delivered its catalog yet.
   ///
   /// Catalogs merge per host as daemons answer, so consumers use this to keep
   /// showing a loading shape instead of misreporting an empty workspace list.
   bool get hasPendingHosts => hosts.values.any(
-    (host) => host.connected && !catalogs.containsKey(host.id),
+    (host) =>
+        host.connected &&
+        !catalogs.containsKey(host.id) &&
+        !errors.containsKey(host.id),
   );
 
   /// Whether [hostId] is connected but has not delivered its catalog yet.
   bool isHostPending(String hostId) {
     final host = hosts[hostId];
-    return host != null && host.connected && !catalogs.containsKey(hostId);
+    return host != null &&
+        host.connected &&
+        !catalogs.containsKey(hostId) &&
+        !errors.containsKey(hostId);
   }
 
   /// Resolves the implicit home checkout of [hostId], when its daemon has one.
@@ -105,21 +119,21 @@ class WorkspaceCatalogController extends _$WorkspaceCatalogController {
               if (runtimes.containsKey(entry.key)) entry.key: entry.value,
         },
       ),
+      refreshingHostIds: <String>{
+        for (final runtime in runtimes.values)
+          if (runtime.connected && previous?.containsKey(runtime.id) == true)
+            runtime.id,
+      },
     );
   }
 
   Future<void> _loadHost(HostRuntimeSnapshot runtime) async {
-    WorkspaceCatalogDto catalog;
+    WorkspaceCatalogDto? catalog;
+    Object? failure;
     try {
       catalog = await runtime.api!.workspaces.getWorkspaceCatalog();
-    } on Exception {
-      // A daemon that fails to answer settles as an empty section instead of
-      // pending forever; the registry's connection state is the surface that
-      // reports the failure itself.
-      catalog = const WorkspaceCatalogDto(
-        workspaces: <WorkspaceDto>[],
-        worktrees: <WorktreeDto>[],
-      );
+    } on Object catch (error) {
+      failure = error;
     }
     // The empty snapshot from build installs after this notifier returns, so
     // a catalog that answers first waits for it before merging. Check before
@@ -129,17 +143,45 @@ class WorkspaceCatalogController extends _$WorkspaceCatalogController {
     await future;
     if (!ref.mounted) return;
     final current = state.requireValue;
+    final catalogs = <String, WorkspaceCatalogDto>{...current.catalogs};
+    final errors = <String, Object>{...current.errors};
+    if (catalog != null) {
+      catalogs[runtime.id] = catalog;
+      errors.remove(runtime.id);
+    } else if (failure != null) {
+      errors[runtime.id] = failure;
+    }
     state = AsyncData<UnifiedWorkspaceCatalogState>(
       UnifiedWorkspaceCatalogState(
         hosts: current.hosts,
-        catalogs: Map<String, WorkspaceCatalogDto>.unmodifiable(
-          <String, WorkspaceCatalogDto>{
-            ...current.catalogs,
-            runtime.id: catalog,
-          },
+        catalogs: Map<String, WorkspaceCatalogDto>.unmodifiable(catalogs),
+        refreshingHostIds: Set<String>.unmodifiable(
+          current.refreshingHostIds.difference(<String>{runtime.id}),
+        ),
+        errors: Map<String, Object>.unmodifiable(errors),
+      ),
+    );
+  }
+
+  /// Retries one failed or stale host without hiding its last usable catalog.
+  Future<void> retryHost(String hostId) async {
+    final current = state.requireValue;
+    final runtime = current.hosts[hostId];
+    if (runtime == null || !runtime.connected) return;
+    state = AsyncData<UnifiedWorkspaceCatalogState>(
+      UnifiedWorkspaceCatalogState(
+        hosts: current.hosts,
+        catalogs: current.catalogs,
+        refreshingHostIds: Set<String>.unmodifiable(<String>{
+          ...current.refreshingHostIds,
+          if (current.catalogs.containsKey(hostId)) hostId,
+        }),
+        errors: Map<String, Object>.unmodifiable(
+          <String, Object>{...current.errors}..remove(hostId),
         ),
       ),
     );
+    await _loadHost(runtime);
   }
 
   /// Registers a folder on the selected daemon and refreshes its catalog.
@@ -161,16 +203,55 @@ class WorkspaceCatalogController extends _$WorkspaceCatalogController {
   /// Refreshes one daemon catalog without affecting other hosts.
   Future<void> refreshHost(String hostId) async {
     final api = await requireHostApi(ref, hostId);
-    final catalog = await api.workspaces.getWorkspaceCatalog();
     final current = state.requireValue;
     state = AsyncData<UnifiedWorkspaceCatalogState>(
       UnifiedWorkspaceCatalogState(
         hosts: current.hosts,
+        catalogs: current.catalogs,
+        refreshingHostIds: Set<String>.unmodifiable(<String>{
+          ...current.refreshingHostIds,
+          if (current.catalogs.containsKey(hostId)) hostId,
+        }),
+        errors: Map<String, Object>.unmodifiable(
+          <String, Object>{...current.errors}..remove(hostId),
+        ),
+      ),
+    );
+    WorkspaceCatalogDto catalog;
+    try {
+      catalog = await api.workspaces.getWorkspaceCatalog();
+    } on Object catch (error) {
+      final failed = state.requireValue;
+      state = AsyncData<UnifiedWorkspaceCatalogState>(
+        UnifiedWorkspaceCatalogState(
+          hosts: failed.hosts,
+          catalogs: failed.catalogs,
+          refreshingHostIds: Set<String>.unmodifiable(
+            failed.refreshingHostIds.difference(<String>{hostId}),
+          ),
+          errors: Map<String, Object>.unmodifiable(<String, Object>{
+            ...failed.errors,
+            hostId: error,
+          }),
+        ),
+      );
+      rethrow;
+    }
+    final loaded = state.requireValue;
+    state = AsyncData<UnifiedWorkspaceCatalogState>(
+      UnifiedWorkspaceCatalogState(
+        hosts: loaded.hosts,
         catalogs: Map<String, WorkspaceCatalogDto>.unmodifiable(
           <String, WorkspaceCatalogDto>{
-            ...current.catalogs,
+            ...loaded.catalogs,
             hostId: catalog,
           },
+        ),
+        refreshingHostIds: Set<String>.unmodifiable(
+          loaded.refreshingHostIds.difference(<String>{hostId}),
+        ),
+        errors: Map<String, Object>.unmodifiable(
+          <String, Object>{...loaded.errors}..remove(hostId),
         ),
       ),
     );

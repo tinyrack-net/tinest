@@ -298,6 +298,27 @@ class AppLocalizationsKo extends AppLocalizations {
   String get workspaceCatalogLoading => '워크스페이스 목록 불러오는 중';
 
   @override
+  String get workspaceTargetsLoading => '워크스페이스 대상 불러오는 중';
+
+  @override
+  String get workspaceCatalogRefreshing => '워크스페이스 목록 새로고침 중…';
+
+  @override
+  String get workspaceCatalogFailed => '워크스페이스 목록을 불러오지 못했습니다';
+
+  @override
+  String get workspaceBranchesLoading => 'branch 불러오는 중';
+
+  @override
+  String get workspaceBranchesFailed => 'branch를 불러오지 못했습니다';
+
+  @override
+  String get workspaceRegisteringProject => 'Project 추가 중…';
+
+  @override
+  String get workspaceArchiveChecking => '워크트리 확인 중…';
+
+  @override
   String get workspaceCreatingWorktree => '워크트리 생성 중…';
 
   @override

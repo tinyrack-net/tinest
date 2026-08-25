@@ -298,6 +298,27 @@ class AppLocalizationsEn extends AppLocalizations {
   String get workspaceCatalogLoading => 'Loading workspaces';
 
   @override
+  String get workspaceTargetsLoading => 'Loading workspace targets';
+
+  @override
+  String get workspaceCatalogRefreshing => 'Refreshing workspaces…';
+
+  @override
+  String get workspaceCatalogFailed => 'Could not load workspaces';
+
+  @override
+  String get workspaceBranchesLoading => 'Loading branches';
+
+  @override
+  String get workspaceBranchesFailed => 'Could not load branches';
+
+  @override
+  String get workspaceRegisteringProject => 'Adding project…';
+
+  @override
+  String get workspaceArchiveChecking => 'Checking worktree…';
+
+  @override
   String get workspaceCreatingWorktree => 'Creating worktree…';
 
   @override
