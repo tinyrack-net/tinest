@@ -64,7 +64,7 @@ class TinestStatusIcon extends StatelessWidget {
       ),
       TinestStatus.blocked => Icon(
         TinestIcons.approvalPending,
-        color: colors.warning,
+        color: colors.warningForeground,
         semanticLabel: l10n.statusBlocked,
       ),
       TinestStatus.paused => Icon(
@@ -79,7 +79,7 @@ class TinestStatusIcon extends StatelessWidget {
       ),
       TinestStatus.failed => Icon(
         TinestIcons.error,
-        color: colors.danger,
+        color: colors.dangerForeground,
         semanticLabel: l10n.statusFailed,
       ),
     };

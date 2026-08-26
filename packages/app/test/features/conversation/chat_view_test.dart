@@ -1127,6 +1127,11 @@ void main() {
   testWidgets(
     'a settled response offers a copy action carrying its raw Markdown',
     (tester) async {
+      tester.binding.platformDispatcher.platformBrightnessTestValue =
+          Brightness.dark;
+      addTearDown(
+        tester.binding.platformDispatcher.clearPlatformBrightnessTestValue,
+      );
       tester.view
         ..physicalSize = const Size(390, 844)
         ..devicePixelRatio = 1;
@@ -1166,6 +1171,10 @@ void main() {
       final markdownStyle = chatMarkdownStyleSheet(markdownContext);
       expect(markdownStyle.p?.fontSize, 18);
       expect(markdownStyle.code?.fontSize, 16);
+      expect(
+        markdownStyle.a?.color,
+        markdownContext.tinyrackTheme.primaryForeground,
+      );
       expect(
         tester.getSize(copy).height,
         TRControlMetrics.heightOf(TRUiSize.xl),

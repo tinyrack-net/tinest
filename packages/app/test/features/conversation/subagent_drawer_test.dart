@@ -717,6 +717,11 @@ void main() {
   testWidgets('a session tab flags a descendant waiting on the user', (
     tester,
   ) async {
+    tester.binding.platformDispatcher.platformBrightnessTestValue =
+        Brightness.dark;
+    addTearDown(
+      tester.binding.platformDispatcher.clearPlatformBrightnessTestValue,
+    );
     await tester.binding.setSurfaceSize(const Size(1280, 800));
     addTearDown(() => tester.binding.setSurfaceSize(null));
     final child = subagent(
@@ -752,6 +757,12 @@ void main() {
     );
     await tester.pump(const Duration(seconds: 1));
     expect(tabFlag, findsOneWidget);
+    final colors = TinyrackTheme.dark().extension<TinyrackThemeData>()!;
+    expect(
+      tester.widget<Icon>(tabFlag).color,
+      colors.warningForeground,
+      reason: 'An unfilled tab indicator uses the warning foreground role.',
+    );
   });
 
   testWidgets('a session without subagents shows no track', (tester) async {

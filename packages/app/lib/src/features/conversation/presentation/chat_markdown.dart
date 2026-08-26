@@ -57,15 +57,15 @@ MarkdownStyleSheet chatMarkdownStyleSheet(BuildContext context) {
   // its API requires; this adapter owns no independent visual decisions.
   final legacyTheme = legacy_material.ThemeData(
     brightness: brightness,
-    primaryColor: colors.primary,
+    primaryColor: colors.primaryForeground,
     cardColor: colors.surfaceMuted,
     dividerColor: colors.border,
     colorScheme:
         legacy_material.ColorScheme.fromSeed(
-          seedColor: colors.primary,
+          seedColor: colors.primaryForeground,
           brightness: brightness,
         ).copyWith(
-          primary: colors.primary,
+          primary: colors.primaryForeground,
           surfaceContainerHighest: colors.surfaceMuted,
         ),
     textTheme: legacy_material.TextTheme(
@@ -99,7 +99,7 @@ MarkdownStyleSheet chatMarkdownStyleSheet(BuildContext context) {
       borderRadius: const BorderRadius.all(TRRadii.medium),
     ),
     a: TRTypography.resolve(context, TRTextVariant.body).copyWith(
-      color: colors.primary,
+      color: colors.primaryForeground,
       decoration: TextDecoration.underline,
     ),
     blockSpacing: TRSpacing.small,

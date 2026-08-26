@@ -304,8 +304,8 @@ class _StatusDot extends StatelessWidget {
       );
     }
     final color = switch (server.status) {
-      McpServerStatus.ready => colors.primary,
-      McpServerStatus.failed => colors.danger,
+      McpServerStatus.ready => colors.primaryForeground,
+      McpServerStatus.failed => colors.dangerForeground,
       McpServerStatus.disabled ||
       McpServerStatus.connecting => colors.textMuted,
     };

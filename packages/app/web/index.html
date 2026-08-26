@@ -52,8 +52,8 @@
       opacity: 0;
     }
 
-    /* Matches --tinyrack-brand-mark-sm, which the Dart splash also uses. The
-       two must agree or the mark jumps when the overlay hands over. */
+    /* The web overlay and Dart splash both render a 64px mark. Keep these
+       dimensions aligned so the mark does not jump during the handoff. */
     #boot-splash img {
       width: 64px;
       height: 64px;

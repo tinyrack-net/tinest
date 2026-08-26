@@ -106,11 +106,11 @@ final class _TinestTerminalViewState extends State<TinestTerminalView> {
     final palette = List<Color>.of(TerminalThemes.defaultTheme.palette)
       ..setAll(0, <Color>[
         colors.surface,
-        colors.danger,
-        colors.success,
-        colors.warning,
-        colors.info,
-        colors.primary,
+        colors.dangerForeground,
+        colors.successForeground,
+        colors.warningForeground,
+        colors.infoForeground,
+        colors.primaryForeground,
         colors.infoBorder,
         colors.text,
         colors.textMuted,
@@ -118,8 +118,8 @@ final class _TinestTerminalViewState extends State<TinestTerminalView> {
         colors.successBorder,
         colors.warningBorder,
         colors.infoBorder,
-        colors.primary,
-        colors.info,
+        colors.primaryForeground,
+        colors.infoForeground,
         colors.text,
       ]);
     final codeStyle = TRTypography.resolve(context, TRTextVariant.code);
