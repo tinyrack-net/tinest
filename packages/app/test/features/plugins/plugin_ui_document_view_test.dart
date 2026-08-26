@@ -313,6 +313,12 @@ void main() {
                   'description': '/root/reviewer/linter',
                   'status': 'blocked',
                 },
+                <String, dynamic>{
+                  'type': 'tree_item',
+                  'label': 'builder',
+                  'description': '/root/reviewer/builder',
+                  'status': 'failed',
+                },
               ],
             },
           ],
@@ -321,6 +327,7 @@ void main() {
 
       await tester.pumpWidget(
         const _TestApp(
+          themeMode: ThemeMode.dark,
           child: PluginUiDocumentView(
             document: document,
             invalidDocumentLabel: 'Unsupported plugin interface',
@@ -332,6 +339,7 @@ void main() {
 
       expect(find.text('reviewer'), findsOneWidget);
       expect(find.text('linter'), findsOneWidget);
+      expect(find.text('builder'), findsOneWidget);
       expect(find.text('/root/reviewer/linter'), findsOneWidget);
       // A nested item sits further in than its parent, and the host is what
       // decided by how much.
@@ -344,12 +352,25 @@ void main() {
         tester
             .widgetList<TinestStatusIcon>(find.byType(TinestStatusIcon))
             .map((icon) => icon.status),
-        <TinestStatus>[TinestStatus.running, TinestStatus.blocked],
+        <TinestStatus>[
+          TinestStatus.running,
+          TinestStatus.blocked,
+          TinestStatus.failed,
+        ],
       );
       expect(find.byType(TRSpinner), findsOneWidget);
       expect(
-        tester.widget<Icon>(find.byType(Icon)).semanticLabel,
-        testL10n.statusBlocked,
+        tester
+            .widgetList<Icon>(find.byType(Icon))
+            .map((icon) => icon.semanticLabel),
+        <String?>[testL10n.statusBlocked, testL10n.statusFailed],
+      );
+      expect(
+        tester.widgetList<Icon>(find.byType(Icon)).map((icon) => icon.color),
+        <Color?>[
+          testDarkTheme.extension<TinyrackThemeData>()!.warningForeground,
+          testDarkTheme.extension<TinyrackThemeData>()!.dangerForeground,
+        ],
       );
     },
     tags: const <String>['feature_test__plugin_ui__widget'],

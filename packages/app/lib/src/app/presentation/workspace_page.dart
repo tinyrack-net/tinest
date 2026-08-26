@@ -785,7 +785,7 @@ class _SessionAreaState extends ConsumerState<_SessionArea> {
             ? Icon(
                 TinestIcons.approvalPending,
                 key: ValueKey<String>('session-tab-approval-$sessionId'),
-                color: context.tinyrackTheme.warning,
+                color: context.tinyrackTheme.warningForeground,
                 semanticLabel: AppLocalizations.of(
                   context,
                 ).subagentTabAwaitingApproval,

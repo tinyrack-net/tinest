@@ -51,7 +51,11 @@ void main() {
     ],
   );
 
-  Future<GoRouter> pump(WidgetTester tester, FakeTinestApi api) async {
+  Future<GoRouter> pump(
+    WidgetTester tester,
+    FakeTinestApi api, {
+    ThemeMode? themeMode,
+  }) async {
     await tester.binding.setSurfaceSize(const Size(1200, 900));
     addTearDown(() => tester.binding.setSurfaceSize(null));
     final router = GoRouter(
@@ -67,6 +71,7 @@ void main() {
         child: MaterialApp.router(
           theme: testLightTheme,
           darkTheme: testDarkTheme,
+          themeMode: themeMode,
           locale: testLocale,
           localizationsDelegates: testLocalizationsDelegates,
           supportedLocales: testSupportedLocales,
@@ -175,11 +180,18 @@ void main() {
 
   testWidgets('a ready server shows its status and tools', (tester) async {
     final api = FakeTinestApi()..mcpServers['github'] = ready(stdioServer);
-    await pump(tester, api);
+    await pump(tester, api, themeMode: ThemeMode.dark);
 
     expect(
       find.byKey(const ValueKey<String>('mcp-server-tile-github')),
       findsOneWidget,
+    );
+    final status = find.byKey(
+      const ValueKey<String>('mcp-server-status-github'),
+    );
+    expect(
+      tester.widget<Icon>(status).color,
+      testDarkTheme.extension<TinyrackThemeData>()!.primaryForeground,
     );
     expect(find.byType(TRTreeNav<String>), findsOneWidget);
     await tester.tap(
@@ -300,7 +312,14 @@ void main() {
         error: 'the server exited with code 127',
         diagnostics: <String>['npx: command not found'],
       );
-    await pump(tester, api);
+    await pump(tester, api, themeMode: ThemeMode.dark);
+    final status = find.byKey(
+      const ValueKey<String>('mcp-server-status-github'),
+    );
+    expect(
+      tester.widget<Icon>(status).color,
+      testDarkTheme.extension<TinyrackThemeData>()!.dangerForeground,
+    );
     await tester.tap(
       find.byKey(const ValueKey<String>('mcp-server-tile-github')),
     );
