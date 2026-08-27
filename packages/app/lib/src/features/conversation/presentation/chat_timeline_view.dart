@@ -355,6 +355,8 @@ class _ChatTimelineViewState extends State<ChatTimelineView> {
       onVisibleRangeChanged: _onVisibleRangeChanged,
       leadingEdgeRequest: _olderPageRequest(),
       itemBuilder: (context, entry, index) {
+        final isFirst = entry == entries.first;
+        final isLast = entry == entries.last;
         final content = switch (entry) {
           _ChatTimelineRunningEntry(:final showsIndicator) =>
             showsIndicator
@@ -372,17 +374,12 @@ class _ChatTimelineViewState extends State<ChatTimelineView> {
         };
         return _ChatTimelineContentColumn(
           child: Padding(
-            // tinyrack-check-ignore-next-line tokens/no-literal -- each conditional branch uses only public spacing tokens or EdgeInsets.zero
-            padding:
-                const EdgeInsets.symmetric(
-                  horizontal: TRSpacing.extraLarge,
-                ) +
-                (index == 0
-                    ? const EdgeInsets.only(top: TRSpacing.large)
-                    : EdgeInsets.zero) +
-                (index == entries.length - 1
-                    ? const EdgeInsets.only(bottom: TRSpacing.large)
-                    : const EdgeInsets.only(bottom: TRSpacing.small)),
+            padding: EdgeInsets.fromLTRB(
+              TRSpacing.extraLarge,
+              isFirst ? TRSpacing.large : EdgeInsets.zero.top,
+              TRSpacing.extraLarge,
+              isLast ? TRSpacing.large : TRSpacing.small,
+            ),
             child: KeyedSubtree(
               key: ValueKey<String>(widget.sessionKey),
               child: KeyedSubtree(

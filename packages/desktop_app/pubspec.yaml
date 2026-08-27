@@ -8,7 +8,7 @@ environment:
   sdk: ^3.13.0
 
 dependencies:
-  app: ^0.10.0
+  app: ^0.10.0+13
   daemon: ^0.1.0
   flutter:
     sdk: flutter
@@ -19,37 +19,37 @@ dev_dependencies:
   cliweave:
     git:
       url: https://github.com/tinyrack-net/dart-packages.git
-      ref: acd0bdf348e8a8a1886c66e65207fcd3087f7037
+      ref: 866a29af27a9f3e077b1dd905f2f79d7ca2c2769
       path: packages/cliweave
   dropwell:
     git:
       url: https://github.com/tinyrack-net/flutter-packages.git
-      ref: c21627dcd525f899223ac584a931c72ddf6f2b12
+      ref: a2d673366e486ea61577b0ed520dcb1633b56815
       path: packages/dropwell
   flutter_launcher_icons: ^0.14.4
-  flutter_riverpod: 3.3.2
+  flutter_riverpod: ^3.4.2
   flutter_secure_storage: ^10.3.1
   flutter_test:
     sdk: flutter
   integration_test:
     sdk: flutter
-  material_ui: ^1.0.0
+  material_ui: ^1.1.0
   path: ^1.9.1
   protocol: ^0.1.0
   relay: ^0.6.0
   relay_protocol: ^0.1.0
-  shared_preferences: ^2.5.4
+  shared_preferences: ^2.5.5
   shelf: ^1.4.2
   termworld:
     git:
       url: https://github.com/tinyrack-net/flutter-packages.git
       ref: a2d673366e486ea61577b0ed520dcb1633b56815
       path: packages/termworld
-  test: ^1.31.0
+  test: ^1.31.1
   tinyrack_ui:
     git:
       url: https://github.com/tinyrack-net/design.git
-      ref: ffe24ffe002055a34daa5e675bca732cb67db8bb
+      ref: a8aa3025bac09734474e13ed21b24c13bf4fbd95
       path: packages/ui_flutter
 
 flutter:

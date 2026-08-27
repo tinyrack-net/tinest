@@ -19,7 +19,7 @@ permissions:
 
 env:
   FLUTTER_VERSION: 3.47.0
-  TINYRACK_DART_PACKAGES_REF: acd0bdf348e8a8a1886c66e65207fcd3087f7037
+  TINYRACK_DART_PACKAGES_REF: 866a29af27a9f3e077b1dd905f2f79d7ca2c2769
   # wrangler-action defaults to 3.90.0, which predates Workers static assets
   # and rejects an `assets` config for having no script entry-point.
   WRANGLER_VERSION: 4.118.0

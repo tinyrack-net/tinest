@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 // @dart=3.12
@@ -10,6 +10,7 @@ part of 'rpc_models.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 
@@ -67,7 +68,7 @@ class _$HelloParamsDtoCopyWithImpl<$Res>
 /// Create a copy of HelloParamsDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? clientId = null,Object? clientKind = null,Object? protocolMajor = null,Object? capabilities = null,Object? protocolRevision = null,Object? clientVersion = null,}) {
-  return _then(_self.copyWith(
+  return _then(HelloParamsDto(
 clientId: null == clientId ? _self.clientId : clientId // ignore: cast_nullable_to_non_nullable
 as String,clientKind: null == clientKind ? _self.clientKind : clientKind // ignore: cast_nullable_to_non_nullable
 as String,protocolMajor: null == protocolMajor ? _self.protocolMajor : protocolMajor // ignore: cast_nullable_to_non_nullable
@@ -215,7 +216,7 @@ return $default(_that.clientId,_that.clientKind,_that.protocolMajor,_that.capabi
 @JsonSerializable()
 
 class _HelloParamsDto implements HelloParamsDto {
-  const _HelloParamsDto({required this.clientId, required this.clientKind, required this.protocolMajor, required final  Map<String, bool> capabilities, this.protocolRevision = tinestProtocolRevision, this.clientVersion = 'unknown'}): _capabilities = capabilities;
+  const _HelloParamsDto({required this.clientId, required this.clientKind, required this.protocolMajor, required  Map<String, bool> capabilities, this.protocolRevision = tinestProtocolRevision, this.clientVersion = 'unknown'}): _capabilities = capabilities;
   factory _HelloParamsDto.fromJson(Map<String, dynamic> json) => _$HelloParamsDtoFromJson(json);
 
 @override final  String clientId;
@@ -351,7 +352,7 @@ class _$WorkspaceRegisterParamsDtoCopyWithImpl<$Res>
 /// Create a copy of WorkspaceRegisterParamsDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? workspaceId = null,Object? checkoutId = null,Object? rootPath = null,Object? name = null,}) {
-  return _then(_self.copyWith(
+  return _then(WorkspaceRegisterParamsDto(
 workspaceId: null == workspaceId ? _self.workspaceId : workspaceId // ignore: cast_nullable_to_non_nullable
 as String,checkoutId: null == checkoutId ? _self.checkoutId : checkoutId // ignore: cast_nullable_to_non_nullable
 as String,rootPath: null == rootPath ? _self.rootPath : rootPath // ignore: cast_nullable_to_non_nullable
@@ -623,7 +624,7 @@ class _$WorkspaceIdParamsDtoCopyWithImpl<$Res>
 /// Create a copy of WorkspaceIdParamsDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? workspaceId = null,}) {
-  return _then(_self.copyWith(
+  return _then(WorkspaceIdParamsDto(
 workspaceId: null == workspaceId ? _self.workspaceId : workspaceId // ignore: cast_nullable_to_non_nullable
 as String,
   ));
@@ -886,7 +887,7 @@ class _$DirectorySuggestParamsDtoCopyWithImpl<$Res>
 /// Create a copy of DirectorySuggestParamsDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? query = null,Object? limit = null,}) {
-  return _then(_self.copyWith(
+  return _then(DirectorySuggestParamsDto(
 query: null == query ? _self.query : query // ignore: cast_nullable_to_non_nullable
 as String,limit: null == limit ? _self.limit : limit // ignore: cast_nullable_to_non_nullable
 as int,
@@ -1152,7 +1153,7 @@ class _$FileSearchParamsDtoCopyWithImpl<$Res>
 /// Create a copy of FileSearchParamsDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? worktreeId = null,Object? query = null,Object? limit = null,}) {
-  return _then(_self.copyWith(
+  return _then(FileSearchParamsDto(
 worktreeId: null == worktreeId ? _self.worktreeId : worktreeId // ignore: cast_nullable_to_non_nullable
 as String,query: null == query ? _self.query : query // ignore: cast_nullable_to_non_nullable
 as String,limit: null == limit ? _self.limit : limit // ignore: cast_nullable_to_non_nullable
@@ -1421,7 +1422,7 @@ class _$CommandListParamsDtoCopyWithImpl<$Res>
 /// Create a copy of CommandListParamsDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? workspaceId = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(CommandListParamsDto(
 workspaceId: freezed == workspaceId ? _self.workspaceId : workspaceId // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
@@ -1684,7 +1685,7 @@ class _$GitBranchesListParamsDtoCopyWithImpl<$Res>
 /// Create a copy of GitBranchesListParamsDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? workspaceId = null,}) {
-  return _then(_self.copyWith(
+  return _then(GitBranchesListParamsDto(
 workspaceId: null == workspaceId ? _self.workspaceId : workspaceId // ignore: cast_nullable_to_non_nullable
 as String,
   ));
@@ -1947,7 +1948,7 @@ class _$WorktreeCreateParamsDtoCopyWithImpl<$Res>
 /// Create a copy of WorktreeCreateParamsDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? workspaceId = null,Object? mode = null,Object? branchName = null,Object? baseBranch = freezed,Object? branchNaming = null,}) {
-  return _then(_self.copyWith(
+  return _then(WorktreeCreateParamsDto(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,workspaceId: null == workspaceId ? _self.workspaceId : workspaceId // ignore: cast_nullable_to_non_nullable
 as String,mode: null == mode ? _self.mode : mode // ignore: cast_nullable_to_non_nullable
@@ -2225,7 +2226,7 @@ class _$WorktreeIdParamsDtoCopyWithImpl<$Res>
 /// Create a copy of WorktreeIdParamsDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? worktreeId = null,}) {
-  return _then(_self.copyWith(
+  return _then(WorktreeIdParamsDto(
 worktreeId: null == worktreeId ? _self.worktreeId : worktreeId // ignore: cast_nullable_to_non_nullable
 as String,
   ));
@@ -2488,7 +2489,7 @@ class _$WorktreeArchiveParamsDtoCopyWithImpl<$Res>
 /// Create a copy of WorktreeArchiveParamsDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? worktreeId = null,Object? force = null,}) {
-  return _then(_self.copyWith(
+  return _then(WorktreeArchiveParamsDto(
 worktreeId: null == worktreeId ? _self.worktreeId : worktreeId // ignore: cast_nullable_to_non_nullable
 as String,force: null == force ? _self.force : force // ignore: cast_nullable_to_non_nullable
 as bool,
@@ -2754,7 +2755,7 @@ class _$SessionListParamsDtoCopyWithImpl<$Res>
 /// Create a copy of SessionListParamsDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? worktreeId = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(SessionListParamsDto(
 worktreeId: freezed == worktreeId ? _self.worktreeId : worktreeId // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
@@ -3017,7 +3018,7 @@ class _$SessionSubagentListParamsDtoCopyWithImpl<$Res>
 /// Create a copy of SessionSubagentListParamsDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? sessionId = null,}) {
-  return _then(_self.copyWith(
+  return _then(SessionSubagentListParamsDto(
 sessionId: null == sessionId ? _self.sessionId : sessionId // ignore: cast_nullable_to_non_nullable
 as String,
   ));
@@ -3282,7 +3283,7 @@ class _$SessionCreateParamsDtoCopyWithImpl<$Res>
 /// Create a copy of SessionCreateParamsDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? worktreeId = null,Object? title = null,Object? agentDefinitionId = null,Object? model = freezed,Object? modelControls = null,Object? permissionMode = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(SessionCreateParamsDto(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,worktreeId: null == worktreeId ? _self.worktreeId : worktreeId // ignore: cast_nullable_to_non_nullable
 as String,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
@@ -3443,7 +3444,7 @@ return $default(_that.id,_that.worktreeId,_that.title,_that.agentDefinitionId,_t
 @JsonSerializable()
 
 class _SessionCreateParamsDto implements SessionCreateParamsDto {
-  const _SessionCreateParamsDto({required this.id, required this.worktreeId, required this.title, required this.agentDefinitionId, this.model, final  Map<String, ModelControlValueDto> modelControls = const <String, ModelControlValueDto>{}, this.permissionMode}): _modelControls = modelControls;
+  const _SessionCreateParamsDto({required this.id, required this.worktreeId, required this.title, required this.agentDefinitionId, this.model,  Map<String, ModelControlValueDto> modelControls = const <String, ModelControlValueDto>{}, this.permissionMode}): _modelControls = modelControls;
   factory _SessionCreateParamsDto.fromJson(Map<String, dynamic> json) => _$SessionCreateParamsDtoFromJson(json);
 
 @override final  String id;
@@ -3598,7 +3599,7 @@ class _$SessionSettingsPatchDtoCopyWithImpl<$Res>
 /// Create a copy of SessionSettingsPatchDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? hasModel = null,Object? model = freezed,Object? hasModelControls = null,Object? modelControls = null,Object? permissionMode = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(SessionSettingsPatchDto(
 hasModel: null == hasModel ? _self.hasModel : hasModel // ignore: cast_nullable_to_non_nullable
 as bool,model: freezed == model ? _self.model : model // ignore: cast_nullable_to_non_nullable
 as ModelSelectionDto?,hasModelControls: null == hasModelControls ? _self.hasModelControls : hasModelControls // ignore: cast_nullable_to_non_nullable
@@ -3757,7 +3758,7 @@ return $default(_that.hasModel,_that.model,_that.hasModelControls,_that.modelCon
 @JsonSerializable()
 
 class _SessionSettingsPatchDto implements SessionSettingsPatchDto {
-  const _SessionSettingsPatchDto({this.hasModel = false, this.model, this.hasModelControls = false, final  Map<String, ModelControlValueDto> modelControls = const <String, ModelControlValueDto>{}, this.permissionMode}): _modelControls = modelControls;
+  const _SessionSettingsPatchDto({this.hasModel = false, this.model, this.hasModelControls = false,  Map<String, ModelControlValueDto> modelControls = const <String, ModelControlValueDto>{}, this.permissionMode}): _modelControls = modelControls;
   factory _SessionSettingsPatchDto.fromJson(Map<String, dynamic> json) => _$SessionSettingsPatchDtoFromJson(json);
 
 @override@JsonKey() final  bool hasModel;
@@ -3906,7 +3907,7 @@ class _$SessionSettingsUpdateParamsDtoCopyWithImpl<$Res>
 /// Create a copy of SessionSettingsUpdateParamsDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? sessionId = null,Object? patch = null,}) {
-  return _then(_self.copyWith(
+  return _then(SessionSettingsUpdateParamsDto(
 sessionId: null == sessionId ? _self.sessionId : sessionId // ignore: cast_nullable_to_non_nullable
 as String,patch: null == patch ? _self.patch : patch // ignore: cast_nullable_to_non_nullable
 as SessionSettingsPatchDto,
@@ -4190,7 +4191,7 @@ class _$AgentDefinitionIdParamsDtoCopyWithImpl<$Res>
 /// Create a copy of AgentDefinitionIdParamsDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,}) {
-  return _then(_self.copyWith(
+  return _then(AgentDefinitionIdParamsDto(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,
   ));
@@ -4453,7 +4454,7 @@ class _$AgentDefinitionCreateParamsDtoCopyWithImpl<$Res>
 /// Create a copy of AgentDefinitionCreateParamsDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? definition = null,}) {
-  return _then(_self.copyWith(
+  return _then(AgentDefinitionCreateParamsDto(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,definition: null == definition ? _self.definition : definition // ignore: cast_nullable_to_non_nullable
 as AgentDefinitionDto,
@@ -4737,7 +4738,7 @@ class _$AgentDefinitionUpdateParamsDtoCopyWithImpl<$Res>
 /// Create a copy of AgentDefinitionUpdateParamsDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? definition = null,Object? expectedContentHash = null,Object? force = null,}) {
-  return _then(_self.copyWith(
+  return _then(AgentDefinitionUpdateParamsDto(
 definition: null == definition ? _self.definition : definition // ignore: cast_nullable_to_non_nullable
 as AgentDefinitionDto,expectedContentHash: null == expectedContentHash ? _self.expectedContentHash : expectedContentHash // ignore: cast_nullable_to_non_nullable
 as String,force: null == force ? _self.force : force // ignore: cast_nullable_to_non_nullable
@@ -5024,7 +5025,7 @@ class _$AgentDefinitionValidateParamsDtoCopyWithImpl<$Res>
 /// Create a copy of AgentDefinitionValidateParamsDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? markdown = null,}) {
-  return _then(_self.copyWith(
+  return _then(AgentDefinitionValidateParamsDto(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,markdown: null == markdown ? _self.markdown : markdown // ignore: cast_nullable_to_non_nullable
 as String,
@@ -5290,7 +5291,7 @@ class _$PluginIdParamsDtoCopyWithImpl<$Res>
 /// Create a copy of PluginIdParamsDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,}) {
-  return _then(_self.copyWith(
+  return _then(PluginIdParamsDto(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,
   ));
@@ -5553,7 +5554,7 @@ class _$PluginReloadParamsDtoCopyWithImpl<$Res>
 /// Create a copy of PluginReloadParamsDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? agentId = null,}) {
-  return _then(_self.copyWith(
+  return _then(PluginReloadParamsDto(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,agentId: null == agentId ? _self.agentId : agentId // ignore: cast_nullable_to_non_nullable
 as String,
@@ -5819,7 +5820,7 @@ class _$PluginScaffoldParamsDtoCopyWithImpl<$Res>
 /// Create a copy of PluginScaffoldParamsDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,}) {
-  return _then(_self.copyWith(
+  return _then(PluginScaffoldParamsDto(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,
@@ -6085,7 +6086,7 @@ class _$PluginForkParamsDtoCopyWithImpl<$Res>
 /// Create a copy of PluginForkParamsDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? sourceId = null,Object? id = null,Object? name = null,}) {
-  return _then(_self.copyWith(
+  return _then(PluginForkParamsDto(
 sourceId: null == sourceId ? _self.sourceId : sourceId // ignore: cast_nullable_to_non_nullable
 as String,id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
@@ -6354,7 +6355,7 @@ class _$AgentPluginGrantsParamsDtoCopyWithImpl<$Res>
 /// Create a copy of AgentPluginGrantsParamsDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? agentId = null,}) {
-  return _then(_self.copyWith(
+  return _then(AgentPluginGrantsParamsDto(
 agentId: null == agentId ? _self.agentId : agentId // ignore: cast_nullable_to_non_nullable
 as String,
   ));
@@ -6617,7 +6618,7 @@ class _$PluginGrantParamsDtoCopyWithImpl<$Res>
 /// Create a copy of PluginGrantParamsDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? grant = null,}) {
-  return _then(_self.copyWith(
+  return _then(PluginGrantParamsDto(
 grant: null == grant ? _self.grant : grant // ignore: cast_nullable_to_non_nullable
 as AgentPluginGrantDto,
   ));
@@ -6898,7 +6899,7 @@ class _$PluginSecretSetParamsDtoCopyWithImpl<$Res>
 /// Create a copy of PluginSecretSetParamsDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? agentId = null,Object? pluginId = null,Object? name = null,Object? value = null,}) {
-  return _then(_self.copyWith(
+  return _then(PluginSecretSetParamsDto(
 agentId: null == agentId ? _self.agentId : agentId // ignore: cast_nullable_to_non_nullable
 as String,pluginId: null == pluginId ? _self.pluginId : pluginId // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
@@ -7170,7 +7171,7 @@ class _$PluginSecretRemoveParamsDtoCopyWithImpl<$Res>
 /// Create a copy of PluginSecretRemoveParamsDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? agentId = null,Object? pluginId = null,Object? name = null,}) {
-  return _then(_self.copyWith(
+  return _then(PluginSecretRemoveParamsDto(
 agentId: null == agentId ? _self.agentId : agentId // ignore: cast_nullable_to_non_nullable
 as String,pluginId: null == pluginId ? _self.pluginId : pluginId // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
@@ -7439,7 +7440,7 @@ class _$PluginSessionControlParamsDtoCopyWithImpl<$Res>
 /// Create a copy of PluginSessionControlParamsDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? sessionId = null,Object? pluginId = null,Object? contributionId = null,}) {
-  return _then(_self.copyWith(
+  return _then(PluginSessionControlParamsDto(
 sessionId: null == sessionId ? _self.sessionId : sessionId // ignore: cast_nullable_to_non_nullable
 as String,pluginId: null == pluginId ? _self.pluginId : pluginId // ignore: cast_nullable_to_non_nullable
 as String,contributionId: null == contributionId ? _self.contributionId : contributionId // ignore: cast_nullable_to_non_nullable
@@ -7708,7 +7709,7 @@ class _$PluginSessionControlSetParamsDtoCopyWithImpl<$Res>
 /// Create a copy of PluginSessionControlSetParamsDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? sessionId = null,Object? pluginId = null,Object? contributionId = null,Object? value = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(PluginSessionControlSetParamsDto(
 sessionId: null == sessionId ? _self.sessionId : sessionId // ignore: cast_nullable_to_non_nullable
 as String,pluginId: null == pluginId ? _self.pluginId : pluginId // ignore: cast_nullable_to_non_nullable
 as String,contributionId: null == contributionId ? _self.contributionId : contributionId // ignore: cast_nullable_to_non_nullable
@@ -7978,7 +7979,7 @@ class _$PluginUiRenderParamsDtoCopyWithImpl<$Res>
 /// Create a copy of PluginUiRenderParamsDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? agentId = null,Object? pluginId = null,Object? contributionId = null,Object? slot = null,Object? input = freezed,Object? context = null,}) {
-  return _then(_self.copyWith(
+  return _then(PluginUiRenderParamsDto(
 agentId: null == agentId ? _self.agentId : agentId // ignore: cast_nullable_to_non_nullable
 as String,pluginId: null == pluginId ? _self.pluginId : pluginId // ignore: cast_nullable_to_non_nullable
 as String,contributionId: null == contributionId ? _self.contributionId : contributionId // ignore: cast_nullable_to_non_nullable
@@ -8125,7 +8126,7 @@ return $default(_that.agentId,_that.pluginId,_that.contributionId,_that.slot,_th
 @JsonSerializable()
 
 class _PluginUiRenderParamsDto implements PluginUiRenderParamsDto {
-  const _PluginUiRenderParamsDto({required this.agentId, required this.pluginId, required this.contributionId, required this.slot, this.input, final  Map<String, dynamic> context = const <String, dynamic>{}}): _context = context;
+  const _PluginUiRenderParamsDto({required this.agentId, required this.pluginId, required this.contributionId, required this.slot, this.input,  Map<String, dynamic> context = const <String, dynamic>{}}): _context = context;
   factory _PluginUiRenderParamsDto.fromJson(Map<String, dynamic> json) => _$PluginUiRenderParamsDtoFromJson(json);
 
 @override final  String agentId;
@@ -8260,7 +8261,7 @@ class _$PluginUiActionParamsDtoCopyWithImpl<$Res>
 /// Create a copy of PluginUiActionParamsDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? agentId = null,Object? pluginId = null,Object? action = null,}) {
-  return _then(_self.copyWith(
+  return _then(PluginUiActionParamsDto(
 agentId: null == agentId ? _self.agentId : agentId // ignore: cast_nullable_to_non_nullable
 as String,pluginId: null == pluginId ? _self.pluginId : pluginId // ignore: cast_nullable_to_non_nullable
 as String,action: null == action ? _self.action : action // ignore: cast_nullable_to_non_nullable
@@ -8547,7 +8548,7 @@ class _$SkillListParamsDtoCopyWithImpl<$Res>
 /// Create a copy of SkillListParamsDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? view = null,Object? workspaceId = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(SkillListParamsDto(
 view: null == view ? _self.view : view // ignore: cast_nullable_to_non_nullable
 as SkillListView,workspaceId: freezed == workspaceId ? _self.workspaceId : workspaceId // ignore: cast_nullable_to_non_nullable
 as String?,
@@ -8813,7 +8814,7 @@ class _$ProviderConnectApiKeyParamsDtoCopyWithImpl<$Res>
 /// Create a copy of ProviderConnectApiKeyParamsDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? definitionId = null,Object? apiKey = null,Object? connectionId = freezed,Object? modelPrefix = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(ProviderConnectApiKeyParamsDto(
 definitionId: null == definitionId ? _self.definitionId : definitionId // ignore: cast_nullable_to_non_nullable
 as String,apiKey: null == apiKey ? _self.apiKey : apiKey // ignore: cast_nullable_to_non_nullable
 as String,connectionId: freezed == connectionId ? _self.connectionId : connectionId // ignore: cast_nullable_to_non_nullable
@@ -9085,7 +9086,7 @@ class _$ProviderConnectNoneParamsDtoCopyWithImpl<$Res>
 /// Create a copy of ProviderConnectNoneParamsDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? definitionId = null,Object? connectionId = freezed,Object? modelPrefix = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(ProviderConnectNoneParamsDto(
 definitionId: null == definitionId ? _self.definitionId : definitionId // ignore: cast_nullable_to_non_nullable
 as String,connectionId: freezed == connectionId ? _self.connectionId : connectionId // ignore: cast_nullable_to_non_nullable
 as String?,modelPrefix: freezed == modelPrefix ? _self.modelPrefix : modelPrefix // ignore: cast_nullable_to_non_nullable
@@ -9354,7 +9355,7 @@ class _$ProviderConnectionIdParamsDtoCopyWithImpl<$Res>
 /// Create a copy of ProviderConnectionIdParamsDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? connectionId = null,}) {
-  return _then(_self.copyWith(
+  return _then(ProviderConnectionIdParamsDto(
 connectionId: null == connectionId ? _self.connectionId : connectionId // ignore: cast_nullable_to_non_nullable
 as String,
   ));
@@ -9617,7 +9618,7 @@ class _$ProviderModelParamsDtoCopyWithImpl<$Res>
 /// Create a copy of ProviderModelParamsDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? connectionId = null,Object? modelId = null,}) {
-  return _then(_self.copyWith(
+  return _then(ProviderModelParamsDto(
 connectionId: null == connectionId ? _self.connectionId : connectionId // ignore: cast_nullable_to_non_nullable
 as String,modelId: null == modelId ? _self.modelId : modelId // ignore: cast_nullable_to_non_nullable
 as String,
@@ -9883,7 +9884,7 @@ class _$ProviderAuthStartParamsDtoCopyWithImpl<$Res>
 /// Create a copy of ProviderAuthStartParamsDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? definitionId = null,Object? methodId = null,Object? connectionId = freezed,Object? modelPrefix = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(ProviderAuthStartParamsDto(
 definitionId: null == definitionId ? _self.definitionId : definitionId // ignore: cast_nullable_to_non_nullable
 as String,methodId: null == methodId ? _self.methodId : methodId // ignore: cast_nullable_to_non_nullable
 as String,connectionId: freezed == connectionId ? _self.connectionId : connectionId // ignore: cast_nullable_to_non_nullable
@@ -10155,7 +10156,7 @@ class _$ProviderPrefixUpdateParamsDtoCopyWithImpl<$Res>
 /// Create a copy of ProviderPrefixUpdateParamsDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? connectionId = null,Object? modelPrefix = null,}) {
-  return _then(_self.copyWith(
+  return _then(ProviderPrefixUpdateParamsDto(
 connectionId: null == connectionId ? _self.connectionId : connectionId // ignore: cast_nullable_to_non_nullable
 as String,modelPrefix: null == modelPrefix ? _self.modelPrefix : modelPrefix // ignore: cast_nullable_to_non_nullable
 as String,
@@ -10421,7 +10422,7 @@ class _$ProviderAuthAttemptParamsDtoCopyWithImpl<$Res>
 /// Create a copy of ProviderAuthAttemptParamsDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? attemptId = null,}) {
-  return _then(_self.copyWith(
+  return _then(ProviderAuthAttemptParamsDto(
 attemptId: null == attemptId ? _self.attemptId : attemptId // ignore: cast_nullable_to_non_nullable
 as String,
   ));
@@ -10684,7 +10685,7 @@ class _$ProviderCustomCreateParamsDtoCopyWithImpl<$Res>
 /// Create a copy of ProviderCustomCreateParamsDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? config = null,Object? apiKey = freezed,Object? modelPrefix = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(ProviderCustomCreateParamsDto(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,config: null == config ? _self.config : config // ignore: cast_nullable_to_non_nullable
 as CustomProviderConfigDto,apiKey: freezed == apiKey ? _self.apiKey : apiKey // ignore: cast_nullable_to_non_nullable
@@ -10974,7 +10975,7 @@ class _$ProviderCustomUpdateParamsDtoCopyWithImpl<$Res>
 /// Create a copy of ProviderCustomUpdateParamsDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? connectionId = null,Object? config = null,Object? apiKey = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(ProviderCustomUpdateParamsDto(
 connectionId: null == connectionId ? _self.connectionId : connectionId // ignore: cast_nullable_to_non_nullable
 as String,config: null == config ? _self.config : config // ignore: cast_nullable_to_non_nullable
 as CustomProviderConfigDto,apiKey: freezed == apiKey ? _self.apiKey : apiKey // ignore: cast_nullable_to_non_nullable
@@ -11261,7 +11262,7 @@ class _$TurnStartParamsDtoCopyWithImpl<$Res>
 /// Create a copy of TurnStartParamsDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? sessionId = null,Object? turnId = null,Object? prompt = null,Object? attachmentIds = null,}) {
-  return _then(_self.copyWith(
+  return _then(TurnStartParamsDto(
 sessionId: null == sessionId ? _self.sessionId : sessionId // ignore: cast_nullable_to_non_nullable
 as String,turnId: null == turnId ? _self.turnId : turnId // ignore: cast_nullable_to_non_nullable
 as String,prompt: null == prompt ? _self.prompt : prompt // ignore: cast_nullable_to_non_nullable
@@ -11407,7 +11408,7 @@ return $default(_that.sessionId,_that.turnId,_that.prompt,_that.attachmentIds);c
 @JsonSerializable()
 
 class _TurnStartParamsDto implements TurnStartParamsDto {
-  const _TurnStartParamsDto({required this.sessionId, required this.turnId, required this.prompt, final  List<String> attachmentIds = const <String>[]}): _attachmentIds = attachmentIds;
+  const _TurnStartParamsDto({required this.sessionId, required this.turnId, required this.prompt,  List<String> attachmentIds = const <String>[]}): _attachmentIds = attachmentIds;
   factory _TurnStartParamsDto.fromJson(Map<String, dynamic> json) => _$TurnStartParamsDtoFromJson(json);
 
 @override final  String sessionId;
@@ -11539,7 +11540,7 @@ class _$SessionIdParamsDtoCopyWithImpl<$Res>
 /// Create a copy of SessionIdParamsDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? sessionId = null,}) {
-  return _then(_self.copyWith(
+  return _then(SessionIdParamsDto(
 sessionId: null == sessionId ? _self.sessionId : sessionId // ignore: cast_nullable_to_non_nullable
 as String,
   ));
@@ -11802,7 +11803,7 @@ class _$ApprovalResolveParamsDtoCopyWithImpl<$Res>
 /// Create a copy of ApprovalResolveParamsDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? approvalId = null,Object? approved = null,}) {
-  return _then(_self.copyWith(
+  return _then(ApprovalResolveParamsDto(
 approvalId: null == approvalId ? _self.approvalId : approvalId // ignore: cast_nullable_to_non_nullable
 as String,approved: null == approved ? _self.approved : approved // ignore: cast_nullable_to_non_nullable
 as bool,
@@ -12068,7 +12069,7 @@ class _$SessionPendingInputParamsDtoCopyWithImpl<$Res>
 /// Create a copy of SessionPendingInputParamsDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? sessionId = null,}) {
-  return _then(_self.copyWith(
+  return _then(SessionPendingInputParamsDto(
 sessionId: null == sessionId ? _self.sessionId : sessionId // ignore: cast_nullable_to_non_nullable
 as String,
   ));
@@ -12331,7 +12332,7 @@ class _$UserQuestionAnswerParamsDtoCopyWithImpl<$Res>
 /// Create a copy of UserQuestionAnswerParamsDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? requestId = null,Object? answers = null,}) {
-  return _then(_self.copyWith(
+  return _then(UserQuestionAnswerParamsDto(
 requestId: null == requestId ? _self.requestId : requestId // ignore: cast_nullable_to_non_nullable
 as String,answers: null == answers ? _self.answers : answers // ignore: cast_nullable_to_non_nullable
 as List<UserQuestionAnswerDto>,
@@ -12475,7 +12476,7 @@ return $default(_that.requestId,_that.answers);case _:
 @JsonSerializable()
 
 class _UserQuestionAnswerParamsDto implements UserQuestionAnswerParamsDto {
-  const _UserQuestionAnswerParamsDto({required this.requestId, required final  List<UserQuestionAnswerDto> answers}): _answers = answers;
+  const _UserQuestionAnswerParamsDto({required this.requestId, required  List<UserQuestionAnswerDto> answers}): _answers = answers;
   factory _UserQuestionAnswerParamsDto.fromJson(Map<String, dynamic> json) => _$UserQuestionAnswerParamsDtoFromJson(json);
 
 @override final  String requestId;
@@ -12603,7 +12604,7 @@ class _$TimelineSubscribeParamsDtoCopyWithImpl<$Res>
 /// Create a copy of TimelineSubscribeParamsDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? sessionId = null,Object? afterSequence = null,Object? tailLimit = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(TimelineSubscribeParamsDto(
 sessionId: null == sessionId ? _self.sessionId : sessionId // ignore: cast_nullable_to_non_nullable
 as String,afterSequence: null == afterSequence ? _self.afterSequence : afterSequence // ignore: cast_nullable_to_non_nullable
 as int,tailLimit: freezed == tailLimit ? _self.tailLimit : tailLimit // ignore: cast_nullable_to_non_nullable
@@ -12872,7 +12873,7 @@ class _$TimelineHistoryParamsDtoCopyWithImpl<$Res>
 /// Create a copy of TimelineHistoryParamsDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? sessionId = null,Object? beforeSequence = null,Object? limit = null,}) {
-  return _then(_self.copyWith(
+  return _then(TimelineHistoryParamsDto(
 sessionId: null == sessionId ? _self.sessionId : sessionId // ignore: cast_nullable_to_non_nullable
 as String,beforeSequence: null == beforeSequence ? _self.beforeSequence : beforeSequence // ignore: cast_nullable_to_non_nullable
 as int,limit: null == limit ? _self.limit : limit // ignore: cast_nullable_to_non_nullable
@@ -13141,7 +13142,7 @@ class _$WorkspaceCatalogResultDtoCopyWithImpl<$Res>
 /// Create a copy of WorkspaceCatalogResultDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? catalog = null,}) {
-  return _then(_self.copyWith(
+  return _then(WorkspaceCatalogResultDto(
 catalog: null == catalog ? _self.catalog : catalog // ignore: cast_nullable_to_non_nullable
 as WorkspaceCatalogDto,
   ));
@@ -13422,7 +13423,7 @@ class _$WorkspaceRegisterResultDtoCopyWithImpl<$Res>
 /// Create a copy of WorkspaceRegisterResultDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? workspace = null,Object? worktrees = null,}) {
-  return _then(_self.copyWith(
+  return _then(WorkspaceRegisterResultDto(
 workspace: null == workspace ? _self.workspace : workspace // ignore: cast_nullable_to_non_nullable
 as WorkspaceDto,worktrees: null == worktrees ? _self.worktrees : worktrees // ignore: cast_nullable_to_non_nullable
 as List<WorktreeDto>,
@@ -13575,7 +13576,7 @@ return $default(_that.workspace,_that.worktrees);case _:
 @JsonSerializable()
 
 class _WorkspaceRegisterResultDto implements WorkspaceRegisterResultDto {
-  const _WorkspaceRegisterResultDto({required this.workspace, required final  List<WorktreeDto> worktrees}): _worktrees = worktrees;
+  const _WorkspaceRegisterResultDto({required this.workspace, required  List<WorktreeDto> worktrees}): _worktrees = worktrees;
   factory _WorkspaceRegisterResultDto.fromJson(Map<String, dynamic> json) => _$WorkspaceRegisterResultDtoFromJson(json);
 
 @override final  WorkspaceDto workspace;
@@ -13712,7 +13713,7 @@ class _$WorkspaceUnregisterResultDtoCopyWithImpl<$Res>
 /// Create a copy of WorkspaceUnregisterResultDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? unregistered = null,}) {
-  return _then(_self.copyWith(
+  return _then(WorkspaceUnregisterResultDto(
 unregistered: null == unregistered ? _self.unregistered : unregistered // ignore: cast_nullable_to_non_nullable
 as bool,
   ));
@@ -13975,7 +13976,7 @@ class _$DirectorySuggestResultDtoCopyWithImpl<$Res>
 /// Create a copy of DirectorySuggestResultDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? suggestions = null,}) {
-  return _then(_self.copyWith(
+  return _then(DirectorySuggestResultDto(
 suggestions: null == suggestions ? _self.suggestions : suggestions // ignore: cast_nullable_to_non_nullable
 as List<DirectorySuggestionDto>,
   ));
@@ -14118,7 +14119,7 @@ return $default(_that.suggestions);case _:
 @JsonSerializable()
 
 class _DirectorySuggestResultDto implements DirectorySuggestResultDto {
-  const _DirectorySuggestResultDto({required final  List<DirectorySuggestionDto> suggestions}): _suggestions = suggestions;
+  const _DirectorySuggestResultDto({required  List<DirectorySuggestionDto> suggestions}): _suggestions = suggestions;
   factory _DirectorySuggestResultDto.fromJson(Map<String, dynamic> json) => _$DirectorySuggestResultDtoFromJson(json);
 
  final  List<DirectorySuggestionDto> _suggestions;
@@ -14244,7 +14245,7 @@ class _$FileSearchResultDtoCopyWithImpl<$Res>
 /// Create a copy of FileSearchResultDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? matches = null,Object? truncated = null,}) {
-  return _then(_self.copyWith(
+  return _then(FileSearchResultDto(
 matches: null == matches ? _self.matches : matches // ignore: cast_nullable_to_non_nullable
 as List<FileMatchDto>,truncated: null == truncated ? _self.truncated : truncated // ignore: cast_nullable_to_non_nullable
 as bool,
@@ -14388,7 +14389,7 @@ return $default(_that.matches,_that.truncated);case _:
 @JsonSerializable()
 
 class _FileSearchResultDto implements FileSearchResultDto {
-  const _FileSearchResultDto({required final  List<FileMatchDto> matches, this.truncated = false}): _matches = matches;
+  const _FileSearchResultDto({required  List<FileMatchDto> matches, this.truncated = false}): _matches = matches;
   factory _FileSearchResultDto.fromJson(Map<String, dynamic> json) => _$FileSearchResultDtoFromJson(json);
 
  final  List<FileMatchDto> _matches;
@@ -14516,7 +14517,7 @@ class _$GitBranchesListResultDtoCopyWithImpl<$Res>
 /// Create a copy of GitBranchesListResultDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? branches = null,}) {
-  return _then(_self.copyWith(
+  return _then(GitBranchesListResultDto(
 branches: null == branches ? _self.branches : branches // ignore: cast_nullable_to_non_nullable
 as List<GitBranchDto>,
   ));
@@ -14659,7 +14660,7 @@ return $default(_that.branches);case _:
 @JsonSerializable()
 
 class _GitBranchesListResultDto implements GitBranchesListResultDto {
-  const _GitBranchesListResultDto({required final  List<GitBranchDto> branches}): _branches = branches;
+  const _GitBranchesListResultDto({required  List<GitBranchDto> branches}): _branches = branches;
   factory _GitBranchesListResultDto.fromJson(Map<String, dynamic> json) => _$GitBranchesListResultDtoFromJson(json);
 
  final  List<GitBranchDto> _branches;
@@ -14785,7 +14786,7 @@ class _$WorktreeResultDtoCopyWithImpl<$Res>
 /// Create a copy of WorktreeResultDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? worktree = null,Object? hookRuns = null,}) {
-  return _then(_self.copyWith(
+  return _then(WorktreeResultDto(
 worktree: null == worktree ? _self.worktree : worktree // ignore: cast_nullable_to_non_nullable
 as WorktreeDto,hookRuns: null == hookRuns ? _self.hookRuns : hookRuns // ignore: cast_nullable_to_non_nullable
 as List<WorktreeHookRunDto>,
@@ -14938,7 +14939,7 @@ return $default(_that.worktree,_that.hookRuns);case _:
 @JsonSerializable()
 
 class _WorktreeResultDto implements WorktreeResultDto {
-  const _WorktreeResultDto({required this.worktree, final  List<WorktreeHookRunDto> hookRuns = const <WorktreeHookRunDto>[]}): _hookRuns = hookRuns;
+  const _WorktreeResultDto({required this.worktree,  List<WorktreeHookRunDto> hookRuns = const <WorktreeHookRunDto>[]}): _hookRuns = hookRuns;
   factory _WorktreeResultDto.fromJson(Map<String, dynamic> json) => _$WorktreeResultDtoFromJson(json);
 
 @override final  WorktreeDto worktree;
@@ -15075,7 +15076,7 @@ class _$ProjectSettingsGetParamsDtoCopyWithImpl<$Res>
 /// Create a copy of ProjectSettingsGetParamsDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? workspaceId = null,}) {
-  return _then(_self.copyWith(
+  return _then(ProjectSettingsGetParamsDto(
 workspaceId: null == workspaceId ? _self.workspaceId : workspaceId // ignore: cast_nullable_to_non_nullable
 as String,
   ));
@@ -15338,7 +15339,7 @@ class _$ProjectSettingsSaveParamsDtoCopyWithImpl<$Res>
 /// Create a copy of ProjectSettingsSaveParamsDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? workspaceId = null,Object? settings = null,}) {
-  return _then(_self.copyWith(
+  return _then(ProjectSettingsSaveParamsDto(
 workspaceId: null == workspaceId ? _self.workspaceId : workspaceId // ignore: cast_nullable_to_non_nullable
 as String,settings: null == settings ? _self.settings : settings // ignore: cast_nullable_to_non_nullable
 as ProjectSettingsDto,
@@ -15622,7 +15623,7 @@ class _$ProjectSettingsResultDtoCopyWithImpl<$Res>
 /// Create a copy of ProjectSettingsResultDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? settings = null,Object? sourcePath = null,}) {
-  return _then(_self.copyWith(
+  return _then(ProjectSettingsResultDto(
 settings: null == settings ? _self.settings : settings // ignore: cast_nullable_to_non_nullable
 as ProjectSettingsDto,sourcePath: null == sourcePath ? _self.sourcePath : sourcePath // ignore: cast_nullable_to_non_nullable
 as String,
@@ -15906,7 +15907,7 @@ class _$WorktreeArchivePreviewResultDtoCopyWithImpl<$Res>
 /// Create a copy of WorktreeArchivePreviewResultDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? preview = null,}) {
-  return _then(_self.copyWith(
+  return _then(WorktreeArchivePreviewResultDto(
 preview: null == preview ? _self.preview : preview // ignore: cast_nullable_to_non_nullable
 as WorktreeArchivePreviewDto,
   ));
@@ -16187,7 +16188,7 @@ class _$SessionListResultDtoCopyWithImpl<$Res>
 /// Create a copy of SessionListResultDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? sessions = null,}) {
-  return _then(_self.copyWith(
+  return _then(SessionListResultDto(
 sessions: null == sessions ? _self.sessions : sessions // ignore: cast_nullable_to_non_nullable
 as List<SessionDto>,
   ));
@@ -16330,7 +16331,7 @@ return $default(_that.sessions);case _:
 @JsonSerializable()
 
 class _SessionListResultDto implements SessionListResultDto {
-  const _SessionListResultDto({required final  List<SessionDto> sessions}): _sessions = sessions;
+  const _SessionListResultDto({required  List<SessionDto> sessions}): _sessions = sessions;
   factory _SessionListResultDto.fromJson(Map<String, dynamic> json) => _$SessionListResultDtoFromJson(json);
 
  final  List<SessionDto> _sessions;
@@ -16456,7 +16457,7 @@ class _$SessionResultDtoCopyWithImpl<$Res>
 /// Create a copy of SessionResultDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? session = null,}) {
-  return _then(_self.copyWith(
+  return _then(SessionResultDto(
 session: null == session ? _self.session : session // ignore: cast_nullable_to_non_nullable
 as SessionDto,
   ));
@@ -16737,7 +16738,7 @@ class _$TerminalListParamsDtoCopyWithImpl<$Res>
 /// Create a copy of TerminalListParamsDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? worktreeId = null,}) {
-  return _then(_self.copyWith(
+  return _then(TerminalListParamsDto(
 worktreeId: null == worktreeId ? _self.worktreeId : worktreeId // ignore: cast_nullable_to_non_nullable
 as String,
   ));
@@ -17000,7 +17001,7 @@ class _$TerminalListResultDtoCopyWithImpl<$Res>
 /// Create a copy of TerminalListResultDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? terminals = null,}) {
-  return _then(_self.copyWith(
+  return _then(TerminalListResultDto(
 terminals: null == terminals ? _self.terminals : terminals // ignore: cast_nullable_to_non_nullable
 as List<TerminalDto>,
   ));
@@ -17143,7 +17144,7 @@ return $default(_that.terminals);case _:
 @JsonSerializable()
 
 class _TerminalListResultDto implements TerminalListResultDto {
-  const _TerminalListResultDto({required final  List<TerminalDto> terminals}): _terminals = terminals;
+  const _TerminalListResultDto({required  List<TerminalDto> terminals}): _terminals = terminals;
   factory _TerminalListResultDto.fromJson(Map<String, dynamic> json) => _$TerminalListResultDtoFromJson(json);
 
  final  List<TerminalDto> _terminals;
@@ -17269,7 +17270,7 @@ class _$TerminalCreateParamsDtoCopyWithImpl<$Res>
 /// Create a copy of TerminalCreateParamsDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? worktreeId = null,Object? title = null,Object? columns = null,Object? rows = null,}) {
-  return _then(_self.copyWith(
+  return _then(TerminalCreateParamsDto(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,worktreeId: null == worktreeId ? _self.worktreeId : worktreeId // ignore: cast_nullable_to_non_nullable
 as String,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
@@ -17544,7 +17545,7 @@ class _$TerminalIdParamsDtoCopyWithImpl<$Res>
 /// Create a copy of TerminalIdParamsDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? terminalId = null,}) {
-  return _then(_self.copyWith(
+  return _then(TerminalIdParamsDto(
 terminalId: null == terminalId ? _self.terminalId : terminalId // ignore: cast_nullable_to_non_nullable
 as String,
   ));
@@ -17807,7 +17808,7 @@ class _$TerminalViewportDtoCopyWithImpl<$Res>
 /// Create a copy of TerminalViewportDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? columns = null,Object? rows = null,}) {
-  return _then(_self.copyWith(
+  return _then(TerminalViewportDto(
 columns: null == columns ? _self.columns : columns // ignore: cast_nullable_to_non_nullable
 as int,rows: null == rows ? _self.rows : rows // ignore: cast_nullable_to_non_nullable
 as int,
@@ -18078,7 +18079,7 @@ class _$TerminalAttachParamsDtoCopyWithImpl<$Res>
 /// Create a copy of TerminalAttachParamsDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? terminalId = null,Object? mode = null,Object? afterSequence = null,Object? scrollbackLines = null,Object? viewport = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(TerminalAttachParamsDto(
 terminalId: null == terminalId ? _self.terminalId : terminalId // ignore: cast_nullable_to_non_nullable
 as String,mode: null == mode ? _self.mode : mode // ignore: cast_nullable_to_non_nullable
 as TerminalRestoreMode,afterSequence: null == afterSequence ? _self.afterSequence : afterSequence // ignore: cast_nullable_to_non_nullable
@@ -18517,7 +18518,7 @@ return snapshot(_that.throughSequence,_that.ansi);case _:
 @JsonSerializable()
 
 class TerminalDeltaRestoreDto implements TerminalRestoreDto {
-  const TerminalDeltaRestoreDto({required this.afterSequence, required final  List<TerminalOutputDto> chunks, final  String? $type}): _chunks = chunks,$type = $type ?? 'delta';
+  const TerminalDeltaRestoreDto({required this.afterSequence, required  List<TerminalOutputDto> chunks,  String? $type}): _chunks = chunks,$type = $type ?? 'delta';
   factory TerminalDeltaRestoreDto.fromJson(Map<String, dynamic> json) => _$TerminalDeltaRestoreDtoFromJson(json);
 
  final  int afterSequence;
@@ -18598,7 +18599,7 @@ as List<TerminalOutputDto>,
 @JsonSerializable()
 
 class TerminalSnapshotRestoreDto implements TerminalRestoreDto {
-  const TerminalSnapshotRestoreDto({required this.throughSequence, required this.ansi, final  String? $type}): $type = $type ?? 'snapshot';
+  const TerminalSnapshotRestoreDto({required this.throughSequence, required this.ansi,  String? $type}): $type = $type ?? 'snapshot';
   factory TerminalSnapshotRestoreDto.fromJson(Map<String, dynamic> json) => _$TerminalSnapshotRestoreDtoFromJson(json);
 
  final  int throughSequence;
@@ -18724,7 +18725,7 @@ class _$TerminalAttachResultDtoCopyWithImpl<$Res>
 /// Create a copy of TerminalAttachResultDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? terminal = null,Object? restore = null,}) {
-  return _then(_self.copyWith(
+  return _then(TerminalAttachResultDto(
 terminal: null == terminal ? _self.terminal : terminal // ignore: cast_nullable_to_non_nullable
 as TerminalDto,restore: null == restore ? _self.restore : restore // ignore: cast_nullable_to_non_nullable
 as TerminalRestoreDto,
@@ -19026,7 +19027,7 @@ class _$TerminalResultDtoCopyWithImpl<$Res>
 /// Create a copy of TerminalResultDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? terminal = null,}) {
-  return _then(_self.copyWith(
+  return _then(TerminalResultDto(
 terminal: null == terminal ? _self.terminal : terminal // ignore: cast_nullable_to_non_nullable
 as TerminalDto,
   ));
@@ -19307,7 +19308,7 @@ class _$TerminalWriteParamsDtoCopyWithImpl<$Res>
 /// Create a copy of TerminalWriteParamsDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? terminalId = null,Object? data = null,}) {
-  return _then(_self.copyWith(
+  return _then(TerminalWriteParamsDto(
 terminalId: null == terminalId ? _self.terminalId : terminalId // ignore: cast_nullable_to_non_nullable
 as String,data: null == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
 as String,
@@ -19573,7 +19574,7 @@ class _$TerminalResizeParamsDtoCopyWithImpl<$Res>
 /// Create a copy of TerminalResizeParamsDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? terminalId = null,Object? columns = null,Object? rows = null,}) {
-  return _then(_self.copyWith(
+  return _then(TerminalResizeParamsDto(
 terminalId: null == terminalId ? _self.terminalId : terminalId // ignore: cast_nullable_to_non_nullable
 as String,columns: null == columns ? _self.columns : columns // ignore: cast_nullable_to_non_nullable
 as int,rows: null == rows ? _self.rows : rows // ignore: cast_nullable_to_non_nullable
@@ -19842,7 +19843,7 @@ class _$TerminalShellDtoCopyWithImpl<$Res>
 /// Create a copy of TerminalShellDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? shell = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(TerminalShellDto(
 shell: freezed == shell ? _self.shell : shell // ignore: cast_nullable_to_non_nullable
 as ShellSpecDto?,
   ));
@@ -20129,7 +20130,7 @@ class _$PermissionSettingsDtoCopyWithImpl<$Res>
 /// Create a copy of PermissionSettingsDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? defaultMode = null,}) {
-  return _then(_self.copyWith(
+  return _then(PermissionSettingsDto(
 defaultMode: null == defaultMode ? _self.defaultMode : defaultMode // ignore: cast_nullable_to_non_nullable
 as PermissionMode,
   ));
@@ -20392,7 +20393,7 @@ class _$DaemonModelSettingsDtoCopyWithImpl<$Res>
 /// Create a copy of DaemonModelSettingsDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? defaultModel = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(DaemonModelSettingsDto(
 defaultModel: freezed == defaultModel ? _self.defaultModel : defaultModel // ignore: cast_nullable_to_non_nullable
 as ModelSelectionDto?,
   ));
@@ -20679,7 +20680,7 @@ class _$SetDaemonDefaultModelParamsDtoCopyWithImpl<$Res>
 /// Create a copy of SetDaemonDefaultModelParamsDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? model = null,}) {
-  return _then(_self.copyWith(
+  return _then(SetDaemonDefaultModelParamsDto(
 model: null == model ? _self.model : model // ignore: cast_nullable_to_non_nullable
 as ModelSelectionDto,
   ));
@@ -20960,7 +20961,7 @@ class _$AgentDefinitionListResultDtoCopyWithImpl<$Res>
 /// Create a copy of AgentDefinitionListResultDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? definitions = null,}) {
-  return _then(_self.copyWith(
+  return _then(AgentDefinitionListResultDto(
 definitions: null == definitions ? _self.definitions : definitions // ignore: cast_nullable_to_non_nullable
 as List<AgentDefinitionDto>,
   ));
@@ -21103,7 +21104,7 @@ return $default(_that.definitions);case _:
 @JsonSerializable()
 
 class _AgentDefinitionListResultDto implements AgentDefinitionListResultDto {
-  const _AgentDefinitionListResultDto({required final  List<AgentDefinitionDto> definitions}): _definitions = definitions;
+  const _AgentDefinitionListResultDto({required  List<AgentDefinitionDto> definitions}): _definitions = definitions;
   factory _AgentDefinitionListResultDto.fromJson(Map<String, dynamic> json) => _$AgentDefinitionListResultDtoFromJson(json);
 
  final  List<AgentDefinitionDto> _definitions;
@@ -21229,7 +21230,7 @@ class _$AgentDefinitionResultDtoCopyWithImpl<$Res>
 /// Create a copy of AgentDefinitionResultDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? definition = null,}) {
-  return _then(_self.copyWith(
+  return _then(AgentDefinitionResultDto(
 definition: null == definition ? _self.definition : definition // ignore: cast_nullable_to_non_nullable
 as AgentDefinitionDto,
   ));
@@ -21510,7 +21511,7 @@ class _$PluginListResultDtoCopyWithImpl<$Res>
 /// Create a copy of PluginListResultDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? plugins = null,}) {
-  return _then(_self.copyWith(
+  return _then(PluginListResultDto(
 plugins: null == plugins ? _self.plugins : plugins // ignore: cast_nullable_to_non_nullable
 as List<PluginDescriptorDto>,
   ));
@@ -21653,7 +21654,7 @@ return $default(_that.plugins);case _:
 @JsonSerializable()
 
 class _PluginListResultDto implements PluginListResultDto {
-  const _PluginListResultDto({required final  List<PluginDescriptorDto> plugins}): _plugins = plugins;
+  const _PluginListResultDto({required  List<PluginDescriptorDto> plugins}): _plugins = plugins;
   factory _PluginListResultDto.fromJson(Map<String, dynamic> json) => _$PluginListResultDtoFromJson(json);
 
  final  List<PluginDescriptorDto> _plugins;
@@ -21779,7 +21780,7 @@ class _$PluginResultDtoCopyWithImpl<$Res>
 /// Create a copy of PluginResultDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? plugin = null,}) {
-  return _then(_self.copyWith(
+  return _then(PluginResultDto(
 plugin: null == plugin ? _self.plugin : plugin // ignore: cast_nullable_to_non_nullable
 as PluginDescriptorDto,
   ));
@@ -22060,7 +22061,7 @@ class _$PluginAuthoringEnvironmentResultDtoCopyWithImpl<$Res>
 /// Create a copy of PluginAuthoringEnvironmentResultDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? environment = null,}) {
-  return _then(_self.copyWith(
+  return _then(PluginAuthoringEnvironmentResultDto(
 environment: null == environment ? _self.environment : environment // ignore: cast_nullable_to_non_nullable
 as PluginAuthoringEnvironmentDto,
   ));
@@ -22341,7 +22342,7 @@ class _$PluginGrantListResultDtoCopyWithImpl<$Res>
 /// Create a copy of PluginGrantListResultDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? grants = null,}) {
-  return _then(_self.copyWith(
+  return _then(PluginGrantListResultDto(
 grants: null == grants ? _self.grants : grants // ignore: cast_nullable_to_non_nullable
 as List<AgentPluginGrantDto>,
   ));
@@ -22484,7 +22485,7 @@ return $default(_that.grants);case _:
 @JsonSerializable()
 
 class _PluginGrantListResultDto implements PluginGrantListResultDto {
-  const _PluginGrantListResultDto({required final  List<AgentPluginGrantDto> grants}): _grants = grants;
+  const _PluginGrantListResultDto({required  List<AgentPluginGrantDto> grants}): _grants = grants;
   factory _PluginGrantListResultDto.fromJson(Map<String, dynamic> json) => _$PluginGrantListResultDtoFromJson(json);
 
  final  List<AgentPluginGrantDto> _grants;
@@ -22610,7 +22611,7 @@ class _$PluginSessionControlResultDtoCopyWithImpl<$Res>
 /// Create a copy of PluginSessionControlResultDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? control = null,}) {
-  return _then(_self.copyWith(
+  return _then(PluginSessionControlResultDto(
 control: null == control ? _self.control : control // ignore: cast_nullable_to_non_nullable
 as PluginSessionControlValueDto,
   ));
@@ -22891,7 +22892,7 @@ class _$PluginUiDocumentResultDtoCopyWithImpl<$Res>
 /// Create a copy of PluginUiDocumentResultDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? document = null,}) {
-  return _then(_self.copyWith(
+  return _then(PluginUiDocumentResultDto(
 document: null == document ? _self.document : document // ignore: cast_nullable_to_non_nullable
 as PluginUiDocumentDto,
   ));
@@ -23172,7 +23173,7 @@ class _$AgentToolCatalogParamsDtoCopyWithImpl<$Res>
 /// Create a copy of AgentToolCatalogParamsDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? worktreeId = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(AgentToolCatalogParamsDto(
 worktreeId: freezed == worktreeId ? _self.worktreeId : worktreeId // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
@@ -23435,7 +23436,7 @@ class _$McpServersParamsDtoCopyWithImpl<$Res>
 /// Create a copy of McpServersParamsDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? worktreeId = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(McpServersParamsDto(
 worktreeId: freezed == worktreeId ? _self.worktreeId : worktreeId // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
@@ -23698,7 +23699,7 @@ class _$McpServersResultDtoCopyWithImpl<$Res>
 /// Create a copy of McpServersResultDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? servers = null,}) {
-  return _then(_self.copyWith(
+  return _then(McpServersResultDto(
 servers: null == servers ? _self.servers : servers // ignore: cast_nullable_to_non_nullable
 as List<McpServerStateDto>,
   ));
@@ -23841,7 +23842,7 @@ return $default(_that.servers);case _:
 @JsonSerializable()
 
 class _McpServersResultDto implements McpServersResultDto {
-  const _McpServersResultDto({required final  List<McpServerStateDto> servers}): _servers = servers;
+  const _McpServersResultDto({required  List<McpServerStateDto> servers}): _servers = servers;
   factory _McpServersResultDto.fromJson(Map<String, dynamic> json) => _$McpServersResultDtoFromJson(json);
 
  final  List<McpServerStateDto> _servers;
@@ -23967,7 +23968,7 @@ class _$McpServerParamsDtoCopyWithImpl<$Res>
 /// Create a copy of McpServerParamsDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? server = null,}) {
-  return _then(_self.copyWith(
+  return _then(McpServerParamsDto(
 server: null == server ? _self.server : server // ignore: cast_nullable_to_non_nullable
 as McpServerConfigDto,
   ));
@@ -24248,7 +24249,7 @@ class _$McpServerIdParamsDtoCopyWithImpl<$Res>
 /// Create a copy of McpServerIdParamsDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,}) {
-  return _then(_self.copyWith(
+  return _then(McpServerIdParamsDto(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,
   ));
@@ -24511,7 +24512,7 @@ class _$McpServerStateResultDtoCopyWithImpl<$Res>
 /// Create a copy of McpServerStateResultDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? state = null,}) {
-  return _then(_self.copyWith(
+  return _then(McpServerStateResultDto(
 state: null == state ? _self.state : state // ignore: cast_nullable_to_non_nullable
 as McpServerStateDto,
   ));
@@ -24792,7 +24793,7 @@ class _$McpSecretParamsDtoCopyWithImpl<$Res>
 /// Create a copy of McpSecretParamsDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? key = null,Object? value = null,}) {
-  return _then(_self.copyWith(
+  return _then(McpSecretParamsDto(
 key: null == key ? _self.key : key // ignore: cast_nullable_to_non_nullable
 as String,value: null == value ? _self.value : value // ignore: cast_nullable_to_non_nullable
 as String,
@@ -25058,7 +25059,7 @@ class _$AgentToolCatalogResultDtoCopyWithImpl<$Res>
 /// Create a copy of AgentToolCatalogResultDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? tools = null,}) {
-  return _then(_self.copyWith(
+  return _then(AgentToolCatalogResultDto(
 tools: null == tools ? _self.tools : tools // ignore: cast_nullable_to_non_nullable
 as List<AgentToolDefinitionDto>,
   ));
@@ -25201,7 +25202,7 @@ return $default(_that.tools);case _:
 @JsonSerializable()
 
 class _AgentToolCatalogResultDto implements AgentToolCatalogResultDto {
-  const _AgentToolCatalogResultDto({required final  List<AgentToolDefinitionDto> tools}): _tools = tools;
+  const _AgentToolCatalogResultDto({required  List<AgentToolDefinitionDto> tools}): _tools = tools;
   factory _AgentToolCatalogResultDto.fromJson(Map<String, dynamic> json) => _$AgentToolCatalogResultDtoFromJson(json);
 
  final  List<AgentToolDefinitionDto> _tools;
@@ -25327,7 +25328,7 @@ class _$SkillListResultDtoCopyWithImpl<$Res>
 /// Create a copy of SkillListResultDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? skills = null,}) {
-  return _then(_self.copyWith(
+  return _then(SkillListResultDto(
 skills: null == skills ? _self.skills : skills // ignore: cast_nullable_to_non_nullable
 as List<SkillSummaryDto>,
   ));
@@ -25470,7 +25471,7 @@ return $default(_that.skills);case _:
 @JsonSerializable()
 
 class _SkillListResultDto implements SkillListResultDto {
-  const _SkillListResultDto({required final  List<SkillSummaryDto> skills}): _skills = skills;
+  const _SkillListResultDto({required  List<SkillSummaryDto> skills}): _skills = skills;
   factory _SkillListResultDto.fromJson(Map<String, dynamic> json) => _$SkillListResultDtoFromJson(json);
 
  final  List<SkillSummaryDto> _skills;
@@ -25596,7 +25597,7 @@ class _$CommandListResultDtoCopyWithImpl<$Res>
 /// Create a copy of CommandListResultDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? commands = null,}) {
-  return _then(_self.copyWith(
+  return _then(CommandListResultDto(
 commands: null == commands ? _self.commands : commands // ignore: cast_nullable_to_non_nullable
 as List<AgentCommandDto>,
   ));
@@ -25739,7 +25740,7 @@ return $default(_that.commands);case _:
 @JsonSerializable()
 
 class _CommandListResultDto implements CommandListResultDto {
-  const _CommandListResultDto({required final  List<AgentCommandDto> commands}): _commands = commands;
+  const _CommandListResultDto({required  List<AgentCommandDto> commands}): _commands = commands;
   factory _CommandListResultDto.fromJson(Map<String, dynamic> json) => _$CommandListResultDtoFromJson(json);
 
  final  List<AgentCommandDto> _commands;
@@ -25865,7 +25866,7 @@ class _$ProviderCatalogResultDtoCopyWithImpl<$Res>
 /// Create a copy of ProviderCatalogResultDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? catalog = null,}) {
-  return _then(_self.copyWith(
+  return _then(ProviderCatalogResultDto(
 catalog: null == catalog ? _self.catalog : catalog // ignore: cast_nullable_to_non_nullable
 as ProviderCatalogDto,
   ));
@@ -26146,7 +26147,7 @@ class _$ProviderConnectionsResultDtoCopyWithImpl<$Res>
 /// Create a copy of ProviderConnectionsResultDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? connections = null,}) {
-  return _then(_self.copyWith(
+  return _then(ProviderConnectionsResultDto(
 connections: null == connections ? _self.connections : connections // ignore: cast_nullable_to_non_nullable
 as List<ProviderConnectionDto>,
   ));
@@ -26289,7 +26290,7 @@ return $default(_that.connections);case _:
 @JsonSerializable()
 
 class _ProviderConnectionsResultDto implements ProviderConnectionsResultDto {
-  const _ProviderConnectionsResultDto({required final  List<ProviderConnectionDto> connections}): _connections = connections;
+  const _ProviderConnectionsResultDto({required  List<ProviderConnectionDto> connections}): _connections = connections;
   factory _ProviderConnectionsResultDto.fromJson(Map<String, dynamic> json) => _$ProviderConnectionsResultDtoFromJson(json);
 
  final  List<ProviderConnectionDto> _connections;
@@ -26415,7 +26416,7 @@ class _$ProviderUsageResultDtoCopyWithImpl<$Res>
 /// Create a copy of ProviderUsageResultDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? usage = null,}) {
-  return _then(_self.copyWith(
+  return _then(ProviderUsageResultDto(
 usage: null == usage ? _self.usage : usage // ignore: cast_nullable_to_non_nullable
 as List<ProviderUsageDto>,
   ));
@@ -26558,7 +26559,7 @@ return $default(_that.usage);case _:
 @JsonSerializable()
 
 class _ProviderUsageResultDto implements ProviderUsageResultDto {
-  const _ProviderUsageResultDto({required final  List<ProviderUsageDto> usage}): _usage = usage;
+  const _ProviderUsageResultDto({required  List<ProviderUsageDto> usage}): _usage = usage;
   factory _ProviderUsageResultDto.fromJson(Map<String, dynamic> json) => _$ProviderUsageResultDtoFromJson(json);
 
  final  List<ProviderUsageDto> _usage;
@@ -26684,7 +26685,7 @@ class _$ProviderConnectionResultDtoCopyWithImpl<$Res>
 /// Create a copy of ProviderConnectionResultDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? connection = null,}) {
-  return _then(_self.copyWith(
+  return _then(ProviderConnectionResultDto(
 connection: null == connection ? _self.connection : connection // ignore: cast_nullable_to_non_nullable
 as ProviderConnectionDto,
   ));
@@ -26965,7 +26966,7 @@ class _$ProviderModelsResultDtoCopyWithImpl<$Res>
 /// Create a copy of ProviderModelsResultDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? models = null,}) {
-  return _then(_self.copyWith(
+  return _then(ProviderModelsResultDto(
 models: null == models ? _self.models : models // ignore: cast_nullable_to_non_nullable
 as List<ProviderModelDto>,
   ));
@@ -27108,7 +27109,7 @@ return $default(_that.models);case _:
 @JsonSerializable()
 
 class _ProviderModelsResultDto implements ProviderModelsResultDto {
-  const _ProviderModelsResultDto({required final  List<ProviderModelDto> models}): _models = models;
+  const _ProviderModelsResultDto({required  List<ProviderModelDto> models}): _models = models;
   factory _ProviderModelsResultDto.fromJson(Map<String, dynamic> json) => _$ProviderModelsResultDtoFromJson(json);
 
  final  List<ProviderModelDto> _models;
@@ -27234,7 +27235,7 @@ class _$ProviderAuthAttemptResultDtoCopyWithImpl<$Res>
 /// Create a copy of ProviderAuthAttemptResultDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? attempt = null,}) {
-  return _then(_self.copyWith(
+  return _then(ProviderAuthAttemptResultDto(
 attempt: null == attempt ? _self.attempt : attempt // ignore: cast_nullable_to_non_nullable
 as ProviderAuthAttemptDto,
   ));
@@ -27515,7 +27516,7 @@ class _$ProviderDiagnosticResultDtoCopyWithImpl<$Res>
 /// Create a copy of ProviderDiagnosticResultDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? diagnostic = null,}) {
-  return _then(_self.copyWith(
+  return _then(ProviderDiagnosticResultDto(
 diagnostic: null == diagnostic ? _self.diagnostic : diagnostic // ignore: cast_nullable_to_non_nullable
 as ProviderDiagnosticDto,
   ));
@@ -27796,7 +27797,7 @@ class _$TurnStartResultDtoCopyWithImpl<$Res>
 /// Create a copy of TurnStartResultDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? created = null,}) {
-  return _then(_self.copyWith(
+  return _then(TurnStartResultDto(
 created: null == created ? _self.created : created // ignore: cast_nullable_to_non_nullable
 as bool,
   ));
@@ -28059,7 +28060,7 @@ class _$ApprovalResultDtoCopyWithImpl<$Res>
 /// Create a copy of ApprovalResultDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? approval = null,}) {
-  return _then(_self.copyWith(
+  return _then(ApprovalResultDto(
 approval: null == approval ? _self.approval : approval // ignore: cast_nullable_to_non_nullable
 as ApprovalRequestDto,
   ));
@@ -28340,7 +28341,7 @@ class _$UserQuestionResultDtoCopyWithImpl<$Res>
 /// Create a copy of UserQuestionResultDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? request = null,}) {
-  return _then(_self.copyWith(
+  return _then(UserQuestionResultDto(
 request: null == request ? _self.request : request // ignore: cast_nullable_to_non_nullable
 as UserQuestionRequestDto,
   ));
@@ -28621,7 +28622,7 @@ class _$TimelineResultDtoCopyWithImpl<$Res>
 /// Create a copy of TimelineResultDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? events = null,}) {
-  return _then(_self.copyWith(
+  return _then(TimelineResultDto(
 events: null == events ? _self.events : events // ignore: cast_nullable_to_non_nullable
 as List<TimelineEventDto>,
   ));
@@ -28764,7 +28765,7 @@ return $default(_that.events);case _:
 @JsonSerializable()
 
 class _TimelineResultDto implements TimelineResultDto {
-  const _TimelineResultDto({required final  List<TimelineEventDto> events}): _events = events;
+  const _TimelineResultDto({required  List<TimelineEventDto> events}): _events = events;
   factory _TimelineResultDto.fromJson(Map<String, dynamic> json) => _$TimelineResultDtoFromJson(json);
 
  final  List<TimelineEventDto> _events;
