@@ -9,12 +9,12 @@ environment:
 
 dependencies:
   agent: ^0.1.0
-  async: ^2.13.0
-  crypto: ^3.0.6
+  async: ^2.13.1
+  crypto: ^3.0.7
   dio: ^5.11.0
   drift: 2.34.3
   file: ^7.0.1
-  http: ^1.5.0
+  http: ^1.6.0
   json_rpc_2: ^4.1.0
   lua_tool_runtime:
     git:
@@ -45,15 +45,15 @@ dependencies:
   yaml_edit: ^2.2.4
 
 dev_dependencies:
-  build_runner: 2.15.1
+  build_runner: ^2.16.0
   client: ^0.1.0
   cliweave:
     git:
       url: https://github.com/tinyrack-net/dart-packages.git
-      ref: acd0bdf348e8a8a1886c66e65207fcd3087f7037
+      ref: 866a29af27a9f3e077b1dd905f2f79d7ca2c2769
       path: packages/cliweave
-  drift_dev: 2.34.0
+  drift_dev: ^2.34.5
   fake_async: ^1.3.3
-  mocktail: ^1.0.4
+  mocktail: ^1.0.5
   relay: ^0.6.0
-  test: ^1.26.3
+  test: ^1.31.1

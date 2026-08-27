@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // coverage:ignore-file
-// ignore_for_file: type=lint
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 // @dart=3.12
@@ -10,6 +10,7 @@ part of 'models.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
 
@@ -67,7 +68,7 @@ class _$ShellSpecDtoCopyWithImpl<$Res>
 /// Create a copy of ShellSpecDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? executable = null,Object? arguments = null,}) {
-  return _then(_self.copyWith(
+  return _then(ShellSpecDto(
 executable: null == executable ? _self.executable : executable // ignore: cast_nullable_to_non_nullable
 as String,arguments: null == arguments ? _self.arguments : arguments // ignore: cast_nullable_to_non_nullable
 as List<String>,
@@ -211,7 +212,7 @@ return $default(_that.executable,_that.arguments);case _:
 @JsonSerializable()
 
 class _ShellSpecDto implements ShellSpecDto {
-  const _ShellSpecDto({required this.executable, final  List<String> arguments = const <String>[]}): _arguments = arguments;
+  const _ShellSpecDto({required this.executable,  List<String> arguments = const <String>[]}): _arguments = arguments;
   factory _ShellSpecDto.fromJson(Map<String, dynamic> json) => _$ShellSpecDtoFromJson(json);
 
 @override final  String executable;
@@ -339,7 +340,7 @@ class _$TerminalDtoCopyWithImpl<$Res>
 /// Create a copy of TerminalDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? worktreeId = null,Object? title = null,Object? shell = null,Object? status = null,Object? columns = null,Object? rows = null,Object? lastSequence = null,Object? exitCode = freezed,Object? error = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(TerminalDto(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,worktreeId: null == worktreeId ? _self.worktreeId : worktreeId // ignore: cast_nullable_to_non_nullable
 as String,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
@@ -647,7 +648,7 @@ class _$TerminalOutputDtoCopyWithImpl<$Res>
 /// Create a copy of TerminalOutputDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? terminalId = null,Object? sequence = null,Object? data = null,}) {
-  return _then(_self.copyWith(
+  return _then(TerminalOutputDto(
 terminalId: null == terminalId ? _self.terminalId : terminalId // ignore: cast_nullable_to_non_nullable
 as String,sequence: null == sequence ? _self.sequence : sequence // ignore: cast_nullable_to_non_nullable
 as int,data: null == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
@@ -916,7 +917,7 @@ class _$AttachmentDtoCopyWithImpl<$Res>
 /// Create a copy of AttachmentDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? fileName = null,Object? mimeType = null,Object? byteSize = null,Object? kind = null,Object? sha256 = null,Object? createdAt = null,}) {
-  return _then(_self.copyWith(
+  return _then(AttachmentDto(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,fileName: null == fileName ? _self.fileName : fileName // ignore: cast_nullable_to_non_nullable
 as String,mimeType: null == mimeType ? _self.mimeType : mimeType // ignore: cast_nullable_to_non_nullable
@@ -1197,7 +1198,7 @@ class _$WorkspaceDtoCopyWithImpl<$Res>
 /// Create a copy of WorkspaceDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? rootPath = null,Object? kind = null,Object? createdAt = null,}) {
-  return _then(_self.copyWith(
+  return _then(WorkspaceDto(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,rootPath: null == rootPath ? _self.rootPath : rootPath // ignore: cast_nullable_to_non_nullable
@@ -1472,7 +1473,7 @@ class _$WorktreeDtoCopyWithImpl<$Res>
 /// Create a copy of WorktreeDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? workspaceId = null,Object? name = null,Object? path = null,Object? kind = null,Object? isTinestOwned = null,Object? createdAt = null,Object? branch = freezed,Object? head = freezed,Object? archivedAt = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(WorktreeDto(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,workspaceId: null == workspaceId ? _self.workspaceId : workspaceId // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
@@ -1762,7 +1763,7 @@ class _$WorkspaceCatalogDtoCopyWithImpl<$Res>
 /// Create a copy of WorkspaceCatalogDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? workspaces = null,Object? worktrees = null,}) {
-  return _then(_self.copyWith(
+  return _then(WorkspaceCatalogDto(
 workspaces: null == workspaces ? _self.workspaces : workspaces // ignore: cast_nullable_to_non_nullable
 as List<WorkspaceDto>,worktrees: null == worktrees ? _self.worktrees : worktrees // ignore: cast_nullable_to_non_nullable
 as List<WorktreeDto>,
@@ -1906,7 +1907,7 @@ return $default(_that.workspaces,_that.worktrees);case _:
 @JsonSerializable()
 
 class _WorkspaceCatalogDto implements WorkspaceCatalogDto {
-  const _WorkspaceCatalogDto({required final  List<WorkspaceDto> workspaces, required final  List<WorktreeDto> worktrees}): _workspaces = workspaces,_worktrees = worktrees;
+  const _WorkspaceCatalogDto({required  List<WorkspaceDto> workspaces, required  List<WorktreeDto> worktrees}): _workspaces = workspaces,_worktrees = worktrees;
   factory _WorkspaceCatalogDto.fromJson(Map<String, dynamic> json) => _$WorkspaceCatalogDtoFromJson(json);
 
  final  List<WorkspaceDto> _workspaces;
@@ -2040,7 +2041,7 @@ class _$WorktreeArchivePreviewDtoCopyWithImpl<$Res>
 /// Create a copy of WorktreeArchivePreviewDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? worktreeId = null,Object? dirty = null,Object? unpushedCommitCount = null,Object? runningSessionCount = null,Object? removesDirectory = null,}) {
-  return _then(_self.copyWith(
+  return _then(WorktreeArchivePreviewDto(
 worktreeId: null == worktreeId ? _self.worktreeId : worktreeId // ignore: cast_nullable_to_non_nullable
 as String,dirty: null == dirty ? _self.dirty : dirty // ignore: cast_nullable_to_non_nullable
 as bool,unpushedCommitCount: null == unpushedCommitCount ? _self.unpushedCommitCount : unpushedCommitCount // ignore: cast_nullable_to_non_nullable
@@ -2315,7 +2316,7 @@ class _$ProjectSettingsDtoCopyWithImpl<$Res>
 /// Create a copy of ProjectSettingsDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? setup = null,Object? teardown = null,Object? shell = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(ProjectSettingsDto(
 setup: null == setup ? _self.setup : setup // ignore: cast_nullable_to_non_nullable
 as List<String>,teardown: null == teardown ? _self.teardown : teardown // ignore: cast_nullable_to_non_nullable
 as List<String>,shell: freezed == shell ? _self.shell : shell // ignore: cast_nullable_to_non_nullable
@@ -2472,7 +2473,7 @@ return $default(_that.setup,_that.teardown,_that.shell);case _:
 @JsonSerializable()
 
 class _ProjectSettingsDto implements ProjectSettingsDto {
-  const _ProjectSettingsDto({final  List<String> setup = const <String>[], final  List<String> teardown = const <String>[], this.shell}): _setup = setup,_teardown = teardown;
+  const _ProjectSettingsDto({ List<String> setup = const <String>[],  List<String> teardown = const <String>[], this.shell}): _setup = setup,_teardown = teardown;
   factory _ProjectSettingsDto.fromJson(Map<String, dynamic> json) => _$ProjectSettingsDtoFromJson(json);
 
  final  List<String> _setup;
@@ -2620,7 +2621,7 @@ class _$WorktreeHookRunDtoCopyWithImpl<$Res>
 /// Create a copy of WorktreeHookRunDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? phase = null,Object? command = null,Object? exitCode = null,Object? stdout = null,Object? stderr = null,}) {
-  return _then(_self.copyWith(
+  return _then(WorktreeHookRunDto(
 phase: null == phase ? _self.phase : phase // ignore: cast_nullable_to_non_nullable
 as WorktreeHookPhase,command: null == command ? _self.command : command // ignore: cast_nullable_to_non_nullable
 as String,exitCode: null == exitCode ? _self.exitCode : exitCode // ignore: cast_nullable_to_non_nullable
@@ -2895,7 +2896,7 @@ class _$DirectorySuggestionDtoCopyWithImpl<$Res>
 /// Create a copy of DirectorySuggestionDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? path = null,Object? name = null,}) {
-  return _then(_self.copyWith(
+  return _then(DirectorySuggestionDto(
 path: null == path ? _self.path : path // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,
@@ -3161,7 +3162,7 @@ class _$FileMatchDtoCopyWithImpl<$Res>
 /// Create a copy of FileMatchDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? relativePath = null,Object? absolutePath = null,Object? name = null,Object? isDirectory = null,Object? score = null,}) {
-  return _then(_self.copyWith(
+  return _then(FileMatchDto(
 relativePath: null == relativePath ? _self.relativePath : relativePath // ignore: cast_nullable_to_non_nullable
 as String,absolutePath: null == absolutePath ? _self.absolutePath : absolutePath // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
@@ -3436,7 +3437,7 @@ class _$GitBranchDtoCopyWithImpl<$Res>
 /// Create a copy of GitBranchDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? name = null,Object? current = null,Object? checkedOut = null,Object? isRemote = null,Object? isDefault = null,}) {
-  return _then(_self.copyWith(
+  return _then(GitBranchDto(
 name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,current: null == current ? _self.current : current // ignore: cast_nullable_to_non_nullable
 as bool,checkedOut: null == checkedOut ? _self.checkedOut : checkedOut // ignore: cast_nullable_to_non_nullable
@@ -3711,7 +3712,7 @@ class _$ModelSelectionDtoCopyWithImpl<$Res>
 /// Create a copy of ModelSelectionDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? modelId = null,}) {
-  return _then(_self.copyWith(
+  return _then(ModelSelectionDto(
 modelId: null == modelId ? _self.modelId : modelId // ignore: cast_nullable_to_non_nullable
 as String,
   ));
@@ -3974,7 +3975,7 @@ class _$AgentModelSelectionDtoCopyWithImpl<$Res>
 /// Create a copy of AgentModelSelectionDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? source = null,Object? modelId = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(AgentModelSelectionDto(
 source: null == source ? _self.source : source // ignore: cast_nullable_to_non_nullable
 as AgentModelSource,modelId: freezed == modelId ? _self.modelId : modelId // ignore: cast_nullable_to_non_nullable
 as String?,
@@ -4240,7 +4241,7 @@ class _$AgentDefinitionDiagnosticDtoCopyWithImpl<$Res>
 /// Create a copy of AgentDefinitionDiagnosticDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? code = null,Object? message = null,Object? line = freezed,Object? column = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(AgentDefinitionDiagnosticDto(
 code: null == code ? _self.code : code // ignore: cast_nullable_to_non_nullable
 as String,message: null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
 as String,line: freezed == line ? _self.line : line // ignore: cast_nullable_to_non_nullable
@@ -4512,7 +4513,7 @@ class _$AgentDefinitionDtoCopyWithImpl<$Res>
 /// Create a copy of AgentDefinitionDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? version = null,Object? id = null,Object? name = null,Object? description = null,Object? mode = null,Object? model = null,Object? driverId = null,Object? extensionIds = null,Object? toolIds = null,Object? pluginSettings = null,Object? callableAgentIds = null,Object? prompt = null,Object? contentHash = null,Object? sourcePath = null,Object? isBuiltIn = null,Object? isArchived = null,Object? isStale = null,Object? diagnostics = null,}) {
-  return _then(_self.copyWith(
+  return _then(AgentDefinitionDto(
 version: null == version ? _self.version : version // ignore: cast_nullable_to_non_nullable
 as int,id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
@@ -4681,7 +4682,7 @@ return $default(_that.version,_that.id,_that.name,_that.description,_that.mode,_
 @JsonSerializable()
 
 class _AgentDefinitionDto implements AgentDefinitionDto {
-  const _AgentDefinitionDto({required this.version, required this.id, required this.name, required this.description, required this.mode, required this.model, required this.driverId, required final  List<String> extensionIds, required final  List<String> toolIds, required final  Map<String, Map<String, dynamic>> pluginSettings, required final  List<String> callableAgentIds, required this.prompt, required this.contentHash, required this.sourcePath, this.isBuiltIn = false, this.isArchived = false, this.isStale = false, final  List<AgentDefinitionDiagnosticDto> diagnostics = const <AgentDefinitionDiagnosticDto>[]}): _extensionIds = extensionIds,_toolIds = toolIds,_pluginSettings = pluginSettings,_callableAgentIds = callableAgentIds,_diagnostics = diagnostics;
+  const _AgentDefinitionDto({required this.version, required this.id, required this.name, required this.description, required this.mode, required this.model, required this.driverId, required  List<String> extensionIds, required  List<String> toolIds, required  Map<String, Map<String, dynamic>> pluginSettings, required  List<String> callableAgentIds, required this.prompt, required this.contentHash, required this.sourcePath, this.isBuiltIn = false, this.isArchived = false, this.isStale = false,  List<AgentDefinitionDiagnosticDto> diagnostics = const <AgentDefinitionDiagnosticDto>[]}): _extensionIds = extensionIds,_toolIds = toolIds,_pluginSettings = pluginSettings,_callableAgentIds = callableAgentIds,_diagnostics = diagnostics;
   factory _AgentDefinitionDto.fromJson(Map<String, dynamic> json) => _$AgentDefinitionDtoFromJson(json);
 
 @override final  int version;
@@ -4874,7 +4875,7 @@ class _$PluginDiagnosticDtoCopyWithImpl<$Res>
 /// Create a copy of PluginDiagnosticDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? code = null,Object? message = null,Object? severity = null,Object? path = freezed,Object? line = freezed,Object? column = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(PluginDiagnosticDto(
 code: null == code ? _self.code : code // ignore: cast_nullable_to_non_nullable
 as String,message: null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
 as String,severity: null == severity ? _self.severity : severity // ignore: cast_nullable_to_non_nullable
@@ -5152,7 +5153,7 @@ class _$PluginRevisionDtoCopyWithImpl<$Res>
 /// Create a copy of PluginRevisionDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? pluginId = null,Object? contentHash = null,Object? manifestHash = null,Object? sdkAbiHash = null,Object? executionRevisionHash = null,Object? requestedCapabilities = null,}) {
-  return _then(_self.copyWith(
+  return _then(PluginRevisionDto(
 pluginId: null == pluginId ? _self.pluginId : pluginId // ignore: cast_nullable_to_non_nullable
 as String,contentHash: null == contentHash ? _self.contentHash : contentHash // ignore: cast_nullable_to_non_nullable
 as String,manifestHash: null == manifestHash ? _self.manifestHash : manifestHash // ignore: cast_nullable_to_non_nullable
@@ -5300,7 +5301,7 @@ return $default(_that.pluginId,_that.contentHash,_that.manifestHash,_that.sdkAbi
 @JsonSerializable()
 
 class _PluginRevisionDto implements PluginRevisionDto {
-  const _PluginRevisionDto({required this.pluginId, required this.contentHash, required this.manifestHash, required this.sdkAbiHash, required this.executionRevisionHash, required final  List<String> requestedCapabilities}): _requestedCapabilities = requestedCapabilities;
+  const _PluginRevisionDto({required this.pluginId, required this.contentHash, required this.manifestHash, required this.sdkAbiHash, required this.executionRevisionHash, required  List<String> requestedCapabilities}): _requestedCapabilities = requestedCapabilities;
   factory _PluginRevisionDto.fromJson(Map<String, dynamic> json) => _$PluginRevisionDtoFromJson(json);
 
 @override final  String pluginId;
@@ -5436,7 +5437,7 @@ class _$PluginContributionDtoCopyWithImpl<$Res>
 /// Create a copy of PluginContributionDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? pluginId = null,Object? id = null,Object? kind = null,Object? requiredCapabilities = null,Object? tool = freezed,Object? metadata = null,}) {
-  return _then(_self.copyWith(
+  return _then(PluginContributionDto(
 pluginId: null == pluginId ? _self.pluginId : pluginId // ignore: cast_nullable_to_non_nullable
 as String,id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,kind: null == kind ? _self.kind : kind // ignore: cast_nullable_to_non_nullable
@@ -5596,7 +5597,7 @@ return $default(_that.pluginId,_that.id,_that.kind,_that.requiredCapabilities,_t
 @JsonSerializable()
 
 class _PluginContributionDto implements PluginContributionDto {
-  const _PluginContributionDto({required this.pluginId, required this.id, required this.kind, final  List<String> requiredCapabilities = const <String>[], this.tool, final  Map<String, dynamic> metadata = const <String, dynamic>{}}): _requiredCapabilities = requiredCapabilities,_metadata = metadata;
+  const _PluginContributionDto({required this.pluginId, required this.id, required this.kind,  List<String> requiredCapabilities = const <String>[], this.tool,  Map<String, dynamic> metadata = const <String, dynamic>{}}): _requiredCapabilities = requiredCapabilities,_metadata = metadata;
   factory _PluginContributionDto.fromJson(Map<String, dynamic> json) => _$PluginContributionDtoFromJson(json);
 
 @override final  String pluginId;
@@ -5750,7 +5751,7 @@ class _$PluginDescriptorDtoCopyWithImpl<$Res>
 /// Create a copy of PluginDescriptorDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? apiMajor = null,Object? id = null,Object? version = null,Object? name = null,Object? entrypoint = null,Object? source = null,Object? sourcePath = null,Object? requestedCapabilities = null,Object? revision = freezed,Object? contributions = null,Object? diagnostics = null,Object? isStale = null,}) {
-  return _then(_self.copyWith(
+  return _then(PluginDescriptorDto(
 apiMajor: null == apiMajor ? _self.apiMajor : apiMajor // ignore: cast_nullable_to_non_nullable
 as int,id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,version: null == version ? _self.version : version // ignore: cast_nullable_to_non_nullable
@@ -5916,7 +5917,7 @@ return $default(_that.apiMajor,_that.id,_that.version,_that.name,_that.entrypoin
 @JsonSerializable()
 
 class _PluginDescriptorDto implements PluginDescriptorDto {
-  const _PluginDescriptorDto({required this.apiMajor, required this.id, required this.version, required this.name, required this.entrypoint, required this.source, required this.sourcePath, required final  List<String> requestedCapabilities, this.revision, final  List<PluginContributionDto> contributions = const <PluginContributionDto>[], final  List<PluginDiagnosticDto> diagnostics = const <PluginDiagnosticDto>[], this.isStale = false}): _requestedCapabilities = requestedCapabilities,_contributions = contributions,_diagnostics = diagnostics;
+  const _PluginDescriptorDto({required this.apiMajor, required this.id, required this.version, required this.name, required this.entrypoint, required this.source, required this.sourcePath, required  List<String> requestedCapabilities, this.revision,  List<PluginContributionDto> contributions = const <PluginContributionDto>[],  List<PluginDiagnosticDto> diagnostics = const <PluginDiagnosticDto>[], this.isStale = false}): _requestedCapabilities = requestedCapabilities,_contributions = contributions,_diagnostics = diagnostics;
   factory _PluginDescriptorDto.fromJson(Map<String, dynamic> json) => _$PluginDescriptorDtoFromJson(json);
 
 @override final  int apiMajor;
@@ -6088,7 +6089,7 @@ class _$PluginAuthoringEnvironmentDtoCopyWithImpl<$Res>
 /// Create a copy of PluginAuthoringEnvironmentDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? pluginId = null,Object? apiMajor = null,Object? sdkAbiHash = null,Object? luaRuntimeVersion = null,Object? luaLanguageServerVersion = null,Object? pluginPath = null,Object? sdkLibraryPath = null,Object? configurationPath = null,Object? synchronized = null,Object? diagnostics = null,}) {
-  return _then(_self.copyWith(
+  return _then(PluginAuthoringEnvironmentDto(
 pluginId: null == pluginId ? _self.pluginId : pluginId // ignore: cast_nullable_to_non_nullable
 as String,apiMajor: null == apiMajor ? _self.apiMajor : apiMajor // ignore: cast_nullable_to_non_nullable
 as int,sdkAbiHash: null == sdkAbiHash ? _self.sdkAbiHash : sdkAbiHash // ignore: cast_nullable_to_non_nullable
@@ -6240,7 +6241,7 @@ return $default(_that.pluginId,_that.apiMajor,_that.sdkAbiHash,_that.luaRuntimeV
 @JsonSerializable()
 
 class _PluginAuthoringEnvironmentDto implements PluginAuthoringEnvironmentDto {
-  const _PluginAuthoringEnvironmentDto({required this.pluginId, required this.apiMajor, required this.sdkAbiHash, required this.luaRuntimeVersion, required this.luaLanguageServerVersion, required this.pluginPath, required this.sdkLibraryPath, required this.configurationPath, required this.synchronized, final  List<PluginDiagnosticDto> diagnostics = const <PluginDiagnosticDto>[]}): _diagnostics = diagnostics;
+  const _PluginAuthoringEnvironmentDto({required this.pluginId, required this.apiMajor, required this.sdkAbiHash, required this.luaRuntimeVersion, required this.luaLanguageServerVersion, required this.pluginPath, required this.sdkLibraryPath, required this.configurationPath, required this.synchronized,  List<PluginDiagnosticDto> diagnostics = const <PluginDiagnosticDto>[]}): _diagnostics = diagnostics;
   factory _PluginAuthoringEnvironmentDto.fromJson(Map<String, dynamic> json) => _$PluginAuthoringEnvironmentDtoFromJson(json);
 
 @override final  String pluginId;
@@ -6384,7 +6385,7 @@ class _$AgentPluginGrantDtoCopyWithImpl<$Res>
 /// Create a copy of AgentPluginGrantDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? agentId = null,Object? pluginId = null,Object? capability = null,}) {
-  return _then(_self.copyWith(
+  return _then(AgentPluginGrantDto(
 agentId: null == agentId ? _self.agentId : agentId // ignore: cast_nullable_to_non_nullable
 as String,pluginId: null == pluginId ? _self.pluginId : pluginId // ignore: cast_nullable_to_non_nullable
 as String,capability: null == capability ? _self.capability : capability // ignore: cast_nullable_to_non_nullable
@@ -6653,7 +6654,7 @@ class _$PluginSessionControlValueDtoCopyWithImpl<$Res>
 /// Create a copy of PluginSessionControlValueDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? sessionId = null,Object? agentId = null,Object? pluginId = null,Object? contributionId = null,Object? revisionHash = null,Object? schema = null,Object? defaultValue = freezed,Object? value = freezed,Object? isDefault = null,Object? metadata = null,}) {
-  return _then(_self.copyWith(
+  return _then(PluginSessionControlValueDto(
 sessionId: null == sessionId ? _self.sessionId : sessionId // ignore: cast_nullable_to_non_nullable
 as String,agentId: null == agentId ? _self.agentId : agentId // ignore: cast_nullable_to_non_nullable
 as String,pluginId: null == pluginId ? _self.pluginId : pluginId // ignore: cast_nullable_to_non_nullable
@@ -6803,7 +6804,7 @@ return $default(_that.sessionId,_that.agentId,_that.pluginId,_that.contributionI
 @JsonSerializable()
 
 class _PluginSessionControlValueDto implements PluginSessionControlValueDto {
-  const _PluginSessionControlValueDto({required this.sessionId, required this.agentId, required this.pluginId, required this.contributionId, required this.revisionHash, required final  Map<String, dynamic> schema, required this.defaultValue, required this.value, this.isDefault = false, final  Map<String, dynamic> metadata = const <String, dynamic>{}}): _schema = schema,_metadata = metadata;
+  const _PluginSessionControlValueDto({required this.sessionId, required this.agentId, required this.pluginId, required this.contributionId, required this.revisionHash, required  Map<String, dynamic> schema, required this.defaultValue, required this.value, this.isDefault = false,  Map<String, dynamic> metadata = const <String, dynamic>{}}): _schema = schema,_metadata = metadata;
   factory _PluginSessionControlValueDto.fromJson(Map<String, dynamic> json) => _$PluginSessionControlValueDtoFromJson(json);
 
 @override final  String sessionId;
@@ -6951,7 +6952,7 @@ class _$PluginUiDocumentDtoCopyWithImpl<$Res>
 /// Create a copy of PluginUiDocumentDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? pluginId = null,Object? revisionHash = null,Object? slot = null,Object? root = null,}) {
-  return _then(_self.copyWith(
+  return _then(PluginUiDocumentDto(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,pluginId: null == pluginId ? _self.pluginId : pluginId // ignore: cast_nullable_to_non_nullable
 as String,revisionHash: null == revisionHash ? _self.revisionHash : revisionHash // ignore: cast_nullable_to_non_nullable
@@ -7098,7 +7099,7 @@ return $default(_that.id,_that.pluginId,_that.revisionHash,_that.slot,_that.root
 @JsonSerializable()
 
 class _PluginUiDocumentDto implements PluginUiDocumentDto {
-  const _PluginUiDocumentDto({required this.id, required this.pluginId, required this.revisionHash, required this.slot, required final  Map<String, dynamic> root}): _root = root;
+  const _PluginUiDocumentDto({required this.id, required this.pluginId, required this.revisionHash, required this.slot, required  Map<String, dynamic> root}): _root = root;
   factory _PluginUiDocumentDto.fromJson(Map<String, dynamic> json) => _$PluginUiDocumentDtoFromJson(json);
 
 @override final  String id;
@@ -7232,7 +7233,7 @@ class _$PluginUiActionDtoCopyWithImpl<$Res>
 /// Create a copy of PluginUiActionDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? documentId = null,Object? actionId = null,Object? data = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(PluginUiActionDto(
 documentId: null == documentId ? _self.documentId : documentId // ignore: cast_nullable_to_non_nullable
 as String,actionId: null == actionId ? _self.actionId : actionId // ignore: cast_nullable_to_non_nullable
 as String,data: freezed == data ? _self.data : data ,
@@ -7499,7 +7500,7 @@ class _$AgentToolDefinitionDtoCopyWithImpl<$Res>
 /// Create a copy of AgentToolDefinitionDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? originPluginId = null,Object? contributionId = null,Object? name = null,Object? description = null,Object? risk = null,Object? group = null,Object? kind = null,Object? inputSchema = null,Object? effects = null,Object? presentation = null,Object? outputSchema = freezed,Object? available = null,}) {
-  return _then(_self.copyWith(
+  return _then(AgentToolDefinitionDto(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,originPluginId: null == originPluginId ? _self.originPluginId : originPluginId // ignore: cast_nullable_to_non_nullable
 as String,contributionId: null == contributionId ? _self.contributionId : contributionId // ignore: cast_nullable_to_non_nullable
@@ -7654,7 +7655,7 @@ return $default(_that.id,_that.originPluginId,_that.contributionId,_that.name,_t
 @JsonSerializable()
 
 class _AgentToolDefinitionDto implements AgentToolDefinitionDto {
-  const _AgentToolDefinitionDto({required this.id, required this.originPluginId, required this.contributionId, required this.name, required this.description, required this.risk, required this.group, required this.kind, required final  Map<String, dynamic> inputSchema, required final  List<String> effects, required final  Map<String, dynamic> presentation, final  Map<String, dynamic>? outputSchema, this.available = true}): _inputSchema = inputSchema,_effects = effects,_presentation = presentation,_outputSchema = outputSchema;
+  const _AgentToolDefinitionDto({required this.id, required this.originPluginId, required this.contributionId, required this.name, required this.description, required this.risk, required this.group, required this.kind, required  Map<String, dynamic> inputSchema, required  List<String> effects, required  Map<String, dynamic> presentation,  Map<String, dynamic>? outputSchema, this.available = true}): _inputSchema = inputSchema,_effects = effects,_presentation = presentation,_outputSchema = outputSchema;
   factory _AgentToolDefinitionDto.fromJson(Map<String, dynamic> json) => _$AgentToolDefinitionDtoFromJson(json);
 
 @override final  String id;
@@ -7824,7 +7825,7 @@ class _$McpServerConfigDtoCopyWithImpl<$Res>
 /// Create a copy of McpServerConfigDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? transport = null,Object? enabled = null,Object? command = freezed,Object? args = null,Object? env = null,Object? cwd = freezed,Object? url = freezed,Object? headers = null,}) {
-  return _then(_self.copyWith(
+  return _then(McpServerConfigDto(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,transport: null == transport ? _self.transport : transport // ignore: cast_nullable_to_non_nullable
 as McpTransportKind,enabled: null == enabled ? _self.enabled : enabled // ignore: cast_nullable_to_non_nullable
@@ -7975,7 +7976,7 @@ return $default(_that.id,_that.transport,_that.enabled,_that.command,_that.args,
 @JsonSerializable()
 
 class _McpServerConfigDto implements McpServerConfigDto {
-  const _McpServerConfigDto({required this.id, required this.transport, this.enabled = true, this.command, final  List<String> args = const <String>[], final  Map<String, String> env = const <String, String>{}, this.cwd, this.url, final  Map<String, String> headers = const <String, String>{}}): _args = args,_env = env,_headers = headers;
+  const _McpServerConfigDto({required this.id, required this.transport, this.enabled = true, this.command,  List<String> args = const <String>[],  Map<String, String> env = const <String, String>{}, this.cwd, this.url,  Map<String, String> headers = const <String, String>{}}): _args = args,_env = env,_headers = headers;
   factory _McpServerConfigDto.fromJson(Map<String, dynamic> json) => _$McpServerConfigDtoFromJson(json);
 
 @override final  String id;
@@ -8129,7 +8130,7 @@ class _$McpToolSummaryDtoCopyWithImpl<$Res>
 /// Create a copy of McpToolSummaryDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? toolId = null,Object? name = null,Object? description = null,Object? title = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(McpToolSummaryDto(
 toolId: null == toolId ? _self.toolId : toolId // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
@@ -8401,7 +8402,7 @@ class _$McpResourceSummaryDtoCopyWithImpl<$Res>
 /// Create a copy of McpResourceSummaryDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? uri = null,Object? name = freezed,Object? title = freezed,Object? description = freezed,Object? mimeType = freezed,Object? sizeBytes = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(McpResourceSummaryDto(
 uri: null == uri ? _self.uri : uri // ignore: cast_nullable_to_non_nullable
 as String,name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String?,title: freezed == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
@@ -8679,7 +8680,7 @@ class _$McpResourceTemplateSummaryDtoCopyWithImpl<$Res>
 /// Create a copy of McpResourceTemplateSummaryDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? uriTemplate = null,Object? name = freezed,Object? title = freezed,Object? description = freezed,Object? mimeType = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(McpResourceTemplateSummaryDto(
 uriTemplate: null == uriTemplate ? _self.uriTemplate : uriTemplate // ignore: cast_nullable_to_non_nullable
 as String,name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String?,title: freezed == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
@@ -8954,7 +8955,7 @@ class _$McpServerStateDtoCopyWithImpl<$Res>
 /// Create a copy of McpServerStateDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? config = null,Object? status = null,Object? scope = null,Object? sourcePath = null,Object? shadowed = null,Object? protocolVersion = freezed,Object? serverName = freezed,Object? serverVersion = freezed,Object? tools = null,Object? resources = null,Object? resourceTemplates = null,Object? error = freezed,Object? diagnostics = null,Object? lastConnectedAt = freezed,Object? nextRetryAt = freezed,Object? attempt = null,}) {
-  return _then(_self.copyWith(
+  return _then(McpServerStateDto(
 config: null == config ? _self.config : config // ignore: cast_nullable_to_non_nullable
 as McpServerConfigDto,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as McpServerStatus,scope: null == scope ? _self.scope : scope // ignore: cast_nullable_to_non_nullable
@@ -9121,7 +9122,7 @@ return $default(_that.config,_that.status,_that.scope,_that.sourcePath,_that.sha
 @JsonSerializable()
 
 class _McpServerStateDto implements McpServerStateDto {
-  const _McpServerStateDto({required this.config, required this.status, required this.scope, required this.sourcePath, this.shadowed = false, this.protocolVersion, this.serverName, this.serverVersion, final  List<McpToolSummaryDto> tools = const <McpToolSummaryDto>[], final  List<McpResourceSummaryDto> resources = const <McpResourceSummaryDto>[], final  List<McpResourceTemplateSummaryDto> resourceTemplates = const <McpResourceTemplateSummaryDto>[], this.error, final  List<String> diagnostics = const <String>[], this.lastConnectedAt, this.nextRetryAt, this.attempt = 0}): _tools = tools,_resources = resources,_resourceTemplates = resourceTemplates,_diagnostics = diagnostics;
+  const _McpServerStateDto({required this.config, required this.status, required this.scope, required this.sourcePath, this.shadowed = false, this.protocolVersion, this.serverName, this.serverVersion,  List<McpToolSummaryDto> tools = const <McpToolSummaryDto>[],  List<McpResourceSummaryDto> resources = const <McpResourceSummaryDto>[],  List<McpResourceTemplateSummaryDto> resourceTemplates = const <McpResourceTemplateSummaryDto>[], this.error,  List<String> diagnostics = const <String>[], this.lastConnectedAt, this.nextRetryAt, this.attempt = 0}): _tools = tools,_resources = resources,_resourceTemplates = resourceTemplates,_diagnostics = diagnostics;
   factory _McpServerStateDto.fromJson(Map<String, dynamic> json) => _$McpServerStateDtoFromJson(json);
 
 @override final  McpServerConfigDto config;
@@ -9304,7 +9305,7 @@ class _$AgentCommandDtoCopyWithImpl<$Res>
 /// Create a copy of AgentCommandDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? description = null,Object? source = null,Object? sourcePath = null,Object? body = null,Object? argumentHint = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(AgentCommandDto(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
@@ -9585,7 +9586,7 @@ class _$SkillSummaryDtoCopyWithImpl<$Res>
 /// Create a copy of SkillSummaryDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? description = null,Object? isImplicit = null,}) {
-  return _then(_self.copyWith(
+  return _then(SkillSummaryDto(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
@@ -9867,7 +9868,7 @@ class _$SessionDtoCopyWithImpl<$Res>
 /// Create a copy of SessionDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? worktreeId = null,Object? title = null,Object? agentDefinitionId = null,Object? origin = null,Object? status = null,Object? createdAt = null,Object? updatedAt = null,Object? model = freezed,Object? modelControls = null,Object? permissionMode = null,Object? parentSessionId = freezed,Object? taskName = freezed,Object? agentPath = freezed,Object? rootSessionId = freezed,Object? lifecycle = freezed,Object? activeTurnId = freezed,Object? lastError = freezed,Object? contextTokens = null,Object? contextWindow = freezed,Object? totalCostUsd = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(SessionDto(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,worktreeId: null == worktreeId ? _self.worktreeId : worktreeId // ignore: cast_nullable_to_non_nullable
 as String,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
@@ -10042,7 +10043,7 @@ return $default(_that.id,_that.worktreeId,_that.title,_that.agentDefinitionId,_t
 @JsonSerializable()
 
 class _SessionDto implements SessionDto {
-  const _SessionDto({required this.id, required this.worktreeId, required this.title, required this.agentDefinitionId, required this.origin, required this.status, required this.createdAt, required this.updatedAt, this.model, final  Map<String, ModelControlValueDto> modelControls = const <String, ModelControlValueDto>{}, this.permissionMode = PermissionMode.ask, this.parentSessionId, this.taskName, this.agentPath, this.rootSessionId, this.lifecycle, this.activeTurnId, this.lastError, this.contextTokens = 0, this.contextWindow, this.totalCostUsd}): _modelControls = modelControls;
+  const _SessionDto({required this.id, required this.worktreeId, required this.title, required this.agentDefinitionId, required this.origin, required this.status, required this.createdAt, required this.updatedAt, this.model,  Map<String, ModelControlValueDto> modelControls = const <String, ModelControlValueDto>{}, this.permissionMode = PermissionMode.ask, this.parentSessionId, this.taskName, this.agentPath, this.rootSessionId, this.lifecycle, this.activeTurnId, this.lastError, this.contextTokens = 0, this.contextWindow, this.totalCostUsd}): _modelControls = modelControls;
   factory _SessionDto.fromJson(Map<String, dynamic> json) => _$SessionDtoFromJson(json);
 
 @override final  String id;
@@ -10234,7 +10235,7 @@ class _$AgentMailboxMessageDtoCopyWithImpl<$Res>
 /// Create a copy of AgentMailboxMessageDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? sessionId = null,Object? senderPath = null,Object? recipientPath = null,Object? type = null,Object? payload = null,Object? createdAt = null,Object? senderSessionId = freezed,Object? deliveredAt = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(AgentMailboxMessageDto(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,sessionId: null == sessionId ? _self.sessionId : sessionId // ignore: cast_nullable_to_non_nullable
 as String,senderPath: null == senderPath ? _self.senderPath : senderPath // ignore: cast_nullable_to_non_nullable
@@ -10524,7 +10525,7 @@ class _$ModelControlChoiceDtoCopyWithImpl<$Res>
 /// Create a copy of ModelControlChoiceDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? label = null,Object? description = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(ModelControlChoiceDto(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,label: null == label ? _self.label : label // ignore: cast_nullable_to_non_nullable
 as String,description: freezed == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
@@ -10793,7 +10794,7 @@ class _$ModelControlDescriptorDtoCopyWithImpl<$Res>
 /// Create a copy of ModelControlDescriptorDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? label = null,Object? kind = null,Object? presentation = null,Object? description = freezed,Object? choices = null,Object? minimum = freezed,Object? maximum = freezed,Object? step = freezed,Object? conflictsWith = null,}) {
-  return _then(_self.copyWith(
+  return _then(ModelControlDescriptorDto(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,label: null == label ? _self.label : label // ignore: cast_nullable_to_non_nullable
 as String,kind: null == kind ? _self.kind : kind // ignore: cast_nullable_to_non_nullable
@@ -10945,7 +10946,7 @@ return $default(_that.id,_that.label,_that.kind,_that.presentation,_that.descrip
 @JsonSerializable()
 
 class _ModelControlDescriptorDto implements ModelControlDescriptorDto {
-  const _ModelControlDescriptorDto({required this.id, required this.label, required this.kind, required this.presentation, this.description, final  List<ModelControlChoiceDto> choices = const <ModelControlChoiceDto>[], this.minimum, this.maximum, this.step, final  List<String> conflictsWith = const <String>[]}): _choices = choices,_conflictsWith = conflictsWith;
+  const _ModelControlDescriptorDto({required this.id, required this.label, required this.kind, required this.presentation, this.description,  List<ModelControlChoiceDto> choices = const <ModelControlChoiceDto>[], this.minimum, this.maximum, this.step,  List<String> conflictsWith = const <String>[]}): _choices = choices,_conflictsWith = conflictsWith;
   factory _ModelControlDescriptorDto.fromJson(Map<String, dynamic> json) => _$ModelControlDescriptorDtoFromJson(json);
 
 @override final  String id;
@@ -11240,7 +11241,7 @@ return intValue(_that.value);case _:
 @JsonSerializable()
 
 class ModelControlStringValueDto implements ModelControlValueDto {
-  const ModelControlStringValueDto({required this.value, final  String? $type}): $type = $type ?? 'stringValue';
+  const ModelControlStringValueDto({required this.value,  String? $type}): $type = $type ?? 'stringValue';
   factory ModelControlStringValueDto.fromJson(Map<String, dynamic> json) => _$ModelControlStringValueDtoFromJson(json);
 
 @override final  String value;
@@ -11313,7 +11314,7 @@ as String,
 @JsonSerializable()
 
 class ModelControlBoolValueDto implements ModelControlValueDto {
-  const ModelControlBoolValueDto({required this.value, final  String? $type}): $type = $type ?? 'boolValue';
+  const ModelControlBoolValueDto({required this.value,  String? $type}): $type = $type ?? 'boolValue';
   factory ModelControlBoolValueDto.fromJson(Map<String, dynamic> json) => _$ModelControlBoolValueDtoFromJson(json);
 
 @override final  bool value;
@@ -11386,7 +11387,7 @@ as bool,
 @JsonSerializable()
 
 class ModelControlIntValueDto implements ModelControlValueDto {
-  const ModelControlIntValueDto({required this.value, final  String? $type}): $type = $type ?? 'intValue';
+  const ModelControlIntValueDto({required this.value,  String? $type}): $type = $type ?? 'intValue';
   factory ModelControlIntValueDto.fromJson(Map<String, dynamic> json) => _$ModelControlIntValueDtoFromJson(json);
 
 @override final  int value;
@@ -11510,7 +11511,7 @@ class _$ModelCapabilitiesDtoCopyWithImpl<$Res>
 /// Create a copy of ModelCapabilitiesDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? streaming = null,Object? toolCalling = null,Object? functionTools = null,Object? deferredTools = null,Object? imageInput = null,Object? fileInput = null,Object? controls = null,Object? source = null,}) {
-  return _then(_self.copyWith(
+  return _then(ModelCapabilitiesDto(
 streaming: null == streaming ? _self.streaming : streaming // ignore: cast_nullable_to_non_nullable
 as CapabilitySupport,toolCalling: null == toolCalling ? _self.toolCalling : toolCalling // ignore: cast_nullable_to_non_nullable
 as CapabilitySupport,functionTools: null == functionTools ? _self.functionTools : functionTools // ignore: cast_nullable_to_non_nullable
@@ -11660,7 +11661,7 @@ return $default(_that.streaming,_that.toolCalling,_that.functionTools,_that.defe
 @JsonSerializable()
 
 class _ModelCapabilitiesDto implements ModelCapabilitiesDto {
-  const _ModelCapabilitiesDto({this.streaming = CapabilitySupport.unknown, this.toolCalling = CapabilitySupport.unknown, this.functionTools = CapabilitySupport.unknown, this.deferredTools = CapabilitySupport.unknown, this.imageInput = CapabilitySupport.unknown, this.fileInput = CapabilitySupport.unknown, final  List<ModelControlDescriptorDto> controls = const <ModelControlDescriptorDto>[], this.source = CapabilitySource.unknown}): _controls = controls;
+  const _ModelCapabilitiesDto({this.streaming = CapabilitySupport.unknown, this.toolCalling = CapabilitySupport.unknown, this.functionTools = CapabilitySupport.unknown, this.deferredTools = CapabilitySupport.unknown, this.imageInput = CapabilitySupport.unknown, this.fileInput = CapabilitySupport.unknown,  List<ModelControlDescriptorDto> controls = const <ModelControlDescriptorDto>[], this.source = CapabilitySource.unknown}): _controls = controls;
   factory _ModelCapabilitiesDto.fromJson(Map<String, dynamic> json) => _$ModelCapabilitiesDtoFromJson(json);
 
 @override@JsonKey() final  CapabilitySupport streaming;
@@ -11800,7 +11801,7 @@ class _$ModelPricingDtoCopyWithImpl<$Res>
 /// Create a copy of ModelPricingDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? input = freezed,Object? output = freezed,Object? cacheRead = freezed,Object? cacheWrite = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(ModelPricingDto(
 input: freezed == input ? _self.input : input // ignore: cast_nullable_to_non_nullable
 as double?,output: freezed == output ? _self.output : output // ignore: cast_nullable_to_non_nullable
 as double?,cacheRead: freezed == cacheRead ? _self.cacheRead : cacheRead // ignore: cast_nullable_to_non_nullable
@@ -12072,7 +12073,7 @@ class _$ModelLimitsDtoCopyWithImpl<$Res>
 /// Create a copy of ModelLimitsDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? context = freezed,Object? input = freezed,Object? output = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(ModelLimitsDto(
 context: freezed == context ? _self.context : context // ignore: cast_nullable_to_non_nullable
 as int?,input: freezed == input ? _self.input : input // ignore: cast_nullable_to_non_nullable
 as int?,output: freezed == output ? _self.output : output // ignore: cast_nullable_to_non_nullable
@@ -12341,7 +12342,7 @@ class _$ProviderAuthMethodDtoCopyWithImpl<$Res>
 /// Create a copy of ProviderAuthMethodDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? label = null,Object? kind = null,Object? flow = null,Object? experimental = null,}) {
-  return _then(_self.copyWith(
+  return _then(ProviderAuthMethodDto(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,label: null == label ? _self.label : label // ignore: cast_nullable_to_non_nullable
 as String,kind: null == kind ? _self.kind : kind // ignore: cast_nullable_to_non_nullable
@@ -12616,7 +12617,7 @@ class _$ProviderDefinitionDtoCopyWithImpl<$Res>
 /// Create a copy of ProviderDefinitionDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? description = null,Object? authMethods = null,Object? recommendedModelIds = null,Object? local = null,Object? experimental = null,Object? documentationUrl = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(ProviderDefinitionDto(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
@@ -12766,7 +12767,7 @@ return $default(_that.id,_that.name,_that.description,_that.authMethods,_that.re
 @JsonSerializable()
 
 class _ProviderDefinitionDto implements ProviderDefinitionDto {
-  const _ProviderDefinitionDto({required this.id, required this.name, required this.description, required final  List<ProviderAuthMethodDto> authMethods, final  List<String> recommendedModelIds = const <String>[], this.local = false, this.experimental = false, this.documentationUrl}): _authMethods = authMethods,_recommendedModelIds = recommendedModelIds;
+  const _ProviderDefinitionDto({required this.id, required this.name, required this.description, required  List<ProviderAuthMethodDto> authMethods,  List<String> recommendedModelIds = const <String>[], this.local = false, this.experimental = false, this.documentationUrl}): _authMethods = authMethods,_recommendedModelIds = recommendedModelIds;
   factory _ProviderDefinitionDto.fromJson(Map<String, dynamic> json) => _$ProviderDefinitionDtoFromJson(json);
 
 @override final  String id;
@@ -12912,7 +12913,7 @@ class _$ProviderWireFormatDtoCopyWithImpl<$Res>
 /// Create a copy of ProviderWireFormatDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? label = null,Object? controls = null,}) {
-  return _then(_self.copyWith(
+  return _then(ProviderWireFormatDto(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,label: null == label ? _self.label : label // ignore: cast_nullable_to_non_nullable
 as String,controls: null == controls ? _self.controls : controls // ignore: cast_nullable_to_non_nullable
@@ -13057,7 +13058,7 @@ return $default(_that.id,_that.label,_that.controls);case _:
 @JsonSerializable()
 
 class _ProviderWireFormatDto implements ProviderWireFormatDto {
-  const _ProviderWireFormatDto({required this.id, required this.label, final  List<ModelControlDescriptorDto> controls = const <ModelControlDescriptorDto>[]}): _controls = controls;
+  const _ProviderWireFormatDto({required this.id, required this.label,  List<ModelControlDescriptorDto> controls = const <ModelControlDescriptorDto>[]}): _controls = controls;
   factory _ProviderWireFormatDto.fromJson(Map<String, dynamic> json) => _$ProviderWireFormatDtoFromJson(json);
 
 @override final  String id;
@@ -13187,7 +13188,7 @@ class _$CustomProviderConfigDtoCopyWithImpl<$Res>
 /// Create a copy of CustomProviderConfigDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? name = null,Object? baseUrl = null,Object? wireFormatId = null,Object? authenticationRequired = null,Object? models = null,}) {
-  return _then(_self.copyWith(
+  return _then(CustomProviderConfigDto(
 name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,baseUrl: null == baseUrl ? _self.baseUrl : baseUrl // ignore: cast_nullable_to_non_nullable
 as String,wireFormatId: null == wireFormatId ? _self.wireFormatId : wireFormatId // ignore: cast_nullable_to_non_nullable
@@ -13334,7 +13335,7 @@ return $default(_that.name,_that.baseUrl,_that.wireFormatId,_that.authentication
 @JsonSerializable()
 
 class _CustomProviderConfigDto implements CustomProviderConfigDto {
-  const _CustomProviderConfigDto({required this.name, required this.baseUrl, required this.wireFormatId, required this.authenticationRequired, final  List<ManualProviderModelDto> models = const <ManualProviderModelDto>[]}): _models = models;
+  const _CustomProviderConfigDto({required this.name, required this.baseUrl, required this.wireFormatId, required this.authenticationRequired,  List<ManualProviderModelDto> models = const <ManualProviderModelDto>[]}): _models = models;
   factory _CustomProviderConfigDto.fromJson(Map<String, dynamic> json) => _$CustomProviderConfigDtoFromJson(json);
 
 @override final  String name;
@@ -13468,7 +13469,7 @@ class _$ManualProviderModelDtoCopyWithImpl<$Res>
 /// Create a copy of ManualProviderModelDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? label = null,Object? controls = null,}) {
-  return _then(_self.copyWith(
+  return _then(ManualProviderModelDto(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,label: null == label ? _self.label : label // ignore: cast_nullable_to_non_nullable
 as String,controls: null == controls ? _self.controls : controls // ignore: cast_nullable_to_non_nullable
@@ -13613,7 +13614,7 @@ return $default(_that.id,_that.label,_that.controls);case _:
 @JsonSerializable()
 
 class _ManualProviderModelDto implements ManualProviderModelDto {
-  const _ManualProviderModelDto({required this.id, required this.label, final  List<ModelControlDescriptorDto> controls = const <ModelControlDescriptorDto>[]}): _controls = controls;
+  const _ManualProviderModelDto({required this.id, required this.label,  List<ModelControlDescriptorDto> controls = const <ModelControlDescriptorDto>[]}): _controls = controls;
   factory _ManualProviderModelDto.fromJson(Map<String, dynamic> json) => _$ManualProviderModelDtoFromJson(json);
 
 @override final  String id;
@@ -13743,7 +13744,7 @@ class _$ProviderConnectionDtoCopyWithImpl<$Res>
 /// Create a copy of ProviderConnectionDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? definitionId = null,Object? displayName = null,Object? status = null,Object? authKind = null,Object? credentialOrigin = null,Object? createdAt = null,Object? updatedAt = null,Object? modelPrefix = null,Object? error = freezed,Object? customConfig = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(ProviderConnectionDto(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,definitionId: null == definitionId ? _self.definitionId : definitionId // ignore: cast_nullable_to_non_nullable
 as String,displayName: null == displayName ? _self.displayName : displayName // ignore: cast_nullable_to_non_nullable
@@ -14060,7 +14061,7 @@ class _$ProviderUsageWindowDtoCopyWithImpl<$Res>
 /// Create a copy of ProviderUsageWindowDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? kind = null,Object? usedPercent = null,Object? resetsAt = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(ProviderUsageWindowDto(
 kind: null == kind ? _self.kind : kind // ignore: cast_nullable_to_non_nullable
 as ProviderUsageWindowKind,usedPercent: null == usedPercent ? _self.usedPercent : usedPercent // ignore: cast_nullable_to_non_nullable
 as double,resetsAt: freezed == resetsAt ? _self.resetsAt : resetsAt // ignore: cast_nullable_to_non_nullable
@@ -14329,7 +14330,7 @@ class _$ProviderUsageDtoCopyWithImpl<$Res>
 /// Create a copy of ProviderUsageDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? connectionId = null,Object? status = null,Object? fetchedAt = null,Object? provider = null,Object? plan = freezed,Object? windows = null,Object? creditBalance = freezed,Object? detail = freezed,Object? errorCode = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(ProviderUsageDto(
 connectionId: null == connectionId ? _self.connectionId : connectionId // ignore: cast_nullable_to_non_nullable
 as String,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as ProviderUsageStatus,fetchedAt: null == fetchedAt ? _self.fetchedAt : fetchedAt // ignore: cast_nullable_to_non_nullable
@@ -14480,7 +14481,7 @@ return $default(_that.connectionId,_that.status,_that.fetchedAt,_that.provider,_
 @JsonSerializable()
 
 class _ProviderUsageDto implements ProviderUsageDto {
-  const _ProviderUsageDto({required this.connectionId, required this.status, required this.fetchedAt, this.provider = '', this.plan, final  List<ProviderUsageWindowDto> windows = const <ProviderUsageWindowDto>[], this.creditBalance, this.detail, this.errorCode}): _windows = windows;
+  const _ProviderUsageDto({required this.connectionId, required this.status, required this.fetchedAt, this.provider = '', this.plan,  List<ProviderUsageWindowDto> windows = const <ProviderUsageWindowDto>[], this.creditBalance, this.detail, this.errorCode}): _windows = windows;
   factory _ProviderUsageDto.fromJson(Map<String, dynamic> json) => _$ProviderUsageDtoFromJson(json);
 
 @override final  String connectionId;
@@ -14622,7 +14623,7 @@ class _$ProviderAuthAttemptDtoCopyWithImpl<$Res>
 /// Create a copy of ProviderAuthAttemptDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? definitionId = null,Object? methodId = null,Object? status = null,Object? connectionId = null,Object? modelPrefix = null,Object? authorizationUrl = freezed,Object? userCode = freezed,Object? instructions = freezed,Object? expiresAt = freezed,Object? error = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(ProviderAuthAttemptDto(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,definitionId: null == definitionId ? _self.definitionId : definitionId // ignore: cast_nullable_to_non_nullable
 as String,methodId: null == methodId ? _self.methodId : methodId // ignore: cast_nullable_to_non_nullable
@@ -14915,7 +14916,7 @@ class _$ProviderModelDtoCopyWithImpl<$Res>
 /// Create a copy of ProviderModelDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? connectionId = null,Object? id = null,Object? label = null,Object? source = null,Object? capabilities = null,Object? providerModelId = null,Object? pricing = freezed,Object? limits = freezed,Object? diagnosticStatus = null,Object? verifiedAt = freezed,Object? diagnosticError = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(ProviderModelDto(
 connectionId: null == connectionId ? _self.connectionId : connectionId // ignore: cast_nullable_to_non_nullable
 as String,id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,label: null == label ? _self.label : label // ignore: cast_nullable_to_non_nullable
@@ -15274,7 +15275,7 @@ class _$ProviderCatalogDtoCopyWithImpl<$Res>
 /// Create a copy of ProviderCatalogDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? definitions = null,Object? source = null,Object? updatedAt = null,Object? freshness = null,Object? lastSuccessAt = freezed,Object? lastAttemptAt = freezed,Object? refreshError = freezed,Object? wireFormats = null,}) {
-  return _then(_self.copyWith(
+  return _then(ProviderCatalogDto(
 definitions: null == definitions ? _self.definitions : definitions // ignore: cast_nullable_to_non_nullable
 as List<ProviderDefinitionDto>,source: null == source ? _self.source : source // ignore: cast_nullable_to_non_nullable
 as ProviderCatalogSource,updatedAt: null == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
@@ -15424,7 +15425,7 @@ return $default(_that.definitions,_that.source,_that.updatedAt,_that.freshness,_
 @JsonSerializable()
 
 class _ProviderCatalogDto implements ProviderCatalogDto {
-  const _ProviderCatalogDto({required final  List<ProviderDefinitionDto> definitions, required this.source, required this.updatedAt, this.freshness = ProviderCatalogFreshness.bundled, this.lastSuccessAt, this.lastAttemptAt, this.refreshError, final  List<ProviderWireFormatDto> wireFormats = const <ProviderWireFormatDto>[]}): _definitions = definitions,_wireFormats = wireFormats;
+  const _ProviderCatalogDto({required  List<ProviderDefinitionDto> definitions, required this.source, required this.updatedAt, this.freshness = ProviderCatalogFreshness.bundled, this.lastSuccessAt, this.lastAttemptAt, this.refreshError,  List<ProviderWireFormatDto> wireFormats = const <ProviderWireFormatDto>[]}): _definitions = definitions,_wireFormats = wireFormats;
   factory _ProviderCatalogDto.fromJson(Map<String, dynamic> json) => _$ProviderCatalogDtoFromJson(json);
 
  final  List<ProviderDefinitionDto> _definitions;
@@ -15570,7 +15571,7 @@ class _$ProviderDiagnosticDtoCopyWithImpl<$Res>
 /// Create a copy of ProviderDiagnosticDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? connectionId = null,Object? model = null,Object? status = null,Object? endpointReachable = null,Object? streaming = null,Object? toolCalling = null,Object? checkedAt = null,Object? error = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(ProviderDiagnosticDto(
 connectionId: null == connectionId ? _self.connectionId : connectionId // ignore: cast_nullable_to_non_nullable
 as String,model: null == model ? _self.model : model // ignore: cast_nullable_to_non_nullable
 as String,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
@@ -15854,7 +15855,7 @@ class _$TimelineEventDtoCopyWithImpl<$Res>
 /// Create a copy of TimelineEventDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? sessionId = null,Object? sequence = null,Object? type = null,Object? data = null,Object? createdAt = null,Object? turnId = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(TimelineEventDto(
 sessionId: null == sessionId ? _self.sessionId : sessionId // ignore: cast_nullable_to_non_nullable
 as String,sequence: null == sequence ? _self.sequence : sequence // ignore: cast_nullable_to_non_nullable
 as int,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
@@ -16002,7 +16003,7 @@ return $default(_that.sessionId,_that.sequence,_that.type,_that.data,_that.creat
 @JsonSerializable()
 
 class _TimelineEventDto implements TimelineEventDto {
-  const _TimelineEventDto({required this.sessionId, required this.sequence, required this.type, required final  Map<String, dynamic> data, required this.createdAt, this.turnId}): _data = data;
+  const _TimelineEventDto({required this.sessionId, required this.sequence, required this.type, required  Map<String, dynamic> data, required this.createdAt, this.turnId}): _data = data;
   factory _TimelineEventDto.fromJson(Map<String, dynamic> json) => _$TimelineEventDtoFromJson(json);
 
 @override final  String sessionId;
@@ -16138,7 +16139,7 @@ class _$ApprovalRequestDtoCopyWithImpl<$Res>
 /// Create a copy of ApprovalRequestDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? sessionId = null,Object? turnId = null,Object? toolCallId = null,Object? toolName = null,Object? risk = null,Object? arguments = null,Object? status = null,Object? createdAt = null,Object? preview = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(ApprovalRequestDto(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,sessionId: null == sessionId ? _self.sessionId : sessionId // ignore: cast_nullable_to_non_nullable
 as String,turnId: null == turnId ? _self.turnId : turnId // ignore: cast_nullable_to_non_nullable
@@ -16290,7 +16291,7 @@ return $default(_that.id,_that.sessionId,_that.turnId,_that.toolCallId,_that.too
 @JsonSerializable()
 
 class _ApprovalRequestDto implements ApprovalRequestDto {
-  const _ApprovalRequestDto({required this.id, required this.sessionId, required this.turnId, required this.toolCallId, required this.toolName, required this.risk, required final  Map<String, dynamic> arguments, required this.status, required this.createdAt, this.preview}): _arguments = arguments;
+  const _ApprovalRequestDto({required this.id, required this.sessionId, required this.turnId, required this.toolCallId, required this.toolName, required this.risk, required  Map<String, dynamic> arguments, required this.status, required this.createdAt, this.preview}): _arguments = arguments;
   factory _ApprovalRequestDto.fromJson(Map<String, dynamic> json) => _$ApprovalRequestDtoFromJson(json);
 
 @override final  String id;
@@ -16434,7 +16435,7 @@ class _$UserQuestionOptionDtoCopyWithImpl<$Res>
 /// Create a copy of UserQuestionOptionDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? label = null,Object? description = null,}) {
-  return _then(_self.copyWith(
+  return _then(UserQuestionOptionDto(
 label: null == label ? _self.label : label // ignore: cast_nullable_to_non_nullable
 as String,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
 as String,
@@ -16700,7 +16701,7 @@ class _$UserQuestionItemDtoCopyWithImpl<$Res>
 /// Create a copy of UserQuestionItemDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? header = null,Object? question = null,Object? options = null,}) {
-  return _then(_self.copyWith(
+  return _then(UserQuestionItemDto(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,header: null == header ? _self.header : header // ignore: cast_nullable_to_non_nullable
 as String,question: null == question ? _self.question : question // ignore: cast_nullable_to_non_nullable
@@ -16846,7 +16847,7 @@ return $default(_that.id,_that.header,_that.question,_that.options);case _:
 @JsonSerializable()
 
 class _UserQuestionItemDto implements UserQuestionItemDto {
-  const _UserQuestionItemDto({required this.id, required this.header, required this.question, required final  List<UserQuestionOptionDto> options}): _options = options;
+  const _UserQuestionItemDto({required this.id, required this.header, required this.question, required  List<UserQuestionOptionDto> options}): _options = options;
   factory _UserQuestionItemDto.fromJson(Map<String, dynamic> json) => _$UserQuestionItemDtoFromJson(json);
 
 @override final  String id;
@@ -16978,7 +16979,7 @@ class _$UserQuestionAnswerDtoCopyWithImpl<$Res>
 /// Create a copy of UserQuestionAnswerDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? questionId = null,Object? answer = null,Object? isFreeForm = null,}) {
-  return _then(_self.copyWith(
+  return _then(UserQuestionAnswerDto(
 questionId: null == questionId ? _self.questionId : questionId // ignore: cast_nullable_to_non_nullable
 as String,answer: null == answer ? _self.answer : answer // ignore: cast_nullable_to_non_nullable
 as String,isFreeForm: null == isFreeForm ? _self.isFreeForm : isFreeForm // ignore: cast_nullable_to_non_nullable
@@ -17247,7 +17248,7 @@ class _$UserQuestionRequestDtoCopyWithImpl<$Res>
 /// Create a copy of UserQuestionRequestDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? sessionId = null,Object? turnId = null,Object? toolCallId = null,Object? questions = null,Object? status = null,Object? createdAt = null,Object? answers = null,}) {
-  return _then(_self.copyWith(
+  return _then(UserQuestionRequestDto(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,sessionId: null == sessionId ? _self.sessionId : sessionId // ignore: cast_nullable_to_non_nullable
 as String,turnId: null == turnId ? _self.turnId : turnId // ignore: cast_nullable_to_non_nullable
@@ -17397,7 +17398,7 @@ return $default(_that.id,_that.sessionId,_that.turnId,_that.toolCallId,_that.que
 @JsonSerializable()
 
 class _UserQuestionRequestDto implements UserQuestionRequestDto {
-  const _UserQuestionRequestDto({required this.id, required this.sessionId, required this.turnId, required this.toolCallId, required final  List<UserQuestionItemDto> questions, required this.status, required this.createdAt, final  List<UserQuestionAnswerDto> answers = const <UserQuestionAnswerDto>[]}): _questions = questions,_answers = answers;
+  const _UserQuestionRequestDto({required this.id, required this.sessionId, required this.turnId, required this.toolCallId, required  List<UserQuestionItemDto> questions, required this.status, required this.createdAt,  List<UserQuestionAnswerDto> answers = const <UserQuestionAnswerDto>[]}): _questions = questions,_answers = answers;
   factory _UserQuestionRequestDto.fromJson(Map<String, dynamic> json) => _$UserQuestionRequestDtoFromJson(json);
 
 @override final  String id;
@@ -17543,7 +17544,7 @@ class _$ServerInfoDtoCopyWithImpl<$Res>
 /// Create a copy of ServerInfoDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? serverId = null,Object? version = null,Object? protocolVersion = null,Object? features = null,Object? homeDirectory = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(ServerInfoDto(
 serverId: null == serverId ? _self.serverId : serverId // ignore: cast_nullable_to_non_nullable
 as String,version: null == version ? _self.version : version // ignore: cast_nullable_to_non_nullable
 as String,protocolVersion: null == protocolVersion ? _self.protocolVersion : protocolVersion // ignore: cast_nullable_to_non_nullable
@@ -17690,7 +17691,7 @@ return $default(_that.serverId,_that.version,_that.protocolVersion,_that.feature
 @JsonSerializable()
 
 class _ServerInfoDto implements ServerInfoDto {
-  const _ServerInfoDto({required this.serverId, required this.version, required this.protocolVersion, required final  Map<String, bool> features, this.homeDirectory}): _features = features;
+  const _ServerInfoDto({required this.serverId, required this.version, required this.protocolVersion, required  Map<String, bool> features, this.homeDirectory}): _features = features;
   factory _ServerInfoDto.fromJson(Map<String, dynamic> json) => _$ServerInfoDtoFromJson(json);
 
 @override final  String serverId;
@@ -17824,7 +17825,7 @@ class _$RpcErrorDtoCopyWithImpl<$Res>
 /// Create a copy of RpcErrorDto
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? code = null,Object? message = null,Object? retryable = null,Object? details = freezed,}) {
-  return _then(_self.copyWith(
+  return _then(RpcErrorDto(
 code: null == code ? _self.code : code // ignore: cast_nullable_to_non_nullable
 as String,message: null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
 as String,retryable: null == retryable ? _self.retryable : retryable // ignore: cast_nullable_to_non_nullable
@@ -17970,7 +17971,7 @@ return $default(_that.code,_that.message,_that.retryable,_that.details);case _:
 @JsonSerializable()
 
 class _RpcErrorDto implements RpcErrorDto {
-  const _RpcErrorDto({required this.code, required this.message, required this.retryable, final  Map<String, dynamic>? details}): _details = details;
+  const _RpcErrorDto({required this.code, required this.message, required this.retryable,  Map<String, dynamic>? details}): _details = details;
   factory _RpcErrorDto.fromJson(Map<String, dynamic> json) => _$RpcErrorDtoFromJson(json);
 
 @override final  String code;

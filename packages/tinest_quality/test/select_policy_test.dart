@@ -73,8 +73,8 @@ final class _SelectPolicyVisitor extends RecursiveAstVisitor<void> {
     if (name != 'TRSelect' && name != 'TRSelectFormField') return;
     final arguments = <String, Expression>{
       for (final argument in argumentList.arguments)
-        if (argument is NamedExpression)
-          argument.name.label.name: argument.expression,
+        if (argument is NamedArgument)
+          argument.name.lexeme: argument.argumentExpression,
     };
     final searchable = arguments['searchable'];
     final presentation = arguments['presentation'];
