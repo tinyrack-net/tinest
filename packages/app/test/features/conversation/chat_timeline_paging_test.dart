@@ -105,6 +105,66 @@ Future<void> _pump(
 
 void main() {
   testWidgets(
+    'timeline rows keep token-backed edge and inter-row padding',
+    tags: const <String>[
+      'feature_test__conversation_history_pagination__widget',
+    ],
+    (tester) async {
+      await tester.binding.setSurfaceSize(const Size(800, 600));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+      await _pump(
+        tester,
+        items: _messages(1, 3),
+        onLoadOlder: () {},
+      );
+      await tester.pumpAndSettle();
+
+      EdgeInsets paddingFor(String key) => tester
+          .widgetList<Padding>(
+            find.ancestor(
+              of: find.byKey(ValueKey<String>(key)),
+              matching: find.byType(Padding),
+            ),
+          )
+          .map((padding) => padding.padding)
+          .whereType<EdgeInsets>()
+          .singleWhere(
+            (padding) =>
+                padding.left == TRSpacing.extraLarge &&
+                padding.right == TRSpacing.extraLarge,
+          );
+
+      expect(
+        paddingFor('history-1'),
+        const EdgeInsets.fromLTRB(
+          TRSpacing.extraLarge,
+          TRSpacing.large,
+          TRSpacing.extraLarge,
+          TRSpacing.small,
+        ),
+      );
+      expect(
+        paddingFor('history-2'),
+        const EdgeInsets.fromLTRB(
+          TRSpacing.extraLarge,
+          0,
+          TRSpacing.extraLarge,
+          TRSpacing.small,
+        ),
+      );
+      expect(
+        paddingFor('history-3'),
+        const EdgeInsets.fromLTRB(
+          TRSpacing.extraLarge,
+          0,
+          TRSpacing.extraLarge,
+          TRSpacing.large,
+        ),
+      );
+    },
+  );
+
+  testWidgets(
     'a short conversation with no older history never asks for a page',
     tags: const <String>[
       'feature_test__conversation_history_pagination__widget',
