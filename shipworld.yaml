@@ -32,8 +32,8 @@ targets:
       display-name: Tinest
       description: Local-first AI coding agent with an always-on daemon
       executable: tinest
-      homepage: https://github.com/tinyrack-net/coder
-      repository: tinyrack-net/coder
+      homepage: https://github.com/tinyrack-net/tinest
+      repository: tinyrack-net/tinest
     windows:
       application-id: Tinest
       executable: tinest.exe
@@ -100,8 +100,8 @@ targets:
       display-name: Tinest CLI
       description: Command line that hosts and administers a Tinest daemon
       executable: tinest-cli
-      homepage: https://github.com/tinyrack-net/coder
-      repository: tinyrack-net/coder
+      homepage: https://github.com/tinyrack-net/tinest
+      repository: tinyrack-net/tinest
     macos:
       entitlements: packages/cli/macos/Release.entitlements
       bundle-id: net.tinyrack.tinest.cli
