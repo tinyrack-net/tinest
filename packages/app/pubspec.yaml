@@ -1,7 +1,7 @@
 name: app
 description: Cross-platform GUI for Tinest.
 publish_to: none
-version: 0.10.0+13
+version: 0.11.0+14
 resolution: workspace
 
 environment:
