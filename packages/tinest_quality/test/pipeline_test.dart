@@ -620,7 +620,10 @@ void main() {
     expect(publishWingetScript, contains('Tinyrack.TinestCLI'));
     expect(publishWingetScript, contains('wingetcreate.exe update'));
     expect(publishWingetScript, contains('wingetcreate.exe submit'));
-    expect(publishWingetScript, contains('api.github.com/repos/microsoft/winget-pkgs/contents'));
+    expect(
+      publishWingetScript,
+      contains('api.github.com/repos/microsoft/winget-pkgs/contents'),
+    );
     expect(
       publishWingetScript,
       contains('.github/winget/initial-manifests'),
