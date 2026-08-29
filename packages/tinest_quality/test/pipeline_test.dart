@@ -702,10 +702,10 @@ void main() {
   test('release metadata points at the repository that hosts artifacts', () {
     expect(
       shipworld,
-      contains('homepage: https://github.com/tinyrack-net/coder'),
+      contains('homepage: https://github.com/tinyrack-net/tinest'),
     );
-    expect(shipworld, contains('repository: tinyrack-net/coder'));
-    expect(shipworld, isNot(contains('tinyrack-net/tinest')));
+    expect(shipworld, contains('repository: tinyrack-net/tinest'));
+    expect(shipworld, isNot(contains('tinyrack-net/coder')));
   });
 
   test('relay release has an independent version and reproducible image', () {
