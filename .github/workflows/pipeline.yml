@@ -1243,33 +1243,9 @@ jobs:
     runs-on: windows-2025
     timeout-minutes: 20
     steps:
+      - uses: actions/checkout@v5
       - name: Submit the WinGet manifest update
         shell: pwsh
         env:
           WINGET_CREATE_GITHUB_TOKEN: ${{ secrets.WINGET_TOKEN }}
-        run: |
-          $ErrorActionPreference = "Stop"
-          if ([string]::IsNullOrWhiteSpace($env:WINGET_CREATE_GITHUB_TOKEN)) {
-            throw "WINGET_TOKEN repository secret is required for WinGet publishing."
-          }
-
-          $version = $env:GITHUB_REF_NAME -replace '^v', ''
-          $downloadUrl = "https://github.com/${{ github.repository }}/releases/download/$env:GITHUB_REF_NAME"
-          $releaseNotesUrl = "https://github.com/${{ github.repository }}/releases/tag/$env:GITHUB_REF_NAME"
-
-          Invoke-WebRequest https://aka.ms/wingetcreate/latest -OutFile wingetcreate.exe
-          .\wingetcreate.exe update Tinyrack.Tinest `
-            --version $version `
-            --urls "$downloadUrl/Tinest-setup-win-x64.exe|x64" `
-            --release-notes-url "$releaseNotesUrl" `
-            --submit `
-            --no-open
-
-          # The CLI ships as a portable zip rather than an installer, so it is
-          # a separate winget package from the desktop app.
-          .\wingetcreate.exe update Tinyrack.TinestCLI `
-            --version $version `
-            --urls "$downloadUrl/tinest-cli-windows-x64.zip|x64" `
-            --release-notes-url "$releaseNotesUrl" `
-            --submit `
-            --no-open
+        run: .github/scripts/publish-winget.ps1 -ReleaseTag $env:GITHUB_REF_NAME

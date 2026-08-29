@@ -51,7 +51,7 @@ setup from a terminal against an already running one, discovering its token
 from the same configuration directory:
 
 ```sh
-brew install tinyrack-net/tap/tinest-cli   # or winget install tinyrack.tinest-cli
+brew install tinyrack-net/tap/tinest-cli   # or winget install Tinyrack.TinestCLI
 tinest-cli daemon start
 tinest-cli provider list
 tinest-cli agent apply reviewer --file reviewer.md
