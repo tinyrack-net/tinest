@@ -17,6 +17,7 @@ dependencies:
   daemon: ^0.1.0
   path: ^1.9.1
   protocol: ^0.1.0
+  # tinyrack_ui 0.71.0 still requires qr ^3.0.2.
   qr: ^3.0.2
   web_socket_channel: ^3.0.3
 

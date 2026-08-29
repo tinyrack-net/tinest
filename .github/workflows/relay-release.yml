@@ -9,7 +9,7 @@ permissions:
   contents: read
 
 env:
-  FLUTTER_VERSION: 3.47.0
+  FLUTTER_VERSION: 3.47.2
   TINYRACK_DART_PACKAGES_REF: 866a29af27a9f3e077b1dd905f2f79d7ca2c2769
   RELAY_IMAGE: ghcr.io/tinyrack-net/tinest-relay
 

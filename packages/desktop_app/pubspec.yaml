@@ -28,6 +28,7 @@ dev_dependencies:
       path: packages/dropwell
   flutter_launcher_icons: ^0.14.4
   flutter_riverpod: ^3.4.2
+  # Keep aligned with app; share_plus 12.x still requires win32 5.x.
   flutter_secure_storage: ^10.3.1
   flutter_test:
     sdk: flutter
@@ -49,7 +50,7 @@ dev_dependencies:
   tinyrack_ui:
     git:
       url: https://github.com/tinyrack-net/design.git
-      ref: a8aa3025bac09734474e13ed21b24c13bf4fbd95
+      ref: 3889a9702d9260cdeb82ebb97cdf619b8a1dff49
       path: packages/ui_flutter
 
 flutter:

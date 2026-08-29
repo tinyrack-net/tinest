@@ -24,6 +24,7 @@ dependencies:
     sdk: flutter
   flutter_markdown_plus: ^1.0.12
   flutter_riverpod: ^3.4.2
+  # Version 11 requires win32 6.x, which conflicts with share_plus 12.x.
   flutter_secure_storage: ^10.3.1
   go_router: ^18.0.0
   intl: ^0.20.3
@@ -38,6 +39,7 @@ dependencies:
   path: ^1.9.1
   protocol: ^0.1.0
   riverpod_annotation: ^4.0.6
+  # launch_at_startup 0.5.1 still requires win32_registry 2.x / win32 5.x.
   share_plus: ^12.0.2
   shared_preferences: ^2.5.5
   termworld:
@@ -48,7 +50,7 @@ dependencies:
   tinyrack_ui:
     git:
       url: https://github.com/tinyrack-net/design.git
-      ref: a8aa3025bac09734474e13ed21b24c13bf4fbd95
+      ref: 3889a9702d9260cdeb82ebb97cdf619b8a1dff49
       path: packages/ui_flutter
   tray_manager: ^0.5.3
   url_launcher: ^6.3.2
@@ -60,7 +62,7 @@ dev_dependencies:
   flutter_launcher_icons: ^0.14.4
   flutter_test:
     sdk: flutter
-  go_router_builder: ^4.4.0
+  go_router_builder: ^4.4.1
   integration_test:
     sdk: flutter
   relay_protocol: ^0.1.0

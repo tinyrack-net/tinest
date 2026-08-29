@@ -1,4 +1,4 @@
-FROM dart:3.13.0@sha256:e76b27eb060d2b0767f04ca696e6e8c1ef949131f306c74706444724599c930e AS build
+FROM dart:3.13.2@sha256:18cbfc2ede913addb75d3a4cd1dbc9288ba138e3fc76414dd864b2c847779f79 AS build
 WORKDIR /src
 COPY packages/relay/docker/workspace_pubspec.yaml pubspec.yaml
 COPY packages/relay/docker/pubspec.lock pubspec.lock
