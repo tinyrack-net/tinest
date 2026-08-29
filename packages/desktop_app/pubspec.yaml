@@ -1,14 +1,14 @@
 name: desktop_app
 description: Desktop composition root for Tinest and its embedded daemon.
 publish_to: none
-version: 0.10.0+13
+version: 0.11.0+14
 resolution: workspace
 
 environment:
   sdk: ^3.13.0
 
 dependencies:
-  app: ^0.10.0+13
+  app: ^0.11.0+14
   daemon: ^0.1.0
   flutter:
     sdk: flutter
