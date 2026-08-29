@@ -8,6 +8,7 @@ environment:
   sdk: ^3.13.0
 
 dependencies:
+  # dependency_validator 5.0.6 constrains analyzer to <14.0.0.
   analyzer: ^13.3.0
   cliweave:
     git:
@@ -15,7 +16,7 @@ dependencies:
       ref: 866a29af27a9f3e077b1dd905f2f79d7ca2c2769
       path: packages/cliweave
   path: ^1.9.1
-  yaml: ^3.1.3
+  yaml: ^3.1.4
 
 dev_dependencies:
   test: ^1.31.1

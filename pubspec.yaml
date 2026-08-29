@@ -10,6 +10,7 @@ workspace:
 
 dev_dependencies:
   dependency_validator: ^5.0.6
+  # flutter_launcher_icons 0.14.4 requires cli_util ^0.4.1; Melos 8 requires ^0.5.0.
   melos: 7.8.1
   tinest_quality: ^0.1.0
   very_good_analysis: ^10.3.0

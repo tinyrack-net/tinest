@@ -18,7 +18,7 @@ permissions:
   contents: read
 
 env:
-  FLUTTER_VERSION: 3.47.0
+  FLUTTER_VERSION: 3.47.2
   TINYRACK_DART_PACKAGES_REF: 866a29af27a9f3e077b1dd905f2f79d7ca2c2769
   # wrangler-action defaults to 3.90.0, which predates Workers static assets
   # and rejects an `assets` config for having no script entry-point.
@@ -62,7 +62,7 @@ jobs:
       - uses: actions/checkout@v5
       - uses: dart-lang/setup-dart@v1
         with:
-          sdk: 3.13.0
+          sdk: 3.13.2
       - id: scope
         env:
           GH_TOKEN: ${{ github.token }}
@@ -1134,7 +1134,7 @@ jobs:
       - uses: actions/checkout@v5
       - uses: dart-lang/setup-dart@v1
         with:
-          sdk: 3.13.0
+          sdk: 3.13.2
       - name: Checkout Tinyrack Dart packages
         uses: actions/checkout@v5
         with:
@@ -1180,7 +1180,7 @@ jobs:
       - uses: actions/checkout@v5
       - uses: dart-lang/setup-dart@v1
         with:
-          sdk: 3.13.0
+          sdk: 3.13.2
       - name: Checkout Tinyrack Dart packages
         uses: actions/checkout@v5
         with:

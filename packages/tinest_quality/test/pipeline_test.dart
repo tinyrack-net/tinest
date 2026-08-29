@@ -37,6 +37,12 @@ void main() {
   final androidBuild = File(
     'packages/app/android/build.gradle.kts',
   ).readAsStringSync();
+  final androidSettings = File(
+    'packages/app/android/settings.gradle.kts',
+  ).readAsStringSync();
+  final androidGradleWrapper = File(
+    'packages/app/android/gradle/wrapper/gradle-wrapper.properties',
+  ).readAsStringSync();
   final androidAppBuild = File(
     'packages/app/android/app/build.gradle.kts',
   ).readAsStringSync();
@@ -679,14 +685,14 @@ void main() {
     expect(shipworld, contains('source: packages/relay/pubspec.yaml'));
     expect(shipworld, contains('tag: "relay-v{version}"'));
 
-    expect(workflow, contains('FLUTTER_VERSION: 3.47.0'));
-    expect(workflow, contains('sdk: 3.13.0'));
-    expect(relayWorkflow, contains('FLUTTER_VERSION: 3.47.0'));
+    expect(workflow, contains('FLUTTER_VERSION: 3.47.2'));
+    expect(workflow, contains('sdk: 3.13.2'));
+    expect(relayWorkflow, contains('FLUTTER_VERSION: 3.47.2'));
     expect(
       relayDockerfile,
       contains(
-        'dart:3.13.0@sha256:'
-        'e76b27eb060d2b0767f04ca696e6e8c1ef949131f306c74706444724599c930e',
+        'dart:3.13.2@sha256:'
+        '18cbfc2ede913addb75d3a4cd1dbc9288ba138e3fc76414dd864b2c847779f79',
       ),
     );
     expect(relayDockerfile, contains('cc-debian12:nonroot@sha256:'));
@@ -1045,6 +1051,18 @@ void main() {
     expect(script, contains('ExecOperations'));
     expect(script, isNot(contains('project.exec')));
     expect(script, contains('android.compileSdk = 36'));
+  });
+
+  test('Android build tooling stays on the supported stable releases', () {
+    expect(
+      androidSettings,
+      contains('id("com.android.application") version "9.3.2"'),
+    );
+    expect(
+      androidSettings,
+      contains('id("org.jetbrains.kotlin.android") version "2.4.10"'),
+    );
+    expect(androidGradleWrapper, contains('gradle-9.7.1-all.zip'));
   });
 
   test('shipworld runs from the pinned Tinyrack Dart workspace', () {
