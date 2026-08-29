@@ -608,10 +608,35 @@ void main() {
       publishWinget,
       contains("needs.publish-release.result == 'success'"),
     );
-    expect(publishWinget, contains('update Tinyrack.Tinest `'));
-    expect(publishWinget, contains('update Tinyrack.TinestCLI `'));
-    expect(publishWinget, isNot(contains('update tinyrack.tinest `')));
-    expect(publishWinget, isNot(contains('update tinyrack.tinest-cli `')));
+    expect(publishWinget, contains('actions/checkout@v5'));
+    expect(
+      publishWinget,
+      contains('.github/scripts/publish-winget.ps1'),
+    );
+    final publishWingetScript = File(
+      '.github/scripts/publish-winget.ps1',
+    ).readAsStringSync();
+    expect(publishWingetScript, contains('Tinyrack.Tinest'));
+    expect(publishWingetScript, contains('Tinyrack.TinestCLI'));
+    expect(publishWingetScript, contains('wingetcreate.exe update'));
+    expect(publishWingetScript, contains('wingetcreate.exe submit'));
+    expect(publishWingetScript, contains('api.github.com/repos/microsoft/winget-pkgs/contents'));
+    expect(
+      publishWingetScript,
+      contains('.github/winget/initial-manifests'),
+    );
+  });
+
+  test('a failed WinGet publication can recover from a release tag', () {
+    final recovery = File(
+      '.github/workflows/recover-release-winget.yml',
+    ).readAsStringSync();
+
+    expect(recovery, contains('release_tag:'));
+    expect(recovery, contains('actions/checkout@v5'));
+    expect(recovery, contains("ref: 'main'"));
+    expect(recovery, contains('.github/scripts/publish-winget.ps1'));
+    expect(recovery, contains('secrets.WINGET_TOKEN'));
   });
 
   test('a release web deployment can recover from a skipped publish job', () {

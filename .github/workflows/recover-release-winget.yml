@@ -1,0 +1,28 @@
+name: Recover Release WinGet
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: Existing Tinest release tag to publish to WinGet
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  publish-winget:
+    name: Publish WinGet
+    runs-on: windows-2025
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: 'main'
+      - name: Submit the WinGet manifests
+        shell: pwsh
+        env:
+          WINGET_CREATE_GITHUB_TOKEN: ${{ secrets.WINGET_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: .github/scripts/publish-winget.ps1 -ReleaseTag '${{ inputs.release_tag }}'
