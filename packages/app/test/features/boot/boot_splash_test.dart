@@ -99,10 +99,7 @@ void main() {
       // the web overlay are both fixed to this color, so following the system
       // here would flash on a light-mode machine.
       await tester.pumpWidget(
-        MaterialApp(
-          theme: TinyrackTheme.light(),
-          home: const BootSplash(),
-        ),
+        MaterialApp(theme: TinyrackTheme.light(), home: const BootSplash()),
       );
 
       final box = tester.widget<ColoredBox>(

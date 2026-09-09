@@ -4,7 +4,7 @@ import 'package:protocol/protocol.dart';
 /// One tool group and the catalog entries that landed in it.
 final class AgentToolGroupView {
   /// Creates a group view over [tools].
-  const AgentToolGroupView({required this.group, required this.tools});
+  const new({required this.group, required this.tools});
 
   /// The group these tools are presented and toggled under.
   final String group;
@@ -13,9 +13,7 @@ final class AgentToolGroupView {
   final List<AgentToolDefinitionDto> tools;
 
   /// The ids a user may turn on or off independently.
-  List<String> get toggleableIds => <String>[
-    for (final tool in tools) tool.id,
-  ];
+  List<String> get toggleableIds => <String>[for (final tool in tools) tool.id];
 
   /// How many of this group's tools a turn would receive.
   int enabledCount(Set<String> selected) =>

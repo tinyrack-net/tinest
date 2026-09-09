@@ -51,7 +51,7 @@ abstract interface class ProviderCliBackend {
 /// Adapts the full daemon client to the CLI's narrow administration port.
 final class TinestApiProviderCliBackend implements ProviderCliBackend {
   /// Creates a provider CLI adapter.
-  const TinestApiProviderCliBackend(this._api);
+  const new(this._api);
 
   final TinestApi _api;
 
@@ -182,11 +182,7 @@ Future<int> providerConnect({
   switch (method.flow) {
     case ProviderAuthFlow.apiKey:
       final key = apiKey ?? await (readSecret?.call() ?? _missingSecret());
-      await backend.connectApiKey(
-        definitionId,
-        key,
-        modelPrefix: modelPrefix,
-      );
+      await backend.connectApiKey(definitionId, key, modelPrefix: modelPrefix);
       output.writeln('Connected ${definition.name}.');
       return 0;
     case ProviderAuthFlow.none:
@@ -229,10 +225,7 @@ Future<int> providerPrefixSet({
   required String connectionId,
   required String modelPrefix,
 }) async {
-  final connection = await backend.updateModelPrefix(
-    connectionId,
-    modelPrefix,
-  );
+  final connection = await backend.updateModelPrefix(connectionId, modelPrefix);
   output.writeln('Model prefix updated to ${connection.modelPrefix}.');
   return 0;
 }
@@ -261,9 +254,8 @@ Future<int> providerCatalogRefresh({
   return 0;
 }
 
-Future<String> _missingSecret() => Future<String>.error(
-  StateError('API key input is required.'),
-);
+Future<String> _missingSecret() =>
+    Future<String>.error(StateError('API key input is required.'));
 
 bool _terminal(ProviderAuthAttemptStatus status) =>
     status == ProviderAuthAttemptStatus.succeeded ||

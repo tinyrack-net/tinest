@@ -6,7 +6,7 @@
 /// so nothing downstream has to know which API answered.
 final class ModelUsage {
   /// Creates a [ModelUsage].
-  const ModelUsage({
+  const new({
     this.inputTokens = 0,
     this.cachedInputTokens = 0,
     this.outputTokens = 0,
@@ -15,7 +15,7 @@ final class ModelUsage {
   });
 
   /// Decodes a persisted or transported usage snapshot.
-  factory ModelUsage.fromJson(Map<String, dynamic> json) => ModelUsage(
+  factory fromJson(Map<String, dynamic> json) => ModelUsage(
     inputTokens: _int(json['inputTokens']),
     cachedInputTokens: _int(json['cachedInputTokens']),
     outputTokens: _int(json['outputTokens']),

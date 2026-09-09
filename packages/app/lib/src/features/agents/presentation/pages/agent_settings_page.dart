@@ -25,7 +25,7 @@ import 'package:tinyrack_ui/tinyrack_ui.dart';
 /// Markdown-backed agent manager for one connected daemon.
 class AgentSettingsPage extends ConsumerWidget {
   /// Creates an agent settings page.
-  const AgentSettingsPage({
+  const new({
     required this.hostId,
     required this.paneController,
     required this.slot,
@@ -230,7 +230,7 @@ class AgentSettingsPaneController extends SettingsPaneCoordinatorBase {
 enum _AgentPaneDestination { create, existing }
 
 class _AgentDefinitionList extends StatelessWidget {
-  const _AgentDefinitionList({
+  const new({
     required this.state,
     required this.selectedId,
     required this.onSelected,
@@ -300,7 +300,7 @@ class _AgentDefinitionList extends StatelessWidget {
 }
 
 class _AgentEditor extends ConsumerStatefulWidget {
-  const _AgentEditor({
+  const new({
     required this.hostId,
     required this.state,
     required this.definition,
@@ -475,9 +475,7 @@ class _AgentEditorState extends ConsumerState<_AgentEditor> {
           onPressed: canSave && !harnessBlocked
               ? () => _save(force: false)
               : null,
-          child: TRText.inherit(
-            _saving ? l10n.commonSaving : l10n.commonSave,
-          ),
+          child: TRText.inherit(_saving ? l10n.commonSaving : l10n.commonSave),
         ),
       ],
       child: SettingsScaffold(
@@ -488,9 +486,7 @@ class _AgentEditorState extends ConsumerState<_AgentEditor> {
             banner: definition.diagnostics.isEmpty
                 ? null
                 : TRAlert(
-                    title: TRText.inherit(
-                      definition.diagnostics.first.code,
-                    ),
+                    title: TRText.inherit(definition.diagnostics.first.code),
                     description: TRText.inherit(
                       definition.diagnostics
                           .map((diagnostic) => diagnostic.message)
@@ -536,13 +532,9 @@ class _AgentEditorState extends ConsumerState<_AgentEditor> {
                     key: const ValueKey<String>(
                       'agent-settings-model-unavailable',
                     ),
-                    title: TRText.inherit(
-                      l10n.modelSettingsUnavailableTitle,
-                    ),
+                    title: TRText.inherit(l10n.modelSettingsUnavailableTitle),
                     description: TRText.inherit(
-                      l10n.modelSettingsUnavailableDescription(
-                        _modelId.text,
-                      ),
+                      l10n.modelSettingsUnavailableDescription(_modelId.text),
                     ),
                     icon: const Icon(TinestIcons.warning),
                     variant: TRStatusVariant.warning,
@@ -578,9 +570,7 @@ class _AgentEditorState extends ConsumerState<_AgentEditor> {
               ),
               if (_modelSource == AgentModelSource.fixed) ...<Widget>[
                 Semantics(
-                  key: const ValueKey<String>(
-                    'agent-settings-model-selector',
-                  ),
+                  key: const ValueKey<String>('agent-settings-model-selector'),
                   hint: modelBlocked ? l10n.composerConnectProviderFirst : null,
                   child: SettingsRow(
                     flush: true,
@@ -608,9 +598,7 @@ class _AgentEditorState extends ConsumerState<_AgentEditor> {
               children: <Widget>[
                 TRAlert(
                   key: const ValueKey<String>('agent-plugins-loading'),
-                  title: TRText.inherit(
-                    l10n.agentSettingsPluginsLoading,
-                  ),
+                  title: TRText.inherit(l10n.agentSettingsPluginsLoading),
                   description: pluginsState.hasError
                       ? TRText.inherit('${pluginsState.error}')
                       : null,
@@ -628,9 +616,7 @@ class _AgentEditorState extends ConsumerState<_AgentEditor> {
               banner: harnessDiagnostics.isEmpty
                   ? null
                   : TRAlert(
-                      key: const ValueKey<String>(
-                        'agent-harness-diagnostics',
-                      ),
+                      key: const ValueKey<String>('agent-harness-diagnostics'),
                       title: TRText.inherit(
                         l10n.agentSettingsHarnessDiagnostics,
                       ),
@@ -656,9 +642,7 @@ class _AgentEditorState extends ConsumerState<_AgentEditor> {
                 else
                   TRSelect<String>.controlled(
                     searchable: true,
-                    presentation: TinestSelectPresentation.resolve(
-                      context,
-                    ),
+                    presentation: TinestSelectPresentation.resolve(context),
                     key: const ValueKey<String>('agent-plugin-driver'),
                     label: l10n.agentSettingsDriver,
                     value: _driverId.isEmpty ? null : _driverId,
@@ -769,9 +753,7 @@ class _AgentEditorState extends ConsumerState<_AgentEditor> {
               children: <Widget>[
                 for (final pluginId in settingsPluginIds)
                   TRTextField(
-                    key: ValueKey<String>(
-                      'agent-plugin-settings-$pluginId',
-                    ),
+                    key: ValueKey<String>('agent-plugin-settings-$pluginId'),
                     controller: _settingsController(pluginId),
                     enabled: editable,
                     minLines: 3,
@@ -801,9 +783,7 @@ class _AgentEditorState extends ConsumerState<_AgentEditor> {
                   ),
                 for (final subagent in subagents)
                   TinestCheckboxRow(
-                    key: ValueKey<String>(
-                      'agent-callable-${subagent.id}',
-                    ),
+                    key: ValueKey<String>('agent-callable-${subagent.id}'),
                     value: _callableAgents.contains(subagent.id),
                     onChanged: editable
                         ? (enabled) => setState(() {
@@ -962,10 +942,7 @@ class _AgentEditorState extends ConsumerState<_AgentEditor> {
     ];
     if (_driverId.isNotEmpty &&
         !drivers.any((driver) => driver.id == _driverId)) {
-      items.insert(
-        0,
-        TRSelectItem<String>(value: _driverId, label: _driverId),
-      );
+      items.insert(0, TRSelectItem<String>(value: _driverId, label: _driverId));
     }
     return items;
   }
@@ -1009,19 +986,15 @@ class _AgentEditorState extends ConsumerState<_AgentEditor> {
     ..._initialSettingPluginIds,
   };
 
-  TextEditingController _settingsController(String pluginId) =>
-      _pluginSettings.putIfAbsent(
-        pluginId,
-        () => _pluginSettingsController(pluginId),
-      );
+  TextEditingController _settingsController(String pluginId) => _pluginSettings
+      .putIfAbsent(pluginId, () => _pluginSettingsController(pluginId));
 
   TextEditingController _pluginSettingsController(
     String pluginId, {
     Map<String, dynamic>? initial,
   }) => TextEditingController(
-    text: const JsonEncoder.withIndent(
-      '  ',
-    ).convert(initial ?? <String, dynamic>{}),
+    text: const JsonEncoder.withIndent('  ')
+        .convert(initial ?? <String, dynamic>{}),
   );
 
   Map<String, Map<String, dynamic>> _decodedPluginSettings() =>
@@ -1229,9 +1202,7 @@ class _AgentEditorState extends ConsumerState<_AgentEditor> {
         if (requested.isEmpty)
           SettingsRow(title: TRText.inherit(l10n.agentSettingsNoCapabilities))
         else if (!grantsState.hasValue)
-          SettingsRow(
-            title: TRText.inherit(l10n.agentSettingsPluginsLoading),
-          )
+          SettingsRow(title: TRText.inherit(l10n.agentSettingsPluginsLoading))
         else
           for (final request in requested)
             SettingsRow(
@@ -1340,9 +1311,8 @@ class _AgentEditorState extends ConsumerState<_AgentEditor> {
       placeholder: _modelId.text.isEmpty ? l10n.composerModel : _modelId.text,
       enabled: enabled,
       leading: Icon(blocked ? TinestIcons.lock : TinestIcons.memory),
-      onValueChange: (option) => setState(
-        () => _modelId.text = option.model.id,
-      ),
+      onValueChange: (option) =>
+          setState(() => _modelId.text = option.model.id),
     );
     if (!blocked) return select;
     return BlockedControl(
@@ -1478,10 +1448,7 @@ class _AgentEditorState extends ConsumerState<_AgentEditor> {
 }
 
 final class _PluginContributionView {
-  const _PluginContributionView({
-    required this.plugin,
-    required this.contribution,
-  });
+  const new({required this.plugin, required this.contribution});
 
   final PluginDescriptorDto plugin;
   final PluginContributionDto contribution;
@@ -1516,7 +1483,7 @@ final class _PluginContributionView {
 }
 
 final class _ExtensionRow {
-  const _ExtensionRow({
+  const new({
     required this.id,
     required this.label,
     required this.description,
@@ -1532,7 +1499,7 @@ final class _ExtensionRow {
 }
 
 final class _PluginExtensionView {
-  const _PluginExtensionView(this.plugin);
+  const new(this.plugin);
 
   final PluginDescriptorDto plugin;
 
@@ -1555,7 +1522,7 @@ final class _PluginExtensionView {
 }
 
 final class _HarnessDiagnostic {
-  const _HarnessDiagnostic(this.message);
+  const new(this.message);
 
   final String message;
   bool get blocking => true;
@@ -1585,11 +1552,7 @@ String _pluginLabel(List<PluginDescriptorDto> plugins, String pluginId) =>
     pluginId;
 
 class _CreateAgentInput {
-  const _CreateAgentInput({
-    required this.id,
-    required this.name,
-    required this.mode,
-  });
+  const new({required this.id, required this.name, required this.mode});
 
   final String id;
   final String name;
@@ -1597,7 +1560,7 @@ class _CreateAgentInput {
 }
 
 class _CreateAgentPane extends StatefulWidget {
-  const _CreateAgentPane({
+  const new({
     required this.existingIds,
     required this.onCreate,
     required this.onCreated,

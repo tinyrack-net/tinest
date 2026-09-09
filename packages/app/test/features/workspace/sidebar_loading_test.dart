@@ -68,22 +68,20 @@ void main() {
     tags: const <String>['feature_test__workspace_async_loading__widget'],
   );
 
-  testWidgets(
-    'an empty catalog still resolves to the real empty state',
-    (tester) async {
-      await tester.binding.setSurfaceSize(const Size(1200, 900));
-      addTearDown(() => tester.binding.setSurfaceSize(null));
-      final api = FakeTinestApi();
-      final router = await pumpRoutedApp(
-        tester,
-        api,
-        initialLocation: const WorkspaceHomeRoute().location,
-      );
-      addTearDown(router.dispose);
+  testWidgets('an empty catalog still resolves to the real empty state', (
+    tester,
+  ) async {
+    await tester.binding.setSurfaceSize(const Size(1200, 900));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    final api = FakeTinestApi();
+    final router = await pumpRoutedApp(
+      tester,
+      api,
+      initialLocation: const WorkspaceHomeRoute().location,
+    );
+    addTearDown(router.dispose);
 
-      expect(find.byType(SidebarTreeSkeleton), findsNothing);
-      expect(find.text('아직 workspace가 없습니다.'), findsOneWidget);
-    },
-    tags: const <String>['feature_test__workspace_async_loading__widget'],
-  );
+    expect(find.byType(SidebarTreeSkeleton), findsNothing);
+    expect(find.text('아직 workspace가 없습니다.'), findsOneWidget);
+  }, tags: const <String>['feature_test__workspace_async_loading__widget']);
 }

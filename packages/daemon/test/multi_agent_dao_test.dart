@@ -5,7 +5,7 @@ import 'package:protocol/protocol.dart';
 import 'package:test/test.dart';
 
 final class _FixedClock implements Clock {
-  const _FixedClock(this.now);
+  const new(this.now);
 
   final DateTime now;
 

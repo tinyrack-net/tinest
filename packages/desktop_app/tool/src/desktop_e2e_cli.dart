@@ -10,7 +10,7 @@ typedef DesktopE2eCliOptions = DesktopE2eOptions;
 typedef DesktopE2eExecutor = Future<int> Function(DesktopE2eCliOptions options);
 
 final class _DesktopE2eContext implements CommandContext {
-  const _DesktopE2eContext({
+  const new({
     required this.process,
     required this.execute,
     required this.detectedJobs,

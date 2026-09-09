@@ -6,7 +6,7 @@ import 'package:daemon/src/features/mcp/infrastructure/mcp.dart';
 /// asserting on [requests] and pushing server-originated notifications.
 final class ScriptedMcpServer {
   /// Creates a server that answers with the supplied script.
-  ScriptedMcpServer({
+  new({
     this.protocolVersion = preferredMcpProtocolVersion,
     this.serverName = 'fake',
     this.serverVersion = '1.0.0',
@@ -161,9 +161,7 @@ final class ScriptedMcpServer {
           if (index + 1 < resourcePages.length) 'nextCursor': '${index + 1}',
         });
       case McpMethod.resourceTemplatesList:
-        _respond(id, <String, dynamic>{
-          'resourceTemplates': resourceTemplates,
-        });
+        _respond(id, <String, dynamic>{'resourceTemplates': resourceTemplates});
       case McpMethod.resourcesRead:
         _respond(
           id,

@@ -7,7 +7,7 @@ import 'package:path/path.dart' as p;
 /// POSIX record locks are owned per process, so a second handle opened by the
 /// test itself would acquire the lock instead of contending for it.
 final class DaemonLockHolder {
-  DaemonLockHolder._(this._process);
+  new _(this._process);
 
   final Process _process;
 

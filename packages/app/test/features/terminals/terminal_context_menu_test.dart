@@ -95,7 +95,7 @@ final class _RecordingPresenter implements TRContextMenuPresenter {
 }
 
 final class _RecordingHost extends StatefulWidget {
-  const _RecordingHost({
+  const new({
     required this.presenter,
     required this.controller,
     required this.itemsBuilder,
@@ -195,10 +195,8 @@ Future<FakeTinestApi> _pumpTerminal(
           locale: testLocale,
           localizationsDelegates: testLocalizationsDelegates,
           supportedLocales: testSupportedLocales,
-          builder: (context, child) => TRUiDensityScope(
-            density: density,
-            child: child!,
-          ),
+          builder: (context, child) =>
+              TRUiDensityScope(density: density, child: child!),
           routerConfig: router,
         ),
       ),
@@ -209,37 +207,35 @@ Future<FakeTinestApi> _pumpTerminal(
 }
 
 void main() {
-  testWidgets(
-    'the composition root installs the system-menu presenter',
-    (tester) async {
-      final store = MemoryAppStore(
-        settings: const AppSettings(embeddedDaemonEnabled: false),
-      );
-      late TRContextMenuPresenter resolved;
-      await tester.pumpWidget(
-        TinestApp(
-          services: AppServices(
-            settings: store,
-            profiles: store,
-            credentials: store,
-            clients: const _OfflineClients(),
-            clientKind: 'test',
-          ),
-          autostart: FakeAutostartRegistration(),
+  testWidgets('the composition root installs the system-menu presenter', (
+    tester,
+  ) async {
+    final store = MemoryAppStore(
+      settings: const AppSettings(embeddedDaemonEnabled: false),
+    );
+    late TRContextMenuPresenter resolved;
+    await tester.pumpWidget(
+      TinestApp(
+        services: AppServices(
+          settings: store,
+          profiles: store,
+          credentials: store,
+          clients: const _OfflineClients(),
+          clientKind: 'test',
         ),
-      );
-      await tester.pumpAndSettle();
+        autostart: FakeAutostartRegistration(),
+      ),
+    );
+    await tester.pumpAndSettle();
 
-      // Reading it from inside the running app is what proves the scope really
-      // wraps the router, rather than that the constant exists.
-      resolved = TRContextMenuPresenterScope.of(
-        tester.element(find.byType(Router<Object>)),
-      );
+    // Reading it from inside the running app is what proves the scope really
+    // wraps the router, rather than that the constant exists.
+    resolved = TRContextMenuPresenterScope.of(
+      tester.element(find.byType(Router<Object>)),
+    );
 
-      expect(resolved, isA<TRNativeContextMenuPresenter>());
-    },
-    tags: const <String>['feature_test__terminal_lifecycle__widget'],
-  );
+    expect(resolved, isA<TRNativeContextMenuPresenter>());
+  }, tags: const <String>['feature_test__terminal_lifecycle__widget']);
 
   for (final (name, size) in <(String, Size)>[
     ('desktop', const Size(1100, 760)),
@@ -275,121 +271,108 @@ void main() {
     );
   }
 
-  testWidgets(
-    'the terminal receives Tinyrack presentation tokens',
-    (tester) async {
-      await _pumpTerminal(tester, presenter: _RecordingPresenter());
+  testWidgets('the terminal receives Tinyrack presentation tokens', (
+    tester,
+  ) async {
+    await _pumpTerminal(tester, presenter: _RecordingPresenter());
 
-      final finder = find.byType(TerminalView);
-      final terminal = tester.widget<TerminalView>(finder);
-      final colors = tester.element(finder).tinyrackTheme;
-      final theme = terminal.theme!;
-      final style = terminal.style!;
+    final finder = find.byType(TerminalView);
+    final terminal = tester.widget<TerminalView>(finder);
+    final colors = tester.element(finder).tinyrackTheme;
+    final theme = terminal.theme!;
+    final style = terminal.style!;
 
-      expect(terminal.terminal.options.rightClickSelectsWord, isFalse);
-      expect(theme.background, colors.surface);
-      expect(theme.foreground, colors.text);
-      expect(theme.cursor, colors.focus);
-      expect(theme.cursorAccent, colors.surface);
-      expect(theme.selection, colors.surfaceSelected);
-      expect(theme.selectionInactive, colors.surfaceSelected);
-      expect(theme.palette, hasLength(256));
-      expect(theme.palette.take(16), <Color>[
-        colors.surface,
-        colors.dangerForeground,
-        colors.successForeground,
-        colors.warningForeground,
-        colors.infoForeground,
-        colors.primaryForeground,
-        colors.infoBorder,
-        colors.text,
-        colors.textMuted,
-        colors.dangerBorder,
-        colors.successBorder,
-        colors.warningBorder,
-        colors.infoBorder,
-        colors.primaryForeground,
-        colors.infoForeground,
-        colors.text,
-      ]);
-      expect(
-        theme.palette.skip(16),
-        TerminalThemes.defaultTheme.palette.skip(16),
-      );
-      expect(style.fontSize, TRTypography.code.fontSize);
-      expect(style.height, TRTypography.code.height);
-      expect(style.fontFamily, TRTypography.code.fontFamily);
-      expect(style.fontWeight, TRTypography.code.fontWeight);
-      expect(style.letterSpacing, TRTypography.code.letterSpacing);
-      expect(terminal.padding, const EdgeInsets.all(TRSpacing.small));
-    },
-    tags: const <String>['feature_test__terminal_lifecycle__widget'],
-  );
+    expect(terminal.terminal.options.rightClickSelectsWord, isFalse);
+    expect(theme.background, colors.surface);
+    expect(theme.foreground, colors.text);
+    expect(theme.cursor, colors.focus);
+    expect(theme.cursorAccent, colors.surface);
+    expect(theme.selection, colors.surfaceSelected);
+    expect(theme.selectionInactive, colors.surfaceSelected);
+    expect(theme.palette, hasLength(256));
+    expect(theme.palette.take(16), <Color>[
+      colors.surface,
+      colors.dangerForeground,
+      colors.successForeground,
+      colors.warningForeground,
+      colors.infoForeground,
+      colors.primaryForeground,
+      colors.infoBorder,
+      colors.text,
+      colors.textMuted,
+      colors.dangerBorder,
+      colors.successBorder,
+      colors.warningBorder,
+      colors.infoBorder,
+      colors.primaryForeground,
+      colors.infoForeground,
+      colors.text,
+    ]);
+    expect(
+      theme.palette.skip(16),
+      TerminalThemes.defaultTheme.palette.skip(16),
+    );
+    expect(style.fontSize, TRTypography.code.fontSize);
+    expect(style.height, TRTypography.code.height);
+    expect(style.fontFamily, TRTypography.code.fontFamily);
+    expect(style.fontWeight, TRTypography.code.fontWeight);
+    expect(style.letterSpacing, TRTypography.code.letterSpacing);
+    expect(terminal.padding, const EdgeInsets.all(TRSpacing.small));
+  }, tags: const <String>['feature_test__terminal_lifecycle__widget']);
 
-  testWidgets(
-    'viewport changes resize the attached terminal',
-    (tester) async {
-      await tester.binding.setSurfaceSize(const Size(1100, 760));
-      addTearDown(() => tester.binding.setSurfaceSize(null));
-      final api = await _pumpTerminal(
-        tester,
-        presenter: _RecordingPresenter(),
-      );
-      api.terminalResizes.clear();
+  testWidgets('viewport changes resize the attached terminal', (tester) async {
+    await tester.binding.setSurfaceSize(const Size(1100, 760));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    final api = await _pumpTerminal(tester, presenter: _RecordingPresenter());
+    api.terminalResizes.clear();
 
-      await tester.binding.setSurfaceSize(const Size(800, 600));
-      await tester.pumpAndSettle();
+    await tester.binding.setSurfaceSize(const Size(800, 600));
+    await tester.pumpAndSettle();
 
-      expect(api.terminalResizes, isNotEmpty);
-      final resize = api.terminalResizes.last;
-      expect(resize.terminalId, _terminal.id);
-      expect(resize.columns, greaterThan(0));
-      expect(resize.rows, greaterThan(0));
-    },
-    tags: const <String>['feature_test__terminal_lifecycle__widget'],
-  );
+    expect(api.terminalResizes, isNotEmpty);
+    final resize = api.terminalResizes.last;
+    expect(resize.terminalId, _terminal.id);
+    expect(resize.columns, greaterThan(0));
+    expect(resize.rows, greaterThan(0));
+  }, tags: const <String>['feature_test__terminal_lifecycle__widget']);
 
-  testWidgets(
-    'comfortable density enlarges terminal code typography',
-    (tester) async {
-      await tester.binding.setSurfaceSize(const Size(1100, 760));
-      addTearDown(() => tester.binding.setSurfaceSize(null));
-      await _pumpTerminal(
-        tester,
-        presenter: _RecordingPresenter(),
-        density: TRUiDensity.comfortable,
-      );
+  testWidgets('comfortable density enlarges terminal code typography', (
+    tester,
+  ) async {
+    await tester.binding.setSurfaceSize(const Size(1100, 760));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    await _pumpTerminal(
+      tester,
+      presenter: _RecordingPresenter(),
+      density: TRUiDensity.comfortable,
+    );
 
-      expect(
-        tester.widget<TerminalView>(find.byType(TerminalView)).style!.fontSize,
-        16,
-      );
-    },
-    tags: const <String>['feature_test__terminal_lifecycle__widget'],
-  );
+    expect(
+      tester.widget<TerminalView>(find.byType(TerminalView)).style!.fontSize,
+      16,
+    );
+  }, tags: const <String>['feature_test__terminal_lifecycle__widget']);
 
-  testWidgets(
-    'mouse reporting suppresses the terminal context menu',
-    (tester) async {
-      final presenter = _RecordingPresenter();
-      final api = await _pumpTerminal(tester, presenter: presenter);
-      api.emit(
-        const TerminalOutputClientEvent(
-          TerminalOutputDto(
-            terminalId: 'terminal-menu',
-            sequence: 2,
-            data: '\x1b[?1000h',
-          ),
+  testWidgets('mouse reporting suppresses the terminal context menu', (
+    tester,
+  ) async {
+    final presenter = _RecordingPresenter();
+    final api = await _pumpTerminal(tester, presenter: presenter);
+    api.emit(
+      const TerminalOutputClientEvent(
+        TerminalOutputDto(
+          terminalId: 'terminal-menu',
+          sequence: 2,
+          data: '\x1b[?1000h',
         ),
-      );
-      await tester.pumpAndSettle();
+      ),
+    );
+    await tester.pumpAndSettle();
 
-      await _openTerminalMenu(tester);
+    await _openTerminalMenu(tester);
 
-      expect(presenter.openings, isEmpty);
-    },
-    tags: const <String>['feature_test__terminal_lifecycle__widget'],
-  );
+    expect(presenter.openings, isEmpty);
+  }, tags: const <String>['feature_test__terminal_lifecycle__widget']);
 
   testWidgets(
     'copy and clear-selection follow the selection the terminal reports',
@@ -506,7 +489,7 @@ void main() {
 }
 
 final class _OfflineClients implements HostClientFactory {
-  const _OfflineClients();
+  const new();
 
   @override
   Future<TinestApi> connect({

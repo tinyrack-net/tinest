@@ -191,7 +191,7 @@ void main() {
 }
 
 final class _Clock implements Clock {
-  _Clock(this.value);
+  new(this.value);
 
   DateTime value;
 

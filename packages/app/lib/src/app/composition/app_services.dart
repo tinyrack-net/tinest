@@ -21,7 +21,7 @@ typedef RelayTinestClientOpener = Future<TinestApi> Function({
 /// Composition-root dependencies required by the daemon-independent app shell.
 final class AppServices {
   /// Creates application services.
-  const AppServices({
+  const new({
     required this.settings,
     required this.profiles,
     required this.credentials,
@@ -74,7 +74,7 @@ final class AppServices {
 /// Production pairing adapter backed by the E2E relay client package.
 final class TinestHostRelayPairer implements HostRelayPairer {
   /// Creates the stateless pairing adapter.
-  const TinestHostRelayPairer();
+  const new();
 
   @override
   Future<RelayPairingResult> pair({
@@ -95,7 +95,7 @@ final class TinestHostRelayPairer implements HostRelayPairer {
 /// Production WebSocket implementation of [HostClientFactory].
 final class WebSocketHostClientFactory implements HostClientFactory {
   /// Creates the production host client factory.
-  const WebSocketHostClientFactory({
+  const new({
     this.openClient = _openTinestClient,
     this.openRelayClient = _openRelayTinestClient,
   });

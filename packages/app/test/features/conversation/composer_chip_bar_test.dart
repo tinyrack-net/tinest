@@ -34,9 +34,7 @@ void main() {
       );
       expect(
         model,
-        greaterThan(
-          TRControlMetrics.heightOf(TRUiSize.sm),
-        ),
+        greaterThan(TRControlMetrics.heightOf(TRUiSize.sm)),
         reason: 'the model remains wider than an icon-only control',
       );
       expect(model, lessThan(natural));
@@ -48,11 +46,7 @@ void main() {
     tags: const <String>['feature_test__session_lifecycle__widget'],
     (tester) async {
       const longModel = 'Claude Opus 4.6 (extended thinking, 1M context)';
-      await _pump(
-        tester,
-        width: 1024,
-        children: _controls(model: longModel),
-      );
+      await _pump(tester, width: 1024, children: _controls(model: longModel));
 
       final agent = tester.getSize(find.byKey(_agentKey)).width;
       final model = tester.getSize(find.byKey(_modelKey)).width;
@@ -111,11 +105,7 @@ void main() {
     'the row is built at the size it is given',
     tags: const <String>['feature_test__session_lifecycle__widget'],
     (tester) async {
-      await _pump(
-        tester,
-        width: 900,
-        children: _controls(model: 'Sonnet 4.6'),
-      );
+      await _pump(tester, width: 900, children: _controls(model: 'Sonnet 4.6'));
 
       for (final key in <ValueKey<String>>[_agentKey, _modelKey, _modeKey]) {
         expect(
@@ -210,9 +200,7 @@ Future<void> _pump(
           alignment: Alignment.topLeft,
           child: SizedBox(
             width: width,
-            child: ComposerChipBar(
-              children: children,
-            ),
+            child: ComposerChipBar(children: children),
           ),
         ),
       ),

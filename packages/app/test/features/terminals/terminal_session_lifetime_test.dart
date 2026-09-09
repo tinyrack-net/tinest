@@ -192,10 +192,10 @@ void main() {
     final closing = terminalSessionControllerProvider('server', 'terminal-a2');
     final surviving = terminalSessionControllerProvider('server', 'terminal-a');
     final before = container.read(surviving).terminal;
-    expect(
-      container.read(openTerminalIdsProvider(selection)),
-      <String>{'terminal-a', 'terminal-a2'},
-    );
+    expect(container.read(openTerminalIdsProvider(selection)), <String>{
+      'terminal-a',
+      'terminal-a2',
+    });
 
     await container
         .read(sessionTabsControllerProvider(selection).notifier)

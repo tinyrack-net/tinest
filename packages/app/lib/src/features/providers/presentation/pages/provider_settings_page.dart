@@ -20,7 +20,7 @@ import 'package:tinyrack_ui/tinyrack_ui.dart';
 /// Provider connection settings for one daemon host.
 class SettingsPage extends StatelessWidget {
   /// Creates a provider connection settings page.
-  const SettingsPage({
+  const new({
     required this.hostId,
     required this.paneController,
     required this.slot,
@@ -45,7 +45,7 @@ class SettingsPage extends StatelessWidget {
 }
 
 class _ProviderSettingsSlot extends ConsumerWidget {
-  const _ProviderSettingsSlot({
+  const new({
     required this.hostId,
     required this.paneController,
     required this.slot,
@@ -218,11 +218,11 @@ class _ProviderSettingsSlot extends ConsumerWidget {
 /// swap the route out from under whoever is typing into it.
 @immutable
 sealed class _ProviderDestination {
-  const _ProviderDestination();
+  const new();
 }
 
 final class _CatalogDestination extends _ProviderDestination {
-  const _CatalogDestination();
+  const new();
 
   @override
   bool operator ==(Object other) => other is _CatalogDestination;
@@ -232,7 +232,7 @@ final class _CatalogDestination extends _ProviderDestination {
 }
 
 final class _PresetDestination extends _ProviderDestination {
-  const _PresetDestination({required this.definition, this.reauthConnectionId});
+  const new({required this.definition, this.reauthConnectionId});
 
   final ProviderDefinitionDto definition;
 
@@ -250,7 +250,7 @@ final class _PresetDestination extends _ProviderDestination {
 }
 
 final class _CustomDestination extends _ProviderDestination {
-  const _CustomDestination();
+  const new();
 
   @override
   bool operator ==(Object other) => other is _CustomDestination;
@@ -260,7 +260,7 @@ final class _CustomDestination extends _ProviderDestination {
 }
 
 final class _ConnectionDestination extends _ProviderDestination {
-  const _ConnectionDestination(this.connectionId);
+  const new(this.connectionId);
 
   final String connectionId;
 
@@ -391,7 +391,7 @@ class ProviderSettingsPaneController extends SettingsPaneCoordinatorBase {
 }
 
 class _ProviderCollection extends StatelessWidget {
-  const _ProviderCollection({
+  const new({
     required this.connections,
     required this.selectedId,
     required this.onSelected,
@@ -457,7 +457,7 @@ class _ProviderCollection extends StatelessWidget {
 }
 
 class _ProviderCatalogPane extends ConsumerStatefulWidget {
-  const _ProviderCatalogPane({
+  const new({
     required this.hostId,
     required this.state,
     required this.onPreset,
@@ -506,18 +506,14 @@ class _ProviderCatalogPaneState extends ConsumerState<_ProviderCatalogPane> {
                 ? null
                 : TRAlert(
                     variant: TRStatusVariant.danger,
-                    title: TRText.inherit(
-                      l10n.providerSettingsRefreshFailed,
-                    ),
+                    title: TRText.inherit(l10n.providerSettingsRefreshFailed),
                     description: TRText.inherit(
                       '${_error ?? catalog.refreshError}',
                     ),
                   ),
             children: <Widget>[
               SettingsRow(
-                title: TRText.inherit(
-                  _catalogLabel(l10n, catalog.freshness),
-                ),
+                title: TRText.inherit(_catalogLabel(l10n, catalog.freshness)),
               ),
               for (final definition in catalog.definitions)
                 TRNavigationRow(
@@ -561,7 +557,7 @@ class _ProviderCatalogPaneState extends ConsumerState<_ProviderCatalogPane> {
 }
 
 class _PresetProviderPane extends ConsumerStatefulWidget {
-  const _PresetProviderPane({
+  const new({
     required this.hostId,
     required this.state,
     required this.definition,
@@ -714,9 +710,7 @@ class _PresetProviderPaneState extends ConsumerState<_PresetProviderPane> {
               if (_method.experimental)
                 TRAlert(
                   variant: TRStatusVariant.warning,
-                  title: TRText.inherit(
-                    l10n.providerSettingsExperimental,
-                  ),
+                  title: TRText.inherit(l10n.providerSettingsExperimental),
                 ),
               if (_unexpectedError case final error?)
                 TRAlert(
@@ -769,9 +763,7 @@ class _PresetProviderPaneState extends ConsumerState<_PresetProviderPane> {
             banner: _oauthErrorBanner(attempt),
             children: <Widget>[
               if (attempt.instructions != null)
-                SettingsRow(
-                  title: TRText.inherit(attempt.instructions!),
-                ),
+                SettingsRow(title: TRText.inherit(attempt.instructions!)),
               if (attempt.authorizationUrl case final url?)
                 SettingsRow(
                   title: SelectionArea(child: TRText.inherit(url)),
@@ -781,9 +773,8 @@ class _PresetProviderPaneState extends ConsumerState<_PresetProviderPane> {
                       TRIconButton(
                         appearance: TRAppearance.ghost,
                         label: l10n.commonCopy,
-                        onPressed: () => Clipboard.setData(
-                          ClipboardData(text: url),
-                        ),
+                        onPressed: () =>
+                            Clipboard.setData(ClipboardData(text: url)),
                         icon: const Icon(TinestIcons.copy),
                       ),
                       TRIconButton(
@@ -804,9 +795,8 @@ class _PresetProviderPaneState extends ConsumerState<_PresetProviderPane> {
                   control: TRIconButton(
                     appearance: TRAppearance.ghost,
                     label: l10n.commonCopy,
-                    onPressed: () => Clipboard.setData(
-                      ClipboardData(text: code),
-                    ),
+                    onPressed: () =>
+                        Clipboard.setData(ClipboardData(text: code)),
                     icon: const Icon(TinestIcons.copy),
                   ),
                 ),
@@ -847,9 +837,8 @@ class _PresetProviderPaneState extends ConsumerState<_PresetProviderPane> {
       (_method.flow != ProviderAuthFlow.apiKey ||
           _apiKey.text.trim().isNotEmpty);
 
-  bool get _validPrefix => RegExp(
-    r'^[a-z0-9][a-z0-9_-]{0,63}$',
-  ).hasMatch(_prefix.text.trim());
+  bool get _validPrefix =>
+      RegExp(r'^[a-z0-9][a-z0-9_-]{0,63}$').hasMatch(_prefix.text.trim());
 
   String? _prefixError(AppLocalizations l10n) {
     if (_prefix.text.isEmpty || _validPrefix) {
@@ -980,7 +969,7 @@ class _PresetProviderPaneState extends ConsumerState<_PresetProviderPane> {
 }
 
 class _ProviderConnectionPane extends ConsumerStatefulWidget {
-  const _ProviderConnectionPane({
+  const new({
     required this.hostId,
     required this.state,
     required this.connection,
@@ -1104,15 +1093,11 @@ class _ProviderConnectionPaneState
               SettingsRow(
                 title: TRText.inherit(widget.connection.displayName),
                 control: TRButton(
-                  key: const ValueKey<String>(
-                    'provider-connection-disconnect',
-                  ),
+                  key: const ValueKey<String>('provider-connection-disconnect'),
                   appearance: TRAppearance.ghost,
                   intent: TRIntent.danger,
                   onPressed: _disconnect,
-                  child: TRText.inherit(
-                    l10n.providerSettingsDisconnect,
-                  ),
+                  child: TRText.inherit(l10n.providerSettingsDisconnect),
                 ),
               ),
             ],
@@ -1125,9 +1110,7 @@ class _ProviderConnectionPaneState
   Future<void> _savePrefix() async {
     try {
       await ref
-          .read(
-            providerSettingsControllerProvider(widget.hostId).notifier,
-          )
+          .read(providerSettingsControllerProvider(widget.hostId).notifier)
           .updateModelPrefix(widget.connection.id, _prefix.text.trim());
       final changed = ref
           .read(providerSettingsControllerProvider(widget.hostId))
@@ -1183,7 +1166,7 @@ bool _isPrefixConflict(Object? error) =>
     error is TinestClientException && error.code == 'model_prefix_conflict';
 
 class _CustomProviderPane extends ConsumerStatefulWidget {
-  const _CustomProviderPane({
+  const new({
     required this.hostId,
     required this.state,
     required this.onCancel,
@@ -1343,10 +1326,7 @@ class _CustomProviderPaneState extends ConsumerState<_CustomProviderPane> {
                 width: TinestLayoutMetrics.settingsContentMaxWidth,
                 items: <TRSelectItem<String>>[
                   for (final format in widget.state.catalog.wireFormats)
-                    TRSelectItem<String>(
-                      value: format.id,
-                      label: format.label,
-                    ),
+                    TRSelectItem<String>(value: format.id, label: format.label),
                 ],
                 onValueChange: (value) {
                   if (value == null) return;
@@ -1366,9 +1346,7 @@ class _CustomProviderPaneState extends ConsumerState<_CustomProviderPane> {
               ),
               TinestSwitchRow(
                 flush: true,
-                title: TRText.inherit(
-                  l10n.providerSettingsRequiresApiKey,
-                ),
+                title: TRText.inherit(l10n.providerSettingsRequiresApiKey),
                 value: _authenticationRequired,
                 onChanged: (value) =>
                     setState(() => _authenticationRequired = value),
@@ -1408,32 +1386,22 @@ class _CustomProviderPaneState extends ConsumerState<_CustomProviderPane> {
               children: <Widget>[
                 SettingsRow(
                   title: TRText.inherit(
-                    l10n.providerSettingsDisconnectBody(
-                      existing.displayName,
-                    ),
+                    l10n.providerSettingsDisconnectBody(existing.displayName),
                   ),
                   control: TRButton(
-                    key: const ValueKey<String>(
-                      'provider-custom-disconnect',
-                    ),
+                    key: const ValueKey<String>('provider-custom-disconnect'),
                     appearance: TRAppearance.ghost,
                     intent: TRIntent.danger,
                     onPressed: _busy ? null : _disconnect,
-                    child: TRText.inherit(
-                      l10n.providerSettingsDisconnect,
-                    ),
+                    child: TRText.inherit(l10n.providerSettingsDisconnect),
                   ),
                 ),
                 SettingsRow(
                   title: TRText.inherit(
-                    l10n.providerSettingsDeleteCustomBody(
-                      existing.displayName,
-                    ),
+                    l10n.providerSettingsDeleteCustomBody(existing.displayName),
                   ),
                   control: TRButton(
-                    key: const ValueKey<String>(
-                      'provider-custom-delete',
-                    ),
+                    key: const ValueKey<String>('provider-custom-delete'),
                     appearance: TRAppearance.ghost,
                     intent: TRIntent.danger,
                     onPressed: _busy ? null : _delete,
@@ -1534,10 +1502,7 @@ class _CustomProviderPaneState extends ConsumerState<_CustomProviderPane> {
       late final ProviderConnectionDto saved;
       if (widget.existing case final existing?) {
         if (_prefix.text.trim() != existing.modelPrefix) {
-          await notifier.updateModelPrefix(
-            existing.id,
-            _prefix.text.trim(),
-          );
+          await notifier.updateModelPrefix(existing.id, _prefix.text.trim());
         }
         saved = await notifier.updateCustom(
           existing.id,
@@ -1646,17 +1611,16 @@ IconData _statusIcon(ProviderConnectionStatus status) => switch (status) {
   ProviderConnectionStatus.disconnected => TinestIcons.stop,
 };
 
-String _statusLabel(
-  AppLocalizations l10n,
-  ProviderConnectionStatus status,
-) => switch (status) {
-  ProviderConnectionStatus.connecting => l10n.providerStatusConnecting,
-  ProviderConnectionStatus.connected => l10n.providerStatusConnected,
-  ProviderConnectionStatus.degraded => l10n.providerStatusDegraded,
-  ProviderConnectionStatus.error => l10n.providerStatusError,
-  ProviderConnectionStatus.reauthRequired => l10n.providerStatusReauthRequired,
-  ProviderConnectionStatus.disconnected => l10n.providerStatusDisconnected,
-};
+String _statusLabel(AppLocalizations l10n, ProviderConnectionStatus status) =>
+    switch (status) {
+      ProviderConnectionStatus.connecting => l10n.providerStatusConnecting,
+      ProviderConnectionStatus.connected => l10n.providerStatusConnected,
+      ProviderConnectionStatus.degraded => l10n.providerStatusDegraded,
+      ProviderConnectionStatus.error => l10n.providerStatusError,
+      ProviderConnectionStatus.reauthRequired =>
+        l10n.providerStatusReauthRequired,
+      ProviderConnectionStatus.disconnected => l10n.providerStatusDisconnected,
+    };
 
 String _catalogLabel(
   AppLocalizations l10n,
@@ -1686,7 +1650,7 @@ String _authStatusLabel(
 /// Values are per model rather than per connection: two models behind one base
 /// URL need not accept the same levels, and only their owner knows which.
 final class _ManualModelDraft {
-  _ManualModelDraft({
+  new({
     required this.seed,
     String modelId = '',
     Set<String>? controlIds,
@@ -1711,7 +1675,7 @@ final class _ManualModelDraft {
 }
 
 class _ManualModelEditor extends StatelessWidget {
-  const _ManualModelEditor({
+  const new({
     required this.draft,
     required this.controls,
     required this.onChanged,

@@ -105,7 +105,7 @@ abstract interface class HostPathProbeScheduler {
 /// Production timer-backed probe scheduler.
 final class SystemHostPathProbeScheduler implements HostPathProbeScheduler {
   /// Creates the system scheduler.
-  const SystemHostPathProbeScheduler();
+  const new();
 
   @override
   HostPathProbeTask periodic(
@@ -115,10 +115,8 @@ final class SystemHostPathProbeScheduler implements HostPathProbeScheduler {
 }
 
 final class _TimerHostPathProbeTask implements HostPathProbeTask {
-  _TimerHostPathProbeTask(
-    Duration interval,
-    Future<void> Function() callback,
-  ) : _timer = Timer.periodic(interval, (_) => unawaited(callback()));
+  new(Duration interval, Future<void> Function() callback)
+    : _timer = Timer.periodic(interval, (_) => unawaited(callback()));
 
   final Timer _timer;
 
@@ -171,7 +169,7 @@ abstract interface class AppDelay {
 /// Production wall-clock delay.
 final class SystemAppDelay implements AppDelay {
   /// Creates the system delay adapter.
-  const SystemAppDelay();
+  const new();
 
   @override
   Future<void> wait(Duration duration) => Future<void>.delayed(duration);
@@ -186,12 +184,11 @@ abstract interface class RetryDelayPolicy {
 /// Capped exponential retry policy shared by every host runtime.
 final class ExponentialRetryDelayPolicy implements RetryDelayPolicy {
   /// Creates the default retry policy.
-  const ExponentialRetryDelayPolicy();
+  const new();
 
   @override
-  Duration delayFor(int attempt) => Duration(
-    seconds: (1 << (attempt - 1).clamp(0, 5)).clamp(1, 30),
-  );
+  Duration delayFor(int attempt) =>
+      Duration(seconds: (1 << (attempt - 1).clamp(0, 5)).clamp(1, 30));
 }
 
 /// Deterministic in-memory adapter used by unit and widget compositions.
@@ -202,7 +199,7 @@ final class MemoryAppStore
         RemoteHostCredentialStore,
         RelayHostCredentialStore {
   /// Creates an in-memory store.
-  MemoryAppStore({
+  new({
     this.settings = const AppSettings(),
     this.factoryDefaults = const AppSettings(),
     List<RemoteDaemonProfile> profiles = const <RemoteDaemonProfile>[],

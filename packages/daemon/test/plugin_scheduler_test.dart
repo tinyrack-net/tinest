@@ -7,79 +7,71 @@ import 'package:daemon/src/shared/ports/daemon_ports.dart';
 import 'package:test/test.dart';
 
 void main() {
-  test(
-    'durable jobs execute in order and wait for an idle session before '
-    'continuing',
-    () async {
-      final store = MemoryPluginJobStore();
-      final clock = _FakeClock(DateTime.utc(2026, 8, 12));
-      final handled = <String>[];
-      final continuations = <String>[];
-      var active = true;
-      final scheduler = DurablePluginScheduler(
-        store: store,
-        clock: clock,
-        ids: _SequenceIds(),
-        idlePollInterval: const Duration(milliseconds: 1),
-        execute: (job, cancellation) async {
-          handled.add(job.id);
-          return const PluginScheduledHandlerResult(continueTurn: true);
-        },
-        hasActiveTurn: (_) => active,
-        hasPendingInput: (_) => false,
-        startContinuation:
-            ({
-              required sessionId,
-              required turnId,
-              required prompt,
-            }) async {
-              continuations.add('$sessionId:$turnId:$prompt');
-              return true;
-            },
-      );
-      addTearDown(scheduler.close);
+  test('durable jobs execute in order and wait for an idle session before '
+      'continuing', () async {
+    final store = MemoryPluginJobStore();
+    final clock = _FakeClock(DateTime.utc(2026, 8, 12));
+    final handled = <String>[];
+    final continuations = <String>[];
+    var active = true;
+    final scheduler = DurablePluginScheduler(
+      store: store,
+      clock: clock,
+      ids: _SequenceIds(),
+      idlePollInterval: const Duration(milliseconds: 1),
+      execute: (job, cancellation) async {
+        handled.add(job.id);
+        return const PluginScheduledHandlerResult(continueTurn: true);
+      },
+      hasActiveTurn: (_) => active,
+      hasPendingInput: (_) => false,
+      startContinuation:
+          ({required sessionId, required turnId, required prompt}) async {
+            continuations.add('$sessionId:$turnId:$prompt');
+            return true;
+          },
+    );
+    addTearDown(scheduler.close);
 
-      await scheduler.enqueue(
-        PluginJob(
-          id: 'job-b',
-          pluginId: 'example.goal',
-          executionRevisionHash: 'goal-execution-revision',
-          bindingId: 'scheduled',
-          payload: const <String, dynamic>{},
-          dueAt: clock.nowUtc(),
-          agentId: 'agent-1',
-          sessionId: 'session-1',
-        ),
-      );
-      await scheduler.enqueue(
-        PluginJob(
-          id: 'job-a',
-          pluginId: 'example.goal',
-          executionRevisionHash: 'goal-execution-revision',
-          bindingId: 'scheduled',
-          payload: const <String, dynamic>{},
-          dueAt: clock.nowUtc(),
-          agentId: 'agent-1',
-          sessionId: 'session-1',
-        ),
-      );
+    await scheduler.enqueue(
+      PluginJob(
+        id: 'job-b',
+        pluginId: 'example.goal',
+        executionRevisionHash: 'goal-execution-revision',
+        bindingId: 'scheduled',
+        payload: const <String, dynamic>{},
+        dueAt: clock.nowUtc(),
+        agentId: 'agent-1',
+        sessionId: 'session-1',
+      ),
+    );
+    await scheduler.enqueue(
+      PluginJob(
+        id: 'job-a',
+        pluginId: 'example.goal',
+        executionRevisionHash: 'goal-execution-revision',
+        bindingId: 'scheduled',
+        payload: const <String, dynamic>{},
+        dueAt: clock.nowUtc(),
+        agentId: 'agent-1',
+        sessionId: 'session-1',
+      ),
+    );
 
-      final draining = scheduler.drainDueJobs();
-      await Future<void>.delayed(Duration.zero);
-      expect(continuations, isEmpty);
-      active = false;
-      await draining;
+    final draining = scheduler.drainDueJobs();
+    await Future<void>.delayed(Duration.zero);
+    expect(continuations, isEmpty);
+    active = false;
+    await draining;
 
-      expect(handled, <String>['job-a', 'job-b']);
-      expect(continuations, <String>[
-        'session-1:generated-2:',
-        'session-1:generated-4:',
-      ]);
-      expect((await store.get('job-a'))!.status, PluginJobStatus.completed);
-      expect((await store.get('job-b'))!.status, PluginJobStatus.completed);
-    },
-    tags: <String>['feature_test__plugin_runtime__unit'],
-  );
+    expect(handled, <String>['job-a', 'job-b']);
+    expect(continuations, <String>[
+      'session-1:generated-2:',
+      'session-1:generated-4:',
+    ]);
+    expect((await store.get('job-a'))!.status, PluginJobStatus.completed);
+    expect((await store.get('job-b'))!.status, PluginJobStatus.completed);
+  }, tags: <String>['feature_test__plugin_runtime__unit']);
 
   test('rejects non-positive scheduler intervals', () {
     for (final durations in <(Duration, Duration, Duration)>[
@@ -155,9 +147,8 @@ void main() {
       final store = MemoryPluginJobStore();
       final scheduler = _scheduler(
         store: store,
-        execute: (_, _) async => const PluginScheduledHandlerResult(
-          continueTurn: true,
-        ),
+        execute: (_, _) async =>
+            const PluginScheduledHandlerResult(continueTurn: true),
         startContinuation: entry.$3,
       );
       await scheduler.enqueue(entry.$2);
@@ -216,10 +207,7 @@ void main() {
 
       expect(lateCancellationNotifications, 1);
       expect((await store.get('active'))!.status, PluginJobStatus.pending);
-      await expectLater(
-        scheduler.enqueue(_job('closed')),
-        throwsStateError,
-      );
+      await expectLater(scheduler.enqueue(_job('closed')), throwsStateError);
       expect(scheduler.start, throwsStateError);
       await scheduler.drainDueJobs();
     },
@@ -291,23 +279,20 @@ DurablePluginScheduler _scheduler({
   leaseDuration: leaseDuration,
 );
 
-PluginJob _job(
-  String id, {
-  String? sessionId = 'session-1',
-  DateTime? dueAt,
-}) => PluginJob(
-  id: id,
-  pluginId: 'example.goal',
-  executionRevisionHash: 'goal-execution-revision',
-  bindingId: 'scheduled',
-  payload: const <String, dynamic>{},
-  dueAt: dueAt ?? DateTime.utc(2026, 8, 12),
-  agentId: 'agent-1',
-  sessionId: sessionId,
-);
+PluginJob _job(String id, {String? sessionId = 'session-1', DateTime? dueAt}) =>
+    PluginJob(
+      id: id,
+      pluginId: 'example.goal',
+      executionRevisionHash: 'goal-execution-revision',
+      bindingId: 'scheduled',
+      payload: const <String, dynamic>{},
+      dueAt: dueAt ?? DateTime.utc(2026, 8, 12),
+      agentId: 'agent-1',
+      sessionId: sessionId,
+    );
 
 final class _FakeClock implements Clock {
-  _FakeClock(this.value);
+  new(this.value);
 
   DateTime value;
 

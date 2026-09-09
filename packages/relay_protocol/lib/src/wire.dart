@@ -21,11 +21,11 @@ enum RelayWireFrameType {
 /// Minimal framing for handshake and encrypted records.
 final class RelayWireFrame {
   /// Creates a typed outer frame.
-  RelayWireFrame({required this.type, required List<int> payload})
+  new({required this.type, required List<int> payload})
     : payload = Uint8List.fromList(payload);
 
   /// Parses a strict outer frame.
-  factory RelayWireFrame.decode(List<int> bytes) {
+  factory decode(List<int> bytes) {
     if (bytes.isEmpty || bytes.first >= RelayWireFrameType.values.length) {
       throw const FormatException('Invalid relay wire frame.');
     }

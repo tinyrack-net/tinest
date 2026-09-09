@@ -68,92 +68,88 @@ void main() {
     addTearDown(tester.view.reset);
   }
 
-  testWidgets(
-    'a settings route paints an opaque surface that travels with the '
-    'predictive Back gesture',
-    (tester) async {
-      // Two-pane width, where the settings entry renders General beneath the
-      // pushed General page: the arrangement in the reported defect.
-      useViewport(tester, const Size(800, 900));
-      final router = await pumpRoutedApp(
-        tester,
-        buildApi(),
-        initialLocation: const SettingsHomeRoute().location,
-        platform: TargetPlatform.android,
-      );
-      addTearDown(router.dispose);
+  testWidgets('a settings route paints an opaque surface that travels with the '
+      'predictive Back gesture', (tester) async {
+    // Two-pane width, where the settings entry renders General beneath the
+    // pushed General page: the arrangement in the reported defect.
+    useViewport(tester, const Size(800, 900));
+    final router = await pumpRoutedApp(
+      tester,
+      buildApi(),
+      initialLocation: const SettingsHomeRoute().location,
+      platform: TargetPlatform.android,
+    );
+    addTearDown(router.dispose);
 
-      unawaited(router.push<void>(const GeneralSettingsRoute().location));
-      await tester.pumpAndSettle();
+    unawaited(router.push<void>(const GeneralSettingsRoute().location));
+    await tester.pumpAndSettle();
 
-      // Keyed only when the route carries a category, so this identifies the
-      // pushed page and never the entry page beneath it.
-      final page = find.byKey(
-        const ValueKey<String>('settings-category-pane-general'),
-      );
-      final navigator = find.byKey(SettingsShellRoute.$navigatorKey);
-      expect(page, findsOneWidget);
+    // Keyed only when the route carries a category, so this identifies the
+    // pushed page and never the entry page beneath it.
+    final page = find.byKey(
+      const ValueKey<String>('settings-category-pane-general'),
+    );
+    final navigator = find.byKey(SettingsShellRoute.$navigatorKey);
+    expect(page, findsOneWidget);
 
-      final surface = _routeSurfaceOf(navigator, page);
-      expect(surface, findsOneWidget);
-      expect(
-        tester
-            .widget<ColoredBox>(
-              find
-                  .descendant(of: surface, matching: find.byType(ColoredBox))
-                  .first,
-            )
-            .color,
-        tester.element(page).tinyrackTheme.surface,
-      );
+    final surface = _routeSurfaceOf(navigator, page);
+    expect(surface, findsOneWidget);
+    expect(
+      tester
+          .widget<ColoredBox>(
+            find
+                .descendant(of: surface, matching: find.byType(ColoredBox))
+                .first,
+          )
+          .color,
+      tester.element(page).tinyrackTheme.surface,
+    );
 
-      final settled = tester.getRect(surface);
-      expect(
-        settled,
-        tester.getRect(navigator),
-        reason: 'the surface must cover the whole routed content region',
-      );
+    final settled = tester.getRect(surface);
+    expect(
+      settled,
+      tester.getRect(navigator),
+      reason: 'the surface must cover the whole routed content region',
+    );
 
-      await _sendBackGesture(
-        tester,
-        const MethodCall('startBackGesture', <String, Object>{
-          'touchOffset': <double>[5, 300],
-          'progress': 0.0,
-          'swipeEdge': 0,
-        }),
-      );
-      await _sendBackGesture(
-        tester,
-        const MethodCall('updateBackGestureProgress', <String, Object>{
-          'touchOffset': <double>[160, 300],
-          'progress': 0.5,
-          'swipeEdge': 0,
-        }),
-      );
-      await tester.pump();
+    await _sendBackGesture(
+      tester,
+      const MethodCall('startBackGesture', <String, Object>{
+        'touchOffset': <double>[5, 300],
+        'progress': 0.0,
+        'swipeEdge': 0,
+      }),
+    );
+    await _sendBackGesture(
+      tester,
+      const MethodCall('updateBackGestureProgress', <String, Object>{
+        'touchOffset': <double>[160, 300],
+        'progress': 0.5,
+        'swipeEdge': 0,
+      }),
+    );
+    await tester.pump();
 
-      final moved = tester.getRect(surface);
-      expect(
-        moved,
-        isNot(settled),
-        reason: 'the surface must sit inside the transformed outgoing route',
-      );
+    final moved = tester.getRect(surface);
+    expect(
+      moved,
+      isNot(settled),
+      reason: 'the surface must sit inside the transformed outgoing route',
+    );
 
-      // Rect.contains is half-open, so compare edges rather than using it.
-      final label = tester.getRect(
-        find.descendant(of: page, matching: find.text('테마')).first,
-      );
-      expect(moved.left, lessThanOrEqualTo(label.left));
-      expect(moved.top, lessThanOrEqualTo(label.top));
-      expect(moved.right, greaterThanOrEqualTo(label.right));
-      expect(moved.bottom, greaterThanOrEqualTo(label.bottom));
+    // Rect.contains is half-open, so compare edges rather than using it.
+    final label = tester.getRect(
+      find.descendant(of: page, matching: find.text('테마')).first,
+    );
+    expect(moved.left, lessThanOrEqualTo(label.left));
+    expect(moved.top, lessThanOrEqualTo(label.top));
+    expect(moved.right, greaterThanOrEqualTo(label.right));
+    expect(moved.bottom, greaterThanOrEqualTo(label.bottom));
 
-      await _sendBackGesture(tester, const MethodCall('cancelBackGesture'));
-      await tester.pumpAndSettle();
-      expect(tester.getRect(surface), settled);
-    },
-    tags: const <String>['feature_test__app_navigation__widget'],
-  );
+    await _sendBackGesture(tester, const MethodCall('cancelBackGesture'));
+    await tester.pumpAndSettle();
+    expect(tester.getRect(surface), settled);
+  }, tags: const <String>['feature_test__app_navigation__widget']);
 
   testWidgets(
     'a workspace route paints an opaque surface over its content region',

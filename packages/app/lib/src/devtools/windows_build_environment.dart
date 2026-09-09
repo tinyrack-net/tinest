@@ -21,7 +21,7 @@ abstract interface class WindowsBuildEnvironmentDiscovery {
 /// Failure to find native build tools required by Windows tests.
 final class WindowsBuildToolsException implements Exception {
   /// Creates a build-tool discovery failure.
-  const WindowsBuildToolsException(this.message);
+  const new(this.message);
 
   /// Actionable failure description.
   final String message;
@@ -33,7 +33,7 @@ final class WindowsBuildToolsException implements Exception {
 /// Resolves PATH overrides for CMake-backed tests on Windows.
 final class WindowsBuildEnvironmentResolver {
   /// Creates a resolver backed by [discovery].
-  const WindowsBuildEnvironmentResolver({required this.discovery});
+  const new({required this.discovery});
 
   /// Host discovery boundary.
   final WindowsBuildEnvironmentDiscovery discovery;

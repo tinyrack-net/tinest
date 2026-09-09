@@ -11,7 +11,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 final class SharedPreferencesAppStore
     implements AppSettingsRepository, RemoteHostRepository {
   /// Creates a preferences-backed app store.
-  SharedPreferencesAppStore(this._preferences);
+  new(this._preferences);
 
   /// Single versioned document key; legacy singleton keys are not read.
   static const String documentKey =
@@ -64,9 +64,7 @@ final class SharedPreferencesAppStore
     return completer;
   }
 
-  Future<void> _enqueue(
-    _AppDocument Function(_AppDocument current) update,
-  ) {
+  Future<void> _enqueue(_AppDocument Function(_AppDocument current) update) {
     final completer = _writes.then((_) async {
       final next = update(await _read());
       await _preferences.setString(documentKey, jsonEncode(next.toJson()));
@@ -92,7 +90,7 @@ final class SharedPreferencesAppStore
 final class SecureRemoteHostCredentialStore
     implements RemoteHostCredentialStore, RelayHostCredentialStore {
   /// Creates a secure remote host credential store.
-  const SecureRemoteHostCredentialStore(this._storage);
+  const new(this._storage);
 
   static const String _prefix =
       '${AppIdentity.storagePrefix}.v5.remote_host_credential.';
@@ -132,9 +130,7 @@ final class SecureRemoteHostCredentialStore
       _storage.write(key: '$_prefix$profileId', value: token);
 
   @override
-  Future<RelayHostCredential?> readRelayCredential(
-    String credentialKey,
-  ) async {
+  Future<RelayHostCredential?> readRelayCredential(String credentialKey) async {
     final encoded = await _storage.read(key: '$_prefix$credentialKey');
     if (encoded == null) {
       return null;
@@ -169,12 +165,12 @@ final class SecureRemoteHostCredentialStore
 }
 
 final class _AppDocument {
-  const _AppDocument({
+  const new({
     this.settings = const AppSettings(),
     this.profiles = const <RemoteDaemonProfile>[],
   });
 
-  factory _AppDocument.fromJson(Map<String, dynamic> json) {
+  factory fromJson(Map<String, dynamic> json) {
     if (json['version'] != 5) {
       throw const FormatException(
         'Incompatible app settings. Remove the app_document_v5 preference '
@@ -339,28 +335,25 @@ AppSettings _settingsFromJson(Map<String, dynamic> json) {
   );
 }
 
-Map<String, dynamic> _panePreferenceToJson(
-  WorkspacePanePreferenceNode node,
-) => switch (node) {
-  WorkspacePanePreference() => <String, dynamic>{
-    'type': 'pane',
-    'id': node.id,
-    'tabIds': node.tabIds,
-    'activeTabId': node.activeTabId,
-  },
-  WorkspaceSplitPreference() => <String, dynamic>{
-    'type': 'split',
-    'id': node.id,
-    'axis': node.axis.name,
-    'ratio': node.ratio,
-    'first': _panePreferenceToJson(node.first),
-    'second': _panePreferenceToJson(node.second),
-  },
-};
+Map<String, dynamic> _panePreferenceToJson(WorkspacePanePreferenceNode node) =>
+    switch (node) {
+      WorkspacePanePreference() => <String, dynamic>{
+        'type': 'pane',
+        'id': node.id,
+        'tabIds': node.tabIds,
+        'activeTabId': node.activeTabId,
+      },
+      WorkspaceSplitPreference() => <String, dynamic>{
+        'type': 'split',
+        'id': node.id,
+        'axis': node.axis.name,
+        'ratio': node.ratio,
+        'first': _panePreferenceToJson(node.first),
+        'second': _panePreferenceToJson(node.second),
+      },
+    };
 
-WorkspacePanePreferenceNode _panePreferenceFromJson(
-  Map<String, dynamic> json,
-) {
+WorkspacePanePreferenceNode _panePreferenceFromJson(Map<String, dynamic> json) {
   final type = json['type'];
   final id = json['id'];
   if (id is! String) throw const FormatException('Invalid pane identity.');

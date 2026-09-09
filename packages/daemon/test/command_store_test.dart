@@ -44,9 +44,7 @@ void main() {
 
   group(
     'CommandService parsing',
-    tags: const <String>[
-      'feature_test__composer_slash_command__unit',
-    ],
+    tags: const <String>['feature_test__composer_slash_command__unit'],
     () {
       test('reads front matter into a typed command', () async {
         await write(config, 'review', r'''
@@ -168,9 +166,7 @@ Body.
 
   group(
     'CommandService precedence',
-    tags: const <String>[
-      'feature_test__composer_slash_command__unit',
-    ],
+    tags: const <String>['feature_test__composer_slash_command__unit'],
     () {
       test('lets a project command shadow config and home', () async {
         await write(home, 'review', '---\ndescription: Home.\n---\n\nHome.\n');
@@ -241,9 +237,7 @@ Body.
 
   group(
     'CommandService change notifications',
-    tags: const <String>[
-      'feature_test__composer_slash_command__unit',
-    ],
+    tags: const <String>['feature_test__composer_slash_command__unit'],
     () {
       test('forwards a change from any global source', () async {
         final userHome = _FakeCommandFiles(AgentCommandSource.userHome);
@@ -304,7 +298,7 @@ Body.
 }
 
 final class _FakeCommandFiles implements CommandFiles {
-  _FakeCommandFiles(this.source);
+  new(this.source);
 
   @override
   final AgentCommandSource source;

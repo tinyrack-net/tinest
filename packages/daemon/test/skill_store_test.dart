@@ -74,97 +74,81 @@ void main() {
     if (root.existsSync()) await root.delete(recursive: true);
   });
 
-  test(
-    'global view lists only effective built-in and global skills',
-    () async {
-      await writeSkill(
-        Directory(p.join(userHome.path, '.agents', 'skills')),
-        'shared',
-        description: 'From user home.',
-      );
-      await writeSkill(
-        Directory(p.join(configHome.path, 'skills')),
-        'shared',
-        description: 'From config.',
-      );
-      final service = buildService();
-      addTearDown(service.close);
+  test('global view lists only effective built-in and global skills', () async {
+    await writeSkill(
+      Directory(p.join(userHome.path, '.agents', 'skills')),
+      'shared',
+      description: 'From user home.',
+    );
+    await writeSkill(
+      Directory(p.join(configHome.path, 'skills')),
+      'shared',
+      description: 'From config.',
+    );
+    final service = buildService();
+    addTearDown(service.close);
 
-      final skills = await list(service, SkillListView.global);
+    final skills = await list(service, SkillListView.global);
 
-      expect(skills.map((skill) => skill.id), contains('coding-conventions'));
-      expect(
-        skills
-            .singleWhere((skill) => skill.id == 'coding-conventions')
-            .isImplicit,
-        isTrue,
-      );
-      expect(
-        skills.singleWhere((skill) => skill.id == 'shared').description,
-        'From config.',
-      );
-      expect(skills.where((skill) => skill.id == 'shared'), hasLength(1));
-    },
-    tags: const <String>['feature_test__skill_catalog__unit'],
-  );
+    expect(skills.map((skill) => skill.id), contains('coding-conventions'));
+    expect(
+      skills
+          .singleWhere((skill) => skill.id == 'coding-conventions')
+          .isImplicit,
+      isTrue,
+    );
+    expect(
+      skills.singleWhere((skill) => skill.id == 'shared').description,
+      'From config.',
+    );
+    expect(skills.where((skill) => skill.id == 'shared'), hasLength(1));
+  }, tags: const <String>['feature_test__skill_catalog__unit']);
 
-  test(
-    'project view contains only effective project-owned winners',
-    () async {
-      final globalRoot = Directory(p.join(configHome.path, 'skills'));
-      final projectRoot = Directory(p.join(project.path, '.agents', 'skills'));
-      await writeSkill(globalRoot, 'global-only');
-      await writeSkill(globalRoot, 'shared', description: 'From config.');
-      await writeSkill(
-        projectRoot,
-        'shared',
-        description: 'From project.',
-      );
-      await writeSkill(projectRoot, 'project-only');
-      final service = buildService();
-      addTearDown(service.close);
+  test('project view contains only effective project-owned winners', () async {
+    final globalRoot = Directory(p.join(configHome.path, 'skills'));
+    final projectRoot = Directory(p.join(project.path, '.agents', 'skills'));
+    await writeSkill(globalRoot, 'global-only');
+    await writeSkill(globalRoot, 'shared', description: 'From config.');
+    await writeSkill(projectRoot, 'shared', description: 'From project.');
+    await writeSkill(projectRoot, 'project-only');
+    final service = buildService();
+    addTearDown(service.close);
 
-      final projectSkills = await list(
-        service,
-        SkillListView.project,
-        scope: projectScope(),
-      );
-      final effective = await list(
-        service,
-        SkillListView.effective,
-        scope: projectScope(),
-      );
+    final projectSkills = await list(
+      service,
+      SkillListView.project,
+      scope: projectScope(),
+    );
+    final effective = await list(
+      service,
+      SkillListView.effective,
+      scope: projectScope(),
+    );
 
-      expect(
-        projectSkills.map((skill) => skill.id),
-        orderedEquals(<String>['project-only', 'shared']),
-      );
-      expect(
-        projectSkills.singleWhere((skill) => skill.id == 'shared').description,
-        'From project.',
-      );
-      expect(effective.map((skill) => skill.id), contains('global-only'));
-      expect(
-        effective.singleWhere((skill) => skill.id == 'shared').description,
-        'From project.',
-      );
-    },
-    tags: const <String>['feature_test__skill_catalog__unit'],
-  );
+    expect(
+      projectSkills.map((skill) => skill.id),
+      orderedEquals(<String>['project-only', 'shared']),
+    );
+    expect(
+      projectSkills.singleWhere((skill) => skill.id == 'shared').description,
+      'From project.',
+    );
+    expect(effective.map((skill) => skill.id), contains('global-only'));
+    expect(
+      effective.singleWhere((skill) => skill.id == 'shared').description,
+      'From project.',
+    );
+  }, tags: const <String>['feature_test__skill_catalog__unit']);
 
-  test(
-    'project view requires a project root',
-    () async {
-      final service = buildService();
-      addTearDown(service.close);
+  test('project view requires a project root', () async {
+    final service = buildService();
+    addTearDown(service.close);
 
-      expect(
-        () => list(service, SkillListView.project),
-        throwsA(isA<ArgumentError>()),
-      );
-    },
-    tags: const <String>['feature_test__skill_catalog__unit'],
-  );
+    expect(
+      () => list(service, SkillListView.project),
+      throwsA(isA<ArgumentError>()),
+    );
+  }, tags: const <String>['feature_test__skill_catalog__unit']);
 
   test(
     'protected built-in wins while a normal built-in can be replaced',
@@ -246,9 +230,7 @@ void main() {
   test(
     'callable-name collisions use precedence then stable ID order',
     () async {
-      final userSkills = Directory(
-        p.join(userHome.path, '.agents', 'skills'),
-      );
+      final userSkills = Directory(p.join(userHome.path, '.agents', 'skills'));
       final configSkills = Directory(p.join(configHome.path, 'skills'));
       await writeSkill(
         userSkills,
@@ -281,25 +263,21 @@ void main() {
     tags: const <String>['feature_test__skill_catalog__unit'],
   );
 
-  test(
-    'legacy enablement values do not disable valid skills',
-    () async {
-      await writeSkill(
-        Directory(p.join(configHome.path, 'skills')),
-        'always-available',
-      );
-      // The store deliberately has no SettingsRepository dependency. A stale
-      // database value therefore cannot alter the filesystem catalog.
-      final service = buildService();
-      addTearDown(service.close);
+  test('legacy enablement values do not disable valid skills', () async {
+    await writeSkill(
+      Directory(p.join(configHome.path, 'skills')),
+      'always-available',
+    );
+    // The store deliberately has no SettingsRepository dependency. A stale
+    // database value therefore cannot alter the filesystem catalog.
+    final service = buildService();
+    addTearDown(service.close);
 
-      expect(
-        (await list(service, SkillListView.global)).map((skill) => skill.id),
-        contains('always-available'),
-      );
-    },
-    tags: const <String>['feature_test__skill_catalog__unit'],
-  );
+    expect(
+      (await list(service, SkillListView.global)).map((skill) => skill.id),
+      contains('always-available'),
+    );
+  }, tags: const <String>['feature_test__skill_catalog__unit']);
 
   test(
     'watcher detects a root created after startup plus edits and deletion',
@@ -320,86 +298,73 @@ void main() {
       await _waitForDescription(service, 'watched', 'Edited.');
 
       changed = service.changes.first;
-      await Directory(p.join(skillsRoot.path, 'watched')).delete(
-        recursive: true,
-      );
+      await Directory(p.join(skillsRoot.path, 'watched'))
+          .delete(recursive: true);
       await _awaitChange(changed, skillsRoot);
       await _waitForMissing(service, 'watched');
     },
     tags: const <String>['feature_test__skill_catalog__unit'],
   );
 
-  test(
-    'existing root watcher observes nested SKILL.md edits',
-    () async {
-      final skillsRoot = Directory(p.join(userHome.path, '.agents', 'skills'));
-      await writeSkill(skillsRoot, 'watched', description: 'Created.');
-      final service = buildService();
-      addTearDown(service.close);
-      await list(service, SkillListView.global);
+  test('existing root watcher observes nested SKILL.md edits', () async {
+    final skillsRoot = Directory(p.join(userHome.path, '.agents', 'skills'));
+    await writeSkill(skillsRoot, 'watched', description: 'Created.');
+    final service = buildService();
+    addTearDown(service.close);
+    await list(service, SkillListView.global);
 
-      final changed = service.changes.first;
-      await writeSkill(skillsRoot, 'watched', description: 'Edited.');
+    final changed = service.changes.first;
+    await writeSkill(skillsRoot, 'watched', description: 'Edited.');
 
-      await _awaitChange(changed, skillsRoot);
-      await _waitForDescription(service, 'watched', 'Edited.');
-    },
-    tags: const <String>['feature_test__skill_catalog__unit'],
-  );
+    await _awaitChange(changed, skillsRoot);
+    await _waitForDescription(service, 'watched', 'Edited.');
+  }, tags: const <String>['feature_test__skill_catalog__unit']);
 
-  test(
-    'watcher observes existing nested resource directories',
-    () async {
-      final skillsRoot = Directory(p.join(userHome.path, '.agents', 'skills'));
-      await writeSkill(skillsRoot, 'watched');
-      final resource = File(
-        p.join(skillsRoot.path, 'watched', 'scripts', 'helper.dart'),
-      );
-      await resource.parent.create(recursive: true);
-      await resource.writeAsString('void main() {}');
-      final files = NativeSkillFiles(
-        skillsRoot.path,
-        origin: SkillOrigin.userHome,
-      );
-      await files.initialize();
-      addTearDown(files.close);
+  test('watcher observes existing nested resource directories', () async {
+    final skillsRoot = Directory(p.join(userHome.path, '.agents', 'skills'));
+    await writeSkill(skillsRoot, 'watched');
+    final resource = File(
+      p.join(skillsRoot.path, 'watched', 'scripts', 'helper.dart'),
+    );
+    await resource.parent.create(recursive: true);
+    await resource.writeAsString('void main() {}');
+    final files = NativeSkillFiles(
+      skillsRoot.path,
+      origin: SkillOrigin.userHome,
+    );
+    await files.initialize();
+    addTearDown(files.close);
 
-      final changed = files.changes.first;
-      await resource.writeAsString('void main() => print("updated");');
+    final changed = files.changes.first;
+    await resource.writeAsString('void main() => print("updated");');
 
-      await _awaitChange(changed, skillsRoot);
-    },
-    tags: const <String>['feature_test__skill_catalog__unit'],
-  );
+    await _awaitChange(changed, skillsRoot);
+  }, tags: const <String>['feature_test__skill_catalog__unit']);
 
-  test(
-    'missing root watcher ignores unrelated sibling changes',
-    () async {
-      final skillsRoot = Directory(p.join(project.path, '.agents', 'skills'));
-      final files = NativeSkillFiles(
-        skillsRoot.path,
-        origin: SkillOrigin.project,
-      );
-      await files.initialize();
-      addTearDown(files.close);
-      var changes = 0;
-      final relevantChange = Completer<void>();
-      final subscription = files.changes.listen((_) {
-        changes += 1;
-        if (!relevantChange.isCompleted) relevantChange.complete();
-      });
-      addTearDown(subscription.cancel);
+  test('missing root watcher ignores unrelated sibling changes', () async {
+    final skillsRoot = Directory(p.join(project.path, '.agents', 'skills'));
+    final files = NativeSkillFiles(
+      skillsRoot.path,
+      origin: SkillOrigin.project,
+    );
+    await files.initialize();
+    addTearDown(files.close);
+    var changes = 0;
+    final relevantChange = Completer<void>();
+    final subscription = files.changes.listen((_) {
+      changes += 1;
+      if (!relevantChange.isCompleted) relevantChange.complete();
+    });
+    addTearDown(subscription.cancel);
 
-      await File(p.join(project.path, 'unrelated.txt')).writeAsString('no-op');
-      await Future<void>.delayed(const Duration(milliseconds: 200));
-      expect(changes, 0);
+    await File(p.join(project.path, 'unrelated.txt')).writeAsString('no-op');
+    await Future<void>.delayed(const Duration(milliseconds: 200));
+    expect(changes, 0);
 
-      await writeSkill(skillsRoot, 'watched');
-      await _awaitChange(relevantChange.future, skillsRoot, files: files);
-      expect(changes, greaterThan(0));
-    },
-    tags: const <String>['feature_test__skill_catalog__unit'],
-  );
+    await writeSkill(skillsRoot, 'watched');
+    await _awaitChange(relevantChange.future, skillsRoot, files: files);
+    expect(changes, greaterThan(0));
+  }, tags: const <String>['feature_test__skill_catalog__unit']);
 
   test(
     'a root created behind an ancestor watch is reported on the next anchor',
@@ -487,10 +452,7 @@ void main() {
       );
       expect(filter.accepts('tracked', skillRootExists: false), isFalse);
       expect(
-        filter.accepts(
-          p.join('tracked', '.agents'),
-          skillRootExists: false,
-        ),
+        filter.accepts(p.join('tracked', '.agents'), skillRootExists: false),
         isFalse,
       );
       expect(
@@ -509,10 +471,7 @@ void main() {
         isTrue,
       );
       expect(
-        filter.accepts(
-          p.join(root.path, 'other'),
-          skillRootExists: true,
-        ),
+        filter.accepts(p.join(root.path, 'other'), skillRootExists: true),
         isFalse,
       );
     },
@@ -540,9 +499,8 @@ void main() {
         description: 'Project.',
         body: 'Project instructions.',
       );
-      await File(
-        p.join(projectSkills.path, 'project-id', 'helper.txt'),
-      ).writeAsString('helper contents');
+      await File(p.join(projectSkills.path, 'project-id', 'helper.txt'))
+          .writeAsString('helper contents');
       final service = buildService();
       addTearDown(service.close);
 
@@ -562,18 +520,13 @@ void main() {
       expect(
         catalog
             .summaries()
-            .singleWhere(
-              (summary) => summary.name == 'shared-command',
-            )
+            .singleWhere((summary) => summary.name == 'shared-command')
             .description,
         'Project.',
       );
       final content = await catalog.read('shared-command');
       expect(content.instructions, 'Project instructions.');
-      expect(
-        content.directory,
-        p.join(projectSkills.path, 'project-id'),
-      );
+      expect(content.directory, p.join(projectSkills.path, 'project-id'));
       expect(
         await catalog.readResource('shared-command', 'helper.txt'),
         'helper contents',
@@ -589,49 +542,41 @@ void main() {
     ],
   );
 
-  test(
-    'project root cache evicts the oldest watcher past its limit',
-    () async {
-      final service = buildService(maxProjectRoots: 2);
-      addTearDown(service.close);
+  test('project root cache evicts the oldest watcher past its limit', () async {
+    final service = buildService(maxProjectRoots: 2);
+    addTearDown(service.close);
 
-      for (var index = 0; index < 3; index += 1) {
-        final directory = Directory(p.join(root.path, 'project-$index'))
-          ..createSync();
-        await writeSkill(
-          Directory(p.join(directory.path, '.agents', 'skills')),
-          'local-$index',
-        );
-        expect(
-          (await list(
-            service,
-            SkillListView.project,
-            scope: SkillScope(projectRoot: directory.path),
-          )).map((skill) => skill.id),
-          contains('local-$index'),
-        );
-      }
-
-      expect(service.trackedProjectRoots, 2);
-    },
-    tags: const <String>['feature_test__skill_catalog__unit'],
-  );
-
-  test(
-    'a closed store rejects further work',
-    () async {
-      final service = buildService();
-      await list(service, SkillListView.global);
-      await service.close();
-      await service.close();
-
-      expect(
-        () => list(service, SkillListView.global),
-        throwsA(isA<StateError>()),
+    for (var index = 0; index < 3; index += 1) {
+      final directory = Directory(p.join(root.path, 'project-$index'))
+        ..createSync();
+      await writeSkill(
+        Directory(p.join(directory.path, '.agents', 'skills')),
+        'local-$index',
       );
-    },
-    tags: const <String>['feature_test__skill_catalog__unit'],
-  );
+      expect(
+        (await list(
+          service,
+          SkillListView.project,
+          scope: SkillScope(projectRoot: directory.path),
+        )).map((skill) => skill.id),
+        contains('local-$index'),
+      );
+    }
+
+    expect(service.trackedProjectRoots, 2);
+  }, tags: const <String>['feature_test__skill_catalog__unit']);
+
+  test('a closed store rejects further work', () async {
+    final service = buildService();
+    await list(service, SkillListView.global);
+    await service.close();
+    await service.close();
+
+    expect(
+      () => list(service, SkillListView.global),
+      throwsA(isA<StateError>()),
+    );
+  }, tags: const <String>['feature_test__skill_catalog__unit']);
 }
 
 /// Awaits a watcher change, reporting what the filesystem looked like when it
@@ -695,10 +640,7 @@ Future<void> _waitForDescription(
   fail('Timed out waiting for $id to have description $description.');
 }
 
-Future<void> _waitForMissing(
-  SkillCatalogService service,
-  String id,
-) async {
+Future<void> _waitForMissing(SkillCatalogService service, String id) async {
   final deadline = DateTime.now().add(const Duration(seconds: 10));
   while (DateTime.now().isBefore(deadline)) {
     final skills = await service.list(view: SkillListView.global);

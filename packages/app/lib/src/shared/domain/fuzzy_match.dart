@@ -4,7 +4,7 @@ import 'package:meta/meta.dart';
 @immutable
 final class FuzzyMatch {
   /// Creates a fuzzy match.
-  const FuzzyMatch({required this.score, required this.matchedIndices});
+  const new({required this.score, required this.matchedIndices});
 
   /// Higher is a better match; only comparable within one query.
   final int score;

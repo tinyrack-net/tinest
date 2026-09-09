@@ -45,9 +45,7 @@ void _registerWorkspaceControllerTests() {
       );
       addTearDown(registrySubscription.close);
 
-      await container.read(
-        hostRegistryControllerProvider.future,
-      );
+      await container.read(hostRegistryControllerProvider.future);
       await Future<void>.delayed(Duration.zero);
       final runtime = container
           .read(hostRegistryControllerProvider)
@@ -100,9 +98,7 @@ void _registerWorkspaceControllerTests() {
 
       final agentsProvider = sessionsControllerProvider('server', worktree.id);
       expect(await container.read(agentsProvider.future), <SessionDto>[agent]);
-      const override = ModelSelectionDto(
-        modelId: 'openai/gpt-5.6-sol',
-      );
+      const override = ModelSelectionDto(modelId: 'openai/gpt-5.6-sol');
       final created = await container
           .read(agentsProvider.notifier)
           .create(
@@ -159,58 +155,52 @@ void _registerWorkspaceControllerTests() {
         isEmpty,
       );
     },
-    tags: const <String>[
-      'feature_test__session_lifecycle__unit',
-    ],
+    tags: const <String>['feature_test__session_lifecycle__unit'],
   );
 
-  test(
-    'the home checkout resolves per host and is kept out of projects',
-    () {
-      final home = WorkspaceDto(
-        id: 'home',
-        name: 'user',
-        rootPath: '/home/user',
-        kind: WorkspaceKind.home,
-        createdAt: now,
-      );
-      final homeCheckout = WorktreeDto(
-        id: 'home-checkout',
-        workspaceId: home.id,
-        name: home.name,
-        path: home.rootPath,
-        kind: WorktreeKind.directory,
-        isTinestOwned: false,
-        createdAt: now,
-      );
-      final state = UnifiedWorkspaceCatalogState(
-        hosts: const <String, HostRuntimeSnapshot>{},
-        catalogs: <String, WorkspaceCatalogDto>{
-          'with-home': WorkspaceCatalogDto(
-            workspaces: <WorkspaceDto>[workspace, home],
-            worktrees: <WorktreeDto>[worktree, homeCheckout],
-          ),
-          'without-home': WorkspaceCatalogDto(
-            workspaces: <WorkspaceDto>[workspace],
-            worktrees: <WorktreeDto>[worktree],
-          ),
-        },
-      );
-
-      expect(
-        state.homeSelection('with-home'),
-        const WorkspaceSelection(
-          hostId: 'with-home',
-          workspaceId: 'home',
-          worktreeId: 'home-checkout',
+  test('the home checkout resolves per host and is kept out of projects', () {
+    final home = WorkspaceDto(
+      id: 'home',
+      name: 'user',
+      rootPath: '/home/user',
+      kind: WorkspaceKind.home,
+      createdAt: now,
+    );
+    final homeCheckout = WorktreeDto(
+      id: 'home-checkout',
+      workspaceId: home.id,
+      name: home.name,
+      path: home.rootPath,
+      kind: WorktreeKind.directory,
+      isTinestOwned: false,
+      createdAt: now,
+    );
+    final state = UnifiedWorkspaceCatalogState(
+      hosts: const <String, HostRuntimeSnapshot>{},
+      catalogs: <String, WorkspaceCatalogDto>{
+        'with-home': WorkspaceCatalogDto(
+          workspaces: <WorkspaceDto>[workspace, home],
+          worktrees: <WorktreeDto>[worktree, homeCheckout],
         ),
-      );
-      // A daemon configured without a user home offers no project-less start.
-      expect(state.homeSelection('without-home'), isNull);
-      expect(state.homeSelection('unknown'), isNull);
-    },
-    tags: const <String>['feature_test__session_home__unit'],
-  );
+        'without-home': WorkspaceCatalogDto(
+          workspaces: <WorkspaceDto>[workspace],
+          worktrees: <WorktreeDto>[worktree],
+        ),
+      },
+    );
+
+    expect(
+      state.homeSelection('with-home'),
+      const WorkspaceSelection(
+        hostId: 'with-home',
+        workspaceId: 'home',
+        worktreeId: 'home-checkout',
+      ),
+    );
+    // A daemon configured without a user home offers no project-less start.
+    expect(state.homeSelection('without-home'), isNull);
+    expect(state.homeSelection('unknown'), isNull);
+  }, tags: const <String>['feature_test__session_home__unit']);
 
   test('feature families never mix state between connected hosts', () async {
     WorkspaceDto hostWorkspace(String host) => WorkspaceDto(
@@ -363,9 +353,7 @@ void _registerWorkspaceControllerTests() {
               settings: store,
               profiles: store,
               credentials: store,
-              clients: _HostClients(<String, TinestApi>{
-                'server.test': api,
-              }),
+              clients: _HostClients(<String, TinestApi>{'server.test': api}),
               clientKind: 'test',
             ),
           ),
@@ -438,10 +426,7 @@ void _registerWorkspaceControllerTests() {
       );
       final creating = container
           .read(sessionsProvider.notifier)
-          .create(
-            title: 'Created',
-            agentDefinitionId: 'tinest',
-          );
+          .create(title: 'Created', agentDefinitionId: 'tinest');
       await Future<void>.delayed(Duration.zero);
 
       expect(container.read(sessionsProvider).hasValue, isTrue);
@@ -491,10 +476,7 @@ void _registerWorkspaceControllerTests() {
       await expectLater(
         container
             .read(sessionsProvider.notifier)
-            .create(
-              title: 'Failed',
-              agentDefinitionId: 'tinest',
-            ),
+            .create(title: 'Failed', agentDefinitionId: 'tinest'),
         throwsException,
       );
       expect(
@@ -923,98 +905,91 @@ void _registerWorkspaceControllerTests() {
     ],
   );
 
-  test(
-    'pending terminal tabs appear instantly, persist nothing, and promote '
-    'or roll back',
-    () async {
-      final api = FakeTinestApi(
-        workspaces: <WorkspaceDto>[workspace],
-        worktrees: <WorktreeDto>[worktree],
-      );
-      final store = MemoryAppStore(
-        settings: const AppSettings(embeddedDaemonEnabled: false),
-        profiles: <RemoteDaemonProfile>[_profile('server', now)],
-        tokens: const <String, String>{'server': 'token'},
-      );
-      final container = ProviderContainer(
-        overrides: [
-          appServicesProvider.overrideWithValue(
-            AppServices(
-              settings: store,
-              profiles: store,
-              credentials: store,
-              clients: _HostClients(<String, TinestApi>{'server.test': api}),
-              clientKind: 'test',
-            ),
+  test('pending terminal tabs appear instantly, persist nothing, and promote '
+      'or roll back', () async {
+    final api = FakeTinestApi(
+      workspaces: <WorkspaceDto>[workspace],
+      worktrees: <WorktreeDto>[worktree],
+    );
+    final store = MemoryAppStore(
+      settings: const AppSettings(embeddedDaemonEnabled: false),
+      profiles: <RemoteDaemonProfile>[_profile('server', now)],
+      tokens: const <String, String>{'server': 'token'},
+    );
+    final container = ProviderContainer(
+      overrides: [
+        appServicesProvider.overrideWithValue(
+          AppServices(
+            settings: store,
+            profiles: store,
+            credentials: store,
+            clients: _HostClients(<String, TinestApi>{'server.test': api}),
+            clientKind: 'test',
           ),
-          appIdGeneratorProvider.overrideWithValue(_SequentialIdGenerator()),
-        ],
-      );
-      addTearDown(container.dispose);
-      await container.read(hostRegistryControllerProvider.future);
-      await Future<void>.delayed(Duration.zero);
-      const selection = WorkspaceSelection(
-        hostId: 'server',
-        workspaceId: 'workspace',
-        worktreeId: 'worktree',
-      );
-      final provider = sessionTabsControllerProvider(selection);
-      final subscription = container.listen(provider, (_, _) {});
-      addTearDown(subscription.close);
-      final initial = await container.read(provider.future);
-      final notifier = container.read(provider.notifier);
-
-      // The placeholder tab is observable synchronously: creating a terminal
-      // must never leave the pane waiting on the daemon for feedback.
-      final pendingId = notifier.openPendingTerminal(initial.focusedPaneId);
-      final pending = container.read(provider).requireValue;
-      expect(pending.focusedTab?.id, pendingId);
-      expect(pending.focusedTab?.target, isA<PendingTerminalTabTarget>());
-
-      await Future<void>.delayed(Duration.zero);
-      final savedPending = store.settings.sessionTabs[selection.storageKey]!;
-      expect(
-        savedPending.tabs.map((tab) => tab.id),
-        isNot(contains(pendingId)),
-      );
-      expect(
-        (savedPending.root as WorkspacePanePreference).tabIds,
-        isNot(contains(pendingId)),
-      );
-
-      const terminal = TerminalDto(
-        id: 'terminal-1',
-        worktreeId: 'worktree',
-        title: 'Terminal 1',
-        shell: ShellSpecDto(executable: '/bin/sh'),
-        status: TerminalStatus.running,
-        columns: 80,
-        rows: 24,
-        lastSequence: 0,
-      );
-      notifier.promotePendingTerminal(pendingId, terminal);
-      final promoted = container.read(provider).requireValue;
-      expect(
-        (promoted.tabs[pendingId]!.target as TerminalTabTarget).terminalId,
-        terminal.id,
-      );
-      expect(promoted.terminals.map((item) => item.id), contains(terminal.id));
-      await Future<void>.delayed(Duration.zero);
-      expect(
-        store.settings.sessionTabs[selection.storageKey]!.tabs.map(
-          (tab) => tab.targetId,
         ),
-        contains(terminal.id),
-      );
+        appIdGeneratorProvider.overrideWithValue(_SequentialIdGenerator()),
+      ],
+    );
+    addTearDown(container.dispose);
+    await container.read(hostRegistryControllerProvider.future);
+    await Future<void>.delayed(Duration.zero);
+    const selection = WorkspaceSelection(
+      hostId: 'server',
+      workspaceId: 'workspace',
+      worktreeId: 'worktree',
+    );
+    final provider = sessionTabsControllerProvider(selection);
+    final subscription = container.listen(provider, (_, _) {});
+    addTearDown(subscription.close);
+    final initial = await container.read(provider.future);
+    final notifier = container.read(provider.notifier);
 
-      final second = notifier.openPendingTerminal(promoted.focusedPaneId);
-      await notifier.removePendingTerminal(second);
-      final rolled = container.read(provider).requireValue;
-      expect(rolled.tabs.containsKey(second), isFalse);
-      expect(rolled.tabs.containsKey(pendingId), isTrue);
-    },
-    tags: const <String>['feature_test__session_tabs__unit'],
-  );
+    // The placeholder tab is observable synchronously: creating a terminal
+    // must never leave the pane waiting on the daemon for feedback.
+    final pendingId = notifier.openPendingTerminal(initial.focusedPaneId);
+    final pending = container.read(provider).requireValue;
+    expect(pending.focusedTab?.id, pendingId);
+    expect(pending.focusedTab?.target, isA<PendingTerminalTabTarget>());
+
+    await Future<void>.delayed(Duration.zero);
+    final savedPending = store.settings.sessionTabs[selection.storageKey]!;
+    expect(savedPending.tabs.map((tab) => tab.id), isNot(contains(pendingId)));
+    expect(
+      (savedPending.root as WorkspacePanePreference).tabIds,
+      isNot(contains(pendingId)),
+    );
+
+    const terminal = TerminalDto(
+      id: 'terminal-1',
+      worktreeId: 'worktree',
+      title: 'Terminal 1',
+      shell: ShellSpecDto(executable: '/bin/sh'),
+      status: TerminalStatus.running,
+      columns: 80,
+      rows: 24,
+      lastSequence: 0,
+    );
+    notifier.promotePendingTerminal(pendingId, terminal);
+    final promoted = container.read(provider).requireValue;
+    expect(
+      (promoted.tabs[pendingId]!.target as TerminalTabTarget).terminalId,
+      terminal.id,
+    );
+    expect(promoted.terminals.map((item) => item.id), contains(terminal.id));
+    await Future<void>.delayed(Duration.zero);
+    expect(
+      store.settings.sessionTabs[selection.storageKey]!.tabs.map(
+        (tab) => tab.targetId,
+      ),
+      contains(terminal.id),
+    );
+
+    final second = notifier.openPendingTerminal(promoted.focusedPaneId);
+    await notifier.removePendingTerminal(second);
+    final rolled = container.read(provider).requireValue;
+    expect(rolled.tabs.containsKey(second), isFalse);
+    expect(rolled.tabs.containsKey(pendingId), isTrue);
+  }, tags: const <String>['feature_test__session_tabs__unit']);
 
   test(
     'tab mutations complete without waiting for the settings write',

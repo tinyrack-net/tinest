@@ -53,7 +53,7 @@ final class SkillsControllerProvider
   }
 }
 
-String _$skillsControllerHash() => r'1fe32e780933ce1ae5781ce3187d74865f02d725';
+String _$skillsControllerHash() => r'626a18fdbf83d9f3478d6c90a97fabc7460773ad';
 
 /// Loads one read-only view of the effective skills a daemon offers.
 

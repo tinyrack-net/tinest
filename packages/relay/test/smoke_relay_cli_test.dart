@@ -45,10 +45,9 @@ void main() {
   test('help exits without running the smoke protocol', () async {
     var executions = 0;
     expect(
-      await runRelaySmokeCli(
-        const <String>['--help'],
-        execute: (_, _) async => executions += 1,
-      ),
+      await runRelaySmokeCli(const <String>[
+        '--help',
+      ], execute: (_, _) async => executions += 1),
       0,
     );
     expect(executions, 0);

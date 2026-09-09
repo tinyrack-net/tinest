@@ -52,10 +52,7 @@ void main() {
       // the editor has to say so rather than accept the server.
       await tester.tap(find.byKey(const ValueKey('mcp-server-add')));
       await tester.pumpAndSettle();
-      await tester.enterText(
-        find.byKey(const ValueKey('mcp-field-id')),
-        'e2e',
-      );
+      await tester.enterText(find.byKey(const ValueKey('mcp-field-id')), 'e2e');
       await tester.enterText(
         find.byKey(const ValueKey('mcp-field-command')),
         '/nonexistent/mcp-server',
@@ -64,9 +61,7 @@ void main() {
       final saveServer = find.byKey(const ValueKey('mcp-server-save'));
       await tester.ensureVisible(saveServer);
       await tester.pumpAndSettle();
-      final testServer = find.byKey(
-        const ValueKey<String>('mcp-server-test'),
-      );
+      final testServer = find.byKey(const ValueKey<String>('mcp-server-test'));
       await tester.ensureVisible(testServer);
       await tester.tap(testServer);
       await pumpUntil(
@@ -143,23 +138,19 @@ void main() {
 
       await tester.ensureVisible(saveServer);
       await tester.tap(saveServer);
-      await pumpUntilCondition(
-        tester,
-        () async {
-          final servers = await assertions.mcp.listMcpServers();
-          if (servers.isEmpty) return false;
-          final server = servers.single;
-          if (server.status == McpServerStatus.failed &&
-              server.config.command == dartExecutable()) {
-            throw TestFailure(
-              'Repaired MCP server failed: ${server.error}; '
-              'args=${server.config.args}; env=${server.config.env}',
-            );
-          }
-          return server.status == McpServerStatus.ready;
-        },
-        'the repaired MCP server to become ready',
-      );
+      await pumpUntilCondition(tester, () async {
+        final servers = await assertions.mcp.listMcpServers();
+        if (servers.isEmpty) return false;
+        final server = servers.single;
+        if (server.status == McpServerStatus.failed &&
+            server.config.command == dartExecutable()) {
+          throw TestFailure(
+            'Repaired MCP server failed: ${server.error}; '
+            'args=${server.config.args}; env=${server.config.env}',
+          );
+        }
+        return server.status == McpServerStatus.ready;
+      }, 'the repaired MCP server to become ready');
       await tester.pumpAndSettle();
       expect(
         (await assertions.mcp.listMcpServers()).single.tools.single.toolId,
@@ -169,9 +160,7 @@ void main() {
       // The server refresh can briefly remove the selected row while the
       // daemon replaces its loading snapshot with the ready one. Re-select
       // the persisted server before exercising its detail-only actions.
-      final savedServerTile = find.byKey(
-        const ValueKey('mcp-server-tile-e2e'),
-      );
+      final savedServerTile = find.byKey(const ValueKey('mcp-server-tile-e2e'));
       await pumpUntil(tester, savedServerTile.hitTestable());
       await tester.tap(savedServerTile.hitTestable());
       await tester.pumpAndSettle();

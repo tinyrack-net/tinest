@@ -5,7 +5,7 @@ import 'package:client/src/endpoint.dart';
 /// One independently probeable route to the same authoritative daemon.
 sealed class HostConnection {
   /// Creates shared connection metadata.
-  const HostConnection({required this.id, required this.credentialKey});
+  const new({required this.id, required this.credentialKey});
 
   /// Stable device-local path identifier.
   final String id;
@@ -17,7 +17,7 @@ sealed class HostConnection {
 /// Existing direct WebSocket and HTTP route to a daemon.
 final class DirectHostConnection extends HostConnection {
   /// Creates a direct route.
-  const DirectHostConnection({
+  const new({
     required super.id,
     required super.credentialKey,
     required this.endpoint,
@@ -30,7 +30,7 @@ final class DirectHostConnection extends HostConnection {
 /// End-to-end encrypted route through an opaque relay.
 final class RelayHostConnection extends HostConnection {
   /// Creates and validates a relay route.
-  RelayHostConnection({
+  new({
     required super.id,
     required super.credentialKey,
     required this.serverId,
@@ -56,13 +56,13 @@ final class RelayHostConnection extends HostConnection {
 
 /// Secret material loaded for one typed connection immediately before use.
 sealed class HostConnectionCredential {
-  const HostConnectionCredential();
+  const new();
 }
 
 /// Direct daemon bearer credential.
 final class DirectHostCredential extends HostConnectionCredential {
   /// Creates a direct bearer credential.
-  const DirectHostCredential(this.credentials);
+  const new(this.credentials);
 
   /// Existing daemon authorization header value.
   final DaemonCredentials credentials;
@@ -71,7 +71,7 @@ final class DirectHostCredential extends HostConnectionCredential {
 /// Daemon-scoped device identity used only for relay mutual authentication.
 final class RelayHostCredential extends HostConnectionCredential {
   /// Creates and validates a relay device credential.
-  RelayHostCredential({required this.deviceId, required List<int> privateKey})
+  new({required this.deviceId, required List<int> privateKey})
     : privateKey = Uint8List.fromList(privateKey) {
     if (deviceId.isEmpty || privateKey.length != 32) {
       throw const FormatException('Invalid relay device credential.');

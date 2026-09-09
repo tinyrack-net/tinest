@@ -53,10 +53,7 @@ void main() {
       _host(padding: EdgeInsets.zero, body: const SizedBox.expand()),
     );
 
-    expect(
-      tester.getRect(find.byType(TRAppShell)),
-      Offset.zero & viewport,
-    );
+    expect(tester.getRect(find.byType(TRAppShell)), Offset.zero & viewport);
   });
 
   testWidgets('narrow task header wraps instead of truncating its title', (
@@ -71,10 +68,7 @@ void main() {
       _host(
         padding: EdgeInsets.zero,
         textScaler: const TextScaler.linear(2),
-        title: const Text(
-          'Add a remote daemon connection',
-          key: titleKey,
-        ),
+        title: const Text('Add a remote daemon connection', key: titleKey),
         actions: <TRIconButton>[
           TRIconButton(
             label: 'Copy path',
@@ -108,10 +102,7 @@ void main() {
       await tester.pumpWidget(
         _host(
           padding: EdgeInsets.zero,
-          title: const Text(
-            'Custom provider advanced settings',
-            key: titleKey,
-          ),
+          title: const Text('Custom provider advanced settings', key: titleKey),
           actions: <TRIconButton>[
             TRIconButton(
               key: actionKey,
@@ -375,10 +366,7 @@ Widget _host({
     child: TRUiDensityScope(density: density, child: child!),
   ),
   home: TinestPageShell(
-    appBar: TinestPageHeader(
-      title: title,
-      actions: actions,
-    ),
+    appBar: TinestPageHeader(title: title, actions: actions),
     body: body,
   ),
 );

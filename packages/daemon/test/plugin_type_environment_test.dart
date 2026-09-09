@@ -242,9 +242,7 @@ local Input = tinest.schema.object(T.Input, {})
   test('lexer reports unterminated quoted and long Lua tokens', () {
     final quoted = PluginTypeEnvironmentGenerator.analyze(
       pluginId: 'acme.quoted',
-      sources: const <String, String>{
-        'main.lua': 'local text = "unterminated',
-      },
+      sources: const <String, String>{'main.lua': 'local text = "unterminated'},
     );
     final longString = PluginTypeEnvironmentGenerator.analyze(
       pluginId: 'acme.long',
@@ -254,9 +252,7 @@ local Input = tinest.schema.object(T.Input, {})
     );
     final longComment = PluginTypeEnvironmentGenerator.analyze(
       pluginId: 'acme.comment',
-      sources: const <String, String>{
-        'main.lua': '--[=[unterminated',
-      },
+      sources: const <String, String>{'main.lua': '--[=[unterminated'},
     );
 
     expect(

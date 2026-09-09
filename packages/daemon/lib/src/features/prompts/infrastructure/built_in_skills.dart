@@ -4,7 +4,7 @@
 /// built-in is always injected and cannot be shadowed by a filesystem skill.
 final class BuiltInSkill {
   /// Creates a built-in skill.
-  const BuiltInSkill({
+  const new({
     required this.id,
     required this.name,
     required this.description,

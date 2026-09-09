@@ -3,7 +3,7 @@ import 'dart:async';
 /// One process executed as part of workspace verification.
 final class VerificationTask {
   /// Creates a process-backed verification task.
-  const VerificationTask({
+  const new({
     required this.name,
     required this.executable,
     required this.arguments,
@@ -38,7 +38,7 @@ final class VerificationTask {
 /// Tasks that may execute concurrently.
 final class VerificationPhase {
   /// Creates a phase whose [tasks] may run concurrently.
-  const VerificationPhase({required this.tasks});
+  const new({required this.tasks});
 
   /// Tasks in this phase.
   final List<VerificationTask> tasks;
@@ -47,7 +47,7 @@ final class VerificationPhase {
 /// Ordered phases in a verification run.
 final class VerificationPlan {
   /// Creates an ordered verification plan.
-  const VerificationPlan({required this.phases});
+  const new({required this.phases});
 
   /// Ordered phases; a failed phase prevents later phases from running.
   final List<VerificationPhase> phases;
@@ -56,7 +56,7 @@ final class VerificationPlan {
 /// Result of running one [VerificationTask].
 final class VerificationTaskResult {
   /// Creates a completed task result.
-  const VerificationTaskResult({
+  const new({
     required this.task,
     required this.exitCode,
     required this.duration,
@@ -84,7 +84,7 @@ abstract interface class VerificationTaskExecutor {
 /// Results collected from the phases that ran.
 final class VerificationReport {
   /// Creates an immutable verification report.
-  const VerificationReport(this.results);
+  const new(this.results);
 
   /// Task results in deterministic plan order.
   final List<VerificationTaskResult> results;
@@ -100,7 +100,7 @@ final class VerificationReport {
 /// Executes ordered phases with bounded concurrency inside each phase.
 final class VerificationRunner {
   /// Creates a runner with bounded phase concurrency.
-  VerificationRunner({required this.executor, required this.maxJobs})
+  new({required this.executor, required this.maxJobs})
     : assert(maxJobs > 0, 'maxJobs must be positive');
 
   /// Task execution boundary.
@@ -386,9 +386,7 @@ abstract final class WorkspaceVerificationPlans {
 
   /// Runs the read-only workspace checks without generation or tests.
   static VerificationPlan staticChecks({required int jobs}) => VerificationPlan(
-    phases: <VerificationPhase>[
-      VerificationPhase(tasks: _staticTasks(jobs)),
-    ],
+    phases: <VerificationPhase>[VerificationPhase(tasks: _staticTasks(jobs))],
   );
 
   /// Runs the complete static and coverage gates on every supported host.
@@ -436,9 +434,7 @@ abstract final class WorkspaceVerificationPlans {
             for (final task in coverageTasks)
               VerificationPhase(tasks: <VerificationTask>[task]),
           ]
-        : <VerificationPhase>[
-            VerificationPhase(tasks: coverageTasks),
-          ];
+        : <VerificationPhase>[VerificationPhase(tasks: coverageTasks)];
     return VerificationPlan(
       phases: <VerificationPhase>[
         _generated(jobs),

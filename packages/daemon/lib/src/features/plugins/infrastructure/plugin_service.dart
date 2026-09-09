@@ -30,7 +30,7 @@ abstract interface class PluginSourceCatalog {
 /// Native catalog combining embedded built-ins with `<config>/v5/plugins`.
 final class NativePluginSourceCatalog implements PluginSourceCatalog {
   /// Creates the catalog rooted at `<config>/v5/plugins`.
-  NativePluginSourceCatalog(
+  new(
     String configRoot, {
     this.builtIns = const BuiltInPluginCatalog(),
     this.authoring,
@@ -114,10 +114,7 @@ final class NativePluginSourceCatalog implements PluginSourceCatalog {
         continue;
       }
       try {
-        if (FileSystemEntity.typeSync(
-              directoryPath,
-              followLinks: false,
-            ) !=
+        if (FileSystemEntity.typeSync(directoryPath, followLinks: false) !=
             FileSystemEntityType.directory) {
           continue;
         }
@@ -125,10 +122,7 @@ final class NativePluginSourceCatalog implements PluginSourceCatalog {
         await for (final entity in Directory(
           directoryPath,
         ).list(followLinks: false)) {
-          if (FileSystemEntity.typeSync(
-                entity.path,
-                followLinks: false,
-              ) ==
+          if (FileSystemEntity.typeSync(entity.path, followLinks: false) ==
               FileSystemEntityType.directory) {
             pending.add(Directory(entity.path));
           }
@@ -373,7 +367,7 @@ return tinest.plugin.define({
 final class PluginManagementService
     implements PluginDescriptorReader, AgentPluginDescriptorReader {
   /// Creates plugin management over validated revisions and daemon state.
-  PluginManagementService({
+  new({
     required this.sources,
     required this.revisions,
     required this.grants,
@@ -441,7 +435,7 @@ final class PluginManagementService
       throw PluginManagementException('Plugin is not installed: $id');
     }
     if (!id.startsWith('tinest.')) {
-      return revisions.validateInstalled(id, inspector: inspector);
+      return await revisions.validateInstalled(id, inspector: inspector);
     }
     try {
       return (await revisions.resolveInspectedInstalled(
@@ -449,7 +443,7 @@ final class PluginManagementService
         inspector: inspector,
       )).descriptor;
     } on PluginRevisionUnavailable {
-      return revisions.validateInstalled(id, inspector: inspector);
+      return await revisions.validateInstalled(id, inspector: inspector);
     }
   }
 
@@ -492,7 +486,7 @@ final class PluginManagementService
 
   /// Validates a candidate without changing the active revision.
   Future<PluginDescriptorDto> validate(String id) async =>
-      revisions.validateInstalled(id, inspector: inspector);
+      await revisions.validateInstalled(id, inspector: inspector);
 
   /// Reloads a candidate using only capabilities granted to [agentId].
   Future<PluginDescriptorDto> reload(String id, String agentId) async {
@@ -500,7 +494,7 @@ final class PluginManagementService
       for (final grant in await grants.list(agentId))
         if (grant.pluginId == id) grant.capability,
     };
-    return revisions.reload(
+    return await revisions.reload(
       id,
       agentId: agentId,
       approvedCapabilities: approved,
@@ -511,7 +505,7 @@ final class PluginManagementService
   /// Scaffolds and validates a new user plugin; it is not globally enabled.
   Future<PluginDescriptorDto> scaffold(String id, String name) async {
     await sources.scaffold(id, name);
-    return validate(id);
+    return await validate(id);
   }
 
   /// Forks an installed plugin's validated revision without activating it.
@@ -526,7 +520,7 @@ final class PluginManagementService
     await validate(sourceId);
     final source = await revisions.resolveInstalled(sourceId);
     await sources.fork(source, id, name);
-    return validate(id);
+    return await validate(id);
   }
 
   /// Lists Agent-owned grants.
@@ -542,21 +536,21 @@ final class PluginManagementService
       );
     }
     await grants.grant(grant);
-    return grants.list(grant.agentId);
+    return await grants.list(grant.agentId);
   }
 
   /// Revokes one exact grant. Active host primitives observe revocation through
   /// the capability broker's cancellation signal.
   Future<List<AgentPluginGrantDto>> revoke(AgentPluginGrantDto grant) async {
     await grants.revoke(grant);
-    return grants.list(grant.agentId);
+    return await grants.list(grant.agentId);
   }
 }
 
 /// Expected plugin management failure suitable for transport mapping.
 final class PluginManagementException implements Exception {
   /// Creates a management failure.
-  const PluginManagementException(this.message);
+  const new(this.message);
 
   /// User-safe failure description.
   final String message;
@@ -650,9 +644,7 @@ Uint8List _forkManifest(
     sourceId: sourceId,
     id: id,
   );
-  return Uint8List.fromList(
-    utf8.encode('---\n$editor\n---\n$body'),
-  );
+  return Uint8List.fromList(utf8.encode('---\n$editor\n---\n$body'));
 }
 
 Uint8List _forkAssetIdentity(
@@ -669,10 +661,7 @@ String _forkTextIdentity(
   String source, {
   required String sourceId,
   required String id,
-}) => source.replaceAll(
-  RegExp('${RegExp.escape(sourceId)}(?![a-z0-9.-])'),
-  id,
-);
+}) => source.replaceAll(RegExp('${RegExp.escape(sourceId)}(?![a-z0-9.-])'), id);
 
 void _requireForkPath(String root, String candidate) {
   final absoluteRoot = p.normalize(p.absolute(root));

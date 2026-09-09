@@ -8,9 +8,7 @@ import 'package:test/test.dart';
 void main() {
   group(
     'GitAwareFileIndexGateway',
-    tags: const <String>[
-      'feature_test__composer_file_mention__unit',
-    ],
+    tags: const <String>['feature_test__composer_file_mention__unit'],
     () {
       late _MutableClock clock;
 
@@ -270,44 +268,34 @@ void main() {
   );
 
   group('absolutePathFor', () {
-    test(
-      'keeps a Windows join in one separator',
-      () {
-        // Git reports the root with forward slashes even on Windows, which
-        // used to leave a path mixing both separators behind.
-        expect(
-          absolutePathFor(
-            'C:/repo',
-            'lib/app.dart',
-            context: p.Context(style: p.Style.windows),
-          ),
-          r'C:\repo\lib\app.dart',
-        );
-      },
-      tags: const <String>['feature_test__composer_file_mention__unit'],
-    );
+    test('keeps a Windows join in one separator', () {
+      // Git reports the root with forward slashes even on Windows, which
+      // used to leave a path mixing both separators behind.
+      expect(
+        absolutePathFor(
+          'C:/repo',
+          'lib/app.dart',
+          context: p.Context(style: p.Style.windows),
+        ),
+        r'C:\repo\lib\app.dart',
+      );
+    }, tags: const <String>['feature_test__composer_file_mention__unit']);
 
-    test(
-      'keeps a POSIX join in one separator',
-      () {
-        expect(
-          absolutePathFor(
-            '/repo',
-            'lib/app.dart',
-            context: p.Context(style: p.Style.posix),
-          ),
-          '/repo/lib/app.dart',
-        );
-      },
-      tags: const <String>['feature_test__composer_file_mention__unit'],
-    );
+    test('keeps a POSIX join in one separator', () {
+      expect(
+        absolutePathFor(
+          '/repo',
+          'lib/app.dart',
+          context: p.Context(style: p.Style.posix),
+        ),
+        '/repo/lib/app.dart',
+      );
+    }, tags: const <String>['feature_test__composer_file_mention__unit']);
   });
 
   group(
     'GitAwareFileIndexGateway outside a repository',
-    tags: const <String>[
-      'feature_test__composer_file_mention__unit',
-    ],
+    tags: const <String>['feature_test__composer_file_mention__unit'],
     () {
       late Directory root;
       late _MutableClock clock;
@@ -319,7 +307,7 @@ void main() {
         gateway = GitAwareFileIndexGateway(_FailingCommandRunner(), clock);
       });
 
-      tearDown(() async => root.delete(recursive: true));
+      tearDown(() async => await root.delete(recursive: true));
 
       Future<void> write(String relativePath) async {
         final file = File(
@@ -353,10 +341,9 @@ void main() {
           FileSearchRequest(root: root.path, query: 'target'),
         );
 
-        expect(
-          result.matches.map((match) => match.relativePath),
-          <String>['lib/target.dart'],
-        );
+        expect(result.matches.map((match) => match.relativePath), <String>[
+          'lib/target.dart',
+        ]);
       });
 
       test('stops at the depth budget without failing the search', () async {
@@ -419,7 +406,7 @@ final class _MutableClock implements Clock {
 }
 
 final class _CommandInvocation {
-  const _CommandInvocation({
+  const new({
     required this.executable,
     required this.arguments,
     required this.workingDirectory,
@@ -431,7 +418,7 @@ final class _CommandInvocation {
 }
 
 final class _ScriptedCommandRunner implements CommandRunner {
-  _ScriptedCommandRunner(this.results);
+  new(this.results);
 
   final Map<String, CommandResult> results;
   final List<_CommandInvocation> invocations = <_CommandInvocation>[];

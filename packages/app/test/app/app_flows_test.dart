@@ -143,15 +143,10 @@ Finder _textField(String label) => find.byWidgetPredicate(
   description: 'TRTextField labelled "$label"',
 );
 
-Finder _textInput(String label) => find.descendant(
-  of: _textField(label),
-  matching: find.byType(EditableText),
-);
+Finder _textInput(String label) =>
+    find.descendant(of: _textField(label), matching: find.byType(EditableText));
 
-Future<void> _openComposerSetting(
-  WidgetTester tester,
-  String setting,
-) async {
+Future<void> _openComposerSetting(WidgetTester tester, String setting) async {
   final direct = find.byKey(ValueKey<String>('session-composer-$setting'));
   if (direct.evaluate().isNotEmpty) {
     await tester.tap(direct);
@@ -175,7 +170,7 @@ Future<void> _openComposerSetting(
 }
 
 final class _MappedClients implements HostClientFactory {
-  const _MappedClients(this.apis);
+  const new(this.apis);
 
   final Map<String, TinestApi> apis;
 

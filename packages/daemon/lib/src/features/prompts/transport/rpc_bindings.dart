@@ -13,9 +13,7 @@ List<RpcBindingDescriptor> promptRpcBindings({
   Future<SkillScope> skillScope(String? workspaceId) async =>
       workspaceId == null
       ? SkillScope.global
-      : SkillScope(
-          projectRoot: await workspaces.workspaceRoot(workspaceId),
-        );
+      : SkillScope(projectRoot: await workspaces.workspaceRoot(workspaceId));
   Future<CommandScope> commandScope(String? workspaceId) async =>
       workspaceId == null
       ? CommandScope.global

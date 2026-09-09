@@ -12,7 +12,7 @@ import 'package:daemon/src/shared/ports/daemon_ports.dart';
 /// Host-owned identity and workspace data for one recovered plugin job.
 final class PluginScheduledExecutionContext {
   /// Creates a validated scheduled execution context.
-  const PluginScheduledExecutionContext({
+  const new({
     required this.agentId,
     required this.sessionId,
     required this.workingDirectory,
@@ -51,7 +51,7 @@ typedef PluginScheduledUiEventSink = FutureOr<void> Function(
 /// Executes durable named handlers through the same public Lua SDK and broker.
 final class LuaPluginScheduledJobExecutor {
   /// Creates the real Lua durable-handler adapter.
-  const LuaPluginScheduledJobExecutor({
+  const new({
     required this.runtime,
     required this.state,
     required this.grants,
@@ -110,9 +110,7 @@ final class LuaPluginScheduledJobExecutor {
       sessionId: context.sessionId,
       workspaceId: context.workspaceId,
       workingDirectory: context.workingDirectory,
-      allowedCapabilitiesByPlugin: <String, Set<String>>{
-        job.pluginId: allowed,
-      },
+      allowedCapabilitiesByPlugin: <String, Set<String>>{job.pluginId: allowed},
       sessionCapabilities: context.sessionCapabilities,
       executionRevisionPinsByPlugin: <String, String>{
         job.pluginId: job.executionRevisionHash,
@@ -196,7 +194,7 @@ final class LuaPluginScheduledJobExecutor {
 
 final class _ScheduledCallbackRouter
     implements PluginCallbackRouter<ConversationAttachment> {
-  _ScheduledCallbackRouter({
+  new({
     required this.job,
     required this.state,
     required this.jobs,
@@ -279,12 +277,12 @@ final class _ScheduledCallbackRouter
           value: _stateEntry(entry),
         );
       case 'state.remove':
-        return _removeState(context, arguments);
+        return await _removeState(context, arguments);
       case 'state.transaction':
-        return _transactState(context, arguments);
+        return await _transactState(context, arguments);
       case 'scheduler.schedule':
       case 'scheduler.continue_after_turn':
-        return _schedule(context, name, arguments);
+        return await _schedule(context, name, arguments);
       case 'scheduler.cancel':
         final id = _requiredString(arguments, 'id');
         final cancelled = await jobs().cancel(

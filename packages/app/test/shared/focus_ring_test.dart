@@ -27,10 +27,7 @@ Widget _host(Widget child, {double width = 1200}) => MaterialApp(
 
 void Function(Canvas) _focusRingPainter(WidgetTester tester, Finder owner) {
   final ring = find
-      .descendant(
-        of: owner,
-        matching: find.byType(TRFocusRing),
-      )
+      .descendant(of: owner, matching: find.byType(TRFocusRing))
       .first;
   final render = tester.renderObject<RenderCustomPaint>(
     find.descendant(of: ring, matching: find.byType(CustomPaint)).first,
@@ -73,13 +70,11 @@ Future<void> _requestFocusFromKeyboard(
 }
 
 void main() {
-  setUp(
-    () {
-      FocusManager.instance.highlightStrategy =
-          FocusHighlightStrategy.alwaysTraditional;
-      TRFocusSource.instance.debugReset();
-    },
-  );
+  setUp(() {
+    FocusManager.instance.highlightStrategy =
+        FocusHighlightStrategy.alwaysTraditional;
+    TRFocusSource.instance.debugReset();
+  });
   tearDown(TRFocusSource.instance.debugReset);
 
   group('TinestListRow focus ring', () {
@@ -215,10 +210,7 @@ void main() {
         _host(
           Column(
             children: <Widget>[
-              TRButton(
-                onPressed: () {},
-                child: const TRText.inherit('Before'),
-              ),
+              TRButton(onPressed: () {}, child: const TRText.inherit('Before')),
               TinestSwitchRow(
                 title: const TRText.inherit('Enabled'),
                 value: false,

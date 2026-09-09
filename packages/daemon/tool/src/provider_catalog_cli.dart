@@ -8,10 +8,7 @@ typedef ProviderCatalogGenerator = Future<void> Function({
 });
 
 final class _ProviderCatalogContext implements CommandContext {
-  const _ProviderCatalogContext({
-    required this.process,
-    required this.generate,
-  });
+  const new({required this.process, required this.generate});
 
   @override
   final RunProcess process;

@@ -16,7 +16,7 @@ final class _Counter extends Notifier<int> {
 
 /// Rebuilds itself through Riverpod the ordinary way, mutating nothing itself.
 class _OrdinaryRebuild extends ConsumerWidget {
-  const _OrdinaryRebuild();
+  const new();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) =>
@@ -25,7 +25,7 @@ class _OrdinaryRebuild extends ConsumerWidget {
 
 /// Invalidates a provider from `didUpdateWidget`, i.e. inside the build phase.
 class _MutatesDuringBuild extends ConsumerStatefulWidget {
-  const _MutatesDuringBuild({required this.revision});
+  const new({required this.revision});
 
   final int revision;
 

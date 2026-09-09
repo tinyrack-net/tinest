@@ -29,10 +29,7 @@ void main() {
         expect(parsed.serverId, handle.serverId);
         expect(parsed.expiresAt, offer.expiresAt);
         expect(await client.listRelayDevices(), isEmpty);
-        expect(
-          (await client.setRelayEnabled(enabled: true)).enabled,
-          isTrue,
-        );
+        expect((await client.setRelayEnabled(enabled: true)).enabled, isTrue);
         final changed = await client.setRelayEndpoint(
           'wss://self-hosted.example/v1/ws',
         );

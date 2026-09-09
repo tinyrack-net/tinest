@@ -11,10 +11,7 @@ abstract interface class AgentCliBackend {
   Future<AgentDefinitionDto> validate(String id, String markdown);
 
   /// Creates or updates one definition.
-  Future<AgentDefinitionDto> apply(
-    String id,
-    AgentDefinitionDto definition,
-  );
+  Future<AgentDefinitionDto> apply(String id, AgentDefinitionDto definition);
 
   /// Archives one custom definition.
   Future<void> archive(String id);
@@ -26,7 +23,7 @@ abstract interface class AgentCliBackend {
 /// Adapts [TinestApi] to the standalone agent administration commands.
 final class TinestApiAgentCliBackend implements AgentCliBackend {
   /// Creates the client adapter.
-  const TinestApiAgentCliBackend(this._api);
+  const new(this._api);
 
   final TinestApi _api;
 
@@ -46,9 +43,9 @@ final class TinestApiAgentCliBackend implements AgentCliBackend {
         .where((item) => item.id == id)
         .firstOrNull;
     if (existing == null) {
-      return _api.agents.createAgentDefinition(id, definition);
+      return await _api.agents.createAgentDefinition(id, definition);
     }
-    return _api.agents.updateAgentDefinition(
+    return await _api.agents.updateAgentDefinition(
       definition.copyWith(
         contentHash: existing.contentHash,
         sourcePath: existing.sourcePath,

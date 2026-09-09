@@ -67,9 +67,7 @@ void main() {
     label: label,
     kind: HostKind.remote,
     status: status,
-    endpoint: HostEndpoint(
-      websocketUri: Uri.parse('ws://127.0.0.1:7337/ws'),
-    ),
+    endpoint: HostEndpoint(websocketUri: Uri.parse('ws://127.0.0.1:7337/ws')),
     // `connected` requires an API, so only online hosts get one.
     api: status == HostRuntimeStatus.online ? api ?? FakeTinestApi() : null,
   );
@@ -248,9 +246,7 @@ void main() {
       expect(find.text('First daemon'), findsNothing);
       expect(find.text('Second daemon · /repos/alpha'), findsOneWidget);
       expect(find.text('First daemon · /repos/zed'), findsOneWidget);
-      final tree = find.byKey(
-        const ValueKey<String>('workspace-sidebar-tree'),
-      );
+      final tree = find.byKey(const ValueKey<String>('workspace-sidebar-tree'));
       expect(tree, findsOneWidget);
       expect(find.byType(TRCollapsible), findsNothing);
       final names = tester
@@ -358,9 +354,7 @@ void main() {
               agentDefinitionId: 'tinest',
               origin: SessionOrigin.manual,
               status: SessionStatus.idle,
-              model: const ModelSelectionDto(
-                modelId: 'openai/gpt-5.6-sol',
-              ),
+              model: const ModelSelectionDto(modelId: 'openai/gpt-5.6-sol'),
               createdAt: now,
               updatedAt: now,
             ),
@@ -386,90 +380,84 @@ void main() {
     tags: const <String>['feature_test__session_home__widget'],
   );
 
-  testWidgets(
-    'the no-project section is absent when every session has one',
-    (tester) async {
-      await tester.binding.setSurfaceSize(const Size(400, 800));
-      addTearDown(() => tester.binding.setSurfaceSize(null));
-      final project = workspace('project', 'Project');
-      await pump(
-        tester,
-        hosts: <HostRuntimeSnapshot>[host('up', 'Up daemon')],
-        catalogs: <String, WorkspaceCatalogDto>{
-          'up': WorkspaceCatalogDto(
-            workspaces: <WorkspaceDto>[project],
-            worktrees: <WorktreeDto>[
-              worktree('project-main', project.id, 'main'),
-            ],
-          ),
-        },
-      );
+  testWidgets('the no-project section is absent when every session has one', (
+    tester,
+  ) async {
+    await tester.binding.setSurfaceSize(const Size(400, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    final project = workspace('project', 'Project');
+    await pump(
+      tester,
+      hosts: <HostRuntimeSnapshot>[host('up', 'Up daemon')],
+      catalogs: <String, WorkspaceCatalogDto>{
+        'up': WorkspaceCatalogDto(
+          workspaces: <WorkspaceDto>[project],
+          worktrees: <WorktreeDto>[
+            worktree('project-main', project.id, 'main'),
+          ],
+        ),
+      },
+    );
 
+    expect(
+      find.byKey(const ValueKey<String>('workspace-sidebar-home-sessions')),
+      findsNothing,
+    );
+  }, tags: const <String>['feature_test__session_home__widget']);
+
+  testWidgets('workspace menu confirms and unregisters the repository', (
+    tester,
+  ) async {
+    await tester.binding.setSurfaceSize(const Size(400, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    final project = workspace('project', 'Project');
+    final api = FakeTinestApi(
+      workspaces: <WorkspaceDto>[project],
+      worktrees: <WorktreeDto>[worktree('project-main', project.id, 'main')],
+    );
+    await pump(
+      tester,
+      hosts: <HostRuntimeSnapshot>[host('up', 'Up daemon', api: api)],
+      catalogs: <String, WorkspaceCatalogDto>{
+        'up': WorkspaceCatalogDto(
+          workspaces: <WorkspaceDto>[project],
+          worktrees: <WorktreeDto>[
+            worktree('project-main', project.id, 'main'),
+            linkedWorktree('project-topic', project.id, 'topic'),
+          ],
+        ),
+      },
+    );
+
+    // Both row menus stand where a TRIconButton would, so a text trigger's
+    // inline padding would leave them the one wide control in the sidebar.
+    final square = Size.square(TRControlMetrics.heightOf(TRUiSize.md));
+    for (final key in const <String>[
+      'workspace-menu-project',
+      'worktree-menu-project-topic',
+    ]) {
       expect(
-        find.byKey(const ValueKey<String>('workspace-sidebar-home-sessions')),
-        findsNothing,
+        tester.getSize(find.byKey(ValueKey<String>(key))),
+        square,
+        reason: key,
       );
-    },
-    tags: const <String>['feature_test__session_home__widget'],
-  );
+    }
 
-  testWidgets(
-    'workspace menu confirms and unregisters the repository',
-    (tester) async {
-      await tester.binding.setSurfaceSize(const Size(400, 800));
-      addTearDown(() => tester.binding.setSurfaceSize(null));
-      final project = workspace('project', 'Project');
-      final api = FakeTinestApi(
-        workspaces: <WorkspaceDto>[project],
-        worktrees: <WorktreeDto>[
-          worktree('project-main', project.id, 'main'),
-        ],
-      );
-      await pump(
-        tester,
-        hosts: <HostRuntimeSnapshot>[host('up', 'Up daemon', api: api)],
-        catalogs: <String, WorkspaceCatalogDto>{
-          'up': WorkspaceCatalogDto(
-            workspaces: <WorkspaceDto>[project],
-            worktrees: <WorktreeDto>[
-              worktree('project-main', project.id, 'main'),
-              linkedWorktree('project-topic', project.id, 'topic'),
-            ],
-          ),
-        },
-      );
+    await tester.tap(
+      find.byKey(const ValueKey<String>('workspace-menu-project')),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(
+      find.byKey(const ValueKey<String>('workspace-unregister-project')),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(
+      find.byKey(const ValueKey<String>('workspace-unregister-confirm')),
+    );
+    await tester.pumpAndSettle();
 
-      // Both row menus stand where a TRIconButton would, so a text trigger's
-      // inline padding would leave them the one wide control in the sidebar.
-      final square = Size.square(TRControlMetrics.heightOf(TRUiSize.md));
-      for (final key in const <String>[
-        'workspace-menu-project',
-        'worktree-menu-project-topic',
-      ]) {
-        expect(
-          tester.getSize(find.byKey(ValueKey<String>(key))),
-          square,
-          reason: key,
-        );
-      }
-
-      await tester.tap(
-        find.byKey(const ValueKey<String>('workspace-menu-project')),
-      );
-      await tester.pumpAndSettle();
-      await tester.tap(
-        find.byKey(const ValueKey<String>('workspace-unregister-project')),
-      );
-      await tester.pumpAndSettle();
-      await tester.tap(
-        find.byKey(const ValueKey<String>('workspace-unregister-confirm')),
-      );
-      await tester.pumpAndSettle();
-
-      expect((await api.workspaces.getWorkspaceCatalog()).workspaces, isEmpty);
-    },
-    tags: const <String>['feature_test__workspace_registration__widget'],
-  );
+    expect((await api.workspaces.getWorkspaceCatalog()).workspaces, isEmpty);
+  }, tags: const <String>['feature_test__workspace_registration__widget']);
 
   testWidgets(
     'the tree lists every worktree and offers archive on the linked ones',
@@ -597,27 +585,25 @@ void main() {
     );
   }
 
-  testWidgets(
-    'only worktrees the daemon can archive carry a row menu',
-    (tester) async {
-      await tester.binding.setSurfaceSize(const Size(400, 800));
-      addTearDown(() => tester.binding.setSurfaceSize(null));
-      await pumpProject(tester);
+  testWidgets('only worktrees the daemon can archive carry a row menu', (
+    tester,
+  ) async {
+    await tester.binding.setSurfaceSize(const Size(400, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    await pumpProject(tester);
 
-      // Archiving the workspace root would hide the project without removing
-      // anything, so that row offers no menu at all.
-      expect(
-        find.byKey(const ValueKey<String>('worktree-menu-project-main')),
-        findsNothing,
-      );
-      await clickWithMouse(
-        tester,
-        find.byKey(const ValueKey<String>('worktree-menu-project-topic')),
-      );
-      expect(find.text(testL10n.workspaceArchive), findsOneWidget);
-    },
-    tags: const <String>['feature_test__worktree_lifecycle__widget'],
-  );
+    // Archiving the workspace root would hide the project without removing
+    // anything, so that row offers no menu at all.
+    expect(
+      find.byKey(const ValueKey<String>('worktree-menu-project-main')),
+      findsNothing,
+    );
+    await clickWithMouse(
+      tester,
+      find.byKey(const ValueKey<String>('worktree-menu-project-topic')),
+    );
+    expect(find.text(testL10n.workspaceArchive), findsOneWidget);
+  }, tags: const <String>['feature_test__worktree_lifecycle__widget']);
 
   testWidgets(
     'archive safety inspection opens immediate progress before Git answers',
@@ -751,9 +737,7 @@ void main() {
 
       expect(find.text('Project'), findsOneWidget);
       expect(
-        find.byKey(
-          const ValueKey<String>('workspace-catalog-refreshing-up'),
-        ),
+        find.byKey(const ValueKey<String>('workspace-catalog-refreshing-up')),
         findsOneWidget,
       );
       expect(find.byType(TRSpinner), findsOneWidget);
@@ -789,22 +773,18 @@ void main() {
     ],
   );
 
-  testWidgets(
-    'a row menu opens on a single pointer press',
-    (tester) async {
-      await tester.binding.setSurfaceSize(const Size(400, 800));
-      addTearDown(() => tester.binding.setSurfaceSize(null));
-      await pumpProject(tester);
+  testWidgets('a row menu opens on a single pointer press', (tester) async {
+    await tester.binding.setSurfaceSize(const Size(400, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    await pumpProject(tester);
 
-      await clickWithMouse(
-        tester,
-        find.byKey(const ValueKey<String>('workspace-menu-project')),
-      );
+    await clickWithMouse(
+      tester,
+      find.byKey(const ValueKey<String>('workspace-menu-project')),
+    );
 
-      expect(find.text(testL10n.workspaceUnregister), findsOneWidget);
-    },
-    tags: const <String>['feature_test__workspace_registration__widget'],
-  );
+    expect(find.text(testL10n.workspaceUnregister), findsOneWidget);
+  }, tags: const <String>['feature_test__workspace_registration__widget']);
 
   testWidgets(
     'a row menu opens on the first press while another row menu is open',
@@ -834,110 +814,100 @@ void main() {
     tags: const <String>['feature_test__workspace_registration__widget'],
   );
 
-  testWidgets(
-    'a row menu leaves no focus ring or background on its row',
-    (tester) async {
-      await tester.binding.setSurfaceSize(const Size(400, 800));
-      addTearDown(() => tester.binding.setSurfaceSize(null));
-      await pumpProject(tester);
+  testWidgets('a row menu leaves no focus ring or background on its row', (
+    tester,
+  ) async {
+    await tester.binding.setSurfaceSize(const Size(400, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    await pumpProject(tester);
 
-      final idleGroupBackground = rowBackground(tester, 'Project');
+    final idleGroupBackground = rowBackground(tester, 'Project');
 
-      final mouse = await clickWithMouse(
-        tester,
-        find.byKey(const ValueKey<String>('workspace-menu-project')),
-      );
+    final mouse = await clickWithMouse(
+      tester,
+      find.byKey(const ValueKey<String>('workspace-menu-project')),
+    );
 
-      // The trigger owns the focus ring; the row that hosts it does not.
-      expect(rowFocusRing(tester, 'Project'), Colors.transparent);
+    // The trigger owns the focus ring; the row that hosts it does not.
+    expect(rowFocusRing(tester, 'Project'), Colors.transparent);
 
-      await tester.sendKeyEvent(LogicalKeyboardKey.escape);
-      await tester.pumpAndSettle();
-      // Leaving the row drops the hover surface with nothing else holding it.
-      await mouse.moveTo(const Offset(1, 700));
-      await tester.pumpAndSettle();
+    await tester.sendKeyEvent(LogicalKeyboardKey.escape);
+    await tester.pumpAndSettle();
+    // Leaving the row drops the hover surface with nothing else holding it.
+    await mouse.moveTo(const Offset(1, 700));
+    await tester.pumpAndSettle();
 
-      expect(rowFocusRing(tester, 'Project'), Colors.transparent);
-      expect(rowBackground(tester, 'Project'), idleGroupBackground);
-    },
-    tags: const <String>['feature_test__workspace_registration__widget'],
-  );
+    expect(rowFocusRing(tester, 'Project'), Colors.transparent);
+    expect(rowBackground(tester, 'Project'), idleGroupBackground);
+  }, tags: const <String>['feature_test__workspace_registration__widget']);
 
-  testWidgets(
-    'an unhovered workspace row keeps a transparent background',
-    (tester) async {
-      await tester.binding.setSurfaceSize(const Size(400, 800));
-      addTearDown(() => tester.binding.setSurfaceSize(null));
-      await pumpProject(tester);
+  testWidgets('an unhovered workspace row keeps a transparent background', (
+    tester,
+  ) async {
+    await tester.binding.setSurfaceSize(const Size(400, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    await pumpProject(tester);
 
-      // Only a hovered row, or a selected checkout, is filled. A workspace has
-      // no selected state of its own.
-      expect(rowBackground(tester, 'Project'), Colors.transparent);
+    // Only a hovered row, or a selected checkout, is filled. A workspace has
+    // no selected state of its own.
+    expect(rowBackground(tester, 'Project'), Colors.transparent);
 
-      await clickWithMouse(
-        tester,
-        find.byKey(const ValueKey<String>('worktree-menu-project-topic')),
-      );
+    await clickWithMouse(
+      tester,
+      find.byKey(const ValueKey<String>('worktree-menu-project-topic')),
+    );
 
-      expect(rowBackground(tester, 'Project'), Colors.transparent);
-    },
-    tags: const <String>['feature_test__workspace_registration__widget'],
-  );
+    expect(rowBackground(tester, 'Project'), Colors.transparent);
+  }, tags: const <String>['feature_test__workspace_registration__widget']);
 
-  testWidgets(
-    'a disconnected daemon drops out of the sidebar entirely',
-    (tester) async {
-      await tester.binding.setSurfaceSize(const Size(400, 800));
-      addTearDown(() => tester.binding.setSurfaceSize(null));
-      final online = workspace('online', 'Online repo');
-      final stale = workspace('stale', 'Stale repo');
-      await pump(
-        tester,
-        hosts: <HostRuntimeSnapshot>[
-          host('up', 'Up daemon'),
-          host('down', 'Down daemon', status: HostRuntimeStatus.offline),
-        ],
-        catalogs: <String, WorkspaceCatalogDto>{
-          'up': WorkspaceCatalogDto(
-            workspaces: <WorkspaceDto>[online],
-            worktrees: <WorktreeDto>[
-              worktree('online-main', online.id, 'main'),
-            ],
-          ),
-          // A stale catalog from before the daemon dropped must not leak.
-          'down': WorkspaceCatalogDto(
-            workspaces: <WorkspaceDto>[stale],
-            worktrees: <WorktreeDto>[worktree('stale-main', stale.id, 'main')],
-          ),
-        },
-      );
+  testWidgets('a disconnected daemon drops out of the sidebar entirely', (
+    tester,
+  ) async {
+    await tester.binding.setSurfaceSize(const Size(400, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    final online = workspace('online', 'Online repo');
+    final stale = workspace('stale', 'Stale repo');
+    await pump(
+      tester,
+      hosts: <HostRuntimeSnapshot>[
+        host('up', 'Up daemon'),
+        host('down', 'Down daemon', status: HostRuntimeStatus.offline),
+      ],
+      catalogs: <String, WorkspaceCatalogDto>{
+        'up': WorkspaceCatalogDto(
+          workspaces: <WorkspaceDto>[online],
+          worktrees: <WorktreeDto>[worktree('online-main', online.id, 'main')],
+        ),
+        // A stale catalog from before the daemon dropped must not leak.
+        'down': WorkspaceCatalogDto(
+          workspaces: <WorkspaceDto>[stale],
+          worktrees: <WorktreeDto>[worktree('stale-main', stale.id, 'main')],
+        ),
+      },
+    );
 
-      expect(find.text('Online repo'), findsOneWidget);
-      expect(find.text('Stale repo'), findsNothing);
-      expect(find.text('Down daemon'), findsNothing);
-      expect(find.text(testL10n.hostStatusOffline), findsNothing);
-    },
-    tags: const <String>['feature_test__workspace_catalog__widget'],
-  );
+    expect(find.text('Online repo'), findsOneWidget);
+    expect(find.text('Stale repo'), findsNothing);
+    expect(find.text('Down daemon'), findsNothing);
+    expect(find.text(testL10n.hostStatusOffline), findsNothing);
+  }, tags: const <String>['feature_test__workspace_catalog__widget']);
 
-  testWidgets(
-    'the sidebar explains when every configured daemon is offline',
-    (tester) async {
-      await tester.binding.setSurfaceSize(const Size(400, 800));
-      addTearDown(() => tester.binding.setSurfaceSize(null));
-      await pump(
-        tester,
-        hosts: <HostRuntimeSnapshot>[
-          host('down', 'Down daemon', status: HostRuntimeStatus.offline),
-        ],
-        catalogs: const <String, WorkspaceCatalogDto>{},
-      );
+  testWidgets('the sidebar explains when every configured daemon is offline', (
+    tester,
+  ) async {
+    await tester.binding.setSurfaceSize(const Size(400, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    await pump(
+      tester,
+      hosts: <HostRuntimeSnapshot>[
+        host('down', 'Down daemon', status: HostRuntimeStatus.offline),
+      ],
+      catalogs: const <String, WorkspaceCatalogDto>{},
+    );
 
-      expect(find.text(testL10n.workspaceNoConnectedDaemons), findsOneWidget);
-      expect(find.text(testL10n.workspaceOpenDaemonSettings), findsOneWidget);
-    },
-    tags: const <String>['feature_test__workspace_catalog__widget'],
-  );
+    expect(find.text(testL10n.workspaceNoConnectedDaemons), findsOneWidget);
+    expect(find.text(testL10n.workspaceOpenDaemonSettings), findsOneWidget);
+  }, tags: const <String>['feature_test__workspace_catalog__widget']);
 
   testWidgets(
     'a connected daemon without workspaces shows the empty workspace state',

@@ -8,7 +8,7 @@ import 'package:client/client.dart';
 import 'package:protocol/protocol.dart';
 
 sealed class ClientEvent {
-  const ClientEvent();
+  const new();
 }
 
 extension TypedClientEventStream on Stream<ClientEvent> {
@@ -17,57 +17,57 @@ extension TypedClientEventStream on Stream<ClientEvent> {
 }
 
 final class TimelineClientEvent extends ClientEvent {
-  const TimelineClientEvent(this.event);
+  const new(this.event);
   final TimelineEventDto event;
 }
 
 final class SessionUpdatedClientEvent extends ClientEvent {
-  const SessionUpdatedClientEvent(this.session);
+  const new(this.session);
   final SessionDto session;
 }
 
 final class TerminalOutputClientEvent extends ClientEvent {
-  const TerminalOutputClientEvent(this.output);
+  const new(this.output);
   final TerminalOutputDto output;
 }
 
 final class TerminalUpdatedClientEvent extends ClientEvent {
-  const TerminalUpdatedClientEvent(this.terminal);
+  const new(this.terminal);
   final TerminalDto terminal;
 }
 
 final class AgentDefinitionsChangedClientEvent extends ClientEvent {
-  const AgentDefinitionsChangedClientEvent();
+  const new();
 }
 
 final class PluginsChangedClientEvent extends ClientEvent {
-  const PluginsChangedClientEvent();
+  const new();
 }
 
 final class McpServersChangedClientEvent extends ClientEvent {
-  const McpServersChangedClientEvent();
+  const new();
 }
 
 final class SkillsChangedClientEvent extends ClientEvent {
-  const SkillsChangedClientEvent();
+  const new();
 }
 
 final class CommandsChangedClientEvent extends ClientEvent {
-  const CommandsChangedClientEvent();
+  const new();
 }
 
 final class ApprovalRequestedClientEvent extends ClientEvent {
-  const ApprovalRequestedClientEvent(this.approval);
+  const new(this.approval);
   final ApprovalRequestDto approval;
 }
 
 final class UserQuestionRequestedClientEvent extends ClientEvent {
-  const UserQuestionRequestedClientEvent(this.request);
+  const new(this.request);
   final UserQuestionRequestDto request;
 }
 
 final class ProviderAuthUpdatedClientEvent extends ClientEvent {
-  const ProviderAuthUpdatedClientEvent(this.attempt);
+  const new(this.attempt);
   final ProviderAuthAttemptDto attempt;
 }
 
@@ -87,7 +87,7 @@ final class FakeTinestApi
         AttachmentsApi,
         RelayApi {
   /// Creates a configurable [FakeTinestApi].
-  FakeTinestApi({
+  new({
     ServerInfoDto? serverInfo,
     ProviderCatalogDto? catalog,
     List<ProviderConnectionDto>? connections,
@@ -189,9 +189,7 @@ final class FakeTinestApi
        _agentDefinitions = List<AgentDefinitionDto>.of(
          agentDefinitions ?? <AgentDefinitionDto>[_tinest],
        ),
-       _plugins = List<PluginDescriptorDto>.of(
-         plugins ?? _defaultPlugins,
-       ),
+       _plugins = List<PluginDescriptorDto>.of(plugins ?? _defaultPlugins),
        _pluginGrants = List<AgentPluginGrantDto>.of(
          pluginGrants ?? const <AgentPluginGrantDto>[],
        ),
@@ -355,9 +353,7 @@ final class FakeTinestApi
     name: 'Tinest',
     description: 'General-purpose coding agent',
     mode: AgentMode.primary,
-    model: AgentModelSelectionDto(
-      source: AgentModelSource.session,
-    ),
+    model: AgentModelSelectionDto(source: AgentModelSource.session),
     driverId: 'tinest.standard/driver',
     extensionIds: <String>[],
     toolIds: <String>['tinest.files/read_file'],
@@ -603,12 +599,7 @@ final class FakeTinestApi
 
   /// Plugin session-control mutations received by the fake transport.
   final List<
-    ({
-      String sessionId,
-      String pluginId,
-      String contributionId,
-      Object? value,
-    })
+    ({String sessionId, String pluginId, String contributionId, Object? value})
   >
   pluginSessionControlSets =
       <
@@ -1325,7 +1316,7 @@ final class FakeTinestApi
     ProjectSettingsDto settings,
   ) async {
     projectSettings[workspaceId] = settings;
-    return getProjectSettings(workspaceId);
+    return await getProjectSettings(workspaceId);
   }
 
   @override
@@ -1415,9 +1406,7 @@ final class FakeTinestApi
     );
     final rootId = session.rootSessionId ?? session.id;
     return _agents
-        .where(
-          (agent) => agent.id == rootId || agent.rootSessionId == rootId,
-        )
+        .where((agent) => agent.id == rootId || agent.rootSessionId == rootId)
         .toList(growable: false)
       ..sort(
         (left, right) =>
@@ -1696,11 +1685,7 @@ final class FakeTinestApi
     required int columns,
     required int rows,
   }) async {
-    terminalResizes.add((
-      terminalId: terminalId,
-      columns: columns,
-      rows: rows,
-    ));
+    terminalResizes.add((terminalId: terminalId, columns: columns, rows: rows));
     final index = _terminals.indexWhere((item) => item.id == terminalId);
     final terminal = _terminals[index].copyWith(columns: columns, rows: rows);
     _terminals[index] = terminal;
@@ -1892,12 +1877,13 @@ final class FakeTinestApi
       _plugins.singleWhere((plugin) => plugin.id == id);
 
   @override
-  Future<PluginDescriptorDto> validatePlugin(String id) async => getPlugin(id);
+  Future<PluginDescriptorDto> validatePlugin(String id) async =>
+      await getPlugin(id);
 
   @override
   Future<PluginDescriptorDto> reloadPlugin(String id, String agentId) async {
     reloadedPlugins.add((pluginId: id, agentId: agentId));
-    return getPlugin(id);
+    return await getPlugin(id);
   }
 
   @override
@@ -2010,7 +1996,7 @@ final class FakeTinestApi
     AgentPluginGrantDto grant,
   ) async {
     if (!_pluginGrants.contains(grant)) _pluginGrants.add(grant);
-    return listPluginGrants(grant.agentId);
+    return await listPluginGrants(grant.agentId);
   }
 
   @override
@@ -2018,7 +2004,7 @@ final class FakeTinestApi
     AgentPluginGrantDto grant,
   ) async {
     _pluginGrants.remove(grant);
-    return listPluginGrants(grant.agentId);
+    return await listPluginGrants(grant.agentId);
   }
 
   @override
@@ -2109,7 +2095,7 @@ final class FakeTinestApi
   Future<List<McpServerStateDto>> listMcpServers({String? worktreeId}) async {
     await mcpListGate;
     if (mcpListResponses.isNotEmpty) {
-      return mcpListResponses.removeAt(0);
+      return await mcpListResponses.removeAt(0);
     }
     return mcpServers.values.toList(growable: false);
   }
@@ -2365,9 +2351,7 @@ final class FakeTinestApi
   }
 
   @override
-  Future<List<ProviderModelDto>> listProviderModels(
-    String connectionId,
-  ) async {
+  Future<List<ProviderModelDto>> listProviderModels(String connectionId) async {
     final gate = modelListGate;
     if (gate != null) await gate;
     final error = providerModelListError;
@@ -2450,9 +2434,7 @@ final class FakeTinestApi
     String? apiKey,
   }) async {
     if (apiKey != null) credentials[connectionId] = apiKey;
-    final current = _connections.singleWhere(
-      (item) => item.id == connectionId,
-    );
+    final current = _connections.singleWhere((item) => item.id == connectionId);
     for (final manualModel in config.models) {
       final models = _models.putIfAbsent(
         connectionId,
@@ -2477,10 +2459,7 @@ final class FakeTinestApi
       );
     }
     return _saveConnection(
-      current.copyWith(
-        displayName: config.name,
-        customConfig: config,
-      ),
+      current.copyWith(displayName: config.name, customConfig: config),
     );
   }
 
@@ -2717,7 +2696,7 @@ AppServices fakeAppServices(
 }
 
 final class _NoopHostPathProbeScheduler implements HostPathProbeScheduler {
-  const _NoopHostPathProbeScheduler();
+  const new();
 
   @override
   HostPathProbeTask periodic(
@@ -2727,14 +2706,14 @@ final class _NoopHostPathProbeScheduler implements HostPathProbeScheduler {
 }
 
 final class _NoopHostPathProbeTask implements HostPathProbeTask {
-  const _NoopHostPathProbeTask();
+  const new();
 
   @override
   void cancel() {}
 }
 
 final class _FakeHostClientFactory implements HostClientFactory {
-  const _FakeHostClientFactory(this.api);
+  const new(this.api);
 
   final TinestApi api;
 

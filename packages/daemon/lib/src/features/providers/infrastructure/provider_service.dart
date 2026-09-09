@@ -13,7 +13,7 @@ import 'package:protocol/protocol.dart';
 /// Runtime provider selection resolved from one Markdown agent snapshot.
 final class ResolvedAgentModel {
   /// Creates a resolved executable provider and model pair.
-  const ResolvedAgentModel({
+  const new({
     required this.connectionId,
     required this.modelId,
     required this.provider,
@@ -44,7 +44,7 @@ final class ResolvedAgentModel {
 /// Stable provider connection failure translated to a protocol error code.
 final class ProviderConnectionFailure implements Exception {
   /// Creates a provider connection failure.
-  const ProviderConnectionFailure(this.code, this.message);
+  const new(this.code, this.message);
 
   /// Stable machine-readable error code.
   final String code;
@@ -59,10 +59,7 @@ final class ProviderConnectionFailure implements Exception {
 /// Resolves configured model selections into executable provider instances.
 final class ProviderModelResolver {
   /// Creates a model resolver over the provider connection registry.
-  const ProviderModelResolver(
-    this._connections, {
-    required this._defaultModel,
-  });
+  const new(this._connections, {required this._defaultModel});
 
   final ProviderConnectionService _connections;
   final Future<ModelSelectionDto> Function() _defaultModel;
@@ -81,7 +78,7 @@ final class ProviderModelResolver {
       ),
       AgentModelSource.session => await _defaultModel(),
     };
-    return resolveSelection(selected);
+    return await resolveSelection(selected);
   }
 
   /// Resolves one concrete model selection.
@@ -107,7 +104,10 @@ final class ProviderModelResolver {
   /// Validates one qualified model identifier.
   Future<ProviderModelDto> validateQualifiedModel(String modelId) async {
     final resolved = await _connections.resolveQualifiedModel(modelId);
-    return _connections.validateAgentModel(resolved.connectionId, modelId);
+    return await _connections.validateAgentModel(
+      resolved.connectionId,
+      modelId,
+    );
   }
 
   /// Validates submitted controls against one resolved connection and model.
@@ -143,7 +143,7 @@ final class ProviderModelResolver {
     Map<String, ModelControlValueDto> controls,
   ) async {
     final resolved = await _connections.resolveQualifiedModel(modelId);
-    return _connections.retainValidModelControls(
+    return await _connections.retainValidModelControls(
       resolved.connectionId,
       modelId,
       controls,
@@ -168,7 +168,7 @@ abstract interface class ProviderModelReferenceUpdater {
 final class ProviderConnectionService
     implements ProviderOAuthConnector, RunnableModelCatalog {
   /// Creates the provider connection service.
-  factory ProviderConnectionService({
+  factory({
     required ProviderRepository repository,
     required CredentialRepository credentials,
     required Clock clock,
@@ -194,7 +194,7 @@ final class ProviderConnectionService
     fixedProvider: fixedProvider,
   );
 
-  ProviderConnectionService._(
+  new _(
     this._referenceUpdater, {
     required this._repository,
     required this._credentials,
@@ -327,10 +327,7 @@ final class ProviderConnectionService
           providerModelId: metadata.id,
           label: metadata.label,
           source:
-              _catalog.isRefreshedModel(
-                connection.definitionId,
-                metadata.id,
-              )
+              _catalog.isRefreshedModel(connection.definitionId, metadata.id)
               ? ProviderModelSource.refreshed
               : ProviderModelSource.bundled,
           capabilities: metadata.capabilities,
@@ -384,7 +381,7 @@ final class ProviderConnectionService
         'Provider model prefix is not connected: $modelId',
       );
     }
-    return resolveExplicitModel(connection.id, modelId);
+    return await resolveExplicitModel(connection.id, modelId);
   }
 
   Future<ProviderConnectionDto?> _connectionForQualifiedModel(
@@ -447,7 +444,7 @@ final class ProviderConnectionService
       );
     }
     final credential = ApiKeyCredential(apiKey);
-    return _connectBuiltIn(
+    return await _connectBuiltIn(
       plugin,
       ProviderAuthKind.apiKey,
       ProviderCredentialOrigin.stored,
@@ -467,7 +464,7 @@ final class ProviderConnectionService
     if (!_supportsFlow(plugin, AgentProviderAuthFlow.none)) {
       throw StateError('$definitionId requires authentication.');
     }
-    return _connectBuiltIn(
+    return await _connectBuiltIn(
       plugin,
       ProviderAuthKind.none,
       ProviderCredentialOrigin.none,
@@ -622,7 +619,7 @@ final class ProviderConnectionService
       customConfig: normalized,
       error: null,
     );
-    return _discoverAndSave(updated, credential);
+    return await _discoverAndSave(updated, credential);
   }
 
   /// Disconnects a provider but preserves agents and historical metadata.
@@ -676,9 +673,8 @@ final class ProviderConnectionService
       await _repository.replaceModels(
         id,
         models.map(
-          (model) => model.copyWith(
-            id: _qualify(normalized, model.providerModelId),
-          ),
+          (model) =>
+              model.copyWith(id: _qualify(normalized, model.providerModelId)),
         ),
       );
       _runnableModelChanges.add(null);
@@ -704,9 +700,8 @@ final class ProviderConnectionService
 
   /// Returns cached and discovered models for a connection.
   Future<List<ProviderModelDto>> listModels(String connectionId) =>
-      get(connectionId).then(
-        (connection) => _repository.listModels(connection.id),
-      );
+      get(connectionId)
+          .then((connection) => _repository.listModels(connection.id));
 
   /// Creates an executable provider without exposing secrets or endpoints.
   Future<ModelGateway> resolve(
@@ -956,9 +951,7 @@ final class ProviderConnectionService
     return (await _repository.getConnection(saved.id)) ?? saved;
   }
 
-  Map<String, ProviderModelDto> _seedModels(
-    ProviderConnectionDto connection,
-  ) {
+  Map<String, ProviderModelDto> _seedModels(ProviderConnectionDto connection) {
     final result = <String, ProviderModelDto>{};
     for (final model in _catalog.modelsFor(connection.definitionId)) {
       final plugin = _registry.find(connection.definitionId);
@@ -1072,9 +1065,7 @@ final class ProviderConnectionService
   ) {
     final override = _discoveryOverride;
     if (override != null) return override.fetchModelIds(endpoint, credential);
-    return _adapterSourceFor(
-      connection,
-    ).discoverModels(endpoint, credential);
+    return _adapterSourceFor(connection).discoverModels(endpoint, credential);
   }
 
   ProviderCredential? _credentialFor(ProviderConnectionDto connection) =>
@@ -1104,7 +1095,7 @@ final class ProviderConnectionService
     required String? requested,
     required String fallback,
   }) async {
-    if (requested == null) return _availablePrefix(fallback);
+    if (requested == null) return await _availablePrefix(fallback);
     final normalized = _validateRequestedPrefix(requested);
     final conflict = (await _repository.listConnections()).any(
       (connection) =>
@@ -1195,9 +1186,7 @@ final class ProviderConnectionService
     return ApiKeyCredential(apiKey);
   }
 
-  CustomProviderConfigDto _validateCustom(
-    CustomProviderConfigDto config,
-  ) {
+  CustomProviderConfigDto _validateCustom(CustomProviderConfigDto config) {
     final uri = Uri.tryParse(config.baseUrl);
     if (uri == null ||
         !uri.hasAuthority ||
@@ -1228,9 +1217,8 @@ final class ProviderConnectionService
         }
         // The wire owns the shape it can encode; the endpoint's owner owns the
         // values, because nobody here knows what an arbitrary base URL takes.
-        if (protocolControlDescriptor(
-              template,
-            ).copyWith(choices: control.choices) !=
+        if (protocolControlDescriptor(template)
+                .copyWith(choices: control.choices) !=
             control) {
           throw FormatException(
             'Control ${control.id} does not match the shape ${wire.label} '
@@ -1274,9 +1262,7 @@ Map<String, ModelControlValueDto> _validatedControls(
         descriptor != null && _controlValueIsValid(descriptor, entry.value);
     if (!valid) {
       if (reject) {
-        throw FormatException(
-          'Invalid value for model control ${entry.key}.',
-        );
+        throw FormatException('Invalid value for model control ${entry.key}.');
       }
       continue;
     }

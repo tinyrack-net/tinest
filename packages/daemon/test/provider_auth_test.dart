@@ -112,10 +112,7 @@ void main() {
         ProviderAuthAttemptStatus.expired,
       );
       await expectLater(
-        coordinator.start(
-          definitionId: 'deepseek',
-          methodId: 'chatgpt-device',
-        ),
+        coordinator.start(definitionId: 'deepseek', methodId: 'chatgpt-device'),
         throwsA(isA<StateError>()),
       );
     },
@@ -224,7 +221,7 @@ void main() {
 }
 
 final class _RetryGateway implements ProviderOAuthGateway {
-  _RetryGateway(this.now);
+  new(this.now);
 
   final DateTime now;
   int calls = 0;
@@ -246,14 +243,14 @@ final class _RetryGateway implements ProviderOAuthGateway {
 }
 
 final class _Ids implements IdGenerator {
-  const _Ids();
+  const new();
 
   @override
   String generate() => 'auth-attempt';
 }
 
 final class _Gateway implements ProviderOAuthGateway {
-  _Gateway(this.now);
+  new(this.now);
 
   final DateTime now;
   late _Session session;
@@ -276,7 +273,7 @@ final class _Gateway implements ProviderOAuthGateway {
 }
 
 final class _Session implements ProviderOAuthSession {
-  _Session({required this.flow, required this.expiresAt});
+  new({required this.flow, required this.expiresAt});
 
   final AgentProviderAuthFlow flow;
   final Completer<OAuthCredential> completer = Completer<OAuthCredential>();
@@ -359,7 +356,7 @@ final class _OAuthConnector implements ProviderOAuthConnector {
 }
 
 final class _FixedClock implements Clock {
-  const _FixedClock(this.value);
+  const new(this.value);
 
   final DateTime value;
 

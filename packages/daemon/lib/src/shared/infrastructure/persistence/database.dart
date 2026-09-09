@@ -496,12 +496,12 @@ class ProviderModels extends Table {
 /// TinestDatabase defines a public contract.
 class TinestDatabase extends _$TinestDatabase {
   /// Creates a [TinestDatabase].
-  TinestDatabase(String path, {this.clock = const SystemClock()})
+  new(String path, {this.clock = const SystemClock()})
     : databasePath = path,
       super(NativeDatabase.createInBackground(File(path)));
 
   /// The TinestDatabaseforTesting public API member.
-  TinestDatabase.forTesting(super.e, {this.clock = const SystemClock()})
+  new forTesting(super.e, {this.clock = const SystemClock()})
     : databasePath = '<memory>';
 
   /// The clock public API member.

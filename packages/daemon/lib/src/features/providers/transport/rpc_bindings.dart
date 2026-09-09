@@ -132,9 +132,7 @@ List<RpcBindingDescriptor> providerRpcBindings({
           'Provider connection is referenced by an agent definition.',
         );
       }
-      await exposeFailure(
-        () => providers.deleteCustom(request.connectionId),
-      );
+      await exposeFailure(() => providers.deleteCustom(request.connectionId));
       return const EmptyResultDto();
     }),
   ];

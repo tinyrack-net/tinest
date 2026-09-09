@@ -9,7 +9,7 @@ import 'package:dio/dio.dart';
 /// vendor is a new instance rather than a new code path.
 base class OpenAICompatibleAdapter extends ProviderAdapter {
   /// Creates one OpenAI-compatible vendor.
-  const OpenAICompatibleAdapter({
+  const new({
     required this.definition,
     required this.baseUrl,
     required this._wire,
@@ -93,7 +93,7 @@ final class OpenAIAdapter extends OpenAICompatibleAdapter {
   ///
   /// [_oauth] must come from the composition root so tests can substitute the
   /// gateway while the plugin still owns which backend each credential uses.
-  const OpenAIAdapter({
+  const new({
     required this._oauth,
     this.requestAttribution,
     super.wire = const OpenAIResponsesWire(),
@@ -155,9 +155,7 @@ final class OpenAIAdapter extends OpenAICompatibleAdapter {
   ) => authKind == AgentProviderAuthKind.oauth
       ? capabilities.copyWith(
           controls: capabilities.controls
-              .where(
-                (control) => control.id != AgentModelControlIds.fastMode,
-              )
+              .where((control) => control.id != AgentModelControlIds.fastMode)
               .toList(growable: false),
         )
       : capabilities;

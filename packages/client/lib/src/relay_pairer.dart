@@ -8,7 +8,7 @@ import 'package:relay_protocol/relay_protocol.dart';
 /// Non-secret metadata decoded from a relay pairing capability.
 final class RelayPairingOfferMetadata {
   /// Creates validated, non-secret offer metadata.
-  const RelayPairingOfferMetadata({
+  const new({
     required this.serverId,
     required this.relayUri,
     required this.expiresAt,
@@ -37,10 +37,7 @@ RelayPairingOfferMetadata inspectRelayPairingOffer(Uri pairingUrl) {
 /// Device-local result retained after a one-time offer is consumed.
 final class RelayPairingResult {
   /// Creates a paired relay path and its separately stored credential.
-  const RelayPairingResult({
-    required this.connection,
-    required this.credential,
-  });
+  const new({required this.connection, required this.credential});
 
   /// Non-secret relay path persisted in the app settings document.
   final RelayHostConnection connection;
@@ -52,11 +49,9 @@ final class RelayPairingResult {
 /// Consumes a pairing URL without exposing its secret in an HTTP request.
 final class RelayDevicePairer {
   /// Creates a platform-neutral pairer.
-  RelayDevicePairer({
-    WebSocketConnector? connector,
-    DateTime Function()? nowUtc,
-  }) : _connector = connector ?? createWebSocketConnector(),
-       _nowUtc = nowUtc ?? _systemNowUtc;
+  new({WebSocketConnector? connector, DateTime Function()? nowUtc})
+    : _connector = connector ?? createWebSocketConnector(),
+      _nowUtc = nowUtc ?? _systemNowUtc;
 
   final WebSocketConnector _connector;
   final DateTime Function() _nowUtc;
@@ -174,7 +169,7 @@ final class RelayDevicePairer {
 }
 
 final class _RelayPairingAcknowledgementLost implements Exception {
-  const _RelayPairingAcknowledgementLost();
+  const new();
 }
 
 List<int> _secureBytes(int length) {

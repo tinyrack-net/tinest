@@ -8,7 +8,7 @@ import 'package:http/http.dart' as http;
 /// An HTTP status the server returned instead of a JSON-RPC message.
 class McpHttpException implements Exception {
   /// Creates a [McpHttpException].
-  const McpHttpException({required this.statusCode, required this.body});
+  const new({required this.statusCode, required this.body});
 
   /// The HTTP status code.
   final int statusCode;
@@ -27,7 +27,7 @@ class McpHttpException implements Exception {
 /// two-endpoint SSE transport is deliberately not implemented.
 final class HttpMcpTransport implements McpTransport {
   /// Creates a transport that posts to [spec].
-  HttpMcpTransport(
+  new(
     this.spec, {
     http.Client? client,
     this.protocolVersion = preferredMcpProtocolVersion,
@@ -136,7 +136,7 @@ final class HttpMcpTransport implements McpTransport {
       ..headers['accept'] = 'application/json, text/event-stream'
       ..body = jsonEncode(message);
     if (message['method'] == McpMethod.initialize) _handshakeSent = true;
-    return _client.send(request);
+    return await _client.send(request);
   }
 
   Map<String, String> _headers() => <String, String>{

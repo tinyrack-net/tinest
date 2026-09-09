@@ -98,7 +98,7 @@ ServerInfoDto _serverInfo(String id) => ServerInfoDto(
 );
 
 final class _HostClients implements HostClientFactory {
-  const _HostClients(this.apis);
+  const new(this.apis);
 
   final Map<String, TinestApi> apis;
 
@@ -113,7 +113,7 @@ final class _HostClients implements HostClientFactory {
 }
 
 final class _FixedIdGenerator implements AppIdGenerator {
-  const _FixedIdGenerator();
+  const new();
 
   @override
   String generate() => 'generated-id';

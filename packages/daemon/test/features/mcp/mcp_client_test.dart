@@ -305,10 +305,9 @@ void main() {
         const <String, dynamic>{},
         cancellation: cancellation,
       );
-      final unrelated = client.callTool(
-        'other',
-        const <String, dynamic>{'after': true},
-      );
+      final unrelated = client.callTool('other', const <String, dynamic>{
+        'after': true,
+      });
       await pumpEventQueue();
       final calls = server.requests
           .where((message) => message['method'] == McpMethod.toolsCall)
@@ -331,13 +330,10 @@ void main() {
         (message) => message['method'] == McpMethod.cancelled,
       );
       expect(notification['id'], isNull);
-      expect(
-        notification['params'],
-        <String, dynamic>{
-          'requestId': isA<int>(),
-          'reason': 'the request was cancelled by its caller',
-        },
-      );
+      expect(notification['params'], <String, dynamic>{
+        'requestId': isA<int>(),
+        'reason': 'the request was cancelled by its caller',
+      });
 
       expect((result.content.single as McpTextContent).text, 'unrelated');
       expect(client.isConnected, isTrue);
@@ -383,10 +379,7 @@ void main() {
     expect(answers.first['id'], 90);
     expect(answers.first['result'], isEmpty);
     expect(answers.last['id'], 91);
-    expect(
-      (answers.last['error']! as Map<String, dynamic>)['code'],
-      -32601,
-    );
+    expect((answers.last['error']! as Map<String, dynamic>)['code'], -32601);
   });
 
   test('a request that outlives its timeout is cancelled', () {

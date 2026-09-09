@@ -59,17 +59,12 @@ data: [DONE]
       dio: Dio()..httpClientAdapter = chatAdapter,
     ).stream(request, CancellationToken()).toList();
     final messages =
-        Map<String, dynamic>.from(
-              chatAdapter.options!.data as Map,
-            )['messages']!
+        Map<String, dynamic>.from(chatAdapter.options!.data as Map)['messages']!
             as List;
-    expect(
-      messages,
-      <Map<String, dynamic>>[
-        for (final block in blocks)
-          <String, dynamic>{'role': block.role.name, 'content': block.content},
-      ],
-    );
+    expect(messages, <Map<String, dynamic>>[
+      for (final block in blocks)
+        <String, dynamic>{'role': block.role.name, 'content': block.content},
+    ]);
     // The regression lock on the reported 400: this wire serves every
     // OpenAI-compatible vendor, and most accept only the classic roles.
     expect(
@@ -293,11 +288,9 @@ data: [DONE]
     },
   );
 
-  test(
-    'Responses request is stateless, strict, sequential, '
-    'and preserves output items',
-    () async {
-      final adapter = _RecordingAdapter('''
+  test('Responses request is stateless, strict, sequential, '
+      'and preserves output items', () async {
+    final adapter = _RecordingAdapter('''
 data: {"type":"response.reasoning_summary_text.delta","item_id":"rs-1","output_index":0,"summary_index":0,"delta":"Checking the request."}
 
 data: {"type":"response.output_text.delta","delta":"hello"}
@@ -307,71 +300,67 @@ data: {"type":"response.completed","response":{"output":[{"type":"reasoning","en
 data: [DONE]
 
 ''');
-      final dio = Dio()..httpClientAdapter = adapter;
-      final provider = OpenAIResponsesProvider(
-        _config(apiKey: 'secret-test-key'),
-        dio: dio,
-      );
-      final events = await provider
-          .stream(
-            const ModelRequest(
-              model: 'gpt-5.6-sol',
-              modelControls: <String, AgentModelControlValue>{
-                AgentModelControlIds.reasoningEffort:
-                    AgentModelControlStringValue(value: 'medium'),
-              },
-              blocks: <ModelRoleBlock>[
-                ModelRoleBlock(role: ModelRole.system, content: 'test'),
-              ],
-              history: <ConversationItem>[],
-              tools: <ModelToolDefinition>[
-                ModelFunctionToolDefinition(
-                  name: 'read_file',
-                  description: 'read',
-                  parameters: <String, dynamic>{
-                    'type': 'object',
-                    'properties': <String, dynamic>{
-                      'path': <String, dynamic>{'type': 'string'},
-                    },
-                    'required': <String>['path'],
-                    'additionalProperties': false,
+    final dio = Dio()..httpClientAdapter = adapter;
+    final provider = OpenAIResponsesProvider(
+      _config(apiKey: 'secret-test-key'),
+      dio: dio,
+    );
+    final events = await provider
+        .stream(
+          const ModelRequest(
+            model: 'gpt-5.6-sol',
+            modelControls: <String, AgentModelControlValue>{
+              AgentModelControlIds.reasoningEffort:
+                  AgentModelControlStringValue(value: 'medium'),
+            },
+            blocks: <ModelRoleBlock>[
+              ModelRoleBlock(role: ModelRole.system, content: 'test'),
+            ],
+            history: <ConversationItem>[],
+            tools: <ModelToolDefinition>[
+              ModelFunctionToolDefinition(
+                name: 'read_file',
+                description: 'read',
+                parameters: <String, dynamic>{
+                  'type': 'object',
+                  'properties': <String, dynamic>{
+                    'path': <String, dynamic>{'type': 'string'},
                   },
-                ),
-              ],
-            ),
-            CancellationToken(),
-          )
-          .toList();
+                  'required': <String>['path'],
+                  'additionalProperties': false,
+                },
+              ),
+            ],
+          ),
+          CancellationToken(),
+        )
+        .toList();
 
-      final body = Map<String, dynamic>.from(adapter.options!.data as Map);
-      expect(body['store'], isFalse);
-      expect(body['stream'], isTrue);
-      expect(body['parallel_tool_calls'], isFalse);
-      expect(body['model'], 'gpt-5.6-sol');
-      expect(body['reasoning'], <String, dynamic>{
-        'effort': 'medium',
-        'summary': 'auto',
-      });
-      expect(body['include'], contains('reasoning.encrypted_content'));
-      expect((body['tools'] as List).single, containsPair('strict', true));
-      expect(
-        adapter.options!.headers['Authorization'],
-        'Bearer secret-test-key',
-      );
-      expect(events.whereType<ModelTextDelta>().single.delta, 'hello');
-      expect(
-        events.whereType<ModelReasoningDelta>().single.delta,
-        'Checking the request.',
-      );
-      final completed = events.whereType<ModelResponseCompleted>().single;
-      expect(
-        (completed.assistant.opaqueItems.first['item']!
-            as Map)['encrypted_content'],
-        'opaque',
-      );
-      expect(completed.usage.outputTokens, 1);
-    },
-  );
+    final body = Map<String, dynamic>.from(adapter.options!.data as Map);
+    expect(body['store'], isFalse);
+    expect(body['stream'], isTrue);
+    expect(body['parallel_tool_calls'], isFalse);
+    expect(body['model'], 'gpt-5.6-sol');
+    expect(body['reasoning'], <String, dynamic>{
+      'effort': 'medium',
+      'summary': 'auto',
+    });
+    expect(body['include'], contains('reasoning.encrypted_content'));
+    expect((body['tools'] as List).single, containsPair('strict', true));
+    expect(adapter.options!.headers['Authorization'], 'Bearer secret-test-key');
+    expect(events.whereType<ModelTextDelta>().single.delta, 'hello');
+    expect(
+      events.whereType<ModelReasoningDelta>().single.delta,
+      'Checking the request.',
+    );
+    final completed = events.whereType<ModelResponseCompleted>().single;
+    expect(
+      (completed.assistant.opaqueItems.first['item']!
+          as Map)['encrypted_content'],
+      'opaque',
+    );
+    expect(completed.usage.outputTokens, 1);
+  });
 
   test(
     'both APIs normalize usage, including the nested detail counters',
@@ -498,9 +487,7 @@ data: [DONE]
   });
 
   test('an empty API key fails before opening a connection', () async {
-    final provider = OpenAIResponsesProvider(
-      _config(),
-    );
+    final provider = OpenAIResponsesProvider(_config());
     expect(
       provider
           .stream(
@@ -689,10 +676,7 @@ data: [DONE]
     final input =
         Map<String, dynamic>.from(replayAdapter.options!.data as Map)['input']!
             as List;
-    expect(
-      input,
-      contains(containsPair('encrypted_content', 'blob')),
-    );
+    expect(input, contains(containsPair('encrypted_content', 'blob')));
     expect(input, everyElement(isNot(contains('provider'))));
     expect(input, everyElement(isNot(contains('block'))));
   });
@@ -1208,10 +1192,7 @@ data: [DONE]
     final failingDio = Dio()..httpClientAdapter = failing;
     await expectLater(
       OpenAIResponsesProvider(
-        _config(
-          requiresApiKey: false,
-          maxConnectAttempts: 1,
-        ),
+        _config(requiresApiKey: false, maxConnectAttempts: 1),
         dio: failingDio,
       ).stream(_request(), CancellationToken()).toList(),
       throwsA(isA<OpenAIProviderException>()),
@@ -1226,10 +1207,7 @@ data: [DONE]
         '"type":"invalid_request_error","param":"service_tier"}}';
     for (final build in <ModelGateway Function(Dio)>[
       (dio) => OpenAIResponsesProvider(
-        _config(
-          requiresApiKey: false,
-          maxConnectAttempts: 1,
-        ),
+        _config(requiresApiKey: false, maxConnectAttempts: 1),
         dio: dio,
       ),
       (dio) => OpenAIChatCompletionsProvider(
@@ -1261,10 +1239,7 @@ data: [DONE]
       );
     await expectLater(
       OpenAIResponsesProvider(
-        _config(
-          requiresApiKey: false,
-          maxConnectAttempts: 1,
-        ),
+        _config(requiresApiKey: false, maxConnectAttempts: 1),
         dio: dio,
       ).stream(_request(), CancellationToken()).toList(),
       throwsA(isA<ModelContextOverflowException>()),
@@ -1307,23 +1282,15 @@ data: [DONE]
     ).stream(_request(), CancellationToken()).toList();
 
     expect(adapter.bodies, hasLength(2));
-    expect(
-      adapter.bodies.first['reasoning'],
-      containsPair('summary', 'auto'),
-    );
-    expect(
-      adapter.bodies.last['reasoning'],
-      isNot(contains('summary')),
-    );
+    expect(adapter.bodies.first['reasoning'], containsPair('summary', 'auto'));
+    expect(adapter.bodies.last['reasoning'], isNot(contains('summary')));
     expect(events.whereType<ModelTextDelta>().single.delta, 'ok');
   });
 
   test('both adapters translate transport cancellation', () async {
     for (final providerFactory in <ModelGateway Function(Dio)>[
-      (dio) => OpenAIResponsesProvider(
-        _config(requiresApiKey: false),
-        dio: dio,
-      ),
+      (dio) =>
+          OpenAIResponsesProvider(_config(requiresApiKey: false), dio: dio),
       (dio) => OpenAIChatCompletionsProvider(
         _config(requiresApiKey: false),
         dio: dio,
@@ -1422,9 +1389,9 @@ data: [DONE]
     'Chat Completions validates credentials, calls, and Dio errors',
     () async {
       await expectLater(
-        OpenAIChatCompletionsProvider(
-          _config(),
-        ).stream(_request(), CancellationToken()).toList(),
+        OpenAIChatCompletionsProvider(_config())
+            .stream(_request(), CancellationToken())
+            .toList(),
         throwsA(isA<OpenAIProviderException>()),
       );
 
@@ -1506,10 +1473,7 @@ data: {"type":"response.failed","response":{"error":{"code":"context_length_exce
         });
       await expectLater(
         OpenAIResponsesProvider(
-          _config(
-            requiresApiKey: false,
-            maxConnectAttempts: 1,
-          ),
+          _config(requiresApiKey: false, maxConnectAttempts: 1),
           dio: unrelated,
         ).stream(_request(), CancellationToken()).toList(),
         throwsA(isNot(isA<ModelContextOverflowException>())),
@@ -1549,7 +1513,7 @@ ModelRequest _request({
 );
 
 class _RecordingAdapter implements HttpClientAdapter {
-  _RecordingAdapter(this.fixture);
+  new(this.fixture);
 
   final String fixture;
   RequestOptions? options;
@@ -1575,7 +1539,7 @@ class _RecordingAdapter implements HttpClientAdapter {
 }
 
 final class _SequenceAdapter implements HttpClientAdapter {
-  _SequenceAdapter({
+  new({
     required this.failures,
     required this.type,
     required this.statusCode,
@@ -1616,7 +1580,7 @@ final class _SequenceAdapter implements HttpClientAdapter {
 /// Rejects every request the way a real server does: a 400 whose body arrives
 /// as an undecoded stream, because the request asked for `ResponseType.stream`.
 final class _StreamedStatusAdapter implements HttpClientAdapter {
-  _StreamedStatusAdapter(this.body);
+  new(this.body);
 
   final String body;
 
@@ -1639,7 +1603,7 @@ final class _StreamedStatusAdapter implements HttpClientAdapter {
 
 /// Rejects every request with a 400 carrying a decoded JSON error body.
 final class _BadRequestAdapter implements HttpClientAdapter {
-  _BadRequestAdapter(this.body);
+  new(this.body);
 
   final Map<String, dynamic> body;
 

@@ -60,7 +60,7 @@ Future<TerminalSessionState> _session(ProviderContainer container) async {
   final provider = terminalSessionControllerProvider('server', _terminal.id);
   container.listen(provider, (_, _) {});
   await _settle();
-  return container.read(provider);
+  return await container.read(provider);
 }
 
 void main() {
@@ -132,15 +132,12 @@ void main() {
     session.terminal.resize(100, 30);
     await _settle();
 
-    expect(harness.api.terminalResizes, <
-      ({
-        String terminalId,
-        int columns,
-        int rows,
-      })
-    >[
-      (terminalId: _terminal.id, columns: 100, rows: 30),
-    ]);
+    expect(
+      harness.api.terminalResizes,
+      <({String terminalId, int columns, int rows})>[
+        (terminalId: _terminal.id, columns: 100, rows: 30),
+      ],
+    );
   });
 
   test('input reaches the daemon through the session', () async {

@@ -7,7 +7,7 @@ import 'package:shelf/shelf.dart';
 /// Owns the attachment feature's versioned HTTP transport.
 final class AttachmentHttpTransport implements AttachmentHttpBinding {
   /// Creates the transport over the feature application service.
-  const AttachmentHttpTransport(this._attachments);
+  const new(this._attachments);
 
   final AttachmentService _attachments;
 

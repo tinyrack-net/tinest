@@ -21,7 +21,7 @@ import 'package:tinyrack_ui/tinyrack_ui.dart';
 /// Daemon-independent app settings and remote host management.
 class AppSettingsPage extends ConsumerWidget {
   /// Creates the global application settings page.
-  const AppSettingsPage({this.embedded = false, super.key});
+  const new({this.embedded = false, super.key});
 
   /// Whether the unified settings shell supplies navigation chrome.
   final bool embedded;
@@ -35,9 +35,7 @@ class AppSettingsPage extends ConsumerWidget {
         .supportsEmbeddedDaemon;
     final body = SettingsAsyncContent<HostRegistryState>(
       state: state,
-      loading: SettingsSkeletonLayout.form(
-        semanticLabel: l10n.settingsLoading,
-      ),
+      loading: SettingsSkeletonLayout.form(semanticLabel: l10n.settingsLoading),
       error: (error, stackTrace) => SettingsErrorState(
         key: const ValueKey<String>('daemon-settings-error'),
         error: error,
@@ -285,7 +283,7 @@ class AppSettingsPage extends ConsumerWidget {
 }
 
 class _EmbeddedPortEditor extends ConsumerStatefulWidget {
-  const _EmbeddedPortEditor({required this.port, required this.restarting});
+  const new({required this.port, required this.restarting});
 
   final int port;
   final bool restarting;
@@ -406,7 +404,7 @@ class _EmbeddedPortEditorState extends ConsumerState<_EmbeddedPortEditor> {
 /// card. Sharing one card across every daemon leaves no boundary between them
 /// and makes "the reconnect button of this daemon" unaddressable.
 class _RemoteHostCard extends ConsumerWidget {
-  const _RemoteHostCard({required this.profile, required this.runtime});
+  const new({required this.profile, required this.runtime});
 
   final RemoteDaemonProfile profile;
   final HostRuntimeSnapshot? runtime;
@@ -518,9 +516,8 @@ class _RemoteHostCard extends ConsumerWidget {
                   TRButton(
                     appearance: TRAppearance.ghost,
                     onPressed: () => unawaited(
-                      DaemonConnectionsRoute(
-                        hostId: profile.id,
-                      ).push<void>(context),
+                      DaemonConnectionsRoute(hostId: profile.id)
+                          .push<void>(context),
                     ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
@@ -534,9 +531,9 @@ class _RemoteHostCard extends ConsumerWidget {
                 if (runtime?.connected == true)
                   TRButton(
                     appearance: TRAppearance.ghost,
-                    onPressed: () => ProviderSettingsRoute(
-                      hostId: profile.id,
-                    ).replace(context),
+                    onPressed: () =>
+                        ProviderSettingsRoute(hostId: profile.id)
+                            .replace(context),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: <Widget>[
@@ -563,7 +560,7 @@ String _connectionSummary(HostConnection connection) => switch (connection) {
 /// Add/edit form for one remote daemon profile.
 class RemoteHostEditPage extends ConsumerStatefulWidget {
   /// Creates an add form when [hostId] is null, otherwise an edit form.
-  const RemoteHostEditPage({this.hostId, super.key});
+  const new({this.hostId, super.key});
 
   /// Existing profile ID for edit mode.
   final String? hostId;
@@ -627,9 +624,7 @@ class _RemoteHostEditPageState extends ConsumerState<RemoteHostEditPage> {
                   error: registryState.error!,
                   onRetry: () => ref.invalidate(hostRegistryControllerProvider),
                 )
-              : SettingsSkeletonLayout.form(
-                  semanticLabel: l10n.settingsLoading,
-                )
+              : SettingsSkeletonLayout.form(semanticLabel: l10n.settingsLoading)
         : SettingsScaffold(
             children: <Widget>[
               SettingsSection.form(
@@ -639,9 +634,7 @@ class _RemoteHostEditPageState extends ConsumerState<RemoteHostEditPage> {
                 banner: _error == null
                     ? null
                     : TRAlert(
-                        title: TRText.inherit(
-                          l10n.appSettingsConnectionFailed,
-                        ),
+                        title: TRText.inherit(l10n.appSettingsConnectionFailed),
                         description: TRText.inherit(_error!),
                         icon: const Icon(TinestIcons.error),
                         variant: TRStatusVariant.danger,
@@ -709,10 +702,8 @@ class _RemoteHostEditPageState extends ConsumerState<RemoteHostEditPage> {
           key: const ValueKey<String>('remote-host-back-button'),
           appearance: TRAppearance.ghost,
           label: MaterialLocalizations.of(context).backButtonTooltip,
-          onPressed: () => closeTask(
-            context,
-            () => const DaemonSettingsRoute().go(context),
-          ),
+          onPressed: () =>
+              closeTask(context, () => const DaemonSettingsRoute().go(context)),
           icon: Icon(TinestIcons.backFor(context)),
         ),
         title: TRText.inherit(

@@ -10,7 +10,7 @@ import 'package:daemon/src/features/mcp/infrastructure/transport.dart';
 /// would take.
 final class LoopbackMcpTransport implements McpTransport {
   /// Creates a [LoopbackMcpTransport] driven by [onMessage].
-  LoopbackMcpTransport(this.onMessage);
+  new(this.onMessage);
 
   /// Receives each message the client sends.
   final void Function(Map<String, dynamic> message) onMessage;

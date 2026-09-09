@@ -23,10 +23,10 @@ void main() {
 
   final formatPaths = GeneratedSources.dartFormatPaths(generatedPaths);
   if (formatPaths.isEmpty) return;
-  final result = Process.runSync(
-    Platform.resolvedExecutable,
-    <String>['format', ...formatPaths],
-  );
+  final result = Process.runSync(Platform.resolvedExecutable, <String>[
+    'format',
+    ...formatPaths,
+  ]);
   stdout.write(result.stdout);
   stderr.write(result.stderr);
   if (result.exitCode != 0) exitCode = result.exitCode;

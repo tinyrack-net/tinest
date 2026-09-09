@@ -8,7 +8,7 @@ import 'package:tinyrack_ui/tinyrack_ui.dart';
 /// comfortable density starts exactly when navigation shows one pane.
 class TinestUiDensity extends StatelessWidget {
   /// Creates the responsive density boundary around [child].
-  const TinestUiDensity({required this.child, super.key});
+  const new({required this.child, super.key});
 
   /// The application subtree that inherits the selected UI density.
   final Widget child;

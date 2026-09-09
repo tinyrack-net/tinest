@@ -25,7 +25,7 @@ abstract interface class McpAdminPort {
 /// Coordinates persisted MCP server administration separately from runtime use.
 final class McpServerService implements McpAdminPort {
   /// Creates the MCP administration service.
-  const McpServerService(this._runtime);
+  const new(this._runtime);
 
   final McpRuntime _runtime;
 

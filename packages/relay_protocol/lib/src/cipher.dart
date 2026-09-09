@@ -16,7 +16,7 @@ enum RelayDirection {
 /// Invalid, reordered, replayed, or unauthenticated relay traffic.
 final class RelaySecurityException implements Exception {
   /// Creates a failure with a safe diagnostic [message].
-  const RelaySecurityException(this.message);
+  const new(this.message);
 
   /// Diagnostic that never includes plaintext or secret key material.
   final String message;
@@ -27,7 +27,7 @@ final class RelaySecurityException implements Exception {
 
 /// Stateful ordered encryption for one direction of a relay session.
 final class RelayCipherState {
-  RelayCipherState._({
+  new _({
     required this._cipher,
     required this._key,
     required this._noncePrefix,
@@ -45,18 +45,14 @@ final class RelayCipherState {
     }
     final directionBytes = utf8.encode(direction.name);
     final digest = await Sha256().hash(<int>[...transcript, ...directionBytes]);
-    final key =
-        await Hkdf(
-          hmac: Hmac.sha256(),
-          outputLength: 32,
-        ).deriveKey(
-          secretKey: SecretKey(sharedSecret),
-          nonce: transcript,
-          info: <int>[
-            ...utf8.encode('tinyrack-tinest-relay-v1:'),
-            ...directionBytes,
-          ],
-        );
+    final key = await Hkdf(hmac: Hmac.sha256(), outputLength: 32).deriveKey(
+      secretKey: SecretKey(sharedSecret),
+      nonce: transcript,
+      info: <int>[
+        ...utf8.encode('tinyrack-tinest-relay-v1:'),
+        ...directionBytes,
+      ],
+    );
     return RelayCipherState._(
       cipher: Xchacha20.poly1305Aead(),
       key: key,

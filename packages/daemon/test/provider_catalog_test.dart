@@ -186,10 +186,7 @@ void main() {
               'output': 1.2,
               'cache_read': 0.1,
             },
-            'limit': <String, dynamic>{
-              'context': 200000,
-              'output': 32000,
-            },
+            'limit': <String, dynamic>{'context': 200000, 'output': 32000},
           },
         },
       },
@@ -211,10 +208,7 @@ void main() {
     expect(model.capabilities.toolCalling, CapabilitySupport.supported);
     expect(
       model.capabilities.controls.single.choices.map((item) => item.id),
-      <String>[
-        'high',
-        'max',
-      ],
+      <String>['high', 'max'],
     );
     expect(model.pricing!.cacheRead, 0.1);
     expect(model.limits!.output, 32000);
@@ -224,19 +218,16 @@ void main() {
   test(
     'Models.dev reuses its parsed catalog after a not-modified reply',
     () async {
-      final adapter = _JsonAdapter(
-        <String, dynamic>{
-          'deepseek': <String, dynamic>{
-            'models': <String, dynamic>{
-              'deepseek-next': <String, dynamic>{
-                'id': 'deepseek-next',
-                'name': 'DeepSeek Next',
-              },
+      final adapter = _JsonAdapter(<String, dynamic>{
+        'deepseek': <String, dynamic>{
+          'models': <String, dynamic>{
+            'deepseek-next': <String, dynamic>{
+              'id': 'deepseek-next',
+              'name': 'DeepSeek Next',
             },
           },
         },
-        returnNotModifiedAfterFirst: true,
-      );
+      }, returnNotModifiedAfterFirst: true);
       final source = ModelsDevCatalogMetadataSource(
         dio: Dio()..httpClientAdapter = adapter,
       );
@@ -288,14 +279,10 @@ void main() {
 
     final advisoryModel = catalog
         .modelsFor('openai')
-        .firstWhere(
-          (item) => item.id == 'gpt-4',
-        );
+        .firstWhere((item) => item.id == 'gpt-4');
     final runtimeModel = catalog
         .modelsFor('openai')
-        .firstWhere(
-          (item) => item.id == 'gpt-5.6-sol',
-        );
+        .firstWhere((item) => item.id == 'gpt-5.6-sol');
 
     expect(advisoryModel.capabilities.controls, isEmpty);
     expect(advisoryModel.limits, isNotNull);
@@ -304,7 +291,7 @@ void main() {
 }
 
 final class _Clock implements Clock {
-  const _Clock(this.now);
+  const new(this.now);
 
   final DateTime now;
 
@@ -374,7 +361,7 @@ final class _MetadataSource implements ProviderCatalogMetadataSource {
 }
 
 final class _UnknownCapabilityAdapter extends ProviderAdapter {
-  const _UnknownCapabilityAdapter();
+  const new();
 
   @override
   String get id => deepseekDefinition.id;
@@ -428,7 +415,7 @@ final class _BlockingMetadataSource implements ProviderCatalogMetadataSource {
 }
 
 final class _FailingMetadataSource implements ProviderCatalogMetadataSource {
-  const _FailingMetadataSource();
+  const new();
 
   @override
   Future<Map<String, List<ProviderCatalogMetadata>>> fetch(
@@ -442,7 +429,7 @@ final class _FailingMetadataSource implements ProviderCatalogMetadataSource {
 }
 
 final class _JsonAdapter implements HttpClientAdapter {
-  _JsonAdapter(this.data, {this.returnNotModifiedAfterFirst = false});
+  new(this.data, {this.returnNotModifiedAfterFirst = false});
 
   final Map<String, dynamic> data;
   final bool returnNotModifiedAfterFirst;

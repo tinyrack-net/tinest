@@ -1,6 +1,4 @@
-@Tags(<String>[
-  'feature_test__plugin_runtime__unit',
-])
+@Tags(<String>['feature_test__plugin_runtime__unit'])
 library;
 
 import 'dart:convert';
@@ -69,9 +67,8 @@ return tinest.plugin.define({})
   });
 
   test('runtime and LuaLS load the same generated SDK source asset', () async {
-    final source = await File(
-      p.join('plugin_sdk', 'library', 'tinest.lua'),
-    ).readAsString();
+    final source = await File(p.join('plugin_sdk', 'library', 'tinest.lua'))
+        .readAsString();
     final runtime = TinestLuaPluginSdk.runtimeModuleAssets['tinest'];
     final authoring =
         TinestLuaPluginSdk.authoringLibraryAssets['library/tinest.lua'];
@@ -218,14 +215,7 @@ return tinest.plugin.define({})
 
   test('private entrypoint wrapper remains part of the SDK ABI hash', () async {
     final sdkSource = await File(
-      p.join(
-        'lib',
-        'src',
-        'features',
-        'plugins',
-        'runtime',
-        'plugin_sdk.dart',
-      ),
+      p.join('lib', 'src', 'features', 'plugins', 'runtime', 'plugin_sdk.dart'),
     ).readAsString();
     final abiHashStart = sdkSource.indexOf(
       'static final String sdkAbiHash = _hashAssets',
@@ -317,15 +307,9 @@ return tinest.plugin.define({})
               'kind': 'function',
               'input_schema': <String, Object?>{'type': 'object'},
               'presentation': <String, Object?>{
-                'ui': <String, Object?>{
-                  '__tinest_ref': 'ui',
-                  'id': 'card',
-                },
+                'ui': <String, Object?>{'__tinest_ref': 'ui', 'id': 'card'},
                 'requires': <Object?>[
-                  <String, Object?>{
-                    '__tinest_ref': 'tool',
-                    'id': 'read',
-                  },
+                  <String, Object?>{'__tinest_ref': 'tool', 'id': 'read'},
                 ],
               },
             },
@@ -363,14 +347,10 @@ return tinest.plugin.define({})
       registration.tools.single.binding.executionRevisionHash,
       'revision-1',
     );
-    expect(
-      registration.tools.single.presentation['ui'],
-      'acme.typed/card',
-    );
-    expect(
-      registration.tools.single.presentation['requires'],
-      <Object?>['acme.typed/read'],
-    );
+    expect(registration.tools.single.presentation['ui'], 'acme.typed/card');
+    expect(registration.tools.single.presentation['requires'], <Object?>[
+      'acme.typed/read',
+    ]);
     expect(registration.ui.single.inputSchema, <String, Object?>{
       'type': 'object',
     });

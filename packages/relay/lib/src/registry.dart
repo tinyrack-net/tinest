@@ -9,7 +9,7 @@ const int relayPolicyViolationCloseCode = 1008;
 /// A relay connection rejected before it can enter the registry.
 final class RelayAdmissionException implements Exception {
   /// Creates a rejection with a safe [message].
-  const RelayAdmissionException(this.message);
+  const new(this.message);
 
   /// Safe diagnostic for operators and clients.
   final String message;
@@ -33,7 +33,7 @@ abstract interface class RelayPeer {
 /// Deterministic peer for registry unit tests and in-process integration tests.
 final class MemoryRelayPeer implements RelayPeer {
   /// Creates a connected in-memory peer.
-  MemoryRelayPeer();
+  new();
 
   final StreamController<Uint8List> _messages =
       StreamController<Uint8List>.broadcast(sync: true);
@@ -78,7 +78,7 @@ final class MemoryRelayPeer implements RelayPeer {
 /// Pairs an opaque daemon socket with opaque client sockets for one server ID.
 final class RelayRegistry {
   /// Creates an in-memory relay registry with explicit resource limits.
-  RelayRegistry({
+  new({
     this.maxClientsPerDaemon = 32,
     this.maxFrameBytes = 128 * 1024,
     this.maxBufferedBytesPerPeer = 1024 * 1024,
@@ -216,7 +216,7 @@ final class RelayRegistry {
 }
 
 final class _DaemonEntry {
-  _DaemonEntry(this.peer, int maxBufferedBytes)
+  new(this.peer, int maxBufferedBytes)
     : sender = _BufferedRelaySender(peer, maxBufferedBytes);
 
   final RelayPeer peer;
@@ -228,7 +228,7 @@ final class _DaemonEntry {
 }
 
 final class _ClientEntry {
-  _ClientEntry(this.peer, int maxBufferedBytes)
+  new(this.peer, int maxBufferedBytes)
     : sender = _BufferedRelaySender(peer, maxBufferedBytes);
 
   final RelayPeer peer;
@@ -239,7 +239,7 @@ final class _ClientEntry {
 }
 
 final class _BufferedRelaySender {
-  _BufferedRelaySender(this.peer, this.maxBufferedBytes);
+  new(this.peer, this.maxBufferedBytes);
 
   final RelayPeer peer;
   final int maxBufferedBytes;

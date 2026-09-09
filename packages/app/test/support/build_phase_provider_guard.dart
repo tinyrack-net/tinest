@@ -16,7 +16,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 /// not: it can only point at `UncontrolledProviderScope`.
 final class BuildPhaseProviderGuard extends ProviderObserver {
   /// Creates a guard with an empty [violations] log.
-  BuildPhaseProviderGuard();
+  new();
 
   /// Providers mutated during a build, in the order the mutations happened.
   ///

@@ -127,24 +127,18 @@ Review the requested code without modifying it.
     );
   });
 
-  test(
-    'accepts an intentionally empty agent description',
-    () {
-      final parsed = const AgentMarkdownCodec().decode(
-        id: 'reviewer',
-        sourcePath: '/config/agents/reviewer.md',
-        source: source.replaceFirst(
-          'description: Reviews code',
-          'description: ""',
-        ),
-      );
+  test('accepts an intentionally empty agent description', () {
+    final parsed = const AgentMarkdownCodec().decode(
+      id: 'reviewer',
+      sourcePath: '/config/agents/reviewer.md',
+      source: source.replaceFirst(
+        'description: Reviews code',
+        'description: ""',
+      ),
+    );
 
-      expect(parsed.description, isEmpty);
-    },
-    tags: const <String>[
-      'feature_test__agent_definition_management__unit',
-    ],
-  );
+    expect(parsed.description, isEmpty);
+  }, tags: const <String>['feature_test__agent_definition_management__unit']);
 
   test('rejects every malformed Markdown boundary with typed diagnostics', () {
     const codec = AgentMarkdownCodec();
@@ -157,10 +151,7 @@ Review the requested code without modifying it.
       source
           .replaceFirst('mode: subagent', 'mode: subagent')
           .replaceFirst('callableAgents: []', 'callableAgents: [tinest]'),
-      source.replaceFirst(
-        'model:\n  source: session',
-        'model: invalid',
-      ),
+      source.replaceFirst('model:\n  source: session', 'model: invalid'),
       source.replaceFirst('name: Reviewer', 'name: ""'),
       source.replaceFirst('name: Reviewer\n', ''),
       source.replaceFirst(
@@ -242,10 +233,7 @@ Review the requested code without modifying it.
         ),
         throwsA(isA<FormatException>()),
       );
-      expect(
-        File('${directory.path}/agents/invalid.md').existsSync(),
-        isFalse,
-      );
+      expect(File('${directory.path}/agents/invalid.md').existsSync(), isFalse);
     },
   );
 
@@ -294,9 +282,7 @@ Review the requested code without modifying it.
       if (!Platform.isWindows) {
         final outsideFile = File('${outside.path}/evil.md')
           ..writeAsStringSync(source);
-        Link(
-          '${directory.path}/agents/evil.md',
-        ).createSync(outsideFile.path);
+        Link('${directory.path}/agents/evil.md').createSync(outsideFile.path);
       }
 
       await store.reload();
@@ -440,10 +426,11 @@ Review the requested code without modifying it.
           sourcePath: '',
         ),
       );
-      expect(
-        (await store.list()).map((definition) => definition.id),
-        <String>['tinest', 'auditor', 'reviewer'],
-      );
+      expect((await store.list()).map((definition) => definition.id), <String>[
+        'tinest',
+        'auditor',
+        'reviewer',
+      ]);
       await expectLater(store.archive('missing'), throwsA(isA<StateError>()));
 
       await File(tinest.sourcePath).delete();
@@ -607,7 +594,7 @@ AgentContributionCatalog _toolCatalog(List<AgentToolDefinitionDto> tools) {
 }
 
 final class _TestAgentContributionCatalog implements AgentContributionCatalog {
-  const _TestAgentContributionCatalog(this._descriptors);
+  const new(this._descriptors);
 
   final List<PluginDescriptorDto> _descriptors;
 

@@ -25,10 +25,7 @@ void main() {
       agents,
       () => agents.selectInitial('agent'),
     );
-    _expectInitialSelectionIsConsumed(
-      mcp,
-      () => mcp.selectInitial('server'),
-    );
+    _expectInitialSelectionIsConsumed(mcp, () => mcp.selectInitial('server'));
     _expectInitialSelectionIsConsumed(
       providers,
       () => providers.selectInitialConnectionId('provider'),

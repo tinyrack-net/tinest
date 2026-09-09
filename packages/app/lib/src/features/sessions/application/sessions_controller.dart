@@ -23,7 +23,7 @@ class SessionsController extends _$SessionsController {
     }
     _events = api.sessions.sessionUpdates.listen(_handleEvent);
     ref.onDispose(() => unawaited(_events?.cancel()));
-    return api.sessions.listSessions(worktreeId: worktreeId);
+    return await api.sessions.listSessions(worktreeId: worktreeId);
   }
 
   /// The create public API member.
@@ -71,10 +71,7 @@ class SessionsController extends _$SessionsController {
     Map<String, ModelControlValueDto> modelControls,
   ) => _apply(
     sessionId,
-    (session) => session.copyWith(
-      model: model,
-      modelControls: modelControls,
-    ),
+    (session) => session.copyWith(model: model, modelControls: modelControls),
     (api) => api.sessions.updateSettings(
       sessionId,
       SessionSettingsPatchDto(

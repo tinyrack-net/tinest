@@ -59,7 +59,7 @@ final class ModelSettingsControllerProvider
 }
 
 String _$modelSettingsControllerHash() =>
-    r'36875cfe89ec7be83d7a10274cc94f8807d7357f';
+    r'82e3aaabee382a0763c77bc4a8af50aca29113ec';
 
 /// Owns the daemon-global concrete default model for one connected host.
 

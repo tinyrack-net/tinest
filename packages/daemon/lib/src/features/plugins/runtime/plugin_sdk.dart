@@ -169,9 +169,7 @@ String _hostPrimitiveModuleSource() {
     }
     byScope
         .putIfAbsent(segments[1], () => <PublicHostPrimitiveContract>[])
-        .add(
-          contract,
-        );
+        .add(contract);
   }
   final output = StringBuffer('''
 local descriptors = require("tinest.primitive_descriptors")
@@ -217,9 +215,7 @@ return function(sdk, install_primitive, references)
     output
       ..writeln('  local $localName = sdk.host.$scope.$member')
       ..writeln('  ---@param arguments ${contract.luaInputType}')
-      ..writeln(
-        '  ---@return tinest.HostResult<${contract.luaOutputType}>',
-      )
+      ..writeln('  ---@return tinest.HostResult<${contract.luaOutputType}>')
       ..writeln('  function sdk.host.$scope.$member(arguments)')
       ..writeln('    return $localName(arguments)')
       ..writeln('  end')
@@ -253,7 +249,7 @@ String _luaLiteral(Object? value) => switch (value) {
 /// A validated plugin could not be mapped into the immutable Lua module map.
 final class PluginRuntimeBundleException extends FormatException {
   /// Creates a runtime bundle failure.
-  const PluginRuntimeBundleException(super.message, {this.path});
+  const new(super.message, {this.path});
 
   /// Bundle-relative asset associated with the error.
   final String? path;

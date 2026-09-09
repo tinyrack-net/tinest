@@ -8,7 +8,7 @@ import 'package:process/process.dart';
 /// Speaks newline-delimited JSON-RPC to a child process over its stdio.
 final class StdioMcpTransport implements McpTransport {
   /// Creates a transport that will launch [spec].
-  StdioMcpTransport(
+  new(
     this.spec, {
     this._processManager = const LocalProcessManager(),
     this.terminationGrace = const Duration(seconds: 3),

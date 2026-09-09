@@ -36,37 +36,32 @@ void main() {
     localizationsDelegates: testLocalizationsDelegates,
     supportedLocales: testSupportedLocales,
     home: Scaffold(
-      body: ChatAttachmentTile(
-        attachment: attachment,
-        loadAttachment: loader,
-      ),
+      body: ChatAttachmentTile(attachment: attachment, loadAttachment: loader),
     ),
   );
 
-  testWidgets(
-    'an image preview shows a skeleton and downloads exactly once',
-    (tester) async {
-      var calls = 0;
-      final bytes = Completer<Uint8List>();
-      Future<Uint8List> loader(ChatAttachment _) {
-        calls += 1;
-        return bytes.future;
-      }
+  testWidgets('an image preview shows a skeleton and downloads exactly once', (
+    tester,
+  ) async {
+    var calls = 0;
+    final bytes = Completer<Uint8List>();
+    Future<Uint8List> loader(ChatAttachment _) {
+      calls += 1;
+      return bytes.future;
+    }
 
-      await tester.pumpWidget(host(loader));
-      expect(find.byType(TRSkeleton), findsOneWidget);
-      expect(find.byType(TRSpinner), findsNothing);
+    await tester.pumpWidget(host(loader));
+    expect(find.byType(TRSkeleton), findsOneWidget);
+    expect(find.byType(TRSpinner), findsNothing);
 
-      // Rebuilding the same attachment must not refire the download.
-      await tester.pumpWidget(host(loader));
-      expect(calls, 1);
+    // Rebuilding the same attachment must not refire the download.
+    await tester.pumpWidget(host(loader));
+    expect(calls, 1);
 
-      bytes.complete(_transparentPng);
-      await tester.pumpAndSettle();
-      expect(find.byType(TRSkeleton), findsNothing);
-      expect(find.byType(Image), findsOneWidget);
-      expect(calls, 1);
-    },
-    tags: const <String>['feature_test__workspace_async_loading__widget'],
-  );
+    bytes.complete(_transparentPng);
+    await tester.pumpAndSettle();
+    expect(find.byType(TRSkeleton), findsNothing);
+    expect(find.byType(Image), findsOneWidget);
+    expect(calls, 1);
+  }, tags: const <String>['feature_test__workspace_async_loading__widget']);
 }

@@ -28,18 +28,12 @@ void main() {
   for (final wire in openAIWireProtocols()) {
     providerWireProtocolConformanceTests(wire.id, () => wire);
   }
-  providerAdapterConformanceTests(
-    'anthropic',
-    () => const AnthropicAdapter(),
-  );
+  providerAdapterConformanceTests('anthropic', () => const AnthropicAdapter());
   providerWireProtocolConformanceTests(
     anthropicMessagesWireId,
     () => const AnthropicMessagesWire(),
   );
-  providerAdapterConformanceTests(
-    'google',
-    () => const GoogleGeminiAdapter(),
-  );
+  providerAdapterConformanceTests('google', () => const GoogleGeminiAdapter());
   providerWireProtocolConformanceTests(
     geminiInteractionsWireId,
     () => const GeminiInteractionsWire(),
@@ -110,9 +104,7 @@ void main() {
     final international = adapters.firstWhere(
       (adapter) => adapter.id == 'minimax',
     );
-    final china = adapters.firstWhere(
-      (adapter) => adapter.id == 'minimax-cn',
-    );
+    final china = adapters.firstWhere((adapter) => adapter.id == 'minimax-cn');
 
     expect(
       international.endpoint(AgentProviderAuthKind.apiKey).baseUrl,
@@ -155,10 +147,7 @@ void main() {
 
     final platform = openai.endpoint(AgentProviderAuthKind.apiKey);
     expect(platform.baseUrl, 'https://api.openai.com/v1');
-    expect(
-      platform.accepts(ProviderEndpointExtension.modelDiscovery),
-      isTrue,
-    );
+    expect(platform.accepts(ProviderEndpointExtension.modelDiscovery), isTrue);
 
     // The subscription backend serves only the Responses API, answers 400 for
     // `/models`, and rejects the fields only the platform API documents.
@@ -268,9 +257,7 @@ data: [DONE]
       ]) {
     test('${entry.label} sends every control it advertises', () async {
       final wire = entry.build((_) => Dio());
-      Future<String> body(
-        Map<String, AgentModelControlValue> controls,
-      ) async {
+      Future<String> body(Map<String, AgentModelControlValue> controls) async {
         final adapter = _Adapter(entry.fixture);
         await entry
             .build((_) => Dio()..httpClientAdapter = adapter)
@@ -429,61 +416,58 @@ data: [DONE]
     },
   );
 
-  test(
-    'a compatible vendor receives no platform-only request field',
-    () async {
-      // A custom or compatible connection is offered every control the wire
-      // can encode, so the model advertising fast mode is the normal case.
-      final chatWire = openAIWireProtocols().firstWhere(
-        (wire) => wire.id == openAIChatCompletionsWireId,
-      );
-      final capabilities = AgentModelCapabilities(
-        streaming: AgentCapabilitySupport.supported,
-        controls: chatWire.controlDescriptors,
-      );
-      final adapter = _Adapter(
-        'data: {"choices":[{"delta":{},"finish_reason":"stop"}]}\n\n'
-        'data: [DONE]\n\n',
-      );
-      final compatible = openAIFamilyAdapters(
-        clock: clock,
-        openAIOAuth: const _UnusedGateway(),
-        dioFactory: (_) => Dio()..httpClientAdapter = adapter,
-      ).firstWhere((plugin) => plugin.id == deepseekDefinition.id);
+  test('a compatible vendor receives no platform-only request field', () async {
+    // A custom or compatible connection is offered every control the wire
+    // can encode, so the model advertising fast mode is the normal case.
+    final chatWire = openAIWireProtocols().firstWhere(
+      (wire) => wire.id == openAIChatCompletionsWireId,
+    );
+    final capabilities = AgentModelCapabilities(
+      streaming: AgentCapabilitySupport.supported,
+      controls: chatWire.controlDescriptors,
+    );
+    final adapter = _Adapter(
+      'data: {"choices":[{"delta":{},"finish_reason":"stop"}]}\n\n'
+      'data: [DONE]\n\n',
+    );
+    final compatible = openAIFamilyAdapters(
+      clock: clock,
+      openAIOAuth: const _UnusedGateway(),
+      dioFactory: (_) => Dio()..httpClientAdapter = adapter,
+    ).firstWhere((plugin) => plugin.id == deepseekDefinition.id);
 
-      await compatible
-          .createProvider(
-            ModelGatewayRequest(
-              connectionId: compatible.id,
-              endpoint: compatible.endpoint(AgentProviderAuthKind.apiKey),
-              credential: const ApiKeyCredential('key'),
-              capabilities: capabilities,
-            ),
-          )
-          .stream(
-            const ModelRequest(
-              model: 'deepseek-v4-pro',
-              modelControls: <String, AgentModelControlValue>{
-                AgentModelControlIds.fastMode: AgentModelControlBoolValue(
-                  value: true,
-                ),
-              },
-              blocks: <ModelRoleBlock>[
-                ModelRoleBlock(role: ModelRole.system, content: 'test'),
-              ],
-              history: <ConversationItem>[],
-              tools: <ModelToolDefinition>[],
-            ),
-            CancellationToken(),
-          )
-          .toList();
+    await compatible
+        .createProvider(
+          ModelGatewayRequest(
+            connectionId: compatible.id,
+            endpoint: compatible.endpoint(AgentProviderAuthKind.apiKey),
+            credential: const ApiKeyCredential('key'),
+            capabilities: capabilities,
+          ),
+        )
+        .stream(
+          const ModelRequest(
+            model: 'deepseek-v4-pro',
+            modelControls: <String, AgentModelControlValue>{
+              AgentModelControlIds.fastMode: AgentModelControlBoolValue(
+                value: true,
+              ),
+            },
+            blocks: <ModelRoleBlock>[
+              ModelRoleBlock(role: ModelRole.system, content: 'test'),
+            ],
+            history: <ConversationItem>[],
+            tools: <ModelToolDefinition>[],
+          ),
+          CancellationToken(),
+        )
+        .toList();
 
-      // `service_tier` is documented by one vendor's platform API. Sending it
-      // to a narrower compatible surface fails the whole request.
-      final body = Map<String, dynamic>.from(adapter.options!.data as Map);
-      expect(body, isNot(contains('service_tier')));
-    },
-  );
+    // `service_tier` is documented by one vendor's platform API. Sending it
+    // to a narrower compatible surface fails the whole request.
+    final body = Map<String, dynamic>.from(adapter.options!.data as Map);
+    expect(body, isNot(contains('service_tier')));
+  });
 
   test('a compatible Responses endpoint receives no platform field', () async {
     final adapter = _Adapter(
@@ -604,10 +588,7 @@ data: [DONE]
           ),
         ),
       );
-      expect(
-        adapter.options!.headers['Authorization'],
-        'Bearer oauth-access',
-      );
+      expect(adapter.options!.headers['Authorization'], 'Bearer oauth-access');
     }
 
     final malformed = _Adapter(
@@ -640,7 +621,7 @@ data: [DONE]
 }
 
 final class _FixedClock implements Clock {
-  const _FixedClock(this.value);
+  const new(this.value);
 
   final DateTime value;
 
@@ -649,7 +630,7 @@ final class _FixedClock implements Clock {
 }
 
 final class _UnusedGateway implements ProviderOAuthGateway {
-  const _UnusedGateway();
+  const new();
 
   @override
   Future<ProviderOAuthSession> start(AgentProviderAuthFlow flow) =>
@@ -661,7 +642,7 @@ final class _UnusedGateway implements ProviderOAuthGateway {
 }
 
 final class _Adapter implements HttpClientAdapter {
-  _Adapter(
+  new(
     this.body, {
     this.contentType = 'text/event-stream',
     this.statusCode = 200,

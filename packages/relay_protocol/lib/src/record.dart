@@ -79,11 +79,8 @@ final class RelayRpcMessageAssembler {
 /// One bounded plaintext record before authenticated encryption.
 final class RelayRecord {
   /// Creates a validated multiplexed record.
-  RelayRecord({
-    required this.type,
-    required this.streamId,
-    required List<int> payload,
-  }) : payload = Uint8List.fromList(payload) {
+  new({required this.type, required this.streamId, required List<int> payload})
+    : payload = Uint8List.fromList(payload) {
     if (streamId < 0) {
       throw RangeError.value(streamId, 'streamId');
     }
@@ -98,7 +95,7 @@ final class RelayRecord {
   }
 
   /// Parses a strict binary record.
-  factory RelayRecord.decode(List<int> bytes) {
+  factory decode(List<int> bytes) {
     if (bytes.length < 9) {
       throw const FormatException('Relay record is truncated.');
     }

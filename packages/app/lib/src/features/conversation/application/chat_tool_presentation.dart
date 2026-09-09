@@ -119,14 +119,13 @@ ChatToolGlyph chatToolGlyphFromPresentation(Map<String, dynamic> value) =>
     };
 
 /// Host-safe timeline behavior declared by the pinned tool contribution.
-ChatToolTimeline chatToolTimelineFromPresentation(
-  Map<String, dynamic> value,
-) => switch (value['timeline']) {
-  'suppressed' => ChatToolTimeline.suppressed,
-  'question' => ChatToolTimeline.question,
-  'sleep' => ChatToolTimeline.sleep,
-  _ => ChatToolTimeline.row,
-};
+ChatToolTimeline chatToolTimelineFromPresentation(Map<String, dynamic> value) =>
+    switch (value['timeline']) {
+      'suppressed' => ChatToolTimeline.suppressed,
+      'question' => ChatToolTimeline.question,
+      'sleep' => ChatToolTimeline.sleep,
+      _ => ChatToolTimeline.row,
+    };
 
 String _toolTitle(ChatToolActivity activity) {
   final rawLabel = activity.presentation['label'];

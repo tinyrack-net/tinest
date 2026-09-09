@@ -25,7 +25,7 @@ typedef PluginUiActionDispatcher = Future<PluginUiDocumentDto> Function(
 /// against what the current agent and session may reach before running it.
 @immutable
 sealed class PluginUiIntent {
-  const PluginUiIntent();
+  const new();
 }
 
 /// Asks the host to open one session.
@@ -34,7 +34,7 @@ sealed class PluginUiIntent {
 /// a session is a request, never a permission.
 final class PluginUiOpenSessionIntent extends PluginUiIntent {
   /// Creates an open-session intent.
-  const PluginUiOpenSessionIntent(this.sessionId);
+  const new(this.sessionId);
 
   /// Session the document asks to open.
   final String sessionId;
@@ -72,7 +72,7 @@ bool pluginUiDocumentIsEmpty(PluginUiDocumentDto document) {
 /// instead of leaving a partially trusted interface on screen.
 class PluginUiDocumentView extends StatefulWidget {
   /// Creates a host-rendered plugin document.
-  const PluginUiDocumentView({
+  const new({
     required this.document,
     required this.invalidDocumentLabel,
     required this.invalidDocumentDescription,
@@ -452,7 +452,7 @@ class _PluginUiDocumentViewState extends State<PluginUiDocumentView> {
 }
 
 class _PluginUiSection extends StatelessWidget {
-  const _PluginUiSection({
+  const new({
     required this.title,
     required this.description,
     required this.children,
@@ -486,7 +486,7 @@ class _PluginUiSection extends StatelessWidget {
 }
 
 class _InvalidPluginUiDocument extends StatelessWidget {
-  const _InvalidPluginUiDocument({
+  const new({
     required this.document,
     required this.label,
     required this.description,
@@ -540,11 +540,7 @@ enum _UiNodeType {
 }
 
 final class _UiOption {
-  const _UiOption({
-    required this.value,
-    required this.label,
-    required this.enabled,
-  });
+  const new({required this.value, required this.label, required this.enabled});
 
   final String value;
   final String label;
@@ -552,7 +548,7 @@ final class _UiOption {
 }
 
 final class _UiNode {
-  const _UiNode({
+  const new({
     required this.type,
     required this.values,
     this.children = const <_UiNode>[],
@@ -643,35 +639,25 @@ final class _PluginUiParser {
         children = _children(map, depth);
       case _UiNodeType.text:
         values['text'] = _requiredString(map, 'text');
-        _copyEnum(
-          map,
-          values,
-          'variant',
-          const <String>{
-            'body',
-            'bodySm',
-            'caption',
-            'code',
-            'headingSm',
-            'headingMd',
-            'headingLg',
-            'label',
-          },
-        );
-        _copyEnum(
-          map,
-          values,
-          'color',
-          const <String>{
-            'default',
-            'muted',
-            'primary',
-            'info',
-            'success',
-            'warning',
-            'danger',
-          },
-        );
+        _copyEnum(map, values, 'variant', const <String>{
+          'body',
+          'bodySm',
+          'caption',
+          'code',
+          'headingSm',
+          'headingMd',
+          'headingLg',
+          'label',
+        });
+        _copyEnum(map, values, 'color', const <String>{
+          'default',
+          'muted',
+          'primary',
+          'info',
+          'success',
+          'warning',
+          'danger',
+        });
       case _UiNodeType.markdown:
         values['text'] = _requiredString(map, 'text');
       case _UiNodeType.code || _UiNodeType.diff:
@@ -748,25 +734,19 @@ final class _PluginUiParser {
         values['label'] = _requiredString(map, 'label');
         values['actionId'] = _requiredString(map, 'actionId');
         _copyOptionalString(map, values, 'loadingLabel');
-        _copyEnum(
-          map,
-          values,
-          'intent',
-          const <String>{
-            'neutral',
-            'primary',
-            'info',
-            'success',
-            'warning',
-            'danger',
-          },
-        );
-        _copyEnum(
-          map,
-          values,
-          'appearance',
-          const <String>{'solid', 'outline', 'ghost'},
-        );
+        _copyEnum(map, values, 'intent', const <String>{
+          'neutral',
+          'primary',
+          'info',
+          'success',
+          'warning',
+          'danger',
+        });
+        _copyEnum(map, values, 'appearance', const <String>{
+          'solid',
+          'outline',
+          'ghost',
+        });
         actionData = _optionalMap(map['data'], 'button data');
       case _UiNodeType.switchControl:
         final id = _controlId(map, values);
@@ -868,10 +848,7 @@ final class _PluginUiParser {
     };
   }
 
-  String _controlId(
-    Map<String, dynamic> map,
-    Map<String, Object?> values,
-  ) {
+  String _controlId(Map<String, dynamic> map, Map<String, Object?> values) {
     final id = _requiredString(map, 'id');
     if (!_controlIds.add(id)) {
       throw FormatException('Duplicate plugin UI control ID: $id');
@@ -883,12 +860,13 @@ final class _PluginUiParser {
   void _copyStatusVariant(
     Map<String, dynamic> map,
     Map<String, Object?> values,
-  ) => _copyEnum(
-    map,
-    values,
-    'variant',
-    const <String>{'neutral', 'info', 'success', 'warning', 'danger'},
-  );
+  ) => _copyEnum(map, values, 'variant', const <String>{
+    'neutral',
+    'info',
+    'success',
+    'warning',
+    'danger',
+  });
 }
 
 Map<String, dynamic> _map(Object? value, String label) {

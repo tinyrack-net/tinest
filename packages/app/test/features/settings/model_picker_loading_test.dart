@@ -148,9 +148,7 @@ void main() {
         await tester.enterText(find.byType(TRTextField), 'provider/gpt');
         await tester.pumpAndSettle();
         expect(
-          find.byKey(
-            const ValueKey<String>('model-option-provider-gpt-test'),
-          ),
+          find.byKey(const ValueKey<String>('model-option-provider-gpt-test')),
           findsOneWidget,
         );
       },
@@ -226,29 +224,27 @@ const _option = ModelPickerOption(
   ),
 );
 
-Widget _host(
-  ModelPickerOptionsLoader loader, {
-  TRUiDensity? density,
-}) => MaterialApp(
-  locale: testLocale,
-  localizationsDelegates: testLocalizationsDelegates,
-  supportedLocales: testSupportedLocales,
-  theme: testLightTheme,
-  builder: (context, child) => density == null
-      ? child ?? const SizedBox.shrink()
-      : TRUiDensityScope(
-          density: density,
-          child: child ?? const SizedBox.shrink(),
+Widget _host(ModelPickerOptionsLoader loader, {TRUiDensity? density}) =>
+    MaterialApp(
+      locale: testLocale,
+      localizationsDelegates: testLocalizationsDelegates,
+      supportedLocales: testSupportedLocales,
+      theme: testLightTheme,
+      builder: (context, child) => density == null
+          ? child ?? const SizedBox.shrink()
+          : TRUiDensityScope(
+              density: density,
+              child: child ?? const SizedBox.shrink(),
+            ),
+      home: Scaffold(
+        body: Center(
+          child: AsyncModelSelect(
+            loadOptions: loader,
+            currentSelection: const ModelSelectionDto(
+              modelId: 'provider/gpt-test',
+            ),
+            onValueChange: (_) {},
+          ),
         ),
-  home: Scaffold(
-    body: Center(
-      child: AsyncModelSelect(
-        loadOptions: loader,
-        currentSelection: const ModelSelectionDto(
-          modelId: 'provider/gpt-test',
-        ),
-        onValueChange: (_) {},
       ),
-    ),
-  ),
-);
+    );

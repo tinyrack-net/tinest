@@ -207,7 +207,7 @@ final class GitBranchesProvider
   }
 }
 
-String _$gitBranchesHash() => r'2a04178fc557eaedc66a8a4cfe1a36d04d832e9a';
+String _$gitBranchesHash() => r'005a457407b6d90d911eb048fcc16baeac69a347';
 
 /// Lists local Git branches for one repository.
 
@@ -286,7 +286,7 @@ final class ProjectSettingsControllerProvider
 }
 
 String _$projectSettingsControllerHash() =>
-    r'57aefc95e9654f24e44c23a7b60b937483358455';
+    r'd0ec2ecb071d4c173565de58a55cbcb207cfffb8';
 
 /// Loads and edits the `.tinest/config.json` worktree hooks of one project.
 

@@ -7,10 +7,9 @@ void main() {
     bool? capturedUpdate;
 
     expect(
-      await runProviderCatalogCli(
-        const <String>['--update'],
-        generate: ({required update}) async => capturedUpdate = update,
-      ),
+      await runProviderCatalogCli(const <String>[
+        '--update',
+      ], generate: ({required update}) async => capturedUpdate = update),
       0,
     );
     expect(capturedUpdate, isTrue);
@@ -32,10 +31,9 @@ void main() {
     var generations = 0;
 
     expect(
-      await runProviderCatalogCli(
-        const <String>['--unknown'],
-        generate: ({required update}) async => generations += 1,
-      ),
+      await runProviderCatalogCli(const <String>[
+        '--unknown',
+      ], generate: ({required update}) async => generations += 1),
       64,
     );
     expect(generations, 0);
@@ -44,10 +42,9 @@ void main() {
   test('help exits without generating', () async {
     var generations = 0;
     expect(
-      await runProviderCatalogCli(
-        const <String>['--help'],
-        generate: ({required update}) async => generations += 1,
-      ),
+      await runProviderCatalogCli(const <String>[
+        '--help',
+      ], generate: ({required update}) async => generations += 1),
       0,
     );
     expect(generations, 0);

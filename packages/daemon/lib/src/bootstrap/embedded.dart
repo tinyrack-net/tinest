@@ -21,7 +21,7 @@ enum EmbeddedDaemonStartupFailureReason {
 /// Typed failure reported when an embedded daemon cannot complete startup.
 final class EmbeddedDaemonStartupException implements Exception {
   /// Creates an embedded startup failure with a safe diagnostic message.
-  const EmbeddedDaemonStartupException(
+  const new(
     this.message, {
     this.reason = EmbeddedDaemonStartupFailureReason.unknown,
   });
@@ -38,7 +38,7 @@ final class EmbeddedDaemonStartupException implements Exception {
 
 /// EmbeddedDaemonHandle defines a public contract.
 class EmbeddedDaemonHandle implements DaemonHandle {
-  EmbeddedDaemonHandle._({
+  new _({
     required this.boundEndpoint,
     required this.serverId,
     required this.bearerToken,

@@ -18,7 +18,7 @@ abstract interface class LocalDaemonEnvironment {
 /// Platform-specific locations used by a local daemon.
 final class LocalDaemonDirectories {
   /// Creates a resolved directory set.
-  const LocalDaemonDirectories({
+  const new({
     required this.configDirectory,
     required this.stateDirectory,
     required this.userHomeDirectory,

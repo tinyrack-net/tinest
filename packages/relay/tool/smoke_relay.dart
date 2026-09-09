@@ -68,15 +68,12 @@ Future<void> _smokeRelay(Uri base, String? readyFile) async {
   await Future.wait<void>(<Future<void>>[daemon.close(), client.close()]);
 }
 
-Uri _webSocketUri(
-  Uri base, {
-  required String role,
-  required String serverId,
-}) => base.replace(
-  scheme: base.scheme == 'https' ? 'wss' : 'ws',
-  path: '/v1/ws',
-  queryParameters: <String, String>{'role': role, 'serverId': serverId},
-);
+Uri _webSocketUri(Uri base, {required String role, required String serverId}) =>
+    base.replace(
+      scheme: base.scheme == 'https' ? 'wss' : 'ws',
+      path: '/v1/ws',
+      queryParameters: <String, String>{'role': role, 'serverId': serverId},
+    );
 
 Future<String> _get(Uri uri) async {
   final client = HttpClient();

@@ -135,10 +135,7 @@ void main() {
         headers: <String, String>{'origin': _allowed},
       );
       expect(response.statusCode, HttpStatus.ok);
-      expect(
-        response.headers.value('access-control-allow-origin'),
-        _allowed,
-      );
+      expect(response.headers.value('access-control-allow-origin'), _allowed);
       expect(response.headers.value('vary'), 'Origin');
     });
 

@@ -177,11 +177,7 @@ final Command<TinestCliContext> _forkCommand = buildCommand(
           ),
         )
         .map(
-          (values) => (
-            daemon: values.$1.$1,
-            id: values.$1.$2,
-            name: values.$2,
-          ),
+          (values) => (daemon: values.$1.$1, id: values.$1.$2, name: values.$2),
         ),
     positional: PositionalSet.one(
       Positional.required<String, TinestCliContext>(
@@ -205,9 +201,7 @@ final Command<TinestCliContext> _forkCommand = buildCommand(
 );
 
 final Command<TinestCliContext> _reloadCommand = buildCommand(
-  docs: const CommandDocs(
-    brief: 'Activate a plugin revision for one Agent',
-  ),
+  docs: const CommandDocs(brief: 'Activate a plugin revision for one Agent'),
   parameters: CommandParameters(
     flags: daemonConnectionFlagSet()
         .and(
@@ -262,11 +256,8 @@ final Command<TinestCliContext> _secretSetCommand = buildCommand(
           ),
         )
         .map(
-          (values) => (
-            daemon: values.$1.$1,
-            agentId: values.$1.$2,
-            name: values.$2,
-          ),
+          (values) =>
+              (daemon: values.$1.$1, agentId: values.$1.$2, name: values.$2),
         ),
     positional: PositionalSet.one(
       Positional.required<String, TinestCliContext>(
@@ -278,7 +269,7 @@ final Command<TinestCliContext> _secretSetCommand = buildCommand(
   ),
   func: (context, flags, args) async {
     final value = await context.readSecret();
-    return withDaemon(
+    return await withDaemon(
       context,
       flags.daemon,
       (client) => pluginSecretSet(
@@ -294,9 +285,7 @@ final Command<TinestCliContext> _secretSetCommand = buildCommand(
 );
 
 final Command<TinestCliContext> _secretRemoveCommand = buildCommand(
-  docs: const CommandDocs(
-    brief: 'Remove one Agent-isolated plugin secret',
-  ),
+  docs: const CommandDocs(brief: 'Remove one Agent-isolated plugin secret'),
   parameters: CommandParameters(
     flags: daemonConnectionFlagSet()
         .and(
@@ -316,11 +305,8 @@ final Command<TinestCliContext> _secretRemoveCommand = buildCommand(
           ),
         )
         .map(
-          (values) => (
-            daemon: values.$1.$1,
-            agentId: values.$1.$2,
-            name: values.$2,
-          ),
+          (values) =>
+              (daemon: values.$1.$1, agentId: values.$1.$2, name: values.$2),
         ),
     positional: PositionalSet.one(
       Positional.required<String, TinestCliContext>(

@@ -18,7 +18,7 @@ import 'package:tinyrack_ui/tinyrack_ui.dart';
 /// Developer maintenance actions that are not tied to any single daemon.
 class AdvancedSettingsPage extends ConsumerWidget {
   /// Creates the advanced settings page.
-  const AdvancedSettingsPage({this.embedded = false, super.key});
+  const new({this.embedded = false, super.key});
 
   /// Whether the unified settings shell supplies navigation chrome.
   final bool embedded;
@@ -38,7 +38,7 @@ class AdvancedSettingsPage extends ConsumerWidget {
 }
 
 class _ResetSection extends ConsumerStatefulWidget {
-  const _ResetSection();
+  const new();
 
   @override
   ConsumerState<_ResetSection> createState() => _ResetSectionState();

@@ -11,7 +11,7 @@ import 'package:tinyrack_ui/tinyrack_ui.dart';
 /// Renders the session controls of Agent-ordered extension plugins.
 class AgentPluginSessionControls extends ConsumerWidget {
   /// Creates the host-owned composer controls for one existing session.
-  const AgentPluginSessionControls({
+  const new({
     required this.hostId,
     required this.sessionId,
     required this.agent,
@@ -73,7 +73,7 @@ class AgentPluginSessionControls extends ConsumerWidget {
 }
 
 class _PluginSessionControl extends ConsumerStatefulWidget {
-  const _PluginSessionControl({
+  const new({
     required this.hostId,
     required this.sessionId,
     required this.plugin,

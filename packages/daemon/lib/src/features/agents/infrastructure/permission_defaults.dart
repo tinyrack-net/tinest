@@ -9,7 +9,7 @@ import 'package:protocol/protocol.dart';
 /// every existing session exactly where its own mode put it.
 final class PermissionDefaults {
   /// Reads the default out of the daemon settings store.
-  const PermissionDefaults(this._settings);
+  const new(this._settings);
 
   /// Settings key holding the stored mode name.
   static const String settingsKey = 'permission.defaultMode';

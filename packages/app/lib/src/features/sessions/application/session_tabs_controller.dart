@@ -14,14 +14,14 @@ part 'session_tabs_controller.g.dart';
 
 /// Content addressed by one workspace tab.
 sealed class WorkspaceTabTarget {
-  const WorkspaceTabTarget();
+  const new();
 }
 
 /// A daemon session tab.
 @immutable
 final class SessionTabTarget extends WorkspaceTabTarget {
   /// Creates a session target.
-  const SessionTabTarget(this.sessionId);
+  const new(this.sessionId);
 
   /// Daemon session identity.
   final String sessionId;
@@ -37,7 +37,7 @@ final class SessionTabTarget extends WorkspaceTabTarget {
 /// A daemon terminal tab.
 final class TerminalTabTarget extends WorkspaceTabTarget {
   /// Creates a terminal target.
-  const TerminalTabTarget(this.terminalId);
+  const new(this.terminalId);
 
   /// Daemon terminal identity.
   final String terminalId;
@@ -46,7 +46,7 @@ final class TerminalTabTarget extends WorkspaceTabTarget {
 /// An app-local composer draft.
 final class DraftTabTarget extends WorkspaceTabTarget {
   /// Creates a draft target.
-  const DraftTabTarget();
+  const new();
 }
 
 /// A terminal tab whose daemon PTY is still being created.
@@ -55,13 +55,13 @@ final class DraftTabTarget extends WorkspaceTabTarget {
 /// persisted, and is either promoted to a [TerminalTabTarget] or removed.
 final class PendingTerminalTabTarget extends WorkspaceTabTarget {
   /// Creates a pending terminal target.
-  const PendingTerminalTabTarget();
+  const new();
 }
 
 /// Stable tab identity and its current content target.
 final class WorkspaceTabEntry {
   /// Creates a workspace tab entry.
-  const WorkspaceTabEntry({required this.id, required this.target});
+  const new({required this.id, required this.target});
 
   /// Stable identity used by pane ordering and widget keys.
   final String id;
@@ -72,13 +72,13 @@ final class WorkspaceTabEntry {
 
 /// Base class for the immutable workspace pane tree.
 sealed class WorkspacePaneNode {
-  const WorkspacePaneNode();
+  const new();
 }
 
 /// A leaf pane with its own active, ordered tab collection.
 final class PaneNode extends WorkspacePaneNode {
   /// Creates a leaf pane.
-  const PaneNode({
+  const new({
     required this.id,
     required this.tabIds,
     required this.activeTabId,
@@ -104,7 +104,7 @@ final class PaneNode extends WorkspacePaneNode {
 /// A binary branch in the workspace pane tree.
 final class WorkspaceSplitNode extends WorkspacePaneNode {
   /// Creates a split branch.
-  const WorkspaceSplitNode({
+  const new({
     required this.id,
     required this.axis,
     required this.ratio,
@@ -131,7 +131,7 @@ final class WorkspaceSplitNode extends WorkspacePaneNode {
 /// Visible tabs and immutable pane layout for one worktree.
 final class SessionTabsState {
   /// Creates immutable workspace tab state.
-  const SessionTabsState({
+  const new({
     required this.sessions,
     required this.terminals,
     required this.tabs,
@@ -212,9 +212,8 @@ class SessionTabsController extends _$SessionTabsController {
     ]);
     final sessions = values[0] as List<SessionDto>;
     final terminals = values[1] as List<TerminalDto>;
-    final settings = (await ref.read(
-      hostRegistryControllerProvider.future,
-    )).settings;
+    final settings = (await ref.read(hostRegistryControllerProvider.future))
+        .settings;
     final saved = settings.sessionTabs[selection.storageKey];
     return _restore(sessions, terminals, saved);
   }
@@ -370,10 +369,8 @@ class SessionTabsController extends _$SessionTabsController {
   );
 
   /// Opens and selects a terminal from the overflow picker.
-  Future<void> openTerminal(String id) => _openTarget(
-    TerminalTabTarget(id),
-    preferredId: 'terminal:$id',
-  );
+  Future<void> openTerminal(String id) =>
+      _openTarget(TerminalTabTarget(id), preferredId: 'terminal:$id');
 
   /// Removes a terminated terminal from the visible layout.
   Future<void> closeTerminal(String id) => _closeWhere(
@@ -759,11 +756,7 @@ class SessionTabsController extends _$SessionTabsController {
       tabs: <String, WorkspaceTabEntry>{
         tabId: WorkspaceTabEntry(id: tabId, target: const DraftTabTarget()),
       },
-      root: PaneNode(
-        id: paneId,
-        tabIds: <String>[tabId],
-        activeTabId: tabId,
-      ),
+      root: PaneNode(id: paneId, tabIds: <String>[tabId], activeTabId: tabId),
       focusedPaneId: paneId,
     );
   }

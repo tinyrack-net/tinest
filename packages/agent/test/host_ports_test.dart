@@ -5,7 +5,7 @@ import 'dart:io' show FileSystemException;
 
 import 'package:agent/agent.dart';
 import 'package:file/memory.dart';
-import 'package:platform/platform.dart';
+import 'package:platform/testing.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -18,7 +18,7 @@ void main() {
       final guard = WorkspacePathGuard(
         '/workspace',
         fileSystem: fileSystem,
-        platform: FakePlatform(
+        platform: TestPlatform.native(
           operatingSystem: 'linux',
           environment: const <String, String>{},
         ),
@@ -48,7 +48,7 @@ void main() {
     final guard = SkillPathGuard(
       '/skill',
       fileSystem: fileSystem,
-      platform: FakePlatform(
+      platform: TestPlatform.native(
         operatingSystem: 'linux',
         environment: const <String, String>{},
       ),

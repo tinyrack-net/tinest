@@ -21,11 +21,7 @@ typedef ChatAttachmentExporter = Future<void> Function(
 /// typed items so the UI never has to inspect event names or dump raw data.
 sealed class ChatItem {
   /// Creates a chat item.
-  const ChatItem({
-    required this.key,
-    required this.turnId,
-    required this.createdAt,
-  });
+  const new({required this.key, required this.turnId, required this.createdAt});
 
   /// Stable identity used as a list key; never changes as events arrive.
   final String key;
@@ -40,7 +36,7 @@ sealed class ChatItem {
 /// A prompt submitted by the user.
 final class ChatUserMessage extends ChatItem {
   /// Creates a user message.
-  const ChatUserMessage({
+  const new({
     required super.key,
     required super.turnId,
     required super.createdAt,
@@ -58,7 +54,7 @@ final class ChatUserMessage extends ChatItem {
 /// Renderable attachment metadata copied into the timeline.
 final class ChatAttachment {
   /// Creates attachment presentation metadata.
-  const ChatAttachment({
+  const new({
     required this.id,
     required this.fileName,
     required this.mimeType,
@@ -89,7 +85,7 @@ final class ChatAttachment {
 /// One file explicitly attached by the assistant.
 final class ChatAttachmentMessage extends ChatItem {
   /// Creates an assistant attachment row.
-  const ChatAttachmentMessage({
+  const new({
     required super.key,
     required super.turnId,
     required super.createdAt,
@@ -103,7 +99,7 @@ final class ChatAttachmentMessage extends ChatItem {
 /// Assistant prose merged from every delta of one uninterrupted block.
 final class ChatAssistantMessage extends ChatItem {
   /// Creates an assistant message.
-  const ChatAssistantMessage({
+  const new({
     required super.key,
     required super.turnId,
     required super.createdAt,
@@ -121,7 +117,7 @@ final class ChatAssistantMessage extends ChatItem {
 /// One provider invocation's display-safe reasoning text.
 final class ChatReasoningActivity extends ChatItem {
   /// Creates a reasoning timeline item.
-  const ChatReasoningActivity({
+  const new({
     required super.key,
     required super.turnId,
     required super.createdAt,
@@ -139,7 +135,7 @@ final class ChatReasoningActivity extends ChatItem {
 /// A declarative plugin UI snapshot persisted with the conversation event.
 final class ChatPluginUiDocument extends ChatItem {
   /// Creates a historical plugin UI timeline item.
-  const ChatPluginUiDocument({
+  const new({
     required super.key,
     required super.turnId,
     required super.createdAt,
@@ -162,7 +158,7 @@ enum ChatInteractionStatus {
 /// One tool approval, retained in the timeline after it is resolved.
 final class ChatApprovalInteraction extends ChatItem {
   /// Creates an approval timeline row.
-  const ChatApprovalInteraction({
+  const new({
     required super.key,
     required super.turnId,
     required super.createdAt,
@@ -184,7 +180,7 @@ final class ChatApprovalInteraction extends ChatItem {
 /// One pending question occupying its eventual answer's timeline slot.
 final class ChatQuestionInteraction extends ChatItem {
   /// Creates a question timeline row.
-  const ChatQuestionInteraction({
+  const new({
     required super.key,
     required super.turnId,
     required super.createdAt,
@@ -213,7 +209,7 @@ enum ChatToolStatus {
 /// One tool call with its request and result merged.
 final class ChatToolActivity extends ChatItem {
   /// Creates a tool activity.
-  const ChatToolActivity({
+  const new({
     required super.key,
     required super.turnId,
     required super.createdAt,
@@ -267,7 +263,7 @@ enum ChatNoticeKind {
 /// A short status line closing one turn.
 final class ChatNotice extends ChatItem {
   /// Creates a turn notice.
-  const ChatNotice({
+  const new({
     required super.key,
     required super.turnId,
     required super.createdAt,
@@ -289,7 +285,7 @@ final class ChatNotice extends ChatItem {
 /// One question the agent asked and the answer the user gave.
 final class ChatQuestionAnswer {
   /// Creates a question-and-answer pair.
-  const ChatQuestionAnswer({
+  const new({
     required this.header,
     required this.question,
     required this.answer,
@@ -313,7 +309,7 @@ final class ChatQuestionAnswer {
 /// tool output.
 final class ChatUserAnswer extends ChatItem {
   /// Creates an answered-question item.
-  const ChatUserAnswer({
+  const new({
     required super.key,
     required super.turnId,
     required super.createdAt,
@@ -327,7 +323,7 @@ final class ChatUserAnswer extends ChatItem {
 /// One `sleep` call, rendered as a countdown rather than a tool row.
 final class ChatSleep extends ChatItem {
   /// Creates a sleep item.
-  const ChatSleep({
+  const new({
     required super.key,
     required super.turnId,
     required super.createdAt,
@@ -353,7 +349,7 @@ final class ChatSleep extends ChatItem {
 /// A notice that some tools were withheld from the model's tool list.
 final class ChatDeferredTools extends ChatItem {
   /// Creates a deferred-tools notice.
-  const ChatDeferredTools({
+  const new({
     required super.key,
     required super.turnId,
     required super.createdAt,
@@ -367,7 +363,7 @@ final class ChatDeferredTools extends ChatItem {
 /// Token accounting reported by the provider.
 final class ChatUsage extends ChatItem {
   /// Creates a usage item.
-  const ChatUsage({
+  const new({
     required super.key,
     required super.turnId,
     required super.createdAt,
@@ -381,7 +377,7 @@ final class ChatUsage extends ChatItem {
 /// An event this build does not know how to render yet.
 final class ChatUnknownEvent extends ChatItem {
   /// Creates an unknown-event item.
-  const ChatUnknownEvent({
+  const new({
     required super.key,
     required super.turnId,
     required super.createdAt,
@@ -861,7 +857,7 @@ ChatAttachment? _attachment(Map<dynamic, dynamic> data) {
 }
 
 sealed class _ChatItemBuilder {
-  const _ChatItemBuilder();
+  const new();
 
   String? get turnId;
 
@@ -869,7 +865,7 @@ sealed class _ChatItemBuilder {
 }
 
 final class _StaticBuilder extends _ChatItemBuilder {
-  const _StaticBuilder(this.item);
+  const new(this.item);
 
   final ChatItem item;
 
@@ -881,11 +877,7 @@ final class _StaticBuilder extends _ChatItemBuilder {
 }
 
 final class _ApprovalBuilder extends _ChatItemBuilder {
-  _ApprovalBuilder({
-    required this.approval,
-    required this.turnId,
-    required this.createdAt,
-  });
+  new({required this.approval, required this.turnId, required this.createdAt});
 
   final ApprovalRequestDto approval;
 
@@ -915,7 +907,7 @@ final class _ApprovalBuilder extends _ChatItemBuilder {
 }
 
 final class _AssistantBuilder extends _ChatItemBuilder {
-  _AssistantBuilder({
+  new({
     required this.key,
     required this.blockId,
     required this.turnId,
@@ -952,7 +944,7 @@ final class _AssistantBuilder extends _ChatItemBuilder {
 }
 
 final class _ReasoningBuilder extends _ChatItemBuilder {
-  _ReasoningBuilder({
+  new({
     required this.key,
     required this.blockId,
     required this.turnId,
@@ -992,7 +984,7 @@ final class _ReasoningBuilder extends _ChatItemBuilder {
 }
 
 final class _QuestionBuilder extends _ChatItemBuilder {
-  _QuestionBuilder({
+  new({
     required this.key,
     required this.turnId,
     required this.createdAt,
@@ -1107,7 +1099,7 @@ final class _QuestionBuilder extends _ChatItemBuilder {
 }
 
 final class _SleepBuilder extends _ChatItemBuilder {
-  _SleepBuilder({
+  new({
     required this.key,
     required this.turnId,
     required this.createdAt,
@@ -1142,7 +1134,7 @@ final class _SleepBuilder extends _ChatItemBuilder {
 }
 
 final class _ToolBuilder extends _ChatItemBuilder {
-  _ToolBuilder({
+  new({
     required this.key,
     required this.turnId,
     required this.createdAt,

@@ -149,10 +149,7 @@ void main() {
           ),
         );
       }
-      final active = await client.plugins.reloadPlugin(
-        'acme.harness',
-        agentId,
-      );
+      final active = await client.plugins.reloadPlugin('acme.harness', agentId);
       expect(active.isStale, isFalse);
       final activeContentHash = active.revision!.contentHash;
       final activeExecutionRevisionHash =
@@ -225,19 +222,16 @@ void main() {
         provider.requests.last.tools.map((tool) => tool.name),
         contains('remember'),
       );
-      await _waitFor(
-        () async {
-          final status = await client.plugins.renderPluginUi(
-            agentId: agentId,
-            pluginId: 'acme.harness',
-            contributionId: 'acme.harness/status',
-            slot: PluginUiSlot.timeline,
-            context: <String, dynamic>{'sessionId': session.id},
-          );
-          return status.root.toString().contains('continued');
-        },
-        description: 'the serialized continuation after the saved Agent turn',
-      );
+      await _waitFor(() async {
+        final status = await client.plugins.renderPluginUi(
+          agentId: agentId,
+          pluginId: 'acme.harness',
+          contributionId: 'acme.harness/status',
+          slot: PluginUiSlot.timeline,
+          context: <String, dynamic>{'sessionId': session.id},
+        );
+        return status.root.toString().contains('continued');
+      }, description: 'the serialized continuation after the saved Agent turn');
 
       definition = await client.agents.updateAgentDefinition(
         definition.copyWith(toolIds: const <String>['acme.harness/wait']),
@@ -256,19 +250,16 @@ void main() {
         turnId: 'revoke-turn',
         prompt: 'wait for revoke',
       );
-      await _waitFor(
-        () async {
-          final waiting = await client.plugins.renderPluginUi(
-            agentId: agentId,
-            pluginId: 'acme.harness',
-            contributionId: 'acme.harness/status',
-            slot: PluginUiSlot.timeline,
-            context: <String, dynamic>{'sessionId': session.id},
-          );
-          return waiting.root.toString().contains('waiting:revoke');
-        },
-        description: 'the brokered sleep primitive to start',
-      );
+      await _waitFor(() async {
+        final waiting = await client.plugins.renderPluginUi(
+          agentId: agentId,
+          pluginId: 'acme.harness',
+          contributionId: 'acme.harness/status',
+          slot: PluginUiSlot.timeline,
+          context: <String, dynamic>{'sessionId': session.id},
+        );
+        return waiting.root.toString().contains('waiting:revoke');
+      }, description: 'the brokered sleep primitive to start');
       await client.plugins.revokePluginCapability(
         const AgentPluginGrantDto(
           agentId: agentId,
@@ -380,9 +371,9 @@ void main() {
         contains('invalid_plugin_definition'),
       );
       expect(
-        (await client.sessions.subscribeTimeline(
-          session.id,
-        )).lastWhere((event) => event.type == 'plugin.ui').data['document'],
+        (await client.sessions.subscribeTimeline(session.id))
+            .lastWhere((event) => event.type == 'plugin.ui')
+            .data['document'],
         historicalDocument.toJson(),
       );
 
@@ -500,9 +491,8 @@ void main() {
       );
       expect(restoredUi.root.toString(), contains('continued'));
       expect(
-        (await client.sessions.subscribeTimeline(
-          session.id,
-        )).where((event) => event.type == 'plugin.ui'),
+        (await client.sessions.subscribeTimeline(session.id))
+            .where((event) => event.type == 'plugin.ui'),
         isNotEmpty,
       );
       await _runTurn(
@@ -513,9 +503,7 @@ void main() {
       );
       expect(provider.requests.last.tools, isEmpty);
 
-      final grantsBeforeRevoke = await client.plugins.listPluginGrants(
-        agentId,
-      );
+      final grantsBeforeRevoke = await client.plugins.listPluginGrants(agentId);
       expect(
         grantsBeforeRevoke.map((grant) => grant.capability),
         contains('state.read'),
@@ -587,11 +575,7 @@ void main() {
         provider: _PluginHarnessProvider(),
         providerCatalogMetadataSource: const _NoNetworkCatalogMetadataSource(),
       );
-      final client = await _connect(
-        handle,
-        token,
-        clientId: 'settings-e2e',
-      );
+      final client = await _connect(handle, token, clientId: 'settings-e2e');
       addTearDown(() async {
         await client.close();
         await handle.stop();
@@ -650,9 +634,7 @@ void main() {
         updated.modelControls[AgentModelControlIds.reasoningEffort],
         const ModelControlValueDto.stringValue(value: 'high'),
       );
-      await tester.pumpWidget(
-        MaterialApp(home: Text(updated.model!.modelId)),
-      );
+      await tester.pumpWidget(MaterialApp(home: Text(updated.model!.modelId)));
       expect(find.text(models.last.id), findsOneWidget);
     },
     tags: const <String>[
@@ -663,9 +645,7 @@ void main() {
   testWidgets(
     'goal plugin completes a scheduled turn and restores state after restart',
     (tester) async {
-      final home = await Directory.systemTemp.createTemp(
-        'tinest-goal-e2e-',
-      );
+      final home = await Directory.systemTemp.createTemp('tinest-goal-e2e-');
       final workspace = await Directory.systemTemp.createTemp(
         'tinest-goal-workspace-e2e-',
       );
@@ -745,20 +725,17 @@ void main() {
         turnId: 'goal-create-turn',
         prompt: 'Create and finish the migration goal.',
       );
-      await _waitFor(
-        () async {
-          if (provider.requests.length < 4) return false;
-          final document = await client.plugins.renderPluginUi(
-            agentId: goalAgentId,
-            pluginId: 'tinest.goal',
-            contributionId: 'tinest.goal/goal_status',
-            slot: PluginUiSlot.conversationStatus,
-            context: <String, dynamic>{'sessionId': session.id},
-          );
-          return document.root['text'] == 'complete';
-        },
-        description: 'scheduled goal continuation to complete',
-      );
+      await _waitFor(() async {
+        if (provider.requests.length < 4) return false;
+        final document = await client.plugins.renderPluginUi(
+          agentId: goalAgentId,
+          pluginId: 'tinest.goal',
+          contributionId: 'tinest.goal/goal_status',
+          slot: PluginUiSlot.conversationStatus,
+          context: <String, dynamic>{'sessionId': session.id},
+        );
+        return document.root['text'] == 'complete';
+      }, description: 'scheduled goal continuation to complete');
       // The fourth provider request starts before the continuation's
       // after-turn lifecycle and durable turn update finish. Stopping the
       // daemon on the goal-state edge can therefore cancel that still-active
@@ -813,9 +790,8 @@ void main() {
       }
       expect(restoredGoal.root, containsPair('text', 'complete'));
       expect(
-        (await client.sessions.subscribeTimeline(
-          session.id,
-        )).where((event) => event.type == 'tool.completed'),
+        (await client.sessions.subscribeTimeline(session.id))
+            .where((event) => event.type == 'tool.completed'),
         hasLength(2),
       );
       await tester.pumpWidget(
@@ -1199,13 +1175,9 @@ List<String> _stringWiringViolations(String source) => <String>[
     'host operation',
   if (RegExp(r'\bactionId\s*=').hasMatch(source)) 'UI action',
   if (RegExp(r'\bcontribution_id\s*=').hasMatch(source)) 'UI contribution',
-  if (RegExp(
-    r'''tinest\.scheduler\.[a-z_]+\s*\(\s*["']''',
-  ).hasMatch(source))
+  if (RegExp(r'''tinest\.scheduler\.[a-z_]+\s*\(\s*["']''').hasMatch(source))
     'scheduled handler',
-  if (RegExp(
-    r'''tinest\.tools\.invoke\s*\(\s*["']''',
-  ).hasMatch(source))
+  if (RegExp(r'''tinest\.tools\.invoke\s*\(\s*["']''').hasMatch(source))
     'tool invocation',
 ];
 
@@ -1307,7 +1279,7 @@ final class _GoalE2eProvider implements ModelGateway {
 
 final class _NoNetworkCatalogMetadataSource
     implements ProviderCatalogMetadataSource {
-  const _NoNetworkCatalogMetadataSource();
+  const new();
 
   @override
   Future<Map<String, List<ProviderCatalogMetadata>>> fetch(

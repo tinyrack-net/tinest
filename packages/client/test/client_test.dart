@@ -81,9 +81,7 @@ void main() {
     name: 'Tinest',
     description: 'Coding agent',
     mode: AgentMode.primary,
-    model: AgentModelSelectionDto(
-      source: AgentModelSource.session,
-    ),
+    model: AgentModelSelectionDto(source: AgentModelSource.session),
     driverId: 'tinest.standard/driver',
     extensionIds: <String>[],
     toolIds: <String>['tinest.files/read_file'],
@@ -317,10 +315,7 @@ void main() {
       expect(client.terminals, same(client));
       expect(client.attachments, same(client));
       expect(client.sessions.sessionUpdates, isA<Stream<SessionDto>>());
-      expect(
-        client.sessions.timelineEvents,
-        isA<Stream<TimelineEventDto>>(),
-      );
+      expect(client.sessions.timelineEvents, isA<Stream<TimelineEventDto>>());
       expect(
         client.sessions.approvalRequests,
         isA<Stream<ApprovalRequestDto>>(),
@@ -339,10 +334,7 @@ void main() {
       );
       expect(client.mcp.serverChanges, isA<Stream<void>>());
       expect(client.terminals.output, isA<Stream<TerminalOutputDto>>());
-      expect(
-        client.terminals.terminalUpdates,
-        isA<Stream<TerminalDto>>(),
-      );
+      expect(client.terminals.terminalUpdates, isA<Stream<TerminalDto>>());
 
       final uploaded = await client.uploadAttachment(
         fileName: 'report.txt',
@@ -446,12 +438,9 @@ void main() {
 
       expect(client.serverInfo.protocolVersion, tinestProtocolMajor);
       expect(connector.lastUri, Uri.parse('ws://127.0.0.1:7337/v5/ws'));
-      expect(
-        connector.lastHeaders,
-        const <String, String>{
-          'Authorization': 'Bearer secret-token',
-        },
-      );
+      expect(connector.lastHeaders, const <String, String>{
+        'Authorization': 'Bearer secret-token',
+      });
       expect(
         await client.getWorkspaceCatalog(),
         WorkspaceCatalogDto(
@@ -557,9 +546,7 @@ void main() {
           worktreeId: worktree.id,
           title: agent.title,
           agentDefinitionId: agent.agentDefinitionId,
-          model: const ModelSelectionDto(
-            modelId: 'provider/model',
-          ),
+          model: const ModelSelectionDto(modelId: 'provider/model'),
         ),
         agent,
       );
@@ -568,9 +555,7 @@ void main() {
           agent.id,
           const SessionSettingsPatchDto(
             hasModel: true,
-            model: ModelSelectionDto(
-              modelId: 'provider/model',
-            ),
+            model: ModelSelectionDto(modelId: 'provider/model'),
           ),
         ),
         agent,
@@ -656,9 +641,7 @@ void main() {
         await client.getTerminalShell(),
         const ShellSpecDto(executable: '/bin/sh'),
       );
-      await client.setTerminalShell(
-        const ShellSpecDto(executable: '/bin/zsh'),
-      );
+      await client.setTerminalShell(const ShellSpecDto(executable: '/bin/zsh'));
       await client.setTerminalShell(null);
       expect(await client.listAgentDefinitions(), <AgentDefinitionDto>[
         agentDefinition,
@@ -886,21 +869,16 @@ void main() {
         (await client.refreshProviderCatalog()).definitions,
         <ProviderDefinitionDto>[definition],
       );
-      expect(
-        await client.listProviderModels(connection.id),
-        <ProviderModelDto>[model],
-      );
+      expect(await client.listProviderModels(connection.id), <ProviderModelDto>[
+        model,
+      ]);
       expect(
         await client.models.getSettings(),
         const DaemonModelSettingsDto(
-          defaultModel: ModelSelectionDto(
-            modelId: 'openai/gpt-5.6-sol',
-          ),
+          defaultModel: ModelSelectionDto(modelId: 'openai/gpt-5.6-sol'),
         ),
       );
-      const defaultModel = ModelSelectionDto(
-        modelId: 'openai/gpt-5.6-sol',
-      );
+      const defaultModel = ModelSelectionDto(modelId: 'openai/gpt-5.6-sol');
       expect(
         await client.models.setDefaultModel(defaultModel),
         const DaemonModelSettingsDto(defaultModel: defaultModel),
@@ -923,10 +901,7 @@ void main() {
         authenticationRequired: false,
       );
       expect(
-        await client.createCustomProvider(
-          'custom',
-          customConfig,
-        ),
+        await client.createCustomProvider('custom', customConfig),
         connection,
       );
       expect(
@@ -1226,11 +1201,7 @@ void main() {
       client.getWorkspaceCatalog(),
       throwsA(
         isA<TinestClientException>()
-            .having(
-              (error) => error.code,
-              'code',
-              RpcErrorCodes.requestTimeout,
-            )
+            .having((error) => error.code, 'code', RpcErrorCodes.requestTimeout)
             .having((error) => error.retryable, 'retryable', isTrue),
       ),
     );
@@ -1254,9 +1225,8 @@ void main() {
               method: sessionsSubscribeTimelineProcedure.name,
               payload: request.toJson(),
             ));
-            return const TimelineResultDto(
-              events: <TimelineEventDto>[],
-            ).toJson();
+            return const TimelineResultDto(events: <TimelineEventDto>[])
+                .toJson();
           });
         },
       );
@@ -1332,9 +1302,8 @@ void main() {
                 method: sessionsSubscribeTimelineProcedure.name,
                 payload: request.toJson(),
               ));
-              return const TimelineResultDto(
-                events: <TimelineEventDto>[],
-              ).toJson();
+              return const TimelineResultDto(events: <TimelineEventDto>[])
+                  .toJson();
             })
             ..registerMethod(sessionsTimelineHistoryProcedure.name, (
               json_rpc.Parameters parameters,
@@ -1387,81 +1356,77 @@ void main() {
     },
   );
 
-  test(
-    're-attaching a terminal never re-delivers consumed output',
-    () async {
-      const terminal = TerminalDto(
-        id: 'terminal',
-        worktreeId: 'checkout',
-        title: 'Terminal',
-        shell: ShellSpecDto(executable: '/bin/sh'),
-        status: TerminalStatus.running,
-        columns: 80,
-        rows: 24,
-        lastSequence: 0,
-      );
-      final connector = _TestConnector(
-        onConfigure: (peer, requests) {
-          _registerHello(peer, requests);
-          peer.registerMethod(
-            terminalsAttachProcedure.name,
-            (json_rpc.Parameters parameters) => const TerminalAttachResultDto(
-              terminal: terminal,
-              restore: TerminalRestoreDto.delta(
-                afterSequence: 0,
-                chunks: <TerminalOutputDto>[],
-              ),
-            ).toJson(),
-          );
-        },
-      );
-      final client = await TinestClient.connect(
-        endpoint: HostEndpoint.parse('ws://localhost/ws'),
-        credentials: const DaemonCredentials(bearerToken: 'token'),
-        clientId: 'client',
-        clientKind: 'test',
-        connector: connector,
-      );
-      addTearDown(client.close);
-      final received = <TerminalOutputDto>[];
-      final subscription = client.terminals.output.listen(received.add);
-      addTearDown(subscription.cancel);
+  test('re-attaching a terminal never re-delivers consumed output', () async {
+    const terminal = TerminalDto(
+      id: 'terminal',
+      worktreeId: 'checkout',
+      title: 'Terminal',
+      shell: ShellSpecDto(executable: '/bin/sh'),
+      status: TerminalStatus.running,
+      columns: 80,
+      rows: 24,
+      lastSequence: 0,
+    );
+    final connector = _TestConnector(
+      onConfigure: (peer, requests) {
+        _registerHello(peer, requests);
+        peer.registerMethod(
+          terminalsAttachProcedure.name,
+          (json_rpc.Parameters parameters) => const TerminalAttachResultDto(
+            terminal: terminal,
+            restore: TerminalRestoreDto.delta(
+              afterSequence: 0,
+              chunks: <TerminalOutputDto>[],
+            ),
+          ).toJson(),
+        );
+      },
+    );
+    final client = await TinestClient.connect(
+      endpoint: HostEndpoint.parse('ws://localhost/ws'),
+      credentials: const DaemonCredentials(bearerToken: 'token'),
+      clientId: 'client',
+      clientKind: 'test',
+      connector: connector,
+    );
+    addTearDown(client.close);
+    final received = <TerminalOutputDto>[];
+    final subscription = client.terminals.output.listen(received.add);
+    addTearDown(subscription.cancel);
 
-      await client.attachTerminal(
-        terminal.id,
-        mode: TerminalRestoreMode.snapshot,
-      );
-      connector.connections.single.peer.sendNotification(
-        terminalsOutputNotification.name,
-        const TerminalOutputDto(
-          terminalId: 'terminal',
-          sequence: 4,
-          data: 'consumed',
-        ).toJson(),
-      );
-      await Future<void>.delayed(Duration.zero);
+    await client.attachTerminal(
+      terminal.id,
+      mode: TerminalRestoreMode.snapshot,
+    );
+    connector.connections.single.peer.sendNotification(
+      terminalsOutputNotification.name,
+      const TerminalOutputDto(
+        terminalId: 'terminal',
+        sequence: 4,
+        data: 'consumed',
+      ).toJson(),
+    );
+    await Future<void>.delayed(Duration.zero);
 
-      // A second attach from zero must not rewind the notification gate: the
-      // daemon decides what to replay, and everything already consumed would
-      // otherwise be delivered a second time.
-      await client.attachTerminal(
-        terminal.id,
-        mode: TerminalRestoreMode.snapshot,
-      );
-      connector.connections.single.peer.sendNotification(
-        terminalsOutputNotification.name,
-        const TerminalOutputDto(
-          terminalId: 'terminal',
-          sequence: 4,
-          data: 'consumed',
-        ).toJson(),
-      );
-      await Future<void>.delayed(Duration.zero);
+    // A second attach from zero must not rewind the notification gate: the
+    // daemon decides what to replay, and everything already consumed would
+    // otherwise be delivered a second time.
+    await client.attachTerminal(
+      terminal.id,
+      mode: TerminalRestoreMode.snapshot,
+    );
+    connector.connections.single.peer.sendNotification(
+      terminalsOutputNotification.name,
+      const TerminalOutputDto(
+        terminalId: 'terminal',
+        sequence: 4,
+        data: 'consumed',
+      ).toJson(),
+    );
+    await Future<void>.delayed(Duration.zero);
 
-      expect(received.map((output) => output.sequence), <int>[4]);
-    },
-    tags: const <String>['feature_test__terminal_lifecycle__contract'],
-  );
+    expect(received.map((output) => output.sequence), <int>[4]);
+  }, tags: const <String>['feature_test__terminal_lifecycle__contract']);
 
   test(
     'a snapshot restore advances the gate to the sequence it already carries',
@@ -1603,7 +1568,7 @@ void main() {
 typedef _Request = ({String method, Map<String, dynamic> payload});
 
 final class _TestConnector implements WebSocketConnector {
-  _TestConnector({required this.onConfigure});
+  new({required this.onConfigure});
 
   final void Function(json_rpc.Peer peer, List<_Request> requests) onConfigure;
   final List<_TestConnection> connections = <_TestConnection>[];
@@ -1628,14 +1593,14 @@ final class _TestConnector implements WebSocketConnector {
 }
 
 final class _TestConnection {
-  const _TestConnection(this.peer);
+  const new(this.peer);
 
   final json_rpc.Peer peer;
 }
 
 final class _TestWebSocketChannel extends StreamChannelMixin<Object?>
     implements WebSocketChannel {
-  _TestWebSocketChannel(this._channel);
+  new(this._channel);
 
   final StreamChannel<Object?> _channel;
 
@@ -1660,7 +1625,7 @@ final class _TestWebSocketChannel extends StreamChannelMixin<Object?>
 
 final class _TestWebSocketSink extends DelegatingStreamSink<Object?>
     implements WebSocketSink {
-  _TestWebSocketSink(super.sink);
+  new(super.sink);
 
   @override
   Future<void> close([int? closeCode, String? closeReason]) => super.close();
@@ -1787,9 +1752,7 @@ void _registerFixtureMethods(
       worktree: worktree,
     ).toJson(),
     workspacesPreviewArchiveProcedure.name:
-        const WorktreeArchivePreviewResultDto(
-          preview: archivePreview,
-        ).toJson(),
+        const WorktreeArchivePreviewResultDto(preview: archivePreview).toJson(),
     workspacesArchiveWorktreeProcedure.name: WorktreeResultDto(
       worktree: worktree,
       hookRuns: const <WorktreeHookRunDto>[
@@ -1817,15 +1780,13 @@ void _registerFixtureMethods(
       sessions: <SessionDto>[agent],
     ).toJson(),
     sessionsCreateProcedure.name: SessionResultDto(session: agent).toJson(),
-    sessionsUpdateSettingsProcedure.name: SessionResultDto(
-      session: agent,
-    ).toJson(),
+    sessionsUpdateSettingsProcedure.name: SessionResultDto(session: agent)
+        .toJson(),
     terminalsListProcedure.name: const TerminalListResultDto(
       terminals: <TerminalDto>[terminal],
     ).toJson(),
-    terminalsCreateProcedure.name: const TerminalResultDto(
-      terminal: terminal,
-    ).toJson(),
+    terminalsCreateProcedure.name: const TerminalResultDto(terminal: terminal)
+        .toJson(),
     terminalsAttachProcedure.name: const TerminalAttachResultDto(
       terminal: terminal,
       restore: TerminalRestoreDto.delta(
@@ -1834,9 +1795,8 @@ void _registerFixtureMethods(
       ),
     ).toJson(),
     terminalsWriteProcedure.name: const <String, dynamic>{},
-    terminalsResizeProcedure.name: const TerminalResultDto(
-      terminal: terminal,
-    ).toJson(),
+    terminalsResizeProcedure.name: const TerminalResultDto(terminal: terminal)
+        .toJson(),
     terminalsTerminateProcedure.name: const <String, dynamic>{},
     terminalsGetDefaultShellProcedure.name: const TerminalShellDto(
       shell: ShellSpecDto(executable: '/bin/sh'),
@@ -1873,13 +1833,11 @@ void _registerFixtureMethods(
     pluginsScaffoldProcedure.name: PluginResultDto(plugin: plugin).toJson(),
     pluginsForkProcedure.name: PluginResultDto(plugin: plugin).toJson(),
     pluginsGetPluginAuthoringEnvironmentProcedure.name:
-        PluginAuthoringEnvironmentResultDto(
-          environment: pluginAuthoring,
-        ).toJson(),
+        PluginAuthoringEnvironmentResultDto(environment: pluginAuthoring)
+            .toJson(),
     pluginsSyncPluginAuthoringEnvironmentProcedure.name:
-        PluginAuthoringEnvironmentResultDto(
-          environment: pluginAuthoring,
-        ).toJson(),
+        PluginAuthoringEnvironmentResultDto(environment: pluginAuthoring)
+            .toJson(),
     pluginsListGrantsProcedure.name: PluginGrantListResultDto(
       grants: <AgentPluginGrantDto>[pluginGrant],
     ).toJson(),
@@ -1906,16 +1864,13 @@ void _registerFixtureMethods(
     mcpListServersProcedure.name: McpServersResultDto(
       servers: <McpServerStateDto>[mcpServer],
     ).toJson(),
-    mcpAddServerProcedure.name: McpServerStateResultDto(
-      state: mcpServer,
-    ).toJson(),
-    mcpUpdateServerProcedure.name: McpServerStateResultDto(
-      state: mcpServer,
-    ).toJson(),
+    mcpAddServerProcedure.name: McpServerStateResultDto(state: mcpServer)
+        .toJson(),
+    mcpUpdateServerProcedure.name: McpServerStateResultDto(state: mcpServer)
+        .toJson(),
     mcpRemoveServerProcedure.name: const <String, dynamic>{},
-    mcpTestServerProcedure.name: McpServerStateResultDto(
-      state: mcpServer,
-    ).toJson(),
+    mcpTestServerProcedure.name: McpServerStateResultDto(state: mcpServer)
+        .toJson(),
     mcpSetSecretProcedure.name: const <String, dynamic>{},
     promptsListSkillsProcedure.name: SkillListResultDto(
       skills: <SkillSummaryDto>[skill],
@@ -1967,14 +1922,10 @@ void _registerFixtureMethods(
       models: <ProviderModelDto>[model],
     ).toJson(),
     modelsGetSettingsProcedure.name: const DaemonModelSettingsDto(
-      defaultModel: ModelSelectionDto(
-        modelId: 'openai/gpt-5.6-sol',
-      ),
+      defaultModel: ModelSelectionDto(modelId: 'openai/gpt-5.6-sol'),
     ).toJson(),
     modelsSetDefaultModelProcedure.name: const DaemonModelSettingsDto(
-      defaultModel: ModelSelectionDto(
-        modelId: 'openai/gpt-5.6-sol',
-      ),
+      defaultModel: ModelSelectionDto(modelId: 'openai/gpt-5.6-sol'),
     ).toJson(),
     providersCreateCustomProcedure.name: ProviderConnectionResultDto(
       connection: connection,
@@ -1983,13 +1934,11 @@ void _registerFixtureMethods(
       connection: connection,
     ).toJson(),
     providersDeleteCustomProcedure.name: const <String, dynamic>{},
-    sessionsStartTurnProcedure.name: const TurnStartResultDto(
-      created: true,
-    ).toJson(),
+    sessionsStartTurnProcedure.name: const TurnStartResultDto(created: true)
+        .toJson(),
     sessionsCancelTurnProcedure.name: const <String, dynamic>{},
-    sessionsResolveApprovalProcedure.name: ApprovalResultDto(
-      approval: approval,
-    ).toJson(),
+    sessionsResolveApprovalProcedure.name: ApprovalResultDto(approval: approval)
+        .toJson(),
     sessionsNotePendingInputProcedure.name: const <String, dynamic>{},
     sessionsAnswerQuestionProcedure.name: UserQuestionResultDto(
       request: userQuestion,

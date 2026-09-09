@@ -23,40 +23,36 @@ void main() {
     await tester.pumpAndSettle();
   }
 
-  testWidgets(
-    'cancelling the confirmation keeps every stored value',
-    (tester) async {
-      final store = _store(now);
-      final eraser = _Eraser();
-      await tester.pumpWidget(_app(store, eraser: eraser));
-      await openAdvanced(tester);
+  testWidgets('cancelling the confirmation keeps every stored value', (
+    tester,
+  ) async {
+    final store = _store(now);
+    final eraser = _Eraser();
+    await tester.pumpWidget(_app(store, eraser: eraser));
+    await openAdvanced(tester);
 
-      expect(tester.widget<TRButton>(_resetButton).intent, TRIntent.danger);
-      await tester.tap(_resetButton);
-      await tester.pumpAndSettle();
-      expect(_confirmDialog, findsOneWidget);
-      expect(
-        tester
-            .widget<TRButton>(
-              find.byKey(
-                const ValueKey<String>('advanced-reset-confirm-accept'),
-              ),
-            )
-            .intent,
-        TRIntent.danger,
-      );
+    expect(tester.widget<TRButton>(_resetButton).intent, TRIntent.danger);
+    await tester.tap(_resetButton);
+    await tester.pumpAndSettle();
+    expect(_confirmDialog, findsOneWidget);
+    expect(
+      tester
+          .widget<TRButton>(
+            find.byKey(const ValueKey<String>('advanced-reset-confirm-accept')),
+          )
+          .intent,
+      TRIntent.danger,
+    );
 
-      await tester.tap(
-        find.byKey(const ValueKey<String>('advanced-reset-confirm-cancel')),
-      );
-      await tester.pumpAndSettle();
+    await tester.tap(
+      find.byKey(const ValueKey<String>('advanced-reset-confirm-cancel')),
+    );
+    await tester.pumpAndSettle();
 
-      expect(eraser.erases, 0);
-      expect(store.profiles, hasLength(1));
-      expect(store.tokens, hasLength(1));
-    },
-    tags: const <String>['feature_test__settings_reset__widget'],
-  );
+    expect(eraser.erases, 0);
+    expect(store.profiles, hasLength(1));
+    expect(store.tokens, hasLength(1));
+  }, tags: const <String>['feature_test__settings_reset__widget']);
 
   testWidgets(
     'confirming erases stored data, restores the login item, and leaves '
@@ -173,7 +169,7 @@ Widget _app(
 );
 
 final class _Eraser implements EmbeddedDaemonDataEraser {
-  _Eraser({this.failure});
+  new({this.failure});
 
   final FactoryResetFailure? failure;
   int erases = 0;
@@ -187,7 +183,7 @@ final class _Eraser implements EmbeddedDaemonDataEraser {
 }
 
 final class _OfflineClients implements HostClientFactory {
-  const _OfflineClients();
+  const new();
 
   @override
   Future<TinestApi> connect({

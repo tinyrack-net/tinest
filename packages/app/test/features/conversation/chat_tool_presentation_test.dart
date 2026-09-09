@@ -33,27 +33,20 @@ void main() {
     isError: isError,
   );
 
-  test(
-    'tool output decoding never throws for plugin-owned payloads',
-    () {
-      expect(
-        decodeToolOutput('{"exitCode":1,"output":"boom"}'),
-        isA<ChatToolJsonObject>().having(
-          (value) => value.value['exitCode'],
-          'exitCode',
-          1,
-        ),
-      );
-      expect(
-        decodeToolOutput('[{"path":"a.dart"}]'),
-        isA<ChatToolJsonArray>(),
-      );
-      expect(decodeToolOutput('plain text'), isA<ChatToolPlainText>());
-      expect(decodeToolOutput('{'), isA<ChatToolPlainText>());
-      expect(decodeToolOutput('  '), isA<ChatToolPlainText>());
-    },
-    tags: const <String>['feature_test__turn_execution__unit'],
-  );
+  test('tool output decoding never throws for plugin-owned payloads', () {
+    expect(
+      decodeToolOutput('{"exitCode":1,"output":"boom"}'),
+      isA<ChatToolJsonObject>().having(
+        (value) => value.value['exitCode'],
+        'exitCode',
+        1,
+      ),
+    );
+    expect(decodeToolOutput('[{"path":"a.dart"}]'), isA<ChatToolJsonArray>());
+    expect(decodeToolOutput('plain text'), isA<ChatToolPlainText>());
+    expect(decodeToolOutput('{'), isA<ChatToolPlainText>());
+    expect(decodeToolOutput('  '), isA<ChatToolPlainText>());
+  }, tags: const <String>['feature_test__turn_execution__unit']);
 
   test(
     'pinned contribution metadata owns glyph label and argument summary',
@@ -168,26 +161,22 @@ void main() {
     expect(source, isNot(contains('presenterFor(')));
   });
 
-  test(
-    'usage summaries report a rounded rate only for measured output',
-    () {
-      final summary = describeTokenUsage(testL10n, const <String, num>{
+  test('usage summaries report a rounded rate only for measured output', () {
+    final summary = describeTokenUsage(testL10n, const <String, num>{
+      'inputTokens': 1200,
+      'outputTokens': 340,
+      'totalTokens': 1540,
+      'generationMs': 5450,
+    });
+    expect(summary, contains('62.4 tok/s'));
+    expect(
+      describeTokenUsage(testL10n, const <String, num>{
         'inputTokens': 1200,
-        'outputTokens': 340,
-        'totalTokens': 1540,
+        'totalTokens': 1200,
         'generationMs': 5450,
-      });
-      expect(summary, contains('62.4 tok/s'));
-      expect(
-        describeTokenUsage(testL10n, const <String, num>{
-          'inputTokens': 1200,
-          'totalTokens': 1200,
-          'generationMs': 5450,
-        }),
-        isNot(contains('tok/s')),
-      );
-      expect(describeTokenUsage(testL10n, const <String, num>{}), isNull);
-    },
-    tags: const <String>['feature_test__tool_context_budget__unit'],
-  );
+      }),
+      isNot(contains('tok/s')),
+    );
+    expect(describeTokenUsage(testL10n, const <String, num>{}), isNull);
+  }, tags: const <String>['feature_test__tool_context_budget__unit']);
 }

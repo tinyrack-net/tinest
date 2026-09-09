@@ -64,7 +64,7 @@ const String anthropicMessagesWireId = 'anthropic-messages';
 /// Anthropic Messages transport shared by the built-in and custom providers.
 final class AnthropicMessagesWire implements ProviderWireProtocol {
   /// Creates the wire with an optional deterministic HTTP client factory.
-  const AnthropicMessagesWire({this.dioFactory});
+  const new({this.dioFactory});
 
   /// Injectable client factory used by contract tests.
   final Dio Function(ProviderEndpoint endpoint)? dioFactory;

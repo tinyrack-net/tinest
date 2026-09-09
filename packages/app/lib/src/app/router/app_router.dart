@@ -211,7 +211,7 @@ void openSettingsTask(GoRouter router) {
 /// Stable Settings frame whose child Navigator owns route history.
 class SettingsShellRoute extends ShellRouteData {
   /// Creates the Settings shell.
-  const SettingsShellRoute();
+  const new();
 
   /// Navigator used for hierarchical Settings pages.
   static final GlobalKey<NavigatorState> $navigatorKey =
@@ -242,7 +242,7 @@ class SettingsShellRoute extends ShellRouteData {
 /// wider layouts.
 class SettingsHomeRoute extends GoRouteData with $SettingsHomeRoute {
   /// Creates the settings entry route.
-  const SettingsHomeRoute();
+  const new();
 
   @override
   Page<void> buildPage(BuildContext context, GoRouterState state) =>
@@ -256,7 +256,7 @@ class SettingsHomeRoute extends GoRouteData with $SettingsHomeRoute {
 /// Compact daemon category pane, with Provider selected on wider layouts.
 class DaemonCategoriesRoute extends GoRouteData with $DaemonCategoriesRoute {
   /// Creates a daemon category route.
-  const DaemonCategoriesRoute({required this.hostId});
+  const new({required this.hostId});
 
   /// App-local daemon profile identifier.
   final String hostId;
@@ -296,7 +296,7 @@ class DaemonCategoriesRoute extends GoRouteData with $DaemonCategoriesRoute {
 /// Stable workspace frame whose child Navigator owns content history.
 class WorkspaceShellRoute extends ShellRouteData {
   /// Creates the workspace shell.
-  const WorkspaceShellRoute();
+  const new();
 
   /// Navigator used for workspace home and content pages.
   static final GlobalKey<NavigatorState> $navigatorKey =
@@ -327,7 +327,7 @@ class WorkspaceShellRoute extends ShellRouteData {
 /// Unified workspace home shown before daemon connections complete.
 class WorkspaceHomeRoute extends GoRouteData with $WorkspaceHomeRoute {
   /// Creates the workspace home route.
-  const WorkspaceHomeRoute({this.compose = false});
+  const new({this.compose = false});
 
   /// Whether the right pane opens the new-workspace composer directly.
   final bool compose;
@@ -344,7 +344,7 @@ class WorkspaceHomeRoute extends GoRouteData with $WorkspaceHomeRoute {
 /// Opens a checkout and its session tabs.
 class WorktreeRoute extends GoRouteData with $WorktreeRoute {
   /// Creates a checkout route.
-  const WorktreeRoute({
+  const new({
     required this.hostId,
     required this.workspaceId,
     required this.worktreeId,
@@ -377,7 +377,7 @@ class WorktreeRoute extends GoRouteData with $WorktreeRoute {
 /// Opens one AI session in the checkout tab strip.
 class SessionRoute extends GoRouteData with $SessionRoute {
   /// Creates a session route.
-  const SessionRoute({
+  const new({
     required this.hostId,
     required this.workspaceId,
     required this.worktreeId,
@@ -415,7 +415,7 @@ class SessionRoute extends GoRouteData with $SessionRoute {
 /// Opens one daemon terminal in the checkout tab strip.
 class TerminalRoute extends GoRouteData with $TerminalRoute {
   /// Creates a terminal route.
-  const TerminalRoute({
+  const new({
     required this.hostId,
     required this.workspaceId,
     required this.worktreeId,
@@ -453,7 +453,7 @@ class TerminalRoute extends GoRouteData with $TerminalRoute {
 /// Unified settings route with General selected.
 class GeneralSettingsRoute extends GoRouteData with $GeneralSettingsRoute {
   /// Creates the general settings route.
-  const GeneralSettingsRoute();
+  const new();
 
   @override
   Page<void> buildPage(BuildContext context, GoRouterState state) =>
@@ -468,7 +468,7 @@ class GeneralSettingsRoute extends GoRouteData with $GeneralSettingsRoute {
 /// Unified settings route with Provider selected.
 class ProviderSettingsRoute extends GoRouteData with $ProviderSettingsRoute {
   /// Creates the provider settings route.
-  const ProviderSettingsRoute({this.hostId});
+  const new({this.hostId});
 
   /// Preferred daemon in the provider selector.
   final String? hostId;
@@ -487,7 +487,7 @@ class ProviderSettingsRoute extends GoRouteData with $ProviderSettingsRoute {
 /// Unified settings route with Model selected.
 class ModelSettingsRoute extends GoRouteData with $ModelSettingsRoute {
   /// Creates the model settings route.
-  const ModelSettingsRoute({this.hostId});
+  const new({this.hostId});
 
   /// Preferred daemon in the model selector.
   final String? hostId;
@@ -507,7 +507,7 @@ class ModelSettingsRoute extends GoRouteData with $ModelSettingsRoute {
 class PermissionSettingsRoute extends GoRouteData
     with $PermissionSettingsRoute {
   /// Creates the permission settings route.
-  const PermissionSettingsRoute({this.hostId});
+  const new({this.hostId});
 
   /// Preferred daemon in the permission selector.
   final String? hostId;
@@ -526,7 +526,7 @@ class PermissionSettingsRoute extends GoRouteData
 /// Unified settings route with Projects selected.
 class ProjectSettingsRoute extends GoRouteData with $ProjectSettingsRoute {
   /// Creates the project settings route.
-  const ProjectSettingsRoute({this.hostId});
+  const new({this.hostId});
 
   /// Preferred daemon in the project selector.
   final String? hostId;
@@ -545,7 +545,7 @@ class ProjectSettingsRoute extends GoRouteData with $ProjectSettingsRoute {
 /// Unified settings route with Agent selected.
 class AgentSettingsRoute extends GoRouteData with $AgentSettingsRoute {
   /// Creates the agent settings route.
-  const AgentSettingsRoute({this.hostId});
+  const new({this.hostId});
 
   /// Preferred daemon in the agent selector.
   final String? hostId;
@@ -564,7 +564,7 @@ class AgentSettingsRoute extends GoRouteData with $AgentSettingsRoute {
 /// Unified settings route with Plugins selected.
 class PluginSettingsRoute extends GoRouteData with $PluginSettingsRoute {
   /// Creates the plugin settings route.
-  const PluginSettingsRoute({this.hostId});
+  const new({this.hostId});
 
   /// Preferred daemon in the plugin selector.
   final String? hostId;
@@ -583,7 +583,7 @@ class PluginSettingsRoute extends GoRouteData with $PluginSettingsRoute {
 /// Unified settings route with MCP selected.
 class McpSettingsRoute extends GoRouteData with $McpSettingsRoute {
   /// Creates the MCP settings route.
-  const McpSettingsRoute({this.hostId});
+  const new({this.hostId});
 
   /// Preferred daemon in the MCP selector.
   final String? hostId;
@@ -602,7 +602,7 @@ class McpSettingsRoute extends GoRouteData with $McpSettingsRoute {
 /// Unified settings route with Skill selected.
 class SkillSettingsRoute extends GoRouteData with $SkillSettingsRoute {
   /// Creates the skill settings route.
-  const SkillSettingsRoute({this.hostId, this.workspaceId});
+  const new({this.hostId, this.workspaceId});
 
   /// Preferred daemon in the skill selector.
   final String? hostId;
@@ -625,7 +625,7 @@ class SkillSettingsRoute extends GoRouteData with $SkillSettingsRoute {
 /// Unified settings route with Daemon selected.
 class DaemonSettingsRoute extends GoRouteData with $DaemonSettingsRoute {
   /// Creates daemon settings route.
-  const DaemonSettingsRoute();
+  const new();
 
   @override
   Page<void> buildPage(BuildContext context, GoRouterState state) =>
@@ -640,7 +640,7 @@ class DaemonSettingsRoute extends GoRouteData with $DaemonSettingsRoute {
 /// Unified settings route with Advanced selected.
 class AdvancedSettingsRoute extends GoRouteData with $AdvancedSettingsRoute {
   /// Creates the advanced settings route.
-  const AdvancedSettingsRoute();
+  const new();
 
   @override
   Page<void> buildPage(BuildContext context, GoRouterState state) =>
@@ -656,7 +656,7 @@ class AdvancedSettingsRoute extends GoRouteData with $AdvancedSettingsRoute {
 /// Chooses how to connect a daemon.
 class ConnectDaemonRoute extends GoRouteData with $ConnectDaemonRoute {
   /// Creates the route.
-  const ConnectDaemonRoute();
+  const new();
 
   @override
   Widget build(BuildContext context, GoRouterState state) =>
@@ -667,7 +667,7 @@ class ConnectDaemonRoute extends GoRouteData with $ConnectDaemonRoute {
 /// Accepts a one-time HTTPS daemon connection link.
 class PairingLinkRoute extends GoRouteData with $PairingLinkRoute {
   /// Creates the route.
-  const PairingLinkRoute();
+  const new();
 
   @override
   Widget build(BuildContext context, GoRouterState state) =>
@@ -678,7 +678,7 @@ class PairingLinkRoute extends GoRouteData with $PairingLinkRoute {
 /// Scans a daemon connection QR code on supported native devices.
 class PairingScanRoute extends GoRouteData with $PairingScanRoute {
   /// Creates the route.
-  const PairingScanRoute();
+  const new();
 
   @override
   Widget build(BuildContext context, GoRouterState state) =>
@@ -689,7 +689,7 @@ class PairingScanRoute extends GoRouteData with $PairingScanRoute {
 /// Reviews the fragment-only pairing capability from a web or app link.
 class PairOfferRoute extends GoRouteData with $PairOfferRoute {
   /// Creates the route.
-  const PairOfferRoute();
+  const new();
 
   @override
   Widget build(BuildContext context, GoRouterState state) =>
@@ -700,7 +700,7 @@ class PairOfferRoute extends GoRouteData with $PairOfferRoute {
 /// Adds a direct WebSocket connection for advanced users.
 class AdvancedNewHostRoute extends GoRouteData with $AdvancedNewHostRoute {
   /// Creates the route.
-  const AdvancedNewHostRoute();
+  const new();
 
   @override
   Widget build(BuildContext context, GoRouterState state) =>
@@ -710,7 +710,7 @@ class AdvancedNewHostRoute extends GoRouteData with $AdvancedNewHostRoute {
 /// Opens one daemon's connection, pairing, and approved-device settings.
 class DaemonConnectionsRoute extends GoRouteData with $DaemonConnectionsRoute {
   /// Creates the route.
-  const DaemonConnectionsRoute({required this.hostId});
+  const new({required this.hostId});
 
   /// App-local daemon profile identifier.
   final String hostId;
@@ -730,7 +730,7 @@ class DaemonConnectionsRoute extends GoRouteData with $DaemonConnectionsRoute {
 /// Edits a remote daemon profile.
 class EditHostRoute extends GoRouteData with $EditHostRoute {
   /// Creates the route.
-  const EditHostRoute({required this.hostId});
+  const new({required this.hostId});
 
   /// App-local daemon profile ID.
   final String hostId;

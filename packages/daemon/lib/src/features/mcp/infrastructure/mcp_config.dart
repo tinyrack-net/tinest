@@ -24,7 +24,7 @@ final RegExp _serverIdPattern = RegExp(r'^[a-z0-9][a-z0-9_-]*$');
 /// One parsed MCP configuration file.
 class McpConfigDocument {
   /// Creates a [McpConfigDocument].
-  const McpConfigDocument({
+  const new({
     required this.scope,
     required this.sourcePath,
     required this.servers,
@@ -61,7 +61,7 @@ abstract interface class McpConfigStore {
 /// project rules are a single code path.
 final class FileMcpConfigStore implements McpConfigStore {
   /// Creates a store rooted at the daemon [configDirectory].
-  const FileMcpConfigStore(this.configDirectory);
+  const new(this.configDirectory);
 
   /// Where the user-scoped document lives.
   final String configDirectory;
@@ -110,17 +110,16 @@ final class FileMcpConfigStore implements McpConfigStore {
     }
     final path = sourcePath(McpConfigScope.user);
     await _ensureDirectory();
-    final encoded = const JsonEncoder.withIndent('  ').convert(
-      <String, dynamic>{
-        'schemaVersion': mcpConfigVersion,
-        'mcp': <String, dynamic>{
-          'servers': <String, dynamic>{
-            for (final server in document.servers)
-              server.id: _serverToJson(server),
+    final encoded = const JsonEncoder.withIndent('  ')
+        .convert(<String, dynamic>{
+          'schemaVersion': mcpConfigVersion,
+          'mcp': <String, dynamic>{
+            'servers': <String, dynamic>{
+              for (final server in document.servers)
+                server.id: _serverToJson(server),
+            },
           },
-        },
-      },
-    );
+        });
     final temporary = File('$path.tmp');
     await temporary.writeAsString('$encoded\n', flush: true);
     await _protect(temporary.path);

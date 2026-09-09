@@ -6,7 +6,7 @@ export 'package:app/src/features/workspace/application/directory_picker_port.dar
 /// Production desktop folder chooser.
 final class NativeDirectoryPicker implements DirectoryPickerPort {
   /// Creates the native folder chooser.
-  const NativeDirectoryPicker();
+  const new();
 
   @override
   Future<String?> pickDirectory({String? initialDirectory}) =>

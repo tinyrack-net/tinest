@@ -46,9 +46,7 @@ void main() {
     // This showed up the moment Dart coverage went from --concurrency=1 to 4:
     // `FileSystemException: Rename failed ... Directory not empty, errno = 39`
     // reached a client as a bare "Internal daemon error."
-    final workspace = Directory.systemTemp.createTempSync(
-      'tinest-lua-race-',
-    );
+    final workspace = Directory.systemTemp.createTempSync('tinest-lua-race-');
     addTearDown(() => workspace.deleteSync(recursive: true));
     File(p.join(workspace.path, '.dart_tool', 'package_config.json'))
       ..createSync(recursive: true)
@@ -65,9 +63,8 @@ void main() {
           ],
         }),
       );
-    File(
-      p.join(workspace.path, 'runtime', 'native', 'bootstrap.lua'),
-    ).createSync(recursive: true);
+    File(p.join(workspace.path, 'runtime', 'native', 'bootstrap.lua'))
+        .createSync(recursive: true);
     final stager = _RaceLosingLuaHostStager();
 
     final command = await resolveLuaHostCommand(
@@ -86,9 +83,7 @@ void main() {
       'tinest-lua-discovery-',
     );
     addTearDown(() => workspace.deleteSync(recursive: true));
-    File(
-        p.join(workspace.path, '.dart_tool', 'package_config.json'),
-      )
+    File(p.join(workspace.path, '.dart_tool', 'package_config.json'))
       ..createSync(recursive: true)
       ..writeAsStringSync(
         jsonEncode(<String, Object?>{
@@ -103,9 +98,8 @@ void main() {
           ],
         }),
       );
-    File(
-      p.join(workspace.path, 'runtime', 'native', 'bootstrap.lua'),
-    ).createSync(recursive: true);
+    File(p.join(workspace.path, 'runtime', 'native', 'bootstrap.lua'))
+        .createSync(recursive: true);
     final staging = _LuaHostStager();
     final command = await resolveLuaHostCommand(
       sourceRoot: p.join(workspace.path, 'test'),
@@ -129,18 +123,17 @@ void main() {
     expect(
       command.arguments.single,
       endsWith(
-        <String>['lua_tool_runtime', 'bootstrap.lua'].join(
-          Platform.pathSeparator,
-        ),
+        <String>[
+          'lua_tool_runtime',
+          'bootstrap.lua',
+        ].join(Platform.pathSeparator),
       ),
     );
     expect(command.executable, isNot(anyOf('lua', 'lua.exe')));
   });
 
   test('packaged host is returned without scanning or staging', () async {
-    final bundle = Directory.systemTemp.createTempSync(
-      'tinest-lua-packaged-',
-    );
+    final bundle = Directory.systemTemp.createTempSync('tinest-lua-packaged-');
     addTearDown(() => bundle.deleteSync(recursive: true));
     final executableDirectory = Directory(p.join(bundle.path, 'bin'))
       ..createSync(recursive: true);
@@ -191,10 +184,7 @@ void main() {
     addTearDown(() => workspace.deleteSync(recursive: true));
     final staging = _LuaHostStager();
 
-    await resolveLuaHostCommand(
-      sourceRoot: workspace.path,
-      stager: staging,
-    );
+    await resolveLuaHostCommand(sourceRoot: workspace.path, stager: staging);
 
     final buildDirectory = staging.buildDirectories.single;
     expect(
@@ -215,10 +205,7 @@ void main() {
       final staging = _FailOnceLuaHostStager();
 
       await expectLater(
-        resolveLuaHostCommand(
-          sourceRoot: workspace.path,
-          stager: staging,
-        ),
+        resolveLuaHostCommand(sourceRoot: workspace.path, stager: staging),
         throwsStateError,
       );
 
@@ -621,10 +608,8 @@ void main() {
   );
 }
 
-LuaCodeModeContext _context(LuaNestedToolInvoker invoker) => LuaCodeModeContext(
-  cancellation: CancellationToken(),
-  tools: invoker,
-);
+LuaCodeModeContext _context(LuaNestedToolInvoker invoker) =>
+    LuaCodeModeContext(cancellation: CancellationToken(), tools: invoker);
 
 final class _Invoker implements LuaNestedToolInvoker {
   final List<String> calls = <String>[];
@@ -640,7 +625,7 @@ final class _Invoker implements LuaNestedToolInvoker {
 }
 
 final class _AttachmentInvoker implements LuaNestedToolInvoker {
-  const _AttachmentInvoker(this.attachment);
+  const new(this.attachment);
 
   final ConversationAttachment attachment;
 
@@ -740,9 +725,7 @@ final class _FailOnceLuaHostStager implements LuaHostDistributionStager {
 
 Directory _developmentWorkspace(String prefix) {
   final workspace = Directory.systemTemp.createTempSync(prefix);
-  File(
-      p.join(workspace.path, '.dart_tool', 'package_config.json'),
-    )
+  File(p.join(workspace.path, '.dart_tool', 'package_config.json'))
     ..createSync(recursive: true)
     ..writeAsStringSync(
       jsonEncode(<String, Object?>{
@@ -757,9 +740,8 @@ Directory _developmentWorkspace(String prefix) {
         ],
       }),
     );
-  File(
-    p.join(workspace.path, 'runtime', 'native', 'bootstrap.lua'),
-  ).createSync(recursive: true);
+  File(p.join(workspace.path, 'runtime', 'native', 'bootstrap.lua'))
+      .createSync(recursive: true);
   return workspace;
 }
 
@@ -815,15 +797,16 @@ final class _Process implements lua.LuaHostProcess {
     int sequence,
     String type,
     Map<String, dynamic> payload,
-  ) => emit(
-    '${jsonEncode(<String, dynamic>{
+  ) {
+    final frame = <String, dynamic>{
       'version': lua.luaHostProtocolVersion,
       'cell_id': cellId,
       'sequence_id': sequence,
       'type': type,
       'payload': payload,
-    })}\n',
-  );
+    };
+    emit('${jsonEncode(frame)}\n');
+  }
 
   @override
   Future<int> get exitCode => _exit.future;

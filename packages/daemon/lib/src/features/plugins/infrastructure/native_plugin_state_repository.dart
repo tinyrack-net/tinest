@@ -13,7 +13,7 @@ import 'package:protocol/protocol.dart';
 final class NativePluginStateRepository
     implements AgentPluginGrantStore, PluginStateStore, PluginJobStore {
   /// Creates the repository below a daemon state root.
-  NativePluginStateRepository(String stateDirectory)
+  new(String stateDirectory)
     : _file = File(
         p.join(
           p.normalize(p.absolute(stateDirectory)),
@@ -126,11 +126,7 @@ final class NativePluginStateRepository
         throw StateError('A transaction may mutate each key only once.');
       }
       final actualRevision = namespace.values[mutation.key]?.revision ?? 0;
-      _checkRevision(
-        mutation.key,
-        mutation.expectedRevision,
-        actualRevision,
-      );
+      _checkRevision(mutation.key, mutation.expectedRevision, actualRevision);
       if (!mutation.remove) _validateJson(mutation.value);
     }
     for (final mutation in mutations) {
@@ -225,18 +221,12 @@ final class NativePluginStateRepository
   });
 
   @override
-  Future<void> release(String id, {required String leaseId}) => _resolveJob(
-    id,
-    leaseId: leaseId,
-    status: PluginJobStatus.pending,
-  );
+  Future<void> release(String id, {required String leaseId}) =>
+      _resolveJob(id, leaseId: leaseId, status: PluginJobStatus.pending);
 
   @override
-  Future<void> complete(String id, {required String leaseId}) => _resolveJob(
-    id,
-    leaseId: leaseId,
-    status: PluginJobStatus.completed,
-  );
+  Future<void> complete(String id, {required String leaseId}) =>
+      _resolveJob(id, leaseId: leaseId, status: PluginJobStatus.completed);
 
   @override
   Future<void> fail(
@@ -312,9 +302,7 @@ final class NativePluginStateRepository
     }
     if (decoded is! Map<String, dynamic> ||
         decoded['schemaVersion'] != _schemaVersion) {
-      throw const FormatException(
-        'Invalid v5 plugin state schema.',
-      );
+      throw const FormatException('Invalid v5 plugin state schema.');
     }
     final grants = _requiredList(decoded, 'grants');
     final state = _requiredList(decoded, 'state');
@@ -465,7 +453,7 @@ final class NativePluginStateRepository
 }
 
 final class _StateNamespace {
-  _StateNamespace(this.scope);
+  new(this.scope);
 
   final PluginStateScope scope;
   final Map<String, PluginStateEntry> values = <String, PluginStateEntry>{};
@@ -478,11 +466,7 @@ final class _StateNamespace {
 }
 
 final class _RepositorySnapshot {
-  const _RepositorySnapshot({
-    required this.grants,
-    required this.state,
-    required this.jobs,
-  });
+  const new({required this.grants, required this.state, required this.jobs});
 
   final Set<AgentPluginGrantDto> grants;
   final Map<String, _StateNamespace> state;
@@ -686,10 +670,7 @@ Map<String, PluginStateEntry> _copyEntries(
 
 PluginStateEntry? _copyEntry(PluginStateEntry? entry) => entry == null
     ? null
-    : PluginStateEntry(
-        revision: entry.revision,
-        value: _copyJson(entry.value),
-      );
+    : PluginStateEntry(revision: entry.revision, value: _copyJson(entry.value));
 
 void _checkRevision(String key, int expected, int actual) {
   if (expected != actual) {
@@ -701,17 +682,11 @@ void _checkRevision(String key, int expected, int actual) {
   }
 }
 
-String _scopeKey(PluginStateScope scope) => jsonEncode(<Object?>[
-  scope.pluginId,
-  scope.kind.name,
-  scope.ownerId,
-]);
+String _scopeKey(PluginStateScope scope) =>
+    jsonEncode(<Object?>[scope.pluginId, scope.kind.name, scope.ownerId]);
 
-String _grantKey(AgentPluginGrantDto grant) => jsonEncode(<String>[
-  grant.agentId,
-  grant.pluginId,
-  grant.capability,
-]);
+String _grantKey(AgentPluginGrantDto grant) =>
+    jsonEncode(<String>[grant.agentId, grant.pluginId, grant.capability]);
 
 List<dynamic> _requiredList(Map<String, dynamic> map, String key) {
   final value = map[key];

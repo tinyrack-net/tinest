@@ -11,9 +11,7 @@ double chatFirstLineLeadingInset(
   final resolvedStyle =
       textStyle ?? TRTypography.resolve(context, TRTextVariant.body);
   final lineExtent =
-      MediaQuery.textScalerOf(context).scale(
-        resolvedStyle.fontSize!,
-      ) *
+      MediaQuery.textScalerOf(context).scale(resolvedStyle.fontSize!) *
       resolvedStyle.height!;
   return ((lineExtent - leadingExtent) / 2)
       .clamp(0, double.infinity)

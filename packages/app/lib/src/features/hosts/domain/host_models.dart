@@ -82,7 +82,7 @@ enum FactoryResetFailureReason {
 /// Typed failure raised while erasing daemon data and app settings.
 final class FactoryResetFailure implements Exception {
   /// Creates a factory reset failure.
-  const FactoryResetFailure(this.message, {required this.reason});
+  const new(this.message, {required this.reason});
 
   /// Safe display message; the UI localizes [reason] instead.
   final String message;
@@ -102,7 +102,7 @@ enum EmbeddedDaemonExposure {
   /// Accept IPv4 connections on every network interface.
   allInterfaces('0.0.0.0');
 
-  const EmbeddedDaemonExposure(this.bindHost);
+  new(this.bindHost);
 
   /// Concrete IPv4 address passed to the daemon listener.
   final String bindHost;
@@ -127,7 +127,7 @@ enum AppThemeMode {
 /// Settings that are meaningful before any daemon connection exists.
 final class AppSettings {
   /// Creates application settings.
-  const AppSettings({
+  const new({
     this.embeddedDaemonEnabled = true,
     this.embeddedDaemonExposure = EmbeddedDaemonExposure.loopback,
     this.embeddedDaemonPort = defaultEmbeddedDaemonPort,
@@ -218,7 +218,7 @@ final class AppSettings {
 @immutable
 final class WorkspaceSelection {
   /// Creates a worktree selection.
-  const WorkspaceSelection({
+  const new({
     required this.hostId,
     required this.workspaceId,
     required this.worktreeId,
@@ -271,11 +271,7 @@ enum WorkspaceTabTargetKind {
 /// One stable tab entry in device-local workspace state.
 final class WorkspaceTabPreference {
   /// Creates a persisted tab entry.
-  const WorkspaceTabPreference({
-    required this.id,
-    required this.kind,
-    this.targetId,
-  });
+  const new({required this.id, required this.kind, this.targetId});
 
   /// Stable app-local tab identity.
   final String id;
@@ -289,13 +285,13 @@ final class WorkspaceTabPreference {
 
 /// Base class for a persisted binary pane tree.
 sealed class WorkspacePanePreferenceNode {
-  const WorkspacePanePreferenceNode();
+  const new();
 }
 
 /// One leaf pane and its ordered tabs.
 final class WorkspacePanePreference extends WorkspacePanePreferenceNode {
   /// Creates a persisted leaf pane.
-  const WorkspacePanePreference({
+  const new({
     required this.id,
     required this.tabIds,
     required this.activeTabId,
@@ -314,7 +310,7 @@ final class WorkspacePanePreference extends WorkspacePanePreferenceNode {
 /// One branch in a persisted binary pane tree.
 final class WorkspaceSplitPreference extends WorkspacePanePreferenceNode {
   /// Creates a persisted split branch.
-  const WorkspaceSplitPreference({
+  const new({
     required this.id,
     required this.axis,
     required this.ratio,
@@ -341,7 +337,7 @@ final class WorkspaceSplitPreference extends WorkspacePanePreferenceNode {
 /// Device-local workspace tabs and pane tree for one checkout.
 final class SessionTabPreference {
   /// Creates workspace-tab preferences.
-  const SessionTabPreference({
+  const new({
     required this.tabs,
     required this.root,
     required this.focusedPaneId,
@@ -360,7 +356,7 @@ final class SessionTabPreference {
 /// Persisted, non-secret configuration for one remote daemon.
 final class RemoteDaemonProfile {
   /// Creates a remote daemon profile.
-  RemoteDaemonProfile({
+  new({
     required this.id,
     required this.label,
     required List<HostConnection> connections,
@@ -439,11 +435,7 @@ Iterable<HostConnection> _normalizeHostConnections(
   List<HostConnection> connections,
 ) => connections.map(
   (connection) => switch (connection) {
-    DirectHostConnection(
-      :final id,
-      credentialKey: 'direct',
-      :final endpoint,
-    ) =>
+    DirectHostConnection(:final id, credentialKey: 'direct', :final endpoint) =>
       DirectHostConnection(
         id: id,
         credentialKey: profileId,
@@ -489,7 +481,7 @@ enum HostRuntimeStatus {
 /// Immutable state for one embedded or remote daemon runtime.
 final class HostRuntimeSnapshot {
   /// Creates one host runtime snapshot.
-  const HostRuntimeSnapshot({
+  const new({
     required this.id,
     required this.label,
     required this.kind,
@@ -573,7 +565,7 @@ final class HostRuntimeSnapshot {
 /// Complete daemon-independent state consumed by the app shell.
 final class HostRegistryState {
   /// Creates registry state.
-  const HostRegistryState({
+  const new({
     required this.settings,
     required this.profiles,
     required this.runtimes,
@@ -622,19 +614,19 @@ enum HostConnectionFailureKind {
 /// Typed failure used by connection adapters and retry policy.
 final class HostConnectionFailure implements Exception {
   /// Creates an invalid-endpoint failure.
-  const HostConnectionFailure.invalidEndpoint(this.message, {this.reason})
+  const new invalidEndpoint(this.message, {this.reason})
     : kind = HostConnectionFailureKind.invalidEndpoint;
 
   /// Creates an authentication failure.
-  const HostConnectionFailure.authentication(this.message, {this.reason})
+  const new authentication(this.message, {this.reason})
     : kind = HostConnectionFailureKind.authentication;
 
   /// Creates a protocol mismatch failure.
-  const HostConnectionFailure.protocolMismatch(this.message, {this.reason})
+  const new protocolMismatch(this.message, {this.reason})
     : kind = HostConnectionFailureKind.protocolMismatch;
 
   /// Creates a retryable network failure.
-  const HostConnectionFailure.network(this.message, {this.reason})
+  const new network(this.message, {this.reason})
     : kind = HostConnectionFailureKind.network;
 
   /// Failure category.

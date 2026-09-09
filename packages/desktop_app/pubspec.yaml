@@ -19,22 +19,22 @@ dev_dependencies:
   cliweave:
     git:
       url: https://github.com/tinyrack-net/dart-packages.git
-      ref: 866a29af27a9f3e077b1dd905f2f79d7ca2c2769
+      ref: 5da5311a53bc2cf401f4bc8efb97518adeeced32
       path: packages/cliweave
   dropwell:
     git:
       url: https://github.com/tinyrack-net/flutter-packages.git
-      ref: a2d673366e486ea61577b0ed520dcb1633b56815
+      ref: 5f3a5025f9986a1b352c91225771e451281a9a73
       path: packages/dropwell
   flutter_launcher_icons: ^0.14.4
-  flutter_riverpod: ^3.4.2
-  # Keep aligned with app; share_plus 12.x still requires win32 5.x.
-  flutter_secure_storage: ^10.3.1
+  flutter_riverpod: ^3.4.3
+  # Keep aligned with app; launch_at_startup still requires win32 5.x.
+  flutter_secure_storage: ^10.3.2
   flutter_test:
     sdk: flutter
   integration_test:
     sdk: flutter
-  material_ui: ^1.1.0
+  material_ui: ^1.2.0
   path: ^1.9.1
   protocol: ^0.1.0
   relay: ^0.6.0
@@ -44,13 +44,13 @@ dev_dependencies:
   termworld:
     git:
       url: https://github.com/tinyrack-net/flutter-packages.git
-      ref: a2d673366e486ea61577b0ed520dcb1633b56815
+      ref: 5f3a5025f9986a1b352c91225771e451281a9a73
       path: packages/termworld
   test: ^1.31.1
   tinyrack_ui:
     git:
       url: https://github.com/tinyrack-net/design.git
-      ref: 3889a9702d9260cdeb82ebb97cdf619b8a1dff49
+      ref: bb4558236b31c3db4369136090a6877dadeb492d
       path: packages/ui_flutter
 
 flutter:

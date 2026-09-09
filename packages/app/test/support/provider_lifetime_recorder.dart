@@ -9,7 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 /// add/dispose pair gives the same answer through public API.
 final class ProviderLifetimeRecorder extends ProviderObserver {
   /// Creates a recorder that starts out knowing about nothing.
-  ProviderLifetimeRecorder();
+  new();
 
   final Set<Object> _live = <Object>{};
 

@@ -13,17 +13,10 @@ void main() {
 
   test('normalizes and validates state cell writes and persisted entries', () {
     expect(
-      validatePluginStateCellValue(
-        stringArguments,
-        'valid',
-        path: r'$.value',
-      ),
+      validatePluginStateCellValue(stringArguments, 'valid', path: r'$.value'),
       'valid',
     );
-    expect(
-      validatePluginStateCellEntry(stringArguments, null),
-      isNull,
-    );
+    expect(validatePluginStateCellEntry(stringArguments, null), isNull);
     final entry = validatePluginStateCellEntry(
       stringArguments,
       const PluginStateEntry(revision: 3, value: 'persisted'),
@@ -32,11 +25,7 @@ void main() {
     expect(entry?.value, 'persisted');
 
     expect(
-      () => validatePluginStateCellValue(
-        stringArguments,
-        42,
-        path: r'$.value',
-      ),
+      () => validatePluginStateCellValue(stringArguments, 42, path: r'$.value'),
       throwsA(
         isA<PluginJsonValidationException>().having(
           (error) => error.path,
@@ -64,11 +53,9 @@ void main() {
     const arguments = <String, Object?>{'schema': <Object?>[]};
     expect(pluginStateCellSchema(arguments), isEmpty);
     expect(
-      validatePluginStateCellValue(
-        arguments,
-        const <String, Object?>{'any': true},
-        path: r'$.value',
-      ),
+      validatePluginStateCellValue(arguments, const <String, Object?>{
+        'any': true,
+      }, path: r'$.value'),
       const <String, Object?>{'any': true},
     );
   });

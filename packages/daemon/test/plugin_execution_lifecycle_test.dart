@@ -501,7 +501,7 @@ PluginRuntime<Object> _runtime(
 );
 
 final class _MutableLoader implements PluginBundleLoader {
-  _MutableLoader(this.bundle);
+  new(this.bundle);
   PluginBundle bundle;
 
   @override

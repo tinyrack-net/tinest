@@ -47,7 +47,7 @@ enum UiEvidenceTier {
 /// One user-observable state of a UI entry point.
 final class UiStateContract {
   /// Creates an immutable UI state contract.
-  const UiStateContract({required this.id, required this.description});
+  const new({required this.id, required this.description});
 
   /// Stable snake-case identifier used by evidence tags.
   final String id;
@@ -59,7 +59,7 @@ final class UiStateContract {
 /// One user action and its allowed observable outcomes.
 final class UiTransitionContract {
   /// Creates an immutable UI transition contract.
-  const UiTransitionContract({
+  const new({
     required this.id,
     required this.description,
     required this.fromState,
@@ -82,7 +82,7 @@ final class UiTransitionContract {
 /// One pairwise environment case required for a UI entry point.
 final class UiVariantContract {
   /// Creates an immutable UI variant contract.
-  const UiVariantContract({required this.id, required this.description});
+  const new({required this.id, required this.description});
 
   /// Stable snake-case case identifier.
   final String id;
@@ -94,7 +94,7 @@ final class UiVariantContract {
 /// Complete atomic reachability contract for one route or transient surface.
 final class UiReachabilityContract {
   /// Creates an immutable UI reachability contract.
-  const UiReachabilityContract({
+  const new({
     required this.id,
     required this.featureId,
     required this.description,
@@ -129,7 +129,7 @@ final class UiReachabilityContract {
 /// A deliberately composite real-runner journey that cannot replace atomics.
 final class UiJourneyContract {
   /// Creates an immutable composite journey contract.
-  const UiJourneyContract({
+  const new({
     required this.id,
     required this.description,
     required this.tier,
@@ -156,7 +156,7 @@ final class UiJourneyContract {
 /// One stable, user-observable E2E behavior owned by a feature.
 final class FeatureScenario {
   /// Creates an immutable E2E scenario contract.
-  const FeatureScenario({
+  const new({
     required this.id,
     required this.description,
     required this.surfaces,
@@ -175,7 +175,7 @@ final class FeatureScenario {
 /// Declares one user-visible capability and its mandatory evidence.
 final class FeatureContract {
   /// Creates an immutable feature contract.
-  const FeatureContract({
+  const new({
     required this.id,
     required this.description,
     required this.requiredLayers,
@@ -206,7 +206,7 @@ final class FeatureContract {
 /// One actionable feature verification failure.
 final class FeatureViolation {
   /// Creates a violation.
-  const FeatureViolation(this.message);
+  const new(this.message);
 
   /// Human-readable failure detail.
   final String message;
@@ -218,7 +218,7 @@ final class FeatureViolation {
 /// Checks public surfaces and tagged tests against typed feature contracts.
 final class FeatureVerifier {
   /// Creates a verifier rooted at [workspaceRoot].
-  const FeatureVerifier(
+  const new(
     this.workspaceRoot, {
     required this.contracts,
     this.uiContracts = const <UiReachabilityContract>[],
@@ -526,9 +526,7 @@ final class FeatureVerifier {
     final uiVariantMarker = RegExp(
       'ui_variant__([a-z0-9_]+)__([a-z0-9_]+)__widget',
     );
-    final uiJourneyMarker = RegExp(
-      'ui_journey__([a-z0-9_]+)__e2e',
-    );
+    final uiJourneyMarker = RegExp('ui_journey__([a-z0-9_]+)__e2e');
     final routesByTag = <String, String>{
       for (final route in routes) _snakeCase(route): route,
     };
@@ -657,9 +655,7 @@ final class FeatureVerifier {
           continue;
         }
         if (hasSkip) {
-          violations.add(
-            FeatureViolation('UI variant $key cannot use skip.'),
-          );
+          violations.add(FeatureViolation('UI variant $key cannot use skip.'));
         }
         if (!_hasExecutableUiEvidence(source, match.start)) {
           violations.add(
@@ -700,9 +696,7 @@ final class FeatureVerifier {
         final key = '${contract.id}/${scenario.id}';
         if (!scenarioEvidence.contains(key)) {
           violations.add(
-            FeatureViolation(
-              'E2E scenario $key is missing E2E evidence.',
-            ),
+            FeatureViolation('E2E scenario $key is missing E2E evidence.'),
           );
         }
       }
@@ -796,9 +790,9 @@ final class FeatureVerifier {
   int _atomicUiMarkersInTest(String source, int markerOffset) {
     final testSource = _testWidgetsSource(source, markerOffset);
     if (testSource == null) return 0;
-    return RegExp(
-      'ui_(?:state|transition)__[a-z0-9_]+__[a-z0-9_]+__widget',
-    ).allMatches(testSource).length;
+    return RegExp('ui_(?:state|transition)__[a-z0-9_]+__[a-z0-9_]+__widget')
+        .allMatches(testSource)
+        .length;
   }
 
   bool _hasExecutableUiEvidence(String source, int markerOffset) {
@@ -851,10 +845,7 @@ final class FeatureVerifier {
   }
 
   String _snakeCase(String value) => value
-      .replaceAllMapped(
-        RegExp('(?<=[a-z0-9])(?=[A-Z])'),
-        (_) => '_',
-      )
+      .replaceAllMapped(RegExp('(?<=[a-z0-9])(?=[A-Z])'), (_) => '_')
       .toLowerCase();
 
   String _upperCamelCase(String value) => value
@@ -897,9 +888,8 @@ final class FeatureVerifier {
   }
 
   Set<String> _interfaceMethods(String source, String interfaceName) {
-    final declaration = RegExp(
-      'abstract interface class $interfaceName\\s*\\{',
-    ).firstMatch(source);
+    final declaration = RegExp('abstract interface class $interfaceName\\s*\\{')
+        .firstMatch(source);
     if (declaration == null) return <String>{};
     var depth = 1;
     var cursor = declaration.end;
@@ -911,14 +901,17 @@ final class FeatureVerifier {
     }
     if (depth != 0) return <String>{};
     final interfaceBody = source.substring(declaration.end, cursor - 1);
-    return RegExp(
-      r'\bFuture(?:<[^;]+>)?\s+(\w+)\s*\(',
-    ).allMatches(interfaceBody).map((match) => match.group(1)!).toSet();
+    return RegExp(r'\bFuture(?:<[^;]+>)?\s+(\w+)\s*\(')
+        .allMatches(interfaceBody)
+        .map((match) => match.group(1)!)
+        .toSet();
   }
 
-  Set<String> _routes(String source) => RegExp(
-    r'@?TypedGoRoute<(\w+)>',
-  ).allMatches(source).map((match) => match.group(1)!).toSet();
+  Set<String> _routes(String source) =>
+      RegExp(r'@?TypedGoRoute<(\w+)>')
+          .allMatches(source)
+          .map((match) => match.group(1)!)
+          .toSet();
 
   List<File> _testSources() {
     final files = <File>[];

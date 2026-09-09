@@ -9,14 +9,14 @@ const Duration inactiveHostPathProbeInterval = Duration(seconds: 120);
 /// Result of one connection-path handshake probe.
 final class HostPathObservation {
   /// Records a successful authenticated handshake.
-  const HostPathObservation.success(
+  const new success(
     this.connection, {
     required this.latency,
     required this.serverId,
   }) : available = true;
 
   /// Records a failed probe without synthetic latency or daemon identity.
-  const HostPathObservation.failure(this.connection)
+  const new failure(this.connection)
     : available = false,
       latency = Duration.zero,
       serverId = null;
@@ -37,7 +37,7 @@ final class HostPathObservation {
 /// Stateful failover and anti-flapping policy shared by all app platforms.
 final class HostPathPolicy {
   /// Creates a policy pinned to one daemon identity.
-  HostPathPolicy({required this.authoritativeServerId});
+  new({required this.authoritativeServerId});
 
   /// Expected server ID for every eligible path.
   final String authoritativeServerId;

@@ -13,15 +13,11 @@ import 'package:tinyrack_ui/tinyrack_ui.dart';
 /// Renders an actionable tool approval request.
 class ApprovalCard extends ConsumerStatefulWidget {
   /// Creates an [ApprovalCard].
-  const ApprovalCard({
-    this.hostId,
-    this.approval,
-    this.interaction,
-    super.key,
-  }) : assert(
-         approval != null || interaction != null,
-         'An approval or timeline interaction is required.',
-       );
+  const new({this.hostId, this.approval, this.interaction, super.key})
+    : assert(
+        approval != null || interaction != null,
+        'An approval or timeline interaction is required.',
+      );
 
   /// Stable host profile containing the approval's agent.
   final String? hostId;
@@ -47,9 +43,7 @@ class _ApprovalCardState extends ConsumerState<ApprovalCard> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     return Padding(
-      padding: const EdgeInsets.symmetric(
-        vertical: TRSpacing.extraSmall,
-      ),
+      padding: const EdgeInsets.symmetric(vertical: TRSpacing.extraSmall),
       child: TRCard(
         padding: TRCardPadding.none,
         variant: TRCardVariant.elevated,

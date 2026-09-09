@@ -10,7 +10,7 @@ import 'package:dio/dio.dart';
 /// Runtime configuration for Gemini Interactions.
 final class GeminiProviderConfig {
   /// Creates Gemini endpoint configuration.
-  const GeminiProviderConfig({
+  const new({
     required this.apiKey,
     this.id = 'google',
     this.baseUrl = 'https://generativelanguage.googleapis.com/v1',
@@ -29,7 +29,7 @@ final class GeminiProviderConfig {
 /// Classified Gemini transport or stream failure.
 final class GeminiProviderException implements Exception {
   /// Creates a provider failure.
-  const GeminiProviderException(this.message, {this.retryable = false});
+  const new(this.message, {this.retryable = false});
 
   /// User-safe description.
   final String message;
@@ -44,7 +44,7 @@ final class GeminiProviderException implements Exception {
 /// Stateless Gemini Interactions v1 streaming adapter.
 final class GeminiInteractionsProvider implements ModelGateway {
   /// Creates an Interactions adapter.
-  GeminiInteractionsProvider(GeminiProviderConfig config, {Dio? dio})
+  new(GeminiProviderConfig config, {Dio? dio})
     : _config = config,
       _dio = dio ?? Dio(BaseOptions(baseUrl: config.baseUrl));
 
@@ -101,10 +101,7 @@ final class GeminiInteractionsProvider implements ModelGateway {
   }
 
   Map<String, dynamic> _requestBody(ModelRequest request) {
-    final level = _stringControl(
-      request,
-      AgentModelControlIds.reasoningEffort,
-    );
+    final level = _stringControl(request, AgentModelControlIds.reasoningEffort);
     return <String, dynamic>{
       'model': request.model,
       // Complementary to the system-instruction filter, so a role added later
@@ -310,7 +307,7 @@ final class GeminiInteractionsProvider implements ModelGateway {
 }
 
 final class _GeminiStep {
-  _GeminiStep(this.raw);
+  new(this.raw);
   final Map<String, dynamic> raw;
   final StringBuffer arguments = StringBuffer();
   final StringBuffer signature = StringBuffer();

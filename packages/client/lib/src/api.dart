@@ -11,7 +11,7 @@ const int timelineHistoryPageSize = 200;
 /// Authenticated streaming attachment download.
 final class AttachmentDownload {
   /// Creates a download stream and response metadata.
-  const AttachmentDownload({
+  const new({
     required this.fileName,
     required this.mimeType,
     required this.byteSize,

@@ -36,7 +36,7 @@ enum ClientCommandAction {
 @immutable
 final class ComposerCommand {
   /// Creates a composer command.
-  const ComposerCommand({
+  const new({
     required this.id,
     required this.name,
     required this.description,
@@ -208,7 +208,7 @@ List<ComposerCommand> withoutClientActions(
 @immutable
 final class RankedComposerCommand {
   /// Creates a ranked command.
-  const RankedComposerCommand({required this.command, required this.match});
+  const new({required this.command, required this.match});
 
   /// The command itself.
   final ComposerCommand command;
@@ -243,10 +243,7 @@ List<RankedComposerCommand> rankComposerCommands(
 @immutable
 final class ComposerCommandInvocation {
   /// Creates an invocation.
-  const ComposerCommandInvocation({
-    required this.command,
-    required this.arguments,
-  });
+  const new({required this.command, required this.arguments});
 
   /// The command the message named.
   final ComposerCommand command;

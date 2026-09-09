@@ -18,7 +18,7 @@ import 'package:tinyrack_ui/tinyrack_ui.dart';
 /// which is what makes the daemon deliver its approvals to this client at all.
 class SubagentApprovalBanner extends ConsumerWidget {
   /// Creates a [SubagentApprovalBanner].
-  const SubagentApprovalBanner({
+  const new({
     required this.hostId,
     required this.rows,
     required this.maxHeight,

@@ -26,7 +26,7 @@ abstract interface class RpcProcedureDescriptor {
 final class RpcProcedure<P extends Object, R extends Object>
     implements RpcProcedureDescriptor {
   /// Creates a procedure descriptor.
-  const RpcProcedure({
+  const new({
     required this.name,
     required this.decodeParams,
     required this.encodeParams,
@@ -84,11 +84,7 @@ abstract interface class RpcNotificationDescriptor {
 final class RpcNotification<E extends Object>
     implements RpcNotificationDescriptor {
   /// Creates a notification descriptor.
-  const RpcNotification({
-    required this.name,
-    required this.decode,
-    required this.encode,
-  });
+  const new({required this.name, required this.decode, required this.encode});
 
   @override
   final String name;

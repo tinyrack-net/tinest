@@ -2,9 +2,7 @@ import 'package:daemon/src/features/plugins/infrastructure/plugin_ports.dart';
 import 'package:daemon/src/features/plugins/runtime/plugin_json_schema.dart';
 
 /// Reads the sealed state-cell schema copied into one SDK host call.
-Map<String, Object?> pluginStateCellSchema(
-  Map<String, Object?> arguments,
-) {
+Map<String, Object?> pluginStateCellSchema(Map<String, Object?> arguments) {
   final raw = arguments['schema'];
   // The Lua JSON bridge represents an empty object and an empty array with
   // the same empty table. `S.any()` is the only schema that reaches this form.
@@ -46,10 +44,6 @@ PluginStateEntry? validatePluginStateCellEntry(
   if (entry == null) return null;
   return PluginStateEntry(
     revision: entry.revision,
-    value: validatePluginStateCellValue(
-      arguments,
-      entry.value,
-      path: path,
-    ),
+    value: validatePluginStateCellValue(arguments, entry.value, path: path),
   );
 }

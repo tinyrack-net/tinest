@@ -87,10 +87,8 @@ void main() {
         );
 
     await expectLater(
-      connector(const _HandshakeResponseConnector()).connect(
-        Uri(),
-        headers: const <String, String>{},
-      ),
+      connector(const _HandshakeResponseConnector())
+          .connect(Uri(), headers: const <String, String>{}),
       throwsA(isA<RelaySecurityException>()),
     );
     await expectLater(
@@ -149,7 +147,7 @@ void main() {
 }
 
 final class _HandshakeResponseConnector implements WebSocketConnector {
-  const _HandshakeResponseConnector({this.response});
+  const new({this.response});
 
   final List<int>? response;
 
@@ -173,7 +171,7 @@ final class _HandshakeResponseConnector implements WebSocketConnector {
 }
 
 final class _RelayDaemonHarness implements WebSocketConnector {
-  _RelayDaemonHarness({
+  new({
     required this.daemonIdentity,
     required this.devicePublicKey,
     this.terminateAfterHandshake = false,

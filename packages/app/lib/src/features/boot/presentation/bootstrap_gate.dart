@@ -10,7 +10,7 @@ import 'package:material_ui/material_ui.dart';
 /// called first, and the work runs behind a frame the app itself owns.
 class BootstrapGate<T extends Object> extends StatefulWidget {
   /// Creates a gate that renders the result of [bootstrap].
-  const BootstrapGate({
+  const new({
     required this.bootstrap,
     required this.builder,
     this.splash = const BootSplash(),

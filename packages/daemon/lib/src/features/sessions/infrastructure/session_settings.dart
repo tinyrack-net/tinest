@@ -12,10 +12,7 @@ import 'package:protocol/protocol.dart';
 /// intended behavior and the user only has to wait for the turn.
 final class SessionTurnActiveFailure implements Exception {
   /// Reports the [setting] that could not move on [sessionId].
-  const SessionTurnActiveFailure({
-    required this.sessionId,
-    required this.setting,
-  });
+  const new({required this.sessionId, required this.setting});
 
   /// Session whose turn is still running.
   final String sessionId;
@@ -45,28 +42,20 @@ abstract interface class SessionSettingsPort {
   );
 
   /// Sets or clears the provider and model override used by future turns.
-  Future<SessionDto> setModel(
-    String sessionId,
-    ModelSelectionDto? model,
-  );
+  Future<SessionDto> setModel(String sessionId, ModelSelectionDto? model);
 }
 
 /// Applies session settings while enforcing live-turn constraints.
 final class SessionSettingsService implements SessionSettingsPort {
   /// Creates the session settings application service.
-  const SessionSettingsService({
+  const new({
     required SessionRepository sessions,
     required ProviderModelResolver models,
     required bool Function(String sessionId) hasActiveTurn,
     required void Function(OutboundNotification event) events,
   }) : this._(sessions, models, hasActiveTurn, events);
 
-  const SessionSettingsService._(
-    this._sessions,
-    this._models,
-    this._hasActiveTurn,
-    this._events,
-  );
+  const new _(this._sessions, this._models, this._hasActiveTurn, this._events);
 
   final SessionRepository _sessions;
   final ProviderModelResolver _models;
@@ -173,9 +162,7 @@ final class SessionSettingsService implements SessionSettingsPort {
   }
 
   SessionDto _emit(SessionDto session) {
-    _events(
-      OutboundNotification(sessionsUpdatedNotification, session),
-    );
+    _events(OutboundNotification(sessionsUpdatedNotification, session));
     return session;
   }
 }

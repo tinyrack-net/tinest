@@ -53,7 +53,7 @@ import 'package:tinyrack_ui/tinyrack_ui.dart';
 /// Unified host/repository/worktree tree and session-tab workspace.
 class WorkspacePage extends ConsumerStatefulWidget {
   /// Creates a workspace page.
-  const WorkspacePage({
+  const new({
     required this.navigator,
     this.selection,
     this.requestedAgentId,
@@ -184,12 +184,10 @@ class _WorkspacePageState extends ConsumerState<WorkspacePage> {
       onSelect: (selection) => _selectWorktree(selection, push: push),
       onSelectSession: (selection, sessionId) =>
           _selectSession(selection, sessionId, push: push),
-      onOpenDaemonSettings: () => unawaited(
-        const DaemonSettingsRoute().push<void>(context),
-      ),
-      onConnectDaemon: () => unawaited(
-        const ConnectDaemonRoute().push<void>(context),
-      ),
+      onOpenDaemonSettings: () =>
+          unawaited(const DaemonSettingsRoute().push<void>(context)),
+      onConnectDaemon: () =>
+          unawaited(const ConnectDaemonRoute().push<void>(context)),
       onArchivedSelection: () => const WorkspaceHomeRoute().replace(context),
     );
     final routedContent = _WorkspaceRouteContentScope(
@@ -209,9 +207,7 @@ class _WorkspacePageState extends ConsumerState<WorkspacePage> {
             ? TRIconButton(
                 key: const ValueKey<String>('workspace-back-button'),
                 appearance: TRAppearance.ghost,
-                label: MaterialLocalizations.of(
-                  context,
-                ).backButtonTooltip,
+                label: MaterialLocalizations.of(context).backButtonTooltip,
                 onPressed: _goBack,
                 icon: Icon(TinestIcons.backFor(context)),
               )
@@ -222,17 +218,11 @@ class _WorkspacePageState extends ConsumerState<WorkspacePage> {
                 key: const ValueKey('workspace-sidebar-toggle'),
                 label: collapsed
                     ? AppLocalizations.of(context).workspaceSidebarExpand
-                    : AppLocalizations.of(
-                        context,
-                      ).workspaceSidebarCollapse,
+                    : AppLocalizations.of(context).workspaceSidebarCollapse,
                 onPressed: () => unawaited(_setSidebarCollapsed(!collapsed)),
-                icon: Icon(
-                  collapsed ? TinestIcons.menu : TinestIcons.menuOpen,
-                ),
+                icon: Icon(collapsed ? TinestIcons.menu : TinestIcons.menuOpen),
               ),
-        title: TRText.inherit(
-          AppLocalizations.of(context).workspacesTitle,
-        ),
+        title: TRText.inherit(AppLocalizations.of(context).workspacesTitle),
         actions: <TRIconButton>[
           TRIconButton(
             key: const ValueKey('workspace-settings-button'),
@@ -247,9 +237,7 @@ class _WorkspacePageState extends ConsumerState<WorkspacePage> {
               unawaited(
                 hostId == null
                     ? const DaemonSettingsRoute().push<void>(context)
-                    : ProviderSettingsRoute(
-                        hostId: hostId,
-                      ).push<void>(context),
+                    : ProviderSettingsRoute(hostId: hostId).push<void>(context),
               );
             },
             icon: const Icon(TinestIcons.settings),
@@ -257,10 +245,7 @@ class _WorkspacePageState extends ConsumerState<WorkspacePage> {
         ],
       ),
       body: effectiveCollapsed
-          ? TRAdaptiveLayoutScope(
-              widthClass: widthClass,
-              child: routedContent,
-            )
+          ? TRAdaptiveLayoutScope(widthClass: widthClass, child: routedContent)
           : TRAdaptiveNavigationLayout(
               navigationPane: KeyedSubtree(
                 key: const ValueKey<String>('workspace-sidebar-surface'),
@@ -285,10 +270,7 @@ class _WorkspacePageState extends ConsumerState<WorkspacePage> {
     if (!found) const WorkspaceHomeRoute().replace(context);
   }
 
-  void _selectWorktree(
-    WorkspaceSelection selection, {
-    bool push = false,
-  }) {
+  void _selectWorktree(WorkspaceSelection selection, {bool push = false}) {
     ref.read(selectionRestoreControllerProvider.notifier).markConsumed();
     _goWorktree(
       context,
@@ -433,7 +415,7 @@ class _WorkspacePageState extends ConsumerState<WorkspacePage> {
 /// Child content rendered by the stable typed workspace shell.
 class WorkspaceRouteContent extends StatelessWidget {
   /// Creates a workspace child-route surface.
-  const WorkspaceRouteContent({
+  const new({
     this.selection,
     this.requestedAgentId,
     this.requestedTerminalId,
@@ -481,7 +463,7 @@ class WorkspaceRouteContent extends StatelessWidget {
 }
 
 class _WorkspaceHomeRouteSurface extends StatelessWidget {
-  const _WorkspaceHomeRouteSurface();
+  const new();
 
   @override
   Widget build(BuildContext context) {
@@ -509,7 +491,7 @@ class _WorkspaceHomeRouteSurface extends StatelessWidget {
 }
 
 class _WorkspaceRouteContentScope extends InheritedWidget {
-  const _WorkspaceRouteContentScope({
+  const new({
     required this.compactHome,
     required this.onStarted,
     required super.child,
@@ -528,7 +510,7 @@ class _WorkspaceRouteContentScope extends InheritedWidget {
 }
 
 class _SessionArea extends ConsumerStatefulWidget {
-  const _SessionArea({
+  const new({
     required this.selection,
     this.requestedAgentId,
     this.requestedTerminalId,
@@ -786,9 +768,8 @@ class _SessionAreaState extends ConsumerState<_SessionArea> {
                 TinestIcons.approvalPending,
                 key: ValueKey<String>('session-tab-approval-$sessionId'),
                 color: context.tinyrackTheme.warningForeground,
-                semanticLabel: AppLocalizations.of(
-                  context,
-                ).subagentTabAwaitingApproval,
+                semanticLabel: AppLocalizations.of(context)
+                    .subagentTabAwaitingApproval,
               )
             : null,
         onClose: closable ? () => unawaited(_closeEntry(entry)) : null,
@@ -868,9 +849,7 @@ class _SessionAreaState extends ConsumerState<_SessionArea> {
         key: primary ? const ValueKey<String>('workspace-new-session') : null,
         onPressed: () => unawaited(_startDraft(paneId)),
         leadingIcon: const Icon(TinestIcons.chat),
-        child: TRText.inherit(
-          AppLocalizations.of(context).workspaceNewSession,
-        ),
+        child: TRText.inherit(AppLocalizations.of(context).workspaceNewSession),
       ),
       TRMenuItem(
         key: primary ? const ValueKey<String>('workspace-new-terminal') : null,
@@ -933,10 +912,7 @@ class _SessionAreaState extends ConsumerState<_SessionArea> {
     if (mounted) _routeFocused();
   }
 
-  Future<void> _dropTab(
-    SessionTabsState workspace,
-    TRTabDropDetails details,
-  ) {
+  Future<void> _dropTab(SessionTabsState workspace, TRTabDropDetails details) {
     final source = workspace.panes.firstWhere(
       (item) => item.id == details.sourceGroupId,
     );
@@ -1158,11 +1134,7 @@ class _SessionAreaState extends ConsumerState<_SessionArea> {
 }
 
 class _TerminalPane extends ConsumerStatefulWidget {
-  const _TerminalPane({
-    required this.selection,
-    required this.terminal,
-    super.key,
-  });
+  const new({required this.selection, required this.terminal, super.key});
 
   final WorkspaceSelection selection;
   final TerminalDto terminal;
@@ -1317,11 +1289,7 @@ class _TerminalPaneState extends ConsumerState<_TerminalPane> {
 }
 
 class _ConversationPane extends ConsumerStatefulWidget {
-  const _ConversationPane({
-    required this.selection,
-    required this.agent,
-    super.key,
-  });
+  const new({required this.selection, required this.agent, super.key});
 
   final WorkspaceSelection selection;
   final SessionDto agent;
@@ -1422,10 +1390,7 @@ class _ConversationPaneState extends ConsumerState<_ConversationPane> {
         action: action,
       );
 
-  void _consumePluginUiEvent(
-    TimelineEventDto event,
-    String agentId,
-  ) {
+  void _consumePluginUiEvent(TimelineEventDto event, String agentId) {
     final document = pluginUiDocumentFromEvent(event);
     if (document == null || !mounted) return;
     switch (document.slot) {
@@ -1475,10 +1440,7 @@ class _ConversationPaneState extends ConsumerState<_ConversationPane> {
     );
   }
 
-  void _showPluginToast(
-    String agentId,
-    PluginUiDocumentDto document,
-  ) {
+  void _showPluginToast(String agentId, PluginUiDocumentDto document) {
     final l10n = AppLocalizations.of(context);
     ref
         .read(appToastControllerProvider)
@@ -1920,10 +1882,8 @@ class _ConversationPaneState extends ConsumerState<_ConversationPane> {
                     providerConnectionId: effectiveRunnable
                         ? connections
                               .where(
-                                (connection) =>
-                                    effective.qualifiedModelId.startsWith(
-                                      '${connection.modelPrefix}/',
-                                    ),
+                                (connection) => effective.qualifiedModelId
+                                    .startsWith('${connection.modelPrefix}/'),
                               )
                               .firstOrNull
                               ?.id
@@ -1943,10 +1903,8 @@ class _ConversationPaneState extends ConsumerState<_ConversationPane> {
                         ),
                     onQueuedEdit: (id) =>
                         _conversation(ref, current.id).takeQueuedTurn(id),
-                    onQueuedSendNow: (id) => _conversation(
-                      ref,
-                      current.id,
-                    ).sendQueuedTurnNow(id),
+                    onQueuedSendNow: (id) =>
+                        _conversation(ref, current.id).sendQueuedTurnNow(id),
                     onSubmitAndInterrupt: (submission) async {
                       await _conversation(ref, current.id).cancelTurn();
                       await _send(current.id, submission);
@@ -1959,14 +1917,12 @@ class _ConversationPaneState extends ConsumerState<_ConversationPane> {
                             effectiveRunnable)
                         ? null
                         : hasRunnableModel && effective != null
-                        ? AppLocalizations.of(
-                            context,
-                          ).modelSettingsUnavailableDescription(
-                            effective.modelId,
-                          )
-                        : AppLocalizations.of(
-                            context,
-                          ).composerConnectProviderFirst,
+                        ? AppLocalizations.of(context)
+                              .modelSettingsUnavailableDescription(
+                                effective.modelId,
+                              )
+                        : AppLocalizations.of(context)
+                              .composerConnectProviderFirst,
                     bar: SessionComposerBar(
                       hostId: widget.selection.hostId,
                       definitions: definitions,
@@ -1978,17 +1934,17 @@ class _ConversationPaneState extends ConsumerState<_ConversationPane> {
                       onAgentChanged: (_) {},
                       onModelChanged: (model, controls) => unawaited(
                         _applySessionSetting(
-                          () => _sessions(
-                            ref,
-                          ).setModel(current.id, model, controls),
+                          () =>
+                              _sessions(ref)
+                                  .setModel(current.id, model, controls),
                         ),
                       ),
                       modelControls: current.modelControls,
                       onModelControlsChanged: (controls) => unawaited(
                         _applySessionSetting(
-                          () => _sessions(
-                            ref,
-                          ).setModelControls(current.id, controls),
+                          () =>
+                              _sessions(ref)
+                                  .setModelControls(current.id, controls),
                         ),
                       ),
                       permissionMode: current.permissionMode,
@@ -1997,9 +1953,8 @@ class _ConversationPaneState extends ConsumerState<_ConversationPane> {
                       // daemon never refuses it, and the composer already
                       // reports a save failure on the control itself.
                       onPermissionModeChanged: (mode) async {
-                        await _sessions(
-                          ref,
-                        ).setPermissionMode(current.id, mode);
+                        await _sessions(ref)
+                            .setPermissionMode(current.id, mode);
                       },
                     ),
                     attachmentInput: ref.read(attachmentInputProvider),
@@ -2022,9 +1977,7 @@ class _ConversationPaneState extends ConsumerState<_ConversationPane> {
                                 entry.createdAt ==
                                     pendingFirstTurn!.createdAt) {
                               ref
-                                  .read(
-                                    pendingFirstTurnsProvider.notifier,
-                                  )
+                                  .read(pendingFirstTurnsProvider.notifier)
                                   .clear(current.id);
                             }
                           },
@@ -2072,10 +2025,7 @@ class _ConversationPaneState extends ConsumerState<_ConversationPane> {
     return true;
   }
 
-  Future<void> _send(
-    String sessionId,
-    ComposerSubmission submission,
-  ) async {
+  Future<void> _send(String sessionId, ComposerSubmission submission) async {
     await ref
         .read(
           conversationControllerProvider(
@@ -2083,10 +2033,7 @@ class _ConversationPaneState extends ConsumerState<_ConversationPane> {
             sessionId,
           ).notifier,
         )
-        .startTurn(
-          submission.text,
-          attachments: submission.attachments,
-        );
+        .startTurn(submission.text, attachments: submission.attachments);
   }
 
   Future<Uint8List> _loadAttachment(ChatAttachment attachment) async {
@@ -2096,7 +2043,7 @@ class _ConversationPaneState extends ConsumerState<_ConversationPane> {
     // caller is supposed to check the connection first. Left in English for
     // whoever reads the crash report.
     if (api == null) throw StateError('Daemon is not connected.');
-    return readAttachmentDownload(
+    return await readAttachmentDownload(
       await api.attachments.downloadAttachment(attachment.id),
     );
   }
@@ -2128,7 +2075,7 @@ bool _isTurnActive(SessionStatus status) =>
 /// conditional one appearing above another would otherwise be matched against
 /// its neighbour by position, re-inflating the subtree that got pushed down.
 class _ConversationContentColumn extends StatelessWidget {
-  const _ConversationContentColumn({required this.child, super.key});
+  const new({required this.child, super.key});
 
   final Widget child;
 

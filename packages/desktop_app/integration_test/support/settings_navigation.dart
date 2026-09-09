@@ -7,13 +7,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'pump_until.dart';
 
 /// Opens a settings category by its stable row key.
-Future<void> openSettingsCategory(
-  WidgetTester tester,
-  String category,
-) async {
-  final row = find.byKey(
-    ValueKey<String>('settings-category-row-$category'),
-  );
+Future<void> openSettingsCategory(WidgetTester tester, String category) async {
+  final row = find.byKey(ValueKey<String>('settings-category-row-$category'));
   await pumpUntil(tester, row.hitTestable());
   await tester.tap(row.hitTestable());
   await tester.pumpAndSettle();
@@ -55,10 +50,7 @@ Future<Finder> centerSettingsAction(
     );
     await pumpUntil(tester, settingsLists);
     final settingsScrollable = find
-        .descendant(
-          of: settingsLists.first,
-          matching: find.byType(Scrollable),
-        )
+        .descendant(of: settingsLists.first, matching: find.byType(Scrollable))
         .first;
     await pumpUntil(tester, settingsScrollable);
     final position = tester.state<ScrollableState>(settingsScrollable).position;
@@ -83,10 +75,7 @@ Future<Finder> centerSettingsAction(
     findsOneWidget,
     reason: 'the exact settings editor owns one actionable control',
   );
-  await Scrollable.ensureVisible(
-    tester.element(ownedAction),
-    alignment: 0.5,
-  );
+  await Scrollable.ensureVisible(tester.element(ownedAction), alignment: 0.5);
   await tester.pumpAndSettle();
   return ownedAction;
 }
@@ -150,9 +139,7 @@ String dartExecutable() {
   }
   final lookup = Process.runSync(
     Platform.isWindows ? 'where' : 'which',
-    <String>[
-      'dart',
-    ],
+    <String>['dart'],
   );
   if (lookup.exitCode == 0) {
     return (lookup.stdout as String).split(RegExp(r'\r?\n')).first.trim();

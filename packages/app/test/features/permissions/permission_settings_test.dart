@@ -16,28 +16,23 @@ import '../../support/fake_tinest_api.dart';
 import '../../support/localization.dart';
 
 void main() {
-  test(
-    'every permission mode is offered exactly once, asking first',
-    () {
-      expect(permissionModeOrder.first, PermissionMode.ask);
-      expect(
-        permissionModeOrder.toSet(),
-        PermissionMode.values.toSet(),
-        reason: 'A new mode must be given a place in the offered order.',
-      );
-      expect(permissionModeOrder, hasLength(PermissionMode.values.length));
-    },
-    tags: const <String>['feature_test__permission_settings__unit'],
-  );
+  test('every permission mode is offered exactly once, asking first', () {
+    expect(permissionModeOrder.first, PermissionMode.ask);
+    expect(
+      permissionModeOrder.toSet(),
+      PermissionMode.values.toSet(),
+      reason: 'A new mode must be given a place in the offered order.',
+    );
+    expect(permissionModeOrder, hasLength(PermissionMode.values.length));
+  }, tags: const <String>['feature_test__permission_settings__unit']);
 
   testWidgets(
     'describes every mode and persists full access without confirmation',
     (tester) async {
       final api = FakeTinestApi();
       final router = GoRouter(
-        initialLocation: const PermissionSettingsRoute(
-          hostId: 'server',
-        ).location,
+        initialLocation: const PermissionSettingsRoute(hostId: 'server')
+            .location,
         routes: $appRoutes,
       );
       addTearDown(router.dispose);
@@ -78,10 +73,7 @@ void main() {
       expect(find.text('변경 전 확인'), findsWidgets);
       expect(find.text('작업 공간 접근'), findsOneWidget);
       expect(find.text('전체 접근'), findsWidgets);
-      expect(
-        find.textContaining('신뢰할 수 있는 작업에서만 사용하세요'),
-        findsOneWidget,
-      );
+      expect(find.textContaining('신뢰할 수 있는 작업에서만 사용하세요'), findsOneWidget);
 
       // Nothing defers the decision to the agent, and the mode that asks
       // before every change is the one at the top.
@@ -93,16 +85,11 @@ void main() {
         for (final mode in permissionModeOrder)
           mode: tester
               .getTopLeft(
-                find.byKey(
-                  ValueKey<String>('permission-option-${mode.name}'),
-                ),
+                find.byKey(ValueKey<String>('permission-option-${mode.name}')),
               )
               .dy,
       };
-      expect(
-        tops.keys.toList(growable: false),
-        permissionModeOrder,
-      );
+      expect(tops.keys.toList(growable: false), permissionModeOrder);
       for (var index = 1; index < permissionModeOrder.length; index += 1) {
         expect(
           tops[permissionModeOrder[index]],
@@ -134,9 +121,8 @@ void main() {
         defaultPermissionSetError: Exception('daemon rejected update'),
       );
       final router = GoRouter(
-        initialLocation: const PermissionSettingsRoute(
-          hostId: 'server',
-        ).location,
+        initialLocation: const PermissionSettingsRoute(hostId: 'server')
+            .location,
         routes: $appRoutes,
       );
       addTearDown(router.dispose);
@@ -177,70 +163,66 @@ void main() {
     tags: const <String>['feature_test__permission_settings__widget'],
   );
 
-  testWidgets(
-    'permission Select uses a desktop menu and a mobile sheet',
-    (tester) async {
-      tester.view.devicePixelRatio = 1;
-      tester.view.physicalSize = const Size(1000, 800);
-      addTearDown(tester.view.reset);
-      final router = GoRouter(
-        initialLocation: const PermissionSettingsRoute(
-          hostId: 'server',
-        ).location,
-        routes: $appRoutes,
-      );
-      addTearDown(router.dispose);
-      await tester.pumpWidget(
-        ProviderScope(
-          overrides: [
-            appServicesProvider.overrideWithValue(
-              fakeAppServices(FakeTinestApi()),
-            ),
-          ],
-          child: MaterialApp.router(
-            theme: testLightTheme,
-            locale: testLocale,
-            localizationsDelegates: testLocalizationsDelegates,
-            supportedLocales: testSupportedLocales,
-            routerConfig: router,
-            builder: (context, child) =>
-                TinestToastScope(child: child ?? const SizedBox.shrink()),
+  testWidgets('permission Select uses a desktop menu and a mobile sheet', (
+    tester,
+  ) async {
+    tester.view.devicePixelRatio = 1;
+    tester.view.physicalSize = const Size(1000, 800);
+    addTearDown(tester.view.reset);
+    final router = GoRouter(
+      initialLocation: const PermissionSettingsRoute(hostId: 'server').location,
+      routes: $appRoutes,
+    );
+    addTearDown(router.dispose);
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          appServicesProvider.overrideWithValue(
+            fakeAppServices(FakeTinestApi()),
           ),
+        ],
+        child: MaterialApp.router(
+          theme: testLightTheme,
+          locale: testLocale,
+          localizationsDelegates: testLocalizationsDelegates,
+          supportedLocales: testSupportedLocales,
+          routerConfig: router,
+          builder: (context, child) =>
+              TinestToastScope(child: child ?? const SizedBox.shrink()),
         ),
-      );
-      await tester.pumpAndSettle();
-      await tester.tap(
-        find.byKey(const ValueKey<String>('permission-settings-change')),
-      );
-      await tester.pumpAndSettle();
+      ),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(
+      find.byKey(const ValueKey<String>('permission-settings-change')),
+    );
+    await tester.pumpAndSettle();
 
-      expect(find.byType(TRDrawer), findsNothing);
-      await tester.sendKeyEvent(LogicalKeyboardKey.escape);
-      await tester.pumpAndSettle();
-      tester.view.physicalSize = const Size(390, 760);
-      await tester.pumpAndSettle();
-      await tester.tap(
-        find.byKey(const ValueKey<String>('permission-settings-change')),
-      );
-      await tester.pumpAndSettle();
+    expect(find.byType(TRDrawer), findsNothing);
+    await tester.sendKeyEvent(LogicalKeyboardKey.escape);
+    await tester.pumpAndSettle();
+    tester.view.physicalSize = const Size(390, 760);
+    await tester.pumpAndSettle();
+    await tester.tap(
+      find.byKey(const ValueKey<String>('permission-settings-change')),
+    );
+    await tester.pumpAndSettle();
 
-      expect(find.byType(TRDrawer), findsOneWidget);
-      expect(find.byType(TRTextField), findsOneWidget);
-      final sheetOptions = find.descendant(
-        of: find.byType(TRDrawer),
-        matching: find.byType(TextButton),
+    expect(find.byType(TRDrawer), findsOneWidget);
+    expect(find.byType(TRTextField), findsOneWidget);
+    final sheetOptions = find.descendant(
+      of: find.byType(TRDrawer),
+      matching: find.byType(TextButton),
+    );
+    expect(sheetOptions, findsWidgets);
+    for (final element in sheetOptions.evaluate()) {
+      expect(
+        tester.getSize(find.byWidget(element.widget)).height,
+        greaterThanOrEqualTo(48),
       );
-      expect(sheetOptions, findsWidgets);
-      for (final element in sheetOptions.evaluate()) {
-        expect(
-          tester.getSize(find.byWidget(element.widget)).height,
-          greaterThanOrEqualTo(48),
-        );
-      }
-      expect(tester.takeException(), isNull);
-    },
-    tags: const <String>['feature_test__permission_settings__widget'],
-  );
+    }
+    expect(tester.takeException(), isNull);
+  }, tags: const <String>['feature_test__permission_settings__widget']);
 
   testWidgets(
     'permission Select inherits the comfortable mobile control size',
@@ -250,9 +232,8 @@ void main() {
         ..physicalSize = const Size(390, 760);
       addTearDown(tester.view.reset);
       final router = GoRouter(
-        initialLocation: const PermissionSettingsRoute(
-          hostId: 'server',
-        ).location,
+        initialLocation: const PermissionSettingsRoute(hostId: 'server')
+            .location,
         routes: $appRoutes,
       );
       addTearDown(router.dispose);
@@ -280,9 +261,7 @@ void main() {
       await tester.pumpAndSettle();
 
       final trigger = find.descendant(
-        of: find.byKey(
-          const ValueKey<String>('permission-settings-change'),
-        ),
+        of: find.byKey(const ValueKey<String>('permission-settings-change')),
         matching: find.byType(TextButton),
       );
       expect(trigger, findsOneWidget);
@@ -298,9 +277,8 @@ void main() {
     'a blocking permission load error uses the shared settings hierarchy',
     (tester) async {
       final router = GoRouter(
-        initialLocation: const PermissionSettingsRoute(
-          hostId: 'server',
-        ).location,
+        initialLocation: const PermissionSettingsRoute(hostId: 'server')
+            .location,
         routes: $appRoutes,
       );
       addTearDown(router.dispose);
@@ -310,9 +288,8 @@ void main() {
             appServicesProvider.overrideWithValue(
               fakeAppServices(FakeTinestApi()),
             ),
-            permissionSettingsControllerProvider('server').overrideWith(
-              _ErrorPermissionSettingsController.new,
-            ),
+            permissionSettingsControllerProvider('server')
+                .overrideWith(_ErrorPermissionSettingsController.new),
           ],
           child: MaterialApp.router(
             theme: testLightTheme,

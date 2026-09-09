@@ -33,11 +33,7 @@ Future<String?> showDirectoryBrowser(
 /// Walks daemon directories so a remote host can be browsed in the app.
 class DirectoryBrowserDialog extends StatefulWidget {
   /// Creates the directory browser.
-  const DirectoryBrowserDialog({
-    required this.api,
-    required this.initialPath,
-    super.key,
-  });
+  const new({required this.api, required this.initialPath, super.key});
 
   /// Daemon whose filesystem is browsed.
   final TinestApi api;
@@ -102,13 +98,8 @@ class _DirectoryBrowserDialogState extends State<DirectoryBrowserDialog> {
             if (_loading && _loadedOnce) const TRProgress(),
             if (_error != null)
               Padding(
-                padding: const EdgeInsets.symmetric(
-                  vertical: TRSpacing.small,
-                ),
-                child: TRText(
-                  _error!,
-                  color: TRTextColor.danger,
-                ),
+                padding: const EdgeInsets.symmetric(vertical: TRSpacing.small),
+                child: TRText(_error!, color: TRTextColor.danger),
               ),
             Expanded(
               child: _loading && !_loadedOnce
@@ -211,7 +202,7 @@ class _DirectoryBrowserDialogState extends State<DirectoryBrowserDialog> {
 /// Asks which daemon a new project should be registered on.
 class DaemonPickerDialog extends StatelessWidget {
   /// Creates the daemon picker.
-  const DaemonPickerDialog({required this.hosts, super.key});
+  const new({required this.hosts, super.key});
 
   /// Online daemon runtimes offered to the user.
   final List<HostRuntimeSnapshot> hosts;
@@ -248,7 +239,7 @@ Future<String?> pickDaemonHost(
 ) async {
   if (online.isEmpty) return null;
   if (online.length == 1) return online.single.id;
-  return showTRDialog<String>(
+  return await showTRDialog<String>(
     context: context,
     builder: (context) => DaemonPickerDialog(hosts: online),
   );

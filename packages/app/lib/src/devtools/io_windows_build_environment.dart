@@ -11,7 +11,7 @@ Future<Map<String, String>> resolveWindowsBuildEnvironment() =>
 
 final class _IoWindowsBuildEnvironmentDiscovery
     implements WindowsBuildEnvironmentDiscovery {
-  const _IoWindowsBuildEnvironmentDiscovery();
+  const new();
 
   @override
   bool get isWindows => Platform.isWindows;

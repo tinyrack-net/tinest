@@ -63,9 +63,7 @@ void main() {
   });
 
   test('longest scenario is isolated from the remaining measured work', () {
-    final lanes = DesktopE2ePlan.forHost(
-      DesktopHost.windows,
-    ).lanes(jobs: 32);
+    final lanes = DesktopE2ePlan.forHost(DesktopHost.windows).lanes(jobs: 32);
     final longest = desktopE2eScenarios.reduce(
       (left, right) =>
           right.estimatedSeconds > left.estimatedSeconds ? right : left,
@@ -86,11 +84,8 @@ void main() {
 
   test('non-Windows second lane waits for application readiness', () async {
     final runtime = _FakeDesktopE2eRuntime();
-    final future = DesktopE2eRunner(runtime: runtime).run(
-      DesktopE2ePlan.forHost(DesktopHost.macos),
-      jobs: 4,
-      seed: 100,
-    );
+    final future = DesktopE2eRunner(runtime: runtime)
+        .run(DesktopE2ePlan.forHost(DesktopHost.macos), jobs: 4, seed: 100);
     await Future<void>.delayed(Duration.zero);
     expect(runtime.commands, hasLength(1));
 
@@ -114,11 +109,8 @@ void main() {
 
   test('Windows lane build phases do not overlap', () async {
     final runtime = _FakeDesktopE2eRuntime();
-    final future = DesktopE2eRunner(runtime: runtime).run(
-      DesktopE2ePlan.forHost(DesktopHost.windows),
-      jobs: 2,
-      seed: 200,
-    );
+    final future = DesktopE2eRunner(runtime: runtime)
+        .run(DesktopE2ePlan.forHost(DesktopHost.windows), jobs: 2, seed: 200);
     await Future<void>.delayed(Duration.zero);
     expect(runtime.commands, hasLength(1));
 
@@ -160,19 +152,13 @@ void main() {
       final builds = _FakeSharedBuildCoordinator();
       final firstRuntime = _FakeDesktopE2eRuntime(builds: builds);
       final secondRuntime = _FakeDesktopE2eRuntime(builds: builds);
-      final firstFuture = DesktopE2eRunner(runtime: firstRuntime).run(
-        DesktopE2ePlan.forHost(DesktopHost.windows),
-        jobs: 1,
-        seed: 300,
-      );
+      final firstFuture = DesktopE2eRunner(runtime: firstRuntime)
+          .run(DesktopE2ePlan.forHost(DesktopHost.windows), jobs: 1, seed: 300);
       await Future<void>.delayed(Duration.zero);
       firstRuntime.processes.single.markReady();
       await Future<void>.delayed(Duration.zero);
-      final secondFuture = DesktopE2eRunner(runtime: secondRuntime).run(
-        DesktopE2ePlan.forHost(DesktopHost.windows),
-        jobs: 1,
-        seed: 301,
-      );
+      final secondFuture = DesktopE2eRunner(runtime: secondRuntime)
+          .run(DesktopE2ePlan.forHost(DesktopHost.windows), jobs: 1, seed: 301);
       await Future<void>.delayed(Duration.zero);
       expect(
         secondRuntime.commands,
@@ -205,11 +191,8 @@ void main() {
     final runtime = _FakeDesktopE2eRuntime(
       missingWindowsGeneratedSources: <String>{'plugin_registrar.cc'},
     );
-    final future = DesktopE2eRunner(runtime: runtime).run(
-      DesktopE2ePlan.forHost(DesktopHost.windows),
-      jobs: 1,
-      seed: 302,
-    );
+    final future = DesktopE2eRunner(runtime: runtime)
+        .run(DesktopE2ePlan.forHost(DesktopHost.windows), jobs: 1, seed: 302);
     await Future<void>.delayed(Duration.zero);
 
     expect(runtime.invalidatedWindowsLanes, <int>[0]);
@@ -224,11 +207,8 @@ void main() {
     'Windows invalidates a complete lane before Flutter recreates ephemeral',
     () async {
       final runtime = _FakeDesktopE2eRuntime();
-      final future = DesktopE2eRunner(runtime: runtime).run(
-        DesktopE2ePlan.forHost(DesktopHost.windows),
-        jobs: 1,
-        seed: 303,
-      );
+      final future = DesktopE2eRunner(runtime: runtime)
+          .run(DesktopE2ePlan.forHost(DesktopHost.windows), jobs: 1, seed: 303);
       await Future<void>.delayed(Duration.zero);
 
       expect(runtime.invalidatedWindowsLanes, <int>[0]);
@@ -248,11 +228,8 @@ void main() {
     'Windows readiness errors retain the project lease until exit',
     () async {
       final runtime = _FakeDesktopE2eRuntime();
-      final future = DesktopE2eRunner(runtime: runtime).run(
-        DesktopE2ePlan.forHost(DesktopHost.windows),
-        jobs: 2,
-        seed: 303,
-      );
+      final future = DesktopE2eRunner(runtime: runtime)
+          .run(DesktopE2ePlan.forHost(DesktopHost.windows), jobs: 2, seed: 303);
       await Future<void>.delayed(Duration.zero);
       runtime.processes.single.failReadiness();
       await Future<void>.delayed(Duration.zero);
@@ -274,11 +251,8 @@ void main() {
 
   test('early failure still launches and completes the other lane', () async {
     final runtime = _FakeDesktopE2eRuntime();
-    final future = DesktopE2eRunner(runtime: runtime).run(
-      DesktopE2ePlan.forHost(DesktopHost.windows),
-      jobs: 8,
-      seed: 9,
-    );
+    final future = DesktopE2eRunner(runtime: runtime)
+        .run(DesktopE2ePlan.forHost(DesktopHost.windows), jobs: 8, seed: 9);
     await Future<void>.delayed(Duration.zero);
     runtime.processes.first.finish(69);
     await Future<void>.delayed(Duration.zero);
@@ -300,11 +274,8 @@ void main() {
       final runtime = _FakeDesktopE2eRuntime(
         laneResourceDeletionFailure: cleanupFailure,
       );
-      final run = DesktopE2eRunner(runtime: runtime).run(
-        DesktopE2ePlan.forHost(DesktopHost.windows),
-        jobs: 1,
-        seed: 10,
-      );
+      final run = DesktopE2eRunner(runtime: runtime)
+          .run(DesktopE2ePlan.forHost(DesktopHost.windows), jobs: 1, seed: 10);
       await Future<void>.delayed(Duration.zero);
       final failure = expectLater(run, throwsA(same(cleanupFailure)));
 
@@ -325,11 +296,8 @@ void main() {
     'lanes use independent home config readiness and build directories',
     () async {
       final runtime = _FakeDesktopE2eRuntime();
-      final future = DesktopE2eRunner(runtime: runtime).run(
-        DesktopE2ePlan.forHost(DesktopHost.windows),
-        jobs: 2,
-        seed: 2,
-      );
+      final future = DesktopE2eRunner(runtime: runtime)
+          .run(DesktopE2ePlan.forHost(DesktopHost.windows), jobs: 2, seed: 2);
       await Future<void>.delayed(Duration.zero);
       runtime.processes.first
         ..markReady()
@@ -378,7 +346,7 @@ void main() {
 }
 
 final class _FakeDesktopE2eRuntime implements DesktopE2eRuntime {
-  _FakeDesktopE2eRuntime({
+  new({
     _FakeSharedBuildCoordinator? builds,
     Set<String> missingWindowsGeneratedSources = const <String>{},
     this.laneResourceDeletionFailure,
@@ -496,7 +464,7 @@ final class _FakeBuildLeaseCoordinator {
 }
 
 final class _FakeDesktopE2eBuildLease implements DesktopE2eBuildLease {
-  _FakeDesktopE2eBuildLease(this._coordinator);
+  new(this._coordinator);
 
   final _FakeBuildLeaseCoordinator _coordinator;
   bool _released = false;

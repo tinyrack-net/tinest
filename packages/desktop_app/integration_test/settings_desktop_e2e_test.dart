@@ -321,9 +321,7 @@ void main() {
         calls,
       );
       final store = MemoryAppStore(
-        settings: const AppSettings(
-          embeddedDaemonPort: testEmbeddedDaemonPort,
-        ),
+        settings: const AppSettings(embeddedDaemonPort: testEmbeddedDaemonPort),
       );
       final window = _RecordingWindow(calls);
       final tray = _RecordingTray(calls);
@@ -392,9 +390,7 @@ void main() {
           .toList();
       expect(abandonedWrites, isEmpty);
     },
-    tags: const <String>[
-      'feature_scenario__desktop_residency__tray_quit__e2e',
-    ],
+    tags: const <String>['feature_scenario__desktop_residency__tray_quit__e2e'],
   );
 }
 
@@ -403,17 +399,14 @@ String _join(List<String> segments) => segments.join(Platform.pathSeparator);
 Future<void> _waitForVisibility(
   DesktopWindow window, {
   required bool visible,
-}) => awaitCondition(
-  () async {
-    if (await window.isVisible() == visible) return true;
-    // Bare Xvfb runs without a window manager and can drop a map-state
-    // request outright, so a lost edge never arrives on its own. Show and
-    // hide are idempotent; reissue the command instead of waiting on it.
-    await (visible ? window.show() : window.hide());
-    return await window.isVisible() == visible;
-  },
-  'the window to become ${visible ? 'visible' : 'hidden'}',
-);
+}) => awaitCondition(() async {
+  if (await window.isVisible() == visible) return true;
+  // Bare Xvfb runs without a window manager and can drop a map-state
+  // request outright, so a lost edge never arrives on its own. Show and
+  // hide are idempotent; reissue the command instead of waiting on it.
+  await (visible ? window.show() : window.hide());
+  return await window.isVisible() == visible;
+}, 'the window to become ${visible ? 'visible' : 'hidden'}');
 
 Future<void> _pumpApp(
   WidgetTester tester,
@@ -421,10 +414,7 @@ Future<void> _pumpApp(
   AutostartRegistration? autostart,
 }) async {
   await tester.pumpWidget(
-    TinestApp(
-      services: fixture.services,
-      autostart: autostart,
-    ),
+    TinestApp(services: fixture.services, autostart: autostart),
   );
   await tester.pumpAndSettle();
 }
@@ -489,7 +479,7 @@ final class _RecordingAutostart implements AutostartRegistration {
 
 /// Records the identity each real embedded daemon starts with.
 final class _IdentityRecordingLauncher implements EmbeddedDaemonLauncher {
-  _IdentityRecordingLauncher(this.delegate);
+  new(this.delegate);
 
   final EmbeddedDaemonLauncher delegate;
   final List<String> serverIds = <String>[];
@@ -508,7 +498,7 @@ final class _IdentityRecordingLauncher implements EmbeddedDaemonLauncher {
 }
 
 final class _RecordingEmbeddedLauncher implements EmbeddedDaemonLauncher {
-  _RecordingEmbeddedLauncher(this.delegate, this.calls);
+  new(this.delegate, this.calls);
 
   final EmbeddedDaemonLauncher delegate;
   final List<String> calls;
@@ -529,7 +519,7 @@ final class _RecordingEmbeddedLauncher implements EmbeddedDaemonLauncher {
 }
 
 final class _RecordingEmbeddedSession implements EmbeddedDaemonSession {
-  _RecordingEmbeddedSession(this.delegate, this.calls);
+  new(this.delegate, this.calls);
 
   final EmbeddedDaemonSession delegate;
   final List<String> calls;
@@ -559,7 +549,7 @@ final class _RecordingEmbeddedSession implements EmbeddedDaemonSession {
 }
 
 final class _RecordingWindow implements DesktopWindow {
-  _RecordingWindow(this.calls);
+  new(this.calls);
 
   final List<String> calls;
   final ValueNotifier<bool> _maximized = ValueNotifier<bool>(false);
@@ -607,7 +597,7 @@ final class _RecordingWindow implements DesktopWindow {
 }
 
 final class _RecordingTerminator implements AppTerminator {
-  _RecordingTerminator(this.calls);
+  new(this.calls);
 
   final List<String> calls;
   int terminations = 0;
@@ -620,7 +610,7 @@ final class _RecordingTerminator implements AppTerminator {
 }
 
 final class _RecordingTray implements TrayIcon {
-  _RecordingTray(this.calls);
+  new(this.calls);
 
   final List<String> calls;
   TrayMenuModel? menu;

@@ -237,9 +237,8 @@ void main() {
     () async {
       // Port 0 asks the OS for any free port, so the success path never races
       // another process for a specific number.
-      final server = await const LoopbackOAuthCallbackServerBinder(
-        port: 0,
-      ).bind();
+      final server = await const LoopbackOAuthCallbackServerBinder(port: 0)
+          .bind();
       addTearDown(() => server.close(force: true));
       expect(server.port, greaterThan(0));
 
@@ -313,7 +312,7 @@ Future<int> _callback(
 }
 
 final class _Clock implements Clock {
-  const _Clock(this.value);
+  const new(this.value);
 
   final DateTime value;
 
@@ -322,14 +321,14 @@ final class _Clock implements Clock {
 }
 
 final class _EphemeralBinder implements OAuthCallbackServerBinder {
-  const _EphemeralBinder();
+  const new();
 
   @override
   Future<HttpServer> bind() => HttpServer.bind(InternetAddress.loopbackIPv4, 0);
 }
 
 final class _OAuthAdapter implements HttpClientAdapter {
-  _OAuthAdapter(this.now)
+  new(this.now)
     : accessToken = _jwt(<String, dynamic>{
         'exp': now.add(const Duration(hours: 1)).millisecondsSinceEpoch ~/ 1000,
         'chatgpt_account_id': 'account-123',

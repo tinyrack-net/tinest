@@ -12,7 +12,7 @@ import 'package:protocol/protocol.dart';
 /// directory walk is only a fallback for roots that are not repositories.
 final class GitAwareFileIndexGateway implements WorkspaceFileIndexGateway {
   /// Creates the Git-aware file index.
-  GitAwareFileIndexGateway(this._runner, this._clock);
+  new(this._runner, this._clock);
 
   /// How long an index is served before a refresh is scheduled.
   static const Duration indexTtl = Duration(seconds: 15);
@@ -147,7 +147,7 @@ final class GitAwareFileIndexGateway implements WorkspaceFileIndexGateway {
     if (result != null && result.exitCode == 0) {
       return _fromGit(result.stdout, request);
     }
-    return _walk(request);
+    return await _walk(request);
   }
 
   _FileIndex _fromGit(String stdout, FileSearchRequest request) {
@@ -319,7 +319,7 @@ final class GitAwareFileIndexGateway implements WorkspaceFileIndexGateway {
 }
 
 final class _PendingDirectory {
-  const _PendingDirectory({required this.directory, required this.depth});
+  const new({required this.directory, required this.depth});
 
   final Directory directory;
   final int depth;
@@ -330,11 +330,7 @@ final class _PendingDirectory {
 /// Git reports a repository root with forward slashes even on Windows, so
 /// joining without normalizing leaves a path that mixes both separators.
 /// [context] exists so the Windows behaviour is testable from any host.
-String absolutePathFor(
-  String root,
-  String relativePath, {
-  p.Context? context,
-}) {
+String absolutePathFor(String root, String relativePath, {p.Context? context}) {
   final resolved = context ?? p.context;
   return resolved.normalize(
     resolved.join(root, resolved.joinAll(p.posix.split(relativePath))),
@@ -342,7 +338,7 @@ String absolutePathFor(
 }
 
 final class _IndexedPath {
-  _IndexedPath({
+  new({
     required this.relativePath,
     required this.root,
     required this.isDirectory,
@@ -366,18 +362,14 @@ final class _IndexedPath {
 
 /// An immutable view of one index, stable across a concurrent refresh.
 final class _IndexSnapshot {
-  const _IndexSnapshot({required this.entries, required this.truncated});
+  const new({required this.entries, required this.truncated});
 
   final List<_IndexedPath> entries;
   final bool truncated;
 }
 
 final class _FileIndex {
-  _FileIndex({
-    required this.entries,
-    required this.loadedAt,
-    required this.truncated,
-  });
+  new({required this.entries, required this.loadedAt, required this.truncated});
 
   List<_IndexedPath> entries;
   DateTime loadedAt;

@@ -119,19 +119,15 @@ void main() {
           accountId: 'e2e-account',
         ),
       );
-      await pumpUntilCondition(
-        tester,
-        () async {
-          final connections = await assertions.providers
-              .listProviderConnections();
-          return connections.any(
-            (connection) =>
-                connection.definitionId == 'openai' &&
-                connection.status == ProviderConnectionStatus.connected,
-          );
-        },
-        'the OAuth connection to report connected',
-      );
+      await pumpUntilCondition(tester, () async {
+        final connections = await assertions.providers
+            .listProviderConnections();
+        return connections.any(
+          (connection) =>
+              connection.definitionId == 'openai' &&
+              connection.status == ProviderConnectionStatus.connected,
+        );
+      }, 'the OAuth connection to report connected');
 
       final connection = (await assertions.providers.listProviderConnections())
           .singleWhere((item) => item.definitionId == 'openai');
@@ -142,10 +138,7 @@ void main() {
       final oauthModels = (await assertions.providers.listProviderModels(
         connection.id,
       )).map((model) => model.id);
-      expect(
-        oauthModels,
-        contains('${connection.modelPrefix}/gpt-5.6-sol'),
-      );
+      expect(oauthModels, contains('${connection.modelPrefix}/gpt-5.6-sol'));
       expect(oauthModels, isNot(contains('oauth-e2e-model')));
 
       await tester.tap(
@@ -214,14 +207,10 @@ Future<void> _startDeviceOAuth(WidgetTester tester) async {
     find.byKey(const ValueKey<String>('provider-model-prefix')),
     findsOneWidget,
   );
-  await tester.tap(
-    find.byKey(const ValueKey<String>('provider-auth-method')),
-  );
+  await tester.tap(find.byKey(const ValueKey<String>('provider-auth-method')));
   await tester.pumpAndSettle();
   await tester.tap(
-    find.byKey(
-      const ValueKey<String>('provider-auth-method-chatgpt-device'),
-    ),
+    find.byKey(const ValueKey<String>('provider-auth-method-chatgpt-device')),
   );
   await tester.pumpAndSettle();
   await tester.tap(
@@ -267,33 +256,32 @@ final class _SuccessfulMetadataSource implements ProviderCatalogMetadataSource {
   ) async => _metadata(providerIds);
 }
 
-Map<String, List<ProviderCatalogMetadata>> _metadata(
-  Set<String> providerIds,
-) => <String, List<ProviderCatalogMetadata>>{
-  if (providerIds.contains('openai'))
-    'openai': const <ProviderCatalogMetadata>[
-      ProviderCatalogMetadata(
-        id: 'refreshed-e2e-model',
-        label: 'Refreshed E2E model',
-        capabilities: ModelCapabilitiesDto(
-          streaming: CapabilitySupport.supported,
-          toolCalling: CapabilitySupport.supported,
-          controls: <ModelControlDescriptorDto>[
-            ModelControlDescriptorDto(
-              id: 'reasoning_effort',
-              label: 'Reasoning effort',
-              kind: ModelControlKind.choice,
-              presentation: ModelControlPresentation.menuChip,
+Map<String, List<ProviderCatalogMetadata>> _metadata(Set<String> providerIds) =>
+    <String, List<ProviderCatalogMetadata>>{
+      if (providerIds.contains('openai'))
+        'openai': const <ProviderCatalogMetadata>[
+          ProviderCatalogMetadata(
+            id: 'refreshed-e2e-model',
+            label: 'Refreshed E2E model',
+            capabilities: ModelCapabilitiesDto(
+              streaming: CapabilitySupport.supported,
+              toolCalling: CapabilitySupport.supported,
+              controls: <ModelControlDescriptorDto>[
+                ModelControlDescriptorDto(
+                  id: 'reasoning_effort',
+                  label: 'Reasoning effort',
+                  kind: ModelControlKind.choice,
+                  presentation: ModelControlPresentation.menuChip,
+                ),
+              ],
+              source: CapabilitySource.refreshed,
             ),
-          ],
-          source: CapabilitySource.refreshed,
-        ),
-      ),
-    ],
-};
+          ),
+        ],
+    };
 
 final class _StaticModelDiscovery implements ProviderModelDiscovery {
-  const _StaticModelDiscovery();
+  const new();
 
   @override
   Future<List<String>> fetchModelIds(
@@ -318,20 +306,18 @@ final class _ControlledOAuthGateway implements ProviderOAuthGateway {
 }
 
 final class _ControlledOAuthSession implements ProviderOAuthSession {
-  _ControlledOAuthSession(this.flow);
+  new(this.flow);
 
   final AgentProviderAuthFlow flow;
   final Completer<({OAuthCredential? credential, String? error})> _result =
       Completer<({OAuthCredential? credential, String? error})>();
   bool cancelled = false;
 
-  void fail(String message) => _result.complete(
-    (credential: null, error: message),
-  );
+  void fail(String message) =>
+      _result.complete((credential: null, error: message));
 
-  void succeed(OAuthCredential credential) => _result.complete(
-    (credential: credential, error: null),
-  );
+  void succeed(OAuthCredential credential) =>
+      _result.complete((credential: credential, error: null));
 
   @override
   String get authorizationUrl => 'https://auth.invalid/${flow.name}';

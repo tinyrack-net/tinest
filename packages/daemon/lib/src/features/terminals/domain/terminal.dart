@@ -1,7 +1,7 @@
 /// Shell command used to start a terminal.
 final class TerminalShell {
   /// Creates a shell command.
-  const TerminalShell({required this.executable, this.arguments = const []});
+  const new({required this.executable, this.arguments = const []});
 
   /// Executable path or command name.
   final String executable;
@@ -25,7 +25,7 @@ enum TerminalLifecycle {
 /// Domain snapshot of a daemon-owned terminal.
 final class Terminal {
   /// Creates a terminal snapshot.
-  const Terminal({
+  const new({
     required this.id,
     required this.worktreeId,
     required this.title,
@@ -93,7 +93,7 @@ final class Terminal {
 /// One ordered terminal output chunk.
 final class TerminalOutput {
   /// Creates an output chunk.
-  const TerminalOutput({
+  const new({
     required this.terminalId,
     required this.sequence,
     required this.data,
@@ -132,7 +132,7 @@ enum TerminalRestoreStrategy {
 /// Cell geometry an attaching client is claiming for the pseudo-terminal.
 final class TerminalViewport {
   /// Creates a viewport claim.
-  const TerminalViewport({required this.columns, required this.rows});
+  const new({required this.columns, required this.rows});
 
   /// Claimed column count.
   final int columns;
@@ -144,7 +144,7 @@ final class TerminalViewport {
 /// What an attaching client asks the daemon to rebuild.
 final class TerminalRestoreRequest {
   /// Creates a restore request.
-  const TerminalRestoreRequest({
+  const new({
     required this.strategy,
     this.afterSequence = 0,
     this.scrollbackLines = 200,
@@ -167,7 +167,7 @@ final class TerminalRestoreRequest {
 
 /// Terminal metadata plus whatever makes an attaching client current.
 sealed class TerminalRestore {
-  const TerminalRestore({required this.terminal});
+  const new({required this.terminal});
 
   /// Current terminal metadata.
   final Terminal terminal;
@@ -176,7 +176,7 @@ sealed class TerminalRestore {
 /// Retained output continuing a client's cursor.
 final class TerminalDeltaRestore extends TerminalRestore {
   /// Creates a delta restore.
-  const TerminalDeltaRestore({
+  const new({
     required super.terminal,
     required this.afterSequence,
     required this.chunks,
@@ -192,7 +192,7 @@ final class TerminalDeltaRestore extends TerminalRestore {
 /// A screen rebuilt from the daemon's own emulator.
 final class TerminalSnapshotRestore extends TerminalRestore {
   /// Creates a snapshot restore.
-  const TerminalSnapshotRestore({
+  const new({
     required super.terminal,
     required this.throughSequence,
     required this.ansi,

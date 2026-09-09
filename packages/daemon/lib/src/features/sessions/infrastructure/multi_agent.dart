@@ -23,7 +23,7 @@ const int maxWaitTimeoutMs = 3600000;
 /// Surfaces as an error tool result rather than failing the caller's turn.
 final class CollaborationException implements Exception {
   /// Creates a [CollaborationException].
-  const CollaborationException(this.message);
+  const new(this.message);
 
   /// User- and model-visible reason.
   final String message;
@@ -40,7 +40,7 @@ final class CollaborationException implements Exception {
 /// working from one only the user can release.
 final class CollaborationAgentSummary {
   /// Creates a summary of one agent in the tree.
-  const CollaborationAgentSummary({
+  const new({
     required this.sessionId,
     required this.agentName,
     required this.agentStatus,
@@ -160,7 +160,7 @@ abstract interface class SessionTurnPort {
 /// [SessionTurnPort] bound at composition time.
 class MultiAgentService {
   /// Creates a [MultiAgentService].
-  MultiAgentService({
+  new({
     required this._sessions,
     required this._mailbox,
     required this._timeline,
@@ -878,7 +878,7 @@ class MultiAgentService {
     if (definition.model.source == AgentModelSource.fixed && modelId != null) {
       return ModelSelectionDto(modelId: modelId);
     }
-    return _defaultModel();
+    return await _defaultModel();
   }
 
   Future<void> _appendEvent({
@@ -893,22 +893,18 @@ class MultiAgentService {
       type: type,
       data: data,
     );
-    _events(
-      OutboundNotification(sessionsTimelineEventNotification, event),
-    );
+    _events(OutboundNotification(sessionsTimelineEventNotification, event));
   }
 
   void _emitSession(SessionDto? session) {
     if (session != null) {
-      _events(
-        OutboundNotification(sessionsUpdatedNotification, session),
-      );
+      _events(OutboundNotification(sessionsUpdatedNotification, session));
     }
   }
 }
 
 final class _MailboxTurnInputSource implements TurnInputSource {
-  _MailboxTurnInputSource(this._service, this._sessionId);
+  new(this._service, this._sessionId);
 
   final MultiAgentService _service;
   final String _sessionId;

@@ -1,10 +1,10 @@
 /// Parameters for a procedure that accepts no values.
 final class EmptyParamsDto {
   /// Creates empty parameters.
-  const EmptyParamsDto();
+  const new();
 
   /// Decodes an empty object.
-  factory EmptyParamsDto.fromJson(Map<String, dynamic> json) {
+  factory fromJson(Map<String, dynamic> json) {
     if (json.isNotEmpty) throw const FormatException('Expected empty params.');
     return const EmptyParamsDto();
   }
@@ -16,10 +16,10 @@ final class EmptyParamsDto {
 /// Result for a procedure that returns no values.
 final class EmptyResultDto {
   /// Creates an empty result.
-  const EmptyResultDto();
+  const new();
 
   /// Decodes an empty object.
-  factory EmptyResultDto.fromJson(Map<String, dynamic> json) {
+  factory fromJson(Map<String, dynamic> json) {
     if (json.isNotEmpty) throw const FormatException('Expected empty result.');
     return const EmptyResultDto();
   }
@@ -31,14 +31,14 @@ final class EmptyResultDto {
 /// Stable JSON-RPC failure data transported independently of its message.
 final class RpcFailureDto {
   /// Creates stable failure data.
-  const RpcFailureDto({
+  const new({
     required this.code,
     this.retryable = false,
     this.details = const <String, dynamic>{},
   });
 
   /// Decodes failure data.
-  factory RpcFailureDto.fromJson(Map<String, dynamic> json) {
+  factory fromJson(Map<String, dynamic> json) {
     final code = json['code'];
     final retryable = json['retryable'];
     final details = json['details'];

@@ -43,34 +43,32 @@ void main() {
     );
   });
 
-  testWidgets(
-    'safe area and keyboard inset are consumed within the cap',
-    (tester) async {
-      await _pumpSheet(
-        tester,
-        padding: const EdgeInsets.fromLTRB(8, 24, 12, 34),
-        viewInsets: const EdgeInsets.only(bottom: 220),
-        textScaler: const TextScaler.linear(2),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            for (var index = 0; index < 20; index += 1)
-              Text('Accessible item $index'),
-          ],
-        ),
-      );
+  testWidgets('safe area and keyboard inset are consumed within the cap', (
+    tester,
+  ) async {
+    await _pumpSheet(
+      tester,
+      padding: const EdgeInsets.fromLTRB(8, 24, 12, 34),
+      viewInsets: const EdgeInsets.only(bottom: 220),
+      textScaler: const TextScaler.linear(2),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          for (var index = 0; index < 20; index += 1)
+            Text('Accessible item $index'),
+        ],
+      ),
+    );
 
-      final drawer = find.byType(TRDrawer);
-      expect(tester.getSize(drawer).height, lessThanOrEqualTo(800 * 0.7));
-      expect(tester.getRect(drawer).bottom, 800);
-      expect(
-        tester.getRect(find.text('Accessible item 0')).bottom,
-        lessThanOrEqualTo(800 - 220),
-      );
-      expect(tester.takeException(), isNull);
-    },
-    tags: const <String>['feature_test__soft_keyboard_visibility__widget'],
-  );
+    final drawer = find.byType(TRDrawer);
+    expect(tester.getSize(drawer).height, lessThanOrEqualTo(800 * 0.7));
+    expect(tester.getRect(drawer).bottom, 800);
+    expect(
+      tester.getRect(find.text('Accessible item 0')).bottom,
+      lessThanOrEqualTo(800 - 220),
+    );
+    expect(tester.takeException(), isNull);
+  }, tags: const <String>['feature_test__soft_keyboard_visibility__widget']);
 }
 
 Future<void> _pumpSheet(

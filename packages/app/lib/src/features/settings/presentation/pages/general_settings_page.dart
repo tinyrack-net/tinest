@@ -26,7 +26,7 @@ const Map<String, String> languageEndonyms = <String, String>{
 /// App-wide preferences that do not belong to any single daemon.
 class GeneralSettingsPage extends ConsumerWidget {
   /// Creates the general settings page.
-  const GeneralSettingsPage({this.embedded = false, super.key});
+  const new({this.embedded = false, super.key});
 
   /// Whether the unified settings shell supplies navigation chrome.
   final bool embedded;
@@ -36,9 +36,7 @@ class GeneralSettingsPage extends ConsumerWidget {
     final l10n = AppLocalizations.of(context);
     final body = SettingsAsyncContent<HostRegistryState>(
       state: ref.watch(hostRegistryControllerProvider),
-      loading: SettingsSkeletonLayout.form(
-        semanticLabel: l10n.settingsLoading,
-      ),
+      loading: SettingsSkeletonLayout.form(semanticLabel: l10n.settingsLoading),
       error: (error, _) => SettingsErrorState(
         key: const ValueKey<String>('general-settings-error'),
         error: error,
@@ -48,10 +46,7 @@ class GeneralSettingsPage extends ConsumerWidget {
       // group boundary apiece announced three groups where there is one
       // subject: how the app presents itself.
       data: (_) => const SettingsScaffold(
-        children: <Widget>[
-          _PresentationSection(),
-          _StartupSection(),
-        ],
+        children: <Widget>[_PresentationSection(), _StartupSection()],
       ),
     );
     if (embedded) return body;
@@ -66,7 +61,7 @@ class GeneralSettingsPage extends ConsumerWidget {
 
 /// Login-item preferences, shown only where the app can register one.
 class _StartupSection extends ConsumerWidget {
-  const _StartupSection();
+  const new();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -144,7 +139,7 @@ class _StartupSection extends ConsumerWidget {
 
 /// How the app presents itself: its theme and the language it speaks.
 class _PresentationSection extends ConsumerWidget {
-  const _PresentationSection();
+  const new();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -203,10 +198,7 @@ class _PresentationSection extends ConsumerWidget {
               label: l10n.generalLanguageSystem,
             ),
             for (final entry in languageEndonyms.entries)
-              TRSelectItem<String?>(
-                value: entry.key,
-                label: entry.value,
-              ),
+              TRSelectItem<String?>(value: entry.key, label: entry.value),
           ],
           onChanged: settings == null
               ? null

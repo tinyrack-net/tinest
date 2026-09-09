@@ -15,7 +15,7 @@ import 'package:cliweave/terminal.dart';
 /// other at the single point where they meet.
 final class WriteStreamSink implements StringSink {
   /// Wraps a cliweave write stream as a [StringSink].
-  const WriteStreamSink(this._stream);
+  const new(this._stream);
 
   final WriteStream _stream;
 
@@ -36,7 +36,7 @@ final class WriteStreamSink implements StringSink {
 /// Drives a cliweave [Spinner] from the command bodies' narrow progress port.
 final class SpinnerCliProgress implements CliProgress {
   /// Reports progress through [_logger].
-  SpinnerCliProgress(this._logger);
+  new(this._logger);
 
   final CliLogger _logger;
   Spinner? _spinner;
@@ -73,7 +73,7 @@ typedef DaemonClientFactory = Future<TinestClient> Function({
 /// test can substitute each one.
 final class TinestCliContext implements CommandContext {
   /// Creates a command context.
-  TinestCliContext({
+  new({
     required this.process,
     required this.logger,
     required this.connectClient,

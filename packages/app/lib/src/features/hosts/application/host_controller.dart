@@ -12,9 +12,8 @@ part 'host_controller.g.dart';
 
 /// Resolves a connected host API without subscribing to registry changes.
 Future<TinestApi> requireHostApi(Ref ref, String hostId) async {
-  final runtime = (await ref.read(
-    hostRegistryControllerProvider.future,
-  )).runtimes[hostId];
+  final runtime = (await ref.read(hostRegistryControllerProvider.future))
+      .runtimes[hostId];
   return connectedHostApi(runtime);
 }
 
@@ -200,10 +199,8 @@ class HostRegistryController extends _$HostRegistryController {
   Future<void> reconnect(String hostId) => _registry.reconnect(hostId);
 
   /// Enables or disables startup connection for one remote host.
-  Future<void> setRemoteAutoConnect(
-    String hostId, {
-    required bool enabled,
-  }) => _registry.setAutoConnect(hostId, enabled: enabled);
+  Future<void> setRemoteAutoConnect(String hostId, {required bool enabled}) =>
+      _registry.setAutoConnect(hostId, enabled: enabled);
 
   /// Selects one host without requiring an online connection.
   Future<void> selectHost(String hostId) => _registry.selectHost(hostId);

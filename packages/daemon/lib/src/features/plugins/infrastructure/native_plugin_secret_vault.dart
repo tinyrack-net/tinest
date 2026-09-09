@@ -8,7 +8,7 @@ import 'package:path/path.dart' as p;
 /// Atomic Agent/plugin-isolated secret storage under the fresh v5 namespace.
 final class NativePluginSecretVault implements PluginSecretVault {
   /// Creates a vault below `<configRoot>/v5` without reading older files.
-  NativePluginSecretVault(String configRoot)
+  new(String configRoot)
     : _file = File(
         p.join(
           p.normalize(p.absolute(configRoot)),
@@ -32,19 +32,16 @@ final class NativePluginSecretVault implements PluginSecretVault {
   });
 
   @override
-  Future<void> set(
-    PluginSecretScope scope,
-    String name,
-    String value,
-  ) => _serialize(() {
-    _ensureLoaded();
-    _validate(scope, name);
-    if (utf8.encode(value).length > PluginSecretLimits.maximumValueBytes) {
-      throw const FormatException('Plugin secret exceeds the host limit.');
-    }
-    _values[_key(scope, name)] = value;
-    _persist();
-  });
+  Future<void> set(PluginSecretScope scope, String name, String value) =>
+      _serialize(() {
+        _ensureLoaded();
+        _validate(scope, name);
+        if (utf8.encode(value).length > PluginSecretLimits.maximumValueBytes) {
+          throw const FormatException('Plugin secret exceeds the host limit.');
+        }
+        _values[_key(scope, name)] = value;
+        _persist();
+      });
 
   @override
   Future<void> remove(PluginSecretScope scope, String name) => _serialize(() {
@@ -94,16 +91,15 @@ final class NativePluginSecretVault implements PluginSecretVault {
     final temporary = File('${_file.path}.$pid.tmp');
     try {
       final sortedKeys = _values.keys.toList()..sort();
+      final secrets = <String, String>{
+        for (final key in sortedKeys) key: _values[key]!,
+      };
+      final contents = <String, Object?>{
+        'schemaVersion': _schemaVersion,
+        'secrets': secrets,
+      };
       if (temporary.existsSync()) temporary.deleteSync();
-      temporary.writeAsStringSync(
-        '${jsonEncode(<String, Object?>{
-          'schemaVersion': _schemaVersion,
-          'secrets': <String, String>{
-            for (final key in sortedKeys) key: _values[key]!,
-          },
-        })}\n',
-        flush: true,
-      );
+      temporary.writeAsStringSync('${jsonEncode(contents)}\n', flush: true);
       if (!Platform.isWindows) {
         Process.runSync('chmod', <String>['600', temporary.path]);
       }
@@ -134,7 +130,5 @@ String _key(PluginSecretScope scope, String name) =>
     jsonEncode(<String>[scope.agentId, scope.pluginId, name]);
 
 final RegExp _agentId = RegExp(r'^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$');
-final RegExp _pluginId = RegExp(
-  r'^[a-z][a-z0-9]*(?:\.[a-z][a-z0-9]*)+$',
-);
+final RegExp _pluginId = RegExp(r'^[a-z][a-z0-9]*(?:\.[a-z][a-z0-9]*)+$');
 final RegExp _secretName = RegExp(r'^[A-Za-z][A-Za-z0-9_.-]{0,127}$');

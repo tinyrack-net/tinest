@@ -10,34 +10,30 @@ import 'package:protocol/protocol.dart';
 import 'package:test/test.dart';
 
 void main() {
-  test(
-    'parses session, weekly, review, reset, plan, and credits',
-    () {
-      final usage = parseOpenAIProviderUsage(<String, dynamic>{
-        'plan_type': 'plus',
-        'rate_limit': <String, dynamic>{
-          'primary_window': <String, dynamic>{
-            'used_percent': 25,
-            'reset_at': 1767225600,
-          },
-          'secondary_window': <String, dynamic>{'used_percent': 50.5},
+  test('parses session, weekly, review, reset, plan, and credits', () {
+    final usage = parseOpenAIProviderUsage(<String, dynamic>{
+      'plan_type': 'plus',
+      'rate_limit': <String, dynamic>{
+        'primary_window': <String, dynamic>{
+          'used_percent': 25,
+          'reset_at': 1767225600,
         },
-        'code_review_rate_limit': <String, dynamic>{
-          'primary_window': <String, dynamic>{'used_percent': 75},
-        },
-        'credits': <String, dynamic>{'balance': '3.5'},
-      });
+        'secondary_window': <String, dynamic>{'used_percent': 50.5},
+      },
+      'code_review_rate_limit': <String, dynamic>{
+        'primary_window': <String, dynamic>{'used_percent': 75},
+      },
+      'credits': <String, dynamic>{'balance': '3.5'},
+    });
 
-      expect(usage.plan, 'plus');
-      expect(usage.creditBalance, 3.5);
-      expect(
-        usage.windows.map((window) => window.kind),
-        ProviderUsageWindowKind.values,
-      );
-      expect(usage.windows.first.resetsAt, DateTime.utc(2026));
-    },
-    tags: const <String>['feature_test__provider_usage__unit'],
-  );
+    expect(usage.plan, 'plus');
+    expect(usage.creditBalance, 3.5);
+    expect(
+      usage.windows.map((window) => window.kind),
+      ProviderUsageWindowKind.values,
+    );
+    expect(usage.windows.first.resetsAt, DateTime.utc(2026));
+  }, tags: const <String>['feature_test__provider_usage__unit']);
 
   test(
     'single-flights, refreshes authorization once, and caches for five minutes',
@@ -75,28 +71,24 @@ void main() {
     tags: const <String>['feature_test__provider_usage__unit'],
   );
 
-  test(
-    'does not query unsupported API-key connections',
-    () async {
-      final gateway = _Gateway();
-      final service = ProviderUsageService(
-        repository: _Providers(<ProviderConnectionDto>[
-          _connection.copyWith(authKind: ProviderAuthKind.apiKey),
-        ]),
-        credentials: _Credentials(const ApiKeyCredential('secret')),
-        gateway: gateway,
-        oauthRefresher: _Refresher(_credential('unused')),
-        clock: _Clock(DateTime.utc(2026)),
-      );
+  test('does not query unsupported API-key connections', () async {
+    final gateway = _Gateway();
+    final service = ProviderUsageService(
+      repository: _Providers(<ProviderConnectionDto>[
+        _connection.copyWith(authKind: ProviderAuthKind.apiKey),
+      ]),
+      credentials: _Credentials(const ApiKeyCredential('secret')),
+      gateway: gateway,
+      oauthRefresher: _Refresher(_credential('unused')),
+      clock: _Clock(DateTime.utc(2026)),
+    );
 
-      expect(
-        (await service.listUsage()).single.status,
-        ProviderUsageStatus.unsupported,
-      );
-      expect(gateway.calls, 0);
-    },
-    tags: const <String>['feature_test__provider_usage__unit'],
-  );
+    expect(
+      (await service.listUsage()).single.status,
+      ProviderUsageStatus.unsupported,
+    );
+    expect(gateway.calls, 0);
+  }, tags: const <String>['feature_test__provider_usage__unit']);
 
   test(
     'isolates quota transport failures behind a safe provider error',
@@ -143,7 +135,7 @@ OAuthCredential _credential(String token) => OAuthCredential(
 );
 
 final class _Clock implements Clock {
-  _Clock(this.now);
+  new(this.now);
   DateTime now;
 
   @override
@@ -174,7 +166,7 @@ final class _Gateway implements ProviderUsageGateway {
 }
 
 final class _Refresher implements ProviderCredentialRefresher {
-  _Refresher(this.result);
+  new(this.result);
   final OAuthCredential result;
   int calls = 0;
 
@@ -190,7 +182,7 @@ final class _Refresher implements ProviderCredentialRefresher {
 }
 
 final class _Credentials implements CredentialRepository {
-  _Credentials(this.current);
+  new(this.current);
   ProviderCredential? current;
 
   @override
@@ -225,7 +217,7 @@ final class _Credentials implements CredentialRepository {
 }
 
 final class _Providers implements ProviderRepository {
-  _Providers(this.connections);
+  new(this.connections);
   final List<ProviderConnectionDto> connections;
 
   @override

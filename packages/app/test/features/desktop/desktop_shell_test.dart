@@ -199,32 +199,28 @@ void main() {
       tags: const <String>['feature_test__desktop_residency__unit'],
     );
 
-    test(
-      'show, hide, and visibility reach the plugin',
-      () async {
-        var shown = 0;
-        var hidden = 0;
-        var nativeVisible = false;
-        final window = PluginDesktopWindow(
-          showWindow: () async {
-            shown += 1;
-            nativeVisible = true;
-          },
-          hideWindow: () async {
-            hidden += 1;
-            nativeVisible = false;
-          },
-          windowIsVisible: () async => nativeVisible,
-        );
+    test('show, hide, and visibility reach the plugin', () async {
+      var shown = 0;
+      var hidden = 0;
+      var nativeVisible = false;
+      final window = PluginDesktopWindow(
+        showWindow: () async {
+          shown += 1;
+          nativeVisible = true;
+        },
+        hideWindow: () async {
+          hidden += 1;
+          nativeVisible = false;
+        },
+        windowIsVisible: () async => nativeVisible,
+      );
 
-        await window.show();
-        expect(await window.isVisible(), isTrue);
-        await window.hide();
-        expect(await window.isVisible(), isFalse);
-        expect(<int>[shown, hidden], <int>[1, 1]);
-      },
-      tags: const <String>['feature_test__desktop_residency__unit'],
-    );
+      await window.show();
+      expect(await window.isVisible(), isTrue);
+      await window.hide();
+      expect(await window.isVisible(), isFalse);
+      expect(<int>[shown, hidden], <int>[1, 1]);
+    }, tags: const <String>['feature_test__desktop_residency__unit']);
 
     for (final platform in <TargetPlatform>[
       TargetPlatform.linux,
@@ -257,52 +253,44 @@ void main() {
       );
     }
 
-    test(
-      'a hidden prepare confirms the native window really hid',
-      () async {
-        var hidden = 0;
-        var nativeVisible = true;
-        final window = PluginDesktopWindow(
-          platform: TargetPlatform.macOS,
-          initialize: () async {},
-          readyToShow: (onReady) => onReady(),
-          hideWindow: () async {
-            hidden += 1;
-            if (hidden == 2) nativeVisible = false;
-          },
-          windowIsVisible: () async => nativeVisible,
-          waitForWindowState: (_) async {},
-        );
+    test('a hidden prepare confirms the native window really hid', () async {
+      var hidden = 0;
+      var nativeVisible = true;
+      final window = PluginDesktopWindow(
+        platform: TargetPlatform.macOS,
+        initialize: () async {},
+        readyToShow: (onReady) => onReady(),
+        hideWindow: () async {
+          hidden += 1;
+          if (hidden == 2) nativeVisible = false;
+        },
+        windowIsVisible: () async => nativeVisible,
+        waitForWindowState: (_) async {},
+      );
 
-        await window.prepare(startHidden: true);
+      await window.prepare(startHidden: true);
 
-        expect(hidden, 2);
-        expect(window.visible.value, isFalse);
-        expect(await window.isVisible(), isFalse);
-      },
-      tags: const <String>['feature_test__desktop_residency__unit'],
-    );
+      expect(hidden, 2);
+      expect(window.visible.value, isFalse);
+      expect(await window.isVisible(), isFalse);
+    }, tags: const <String>['feature_test__desktop_residency__unit']);
   });
 
   group('process terminator', () {
-    test(
-      'terminating ends the process successfully',
-      () async {
-        final codes = <int>[];
-        // The real `exit` never returns, so the seam models that too: reaching
-        // the line after `terminate` would mean the app kept running.
-        final terminator = ProcessAppTerminator(
-          exitProcess: (code) {
-            codes.add(code);
-            throw const _Exited();
-          },
-        );
+    test('terminating ends the process successfully', () async {
+      final codes = <int>[];
+      // The real `exit` never returns, so the seam models that too: reaching
+      // the line after `terminate` would mean the app kept running.
+      final terminator = ProcessAppTerminator(
+        exitProcess: (code) {
+          codes.add(code);
+          throw const _Exited();
+        },
+      );
 
-        await expectLater(terminator.terminate(), throwsA(isA<_Exited>()));
-        expect(codes, <int>[0]);
-      },
-      tags: const <String>['feature_test__desktop_residency__unit'],
-    );
+      await expectLater(terminator.terminate(), throwsA(isA<_Exited>()));
+      expect(codes, <int>[0]);
+    }, tags: const <String>['feature_test__desktop_residency__unit']);
   });
 
   group('tray adapter', () {
@@ -504,19 +492,15 @@ void main() {
       tags: const <String>['feature_test__desktop_residency__unit'],
     );
 
-    test(
-      'separators and disabled rows survive the native conversion',
-      () {
-        final items = buildNativeTrayMenu(model).items!;
-        expect(items, hasLength(3));
-        expect(items[0].key, trayItemToggleWindow);
-        expect(items[0].disabled, isFalse);
-        expect(items[1].type, 'separator');
-        expect(items[2].key, trayItemDaemonStatus);
-        expect(items[2].disabled, isTrue);
-      },
-      tags: const <String>['feature_test__desktop_residency__unit'],
-    );
+    test('separators and disabled rows survive the native conversion', () {
+      final items = buildNativeTrayMenu(model).items!;
+      expect(items, hasLength(3));
+      expect(items[0].key, trayItemToggleWindow);
+      expect(items[0].disabled, isFalse);
+      expect(items[1].type, 'separator');
+      expect(items[2].key, trayItemDaemonStatus);
+      expect(items[2].disabled, isTrue);
+    }, tags: const <String>['feature_test__desktop_residency__unit']);
   });
 
   group('login item adapter', () {
@@ -564,5 +548,5 @@ void main() {
 
 /// Stands in for a process that really did exit.
 final class _Exited implements Exception {
-  const _Exited();
+  const new();
 }

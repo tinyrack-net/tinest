@@ -33,7 +33,7 @@ enum TinestListRowTrailingLayout {
 /// [controlOwnsFocus] so the control is the single tab stop for the setting.
 class TinestListRow extends StatefulWidget {
   /// Creates a content or navigation row.
-  const TinestListRow({
+  const new({
     required this.title,
     this.contentPadding,
     this.controlOwnsFocus = false,

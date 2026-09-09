@@ -34,9 +34,7 @@ void main() {
       File(userPath()).writeAsString(jsonEncode(v5Document(document)));
 
   Future<void> writeProject(String root, String contents) async {
-    final file = File(
-      store.sourcePath(McpConfigScope.project, rootPath: root),
-    );
+    final file = File(store.sourcePath(McpConfigScope.project, rootPath: root));
     await file.parent.create(recursive: true);
     final document = jsonDecode(contents) as Map<String, dynamic>;
     await file.writeAsString(jsonEncode(v5Document(document)));
@@ -277,56 +275,44 @@ void main() {
     });
 
     test('an unknown transport is rejected', () async {
-      await expectRejected(
-        <String, dynamic>{'transport': 'carrier-pigeon'},
-        because: 'transport',
-      );
+      await expectRejected(<String, dynamic>{
+        'transport': 'carrier-pigeon',
+      }, because: 'transport');
       await expectRejected(<String, dynamic>{}, because: 'transport');
     });
 
     test('a stdio server needs a command and an absolute cwd', () async {
-      await expectRejected(
-        <String, dynamic>{'transport': 'stdio'},
-        because: 'command',
-      );
-      await expectRejected(
-        <String, dynamic>{'transport': 'stdio', 'command': ''},
-        because: 'command',
-      );
-      await expectRejected(
-        <String, dynamic>{
-          'transport': 'stdio',
-          'command': 'x',
-          'cwd': 'relative/path',
-        },
-        because: 'cwd',
-      );
-      await expectRejected(
-        <String, dynamic>{
-          'transport': 'stdio',
-          'command': 'x',
-          'args': <dynamic>[1],
-        },
-        because: 'args',
-      );
+      await expectRejected(<String, dynamic>{
+        'transport': 'stdio',
+      }, because: 'command');
+      await expectRejected(<String, dynamic>{
+        'transport': 'stdio',
+        'command': '',
+      }, because: 'command');
+      await expectRejected(<String, dynamic>{
+        'transport': 'stdio',
+        'command': 'x',
+        'cwd': 'relative/path',
+      }, because: 'cwd');
+      await expectRejected(<String, dynamic>{
+        'transport': 'stdio',
+        'command': 'x',
+        'args': <dynamic>[1],
+      }, because: 'args');
     });
 
     test('a remote HTTP server must use TLS', () async {
-      await expectRejected(
-        <String, dynamic>{
-          'transport': 'http',
-          'url': 'http://example.test/mcp',
-        },
-        because: 'url',
-      );
-      await expectRejected(
-        <String, dynamic>{'transport': 'http'},
-        because: 'url',
-      );
-      await expectRejected(
-        <String, dynamic>{'transport': 'http', 'url': 'not a url'},
-        because: 'url',
-      );
+      await expectRejected(<String, dynamic>{
+        'transport': 'http',
+        'url': 'http://example.test/mcp',
+      }, because: 'url');
+      await expectRejected(<String, dynamic>{
+        'transport': 'http',
+      }, because: 'url');
+      await expectRejected(<String, dynamic>{
+        'transport': 'http',
+        'url': 'not a url',
+      }, because: 'url');
     });
 
     test('plain HTTP to the loopback host is allowed', () async {
@@ -350,14 +336,11 @@ void main() {
     });
 
     test('an unknown MCP server key is rejected rather than ignored', () async {
-      await expectRejected(
-        <String, dynamic>{
-          'transport': 'stdio',
-          'command': 'x',
-          'transprot': 'typo',
-        },
-        because: 'unknown key',
-      );
+      await expectRejected(<String, dynamic>{
+        'transport': 'stdio',
+        'command': 'x',
+        'transprot': 'typo',
+      }, because: 'unknown key');
     });
 
     test('a project document may not carry a literal secret', () async {
@@ -446,11 +429,8 @@ void main() {
     final secrets = <String, String>{'github.token': 'stored-secret'};
     final environment = <String, String>{'LINEAR': 'env-secret'};
 
-    String resolve(String value) => resolveMcpSecrets(
-      value,
-      environment: environment,
-      secrets: secrets,
-    );
+    String resolve(String value) =>
+        resolveMcpSecrets(value, environment: environment, secrets: secrets);
 
     test('environment and stored references expand', () {
       expect(resolve(r'${env:LINEAR}'), 'env-secret');

@@ -589,9 +589,8 @@ abstract interface class TinestApi {
       tests: '',
     );
     addTearDown(() => fixture.delete(recursive: true));
-    File('${fixture.path}/lib/security.dart').writeAsStringSync(
-      "const retired = 'adminToken';",
-    );
+    File('${fixture.path}/lib/security.dart')
+        .writeAsStringSync("const retired = 'adminToken';");
 
     final violations = FeatureVerifier(
       fixture.path,

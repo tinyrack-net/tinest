@@ -83,9 +83,7 @@ void main() {
       'Refresh token expired.',
       reauthRequired: true,
     );
-    const authorization = OAuthAuthorizationFailure(
-      'Authorization cancelled.',
-    );
+    const authorization = OAuthAuthorizationFailure('Authorization cancelled.');
 
     expect(discovery.kind, ProviderDiscoveryFailureKind.invalidCredential);
     expect(discovery.message, 'Credential rejected.');
@@ -203,7 +201,7 @@ final class _BundledOnlyAdapter extends _FakeAdapter {
 }
 
 final class _FakeModelGateway implements ModelGateway {
-  const _FakeModelGateway(this.id);
+  const new(this.id);
 
   @override
   final String id;

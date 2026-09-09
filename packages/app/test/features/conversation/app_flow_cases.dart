@@ -55,10 +55,8 @@ void _registerConversationAppFlows() {
       await _setTestViewport(tester, const Size(1500, 900));
       addTearDown(() => tester.binding.setSurfaceSize(null));
       final root = session('layout');
-      final child = session('layout-child').copyWith(
-        parentSessionId: root.id,
-        taskName: 'Layout child',
-      );
+      final child = session('layout-child')
+          .copyWith(parentSessionId: root.id, taskName: 'Layout child');
       // The subagent list is a plugin drawer now, so the layout contract this
       // case pins — composer-header content is inset by the composer's own
       // padding at every width — needs a drawer contribution to measure.
@@ -220,10 +218,7 @@ void _registerConversationAppFlows() {
       expect(narrowScrollbar.width, narrowPane.width);
       expect(narrowScrollbar.right, closeTo(narrowPane.right, 0.5));
       final narrowMessage = tester.getRect(message);
-      expect(
-        narrowMessage.width,
-        narrowPane.width - TRSpacing.extraLarge * 2,
-      );
+      expect(narrowMessage.width, narrowPane.width - TRSpacing.extraLarge * 2);
       expect(narrowMessage.center.dx, closeTo(narrowPane.center.dx, 0.5));
       for (final content in <Finder>[composer]) {
         final rect = tester.getRect(content);
@@ -231,10 +226,7 @@ void _registerConversationAppFlows() {
         expect(rect.center.dx, closeTo(narrowPane.center.dx, 0.5));
       }
       final narrowSubagents = tester.getRect(subagents);
-      expect(
-        narrowSubagents.width,
-        narrowPane.width - TRSpacing.medium * 2,
-      );
+      expect(narrowSubagents.width, narrowPane.width - TRSpacing.medium * 2);
       expect(narrowSubagents.center.dx, closeTo(narrowPane.center.dx, 0.5));
       expect(
         find.byKey(const ValueKey<String>('session-composer-settings')),
@@ -337,96 +329,90 @@ void _registerConversationAppFlows() {
     tags: const <String>['feature_test__session_lifecycle__widget'],
   );
 
-  testWidgets(
-    'a session exposes no host-owned mode control',
-    (tester) async {
-      await _setTestViewport(tester, const Size(1400, 900));
-      addTearDown(() => tester.binding.setSurfaceSize(null));
-      final planning = session('planning');
-      final api = FakeTinestApi(
-        workspaces: <WorkspaceDto>[workspace],
-        worktrees: <WorktreeDto>[checkout],
-        agents: <SessionDto>[planning],
-      );
-      final router = await _pumpRoute(
-        tester,
-        api,
-        SessionRoute(
-          hostId: 'server',
-          workspaceId: workspace.id,
-          worktreeId: checkout.id,
-          sessionId: planning.id,
-        ).location,
-      );
-      addTearDown(router.dispose);
-      await tester.pumpAndSettle();
+  testWidgets('a session exposes no host-owned mode control', (tester) async {
+    await _setTestViewport(tester, const Size(1400, 900));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    final planning = session('planning');
+    final api = FakeTinestApi(
+      workspaces: <WorkspaceDto>[workspace],
+      worktrees: <WorktreeDto>[checkout],
+      agents: <SessionDto>[planning],
+    );
+    final router = await _pumpRoute(
+      tester,
+      api,
+      SessionRoute(
+        hostId: 'server',
+        workspaceId: workspace.id,
+        worktreeId: checkout.id,
+        sessionId: planning.id,
+      ).location,
+    );
+    addTearDown(router.dispose);
+    await tester.pumpAndSettle();
 
-      expect(tester.takeException(), isNull);
-      expect(
-        find.byKey(const ValueKey<String>('session-composer-mode')),
-        findsNothing,
-      );
-    },
-    tags: const <String>['feature_test__session_lifecycle__widget'],
-  );
+    expect(tester.takeException(), isNull);
+    expect(
+      find.byKey(const ValueKey<String>('session-composer-mode')),
+      findsNothing,
+    );
+  }, tags: const <String>['feature_test__session_lifecycle__widget']);
 
-  testWidgets(
-    'a historical plan snapshot renders through generic plugin UI',
-    (tester) async {
-      await _setTestViewport(tester, const Size(1400, 900));
-      addTearDown(() => tester.binding.setSurfaceSize(null));
-      final planning = session('planning');
-      final api = FakeTinestApi(
-        workspaces: <WorkspaceDto>[workspace],
-        worktrees: <WorktreeDto>[checkout],
-        agents: <SessionDto>[planning],
-        timelines: <String, List<TimelineEventDto>>{
-          planning.id: <TimelineEventDto>[
-            TimelineEventDto(
-              sessionId: planning.id,
-              sequence: 1,
-              turnId: 'turn-1',
-              type: 'plugin.ui',
-              data: const <String, dynamic>{
-                'document': <String, dynamic>{
-                  'id': 'plan-snapshot',
-                  'pluginId': 'tinest.plan',
-                  'revisionHash': 'historical-revision',
-                  'slot': 'timeline',
-                  'root': <String, dynamic>{
-                    'type': 'text',
-                    'text': 'Move the parser',
-                  },
+  testWidgets('a historical plan snapshot renders through generic plugin UI', (
+    tester,
+  ) async {
+    await _setTestViewport(tester, const Size(1400, 900));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    final planning = session('planning');
+    final api = FakeTinestApi(
+      workspaces: <WorkspaceDto>[workspace],
+      worktrees: <WorktreeDto>[checkout],
+      agents: <SessionDto>[planning],
+      timelines: <String, List<TimelineEventDto>>{
+        planning.id: <TimelineEventDto>[
+          TimelineEventDto(
+            sessionId: planning.id,
+            sequence: 1,
+            turnId: 'turn-1',
+            type: 'plugin.ui',
+            data: const <String, dynamic>{
+              'document': <String, dynamic>{
+                'id': 'plan-snapshot',
+                'pluginId': 'tinest.plan',
+                'revisionHash': 'historical-revision',
+                'slot': 'timeline',
+                'root': <String, dynamic>{
+                  'type': 'text',
+                  'text': 'Move the parser',
                 },
               },
-              createdAt: now,
-            ),
-          ],
-        },
-      );
-      final router = await _pumpRoute(
-        tester,
-        api,
-        SessionRoute(
-          hostId: 'server',
-          workspaceId: workspace.id,
-          worktreeId: checkout.id,
-          sessionId: planning.id,
-        ).location,
-      );
-      addTearDown(router.dispose);
-      await tester.pumpAndSettle();
+            },
+            createdAt: now,
+          ),
+        ],
+      },
+    );
+    final router = await _pumpRoute(
+      tester,
+      api,
+      SessionRoute(
+        hostId: 'server',
+        workspaceId: workspace.id,
+        worktreeId: checkout.id,
+        sessionId: planning.id,
+      ).location,
+    );
+    addTearDown(router.dispose);
+    await tester.pumpAndSettle();
 
-      expect(
-        find.byKey(const ValueKey<String>('session-composer-input')),
-        findsOneWidget,
-      );
-      expect(find.text('이 계획대로 진행할까요?'), findsNothing);
-      expect(find.text('Move the parser'), findsOneWidget);
-      expect(api.startedPrompts, isEmpty);
-    },
-    tags: const <String>['feature_test__session_lifecycle__widget'],
-  );
+    expect(
+      find.byKey(const ValueKey<String>('session-composer-input')),
+      findsOneWidget,
+    );
+    expect(find.text('이 계획대로 진행할까요?'), findsNothing);
+    expect(find.text('Move the parser'), findsOneWidget);
+    expect(api.startedPrompts, isEmpty);
+  }, tags: const <String>['feature_test__session_lifecycle__widget']);
 
   testWidgets(
     'live plugin publications reach status, dialog, and toast host slots',
@@ -571,9 +557,8 @@ void _registerConversationAppFlows() {
   testWidgets(
     'a published status document does not outlive the turn that sent it',
     (tester) async {
-      final agent = session(
-        'plugin-ui-status-live',
-      ).copyWith(status: SessionStatus.running);
+      final agent = session('plugin-ui-status-live')
+          .copyWith(status: SessionStatus.running);
       final api = FakeTinestApi(
         workspaces: <WorkspaceDto>[workspace],
         worktrees: <WorktreeDto>[checkout],
@@ -619,9 +604,7 @@ void _registerConversationAppFlows() {
 
   testWidgets(
     'timeline and approval cards render typed event content',
-    (
-      tester,
-    ) async {
+    (tester) async {
       final agent = session('approval');
       final approval = ApprovalRequestDto(
         id: 'approval',
@@ -670,9 +653,7 @@ void _registerConversationAppFlows() {
                     ),
                   ),
                   ChatItemView(
-                    item: projectChatTimeline(
-                      <TimelineEventDto>[event],
-                    ).single,
+                    item: projectChatTimeline(<TimelineEventDto>[event]).single,
                   ),
                   ApprovalCard(hostId: 'server', approval: approval),
                 ],
@@ -690,13 +671,10 @@ void _registerConversationAppFlows() {
       await tester.pumpAndSettle();
       await tester.tap(find.widgetWithText(TRButton, '승인'));
       await tester.pumpAndSettle();
-      expect(
-        api.approvalDecisions,
-        <({bool approved, String id})>[
-          (id: 'approval', approved: false),
-          (id: 'approval', approved: true),
-        ],
-      );
+      expect(api.approvalDecisions, <({bool approved, String id})>[
+        (id: 'approval', approved: false),
+        (id: 'approval', approved: true),
+      ]);
     },
     tags: const <String>[
       'feature_test__turn_execution__widget',
@@ -1004,9 +982,7 @@ void _registerConversationAppFlows() {
       expect(
         tester
             .widget<TRTextField>(
-              find.byKey(
-                const ValueKey<String>('chat-question-other-theme'),
-              ),
+              find.byKey(const ValueKey<String>('chat-question-other-theme')),
             )
             .controller
             ?.text,
@@ -1028,11 +1004,7 @@ void _registerConversationAppFlows() {
       expect(
         tester.widget<TRTabs>(find.byType(TRTabs)).tabs,
         everyElement(
-          isA<TRTabsTab>().having(
-            (tab) => tab.disabled,
-            'disabled',
-            isFalse,
-          ),
+          isA<TRTabsTab>().having((tab) => tab.disabled, 'disabled', isFalse),
         ),
       );
       api
@@ -1134,9 +1106,8 @@ void _registerConversationAppFlows() {
             localizationsDelegates: testLocalizationsDelegates,
             supportedLocales: testSupportedLocales,
             builder: (context, child) => MediaQuery(
-              data: MediaQuery.of(
-                context,
-              ).copyWith(textScaler: const TextScaler.linear(2)),
+              data: MediaQuery.of(context)
+                  .copyWith(textScaler: const TextScaler.linear(2)),
               child: child!,
             ),
             home: Scaffold(

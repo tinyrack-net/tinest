@@ -109,10 +109,7 @@ String _pluginIdOf(String contributionId) {
 /// corruption to a user, so the cause is named here instead.
 final class DaemonAlreadyRunningException implements Exception {
   /// Creates a conflict for the daemon home another daemon still owns.
-  const DaemonAlreadyRunningException({
-    required this.homeDirectory,
-    required this.diagnostic,
-  });
+  const new({required this.homeDirectory, required this.diagnostic});
 
   /// Daemon home whose lock could not be taken.
   final String homeDirectory;
@@ -147,7 +144,7 @@ abstract interface class DaemonHandle {
 /// infrastructure adapters or feature services.
 final class DaemonHostOptions {
   /// Creates optional host overrides.
-  const DaemonHostOptions({
+  const new({
     this.provider,
     this.clock,
     this.ids,
@@ -452,9 +449,7 @@ abstract final class DaemonApplication {
       // The IO launcher serializes protocol writes with termination itself,
       // so no decorator is needed for turn cancellation racing a flush.
       final luaProcessLauncher = DeferredLuaHostProcessLauncher(
-        () => resolveLuaHostCommand(
-          sourceRoot: luaSourceRoot,
-        ),
+        () => resolveLuaHostCommand(sourceRoot: luaSourceRoot),
         const lua.IoLuaHostProcessLauncher(),
       );
       final pluginRuntime = PluginRuntime<ConversationAttachment>(
@@ -569,13 +564,10 @@ abstract final class DaemonApplication {
           ids: _TinestLuaIds(effectiveIds),
         ),
       );
-      final luaSweep = Timer.periodic(
-        const Duration(minutes: 5),
-        (_) {
-          luaCodeMode.sweep();
-          pluginRuntime.sweep();
-        },
-      );
+      final luaSweep = Timer.periodic(const Duration(minutes: 5), (_) {
+        luaCodeMode.sweep();
+        pluginRuntime.sweep();
+      });
       // One instance, shared by every writer: a block ends when something
       // else is written, so a writer holding its own would close blocks the
       // others cannot see.
@@ -643,16 +635,13 @@ abstract final class DaemonApplication {
         hasActiveTurn: (sessionId) => service.hasActiveTurn(sessionId),
         hasPendingInput: sessionInteractions.hasPendingInput,
         startContinuation:
-            ({
-              required sessionId,
-              required turnId,
-              required prompt,
-            }) => service.startTurn(
-              sessionId: sessionId,
-              turnId: turnId,
-              prompt: prompt,
-              internal: true,
-            ),
+            ({required sessionId, required turnId, required prompt}) =>
+                service.startTurn(
+                  sessionId: sessionId,
+                  turnId: turnId,
+                  prompt: prompt,
+                  internal: true,
+                ),
       );
       service = SessionTurnCoordinator(
         sessions: database.sessionDao,
@@ -874,59 +863,56 @@ abstract final class DaemonApplication {
           );
         }),
       ];
-      final bindings = RpcBindingRegistry(
-        <RpcBindingDescriptor>[
-          ...workspaceRpcBindings(
-            workspaces: workspaceCatalog,
-            worktrees: worktreeLifecycle,
-          ),
-          ...agentRpcBindings(
-            definitions: agentDefinitions,
-            permissions: permissionDefaults,
-          ),
-          ...pluginRpcBindings(
-            plugins: pluginManagement,
-            sessionControls: pluginSessionControls,
-            ui: pluginUi,
-            secrets: pluginSecrets,
-            authoring: pluginAuthoring,
-          ),
-          ...promptRpcBindings(
-            skills: skills,
-            commands: commands,
-            workspaces: workspaceCatalog,
-          ),
-          ...modelRpcBindings(modelSettings),
-          ...providerRpcBindings(
-            providers: providers,
-            usage: providerUsage,
-            auth: providerAuth,
-            agentDefinitions: agentDefinitions,
-          ),
-          ...relayRpcBindings(relay),
-          ...mcpRpcBindings(
-            runtime: mcp,
-            servers: mcpServers,
-            worktrees: database.worktreeDao,
-          ),
-          ...sessionRpcBindings(
-            sessions: database.sessionDao,
-            timeline: timeline,
-            turns: service,
-            settings: sessionSettings,
-            interactions: sessionInteractions,
-            agentDefinitions: agentDefinitions,
-            models: models,
-            permissions: permissionDefaults,
-            clock: effectiveClock,
-          ),
-          ...terminalRpcBindings(
-            terminals: terminals,
-            settings: database.settingsDao,
-          ),
-        ],
-        procedures: daemonRpcProcedures,
-      );
+      final bindings = RpcBindingRegistry(<RpcBindingDescriptor>[
+        ...workspaceRpcBindings(
+          workspaces: workspaceCatalog,
+          worktrees: worktreeLifecycle,
+        ),
+        ...agentRpcBindings(
+          definitions: agentDefinitions,
+          permissions: permissionDefaults,
+        ),
+        ...pluginRpcBindings(
+          plugins: pluginManagement,
+          sessionControls: pluginSessionControls,
+          ui: pluginUi,
+          secrets: pluginSecrets,
+          authoring: pluginAuthoring,
+        ),
+        ...promptRpcBindings(
+          skills: skills,
+          commands: commands,
+          workspaces: workspaceCatalog,
+        ),
+        ...modelRpcBindings(modelSettings),
+        ...providerRpcBindings(
+          providers: providers,
+          usage: providerUsage,
+          auth: providerAuth,
+          agentDefinitions: agentDefinitions,
+        ),
+        ...relayRpcBindings(relay),
+        ...mcpRpcBindings(
+          runtime: mcp,
+          servers: mcpServers,
+          worktrees: database.worktreeDao,
+        ),
+        ...sessionRpcBindings(
+          sessions: database.sessionDao,
+          timeline: timeline,
+          turns: service,
+          settings: sessionSettings,
+          interactions: sessionInteractions,
+          agentDefinitions: agentDefinitions,
+          models: models,
+          permissions: permissionDefaults,
+          clock: effectiveClock,
+        ),
+        ...terminalRpcBindings(
+          terminals: terminals,
+          settings: database.settingsDao,
+        ),
+      ], procedures: daemonRpcProcedures);
       final rpc = DaemonRpcServer(
         bindings: bindings,
         attachments: AttachmentHttpTransport(attachments),
@@ -1005,7 +991,7 @@ abstract final class DaemonApplication {
 }
 
 class _LocalDaemonHandle implements DaemonHandle {
-  _LocalDaemonHandle({
+  new({
     required this._endpoint,
     required String serverIdValue,
     required this._token,
@@ -1109,11 +1095,7 @@ class _LocalDaemonHandle implements DaemonHandle {
 
 final class _StoredProviderModelReferenceUpdater
     implements ProviderModelReferenceUpdater {
-  const _StoredProviderModelReferenceUpdater(
-    this._sessions,
-    this._agents,
-    this._models,
-  );
+  const new(this._sessions, this._agents, this._models);
 
   final SessionRepository _sessions;
   final AgentDefinitionService _agents;
@@ -1140,7 +1122,7 @@ final class _StoredProviderModelReferenceUpdater
 
 final class _PluginAgentContributionCatalog
     implements AgentContributionCatalog {
-  const _PluginAgentContributionCatalog(this._plugins, this._changes);
+  const new(this._plugins, this._changes);
 
   final PluginManagementService _plugins;
   final Stream<void> _changes;
@@ -1153,7 +1135,7 @@ final class _PluginAgentContributionCatalog
 }
 
 final class _TinestLuaClock implements lua.LuaClock {
-  const _TinestLuaClock(this._clock);
+  const new(this._clock);
 
   final Clock _clock;
 
@@ -1162,7 +1144,7 @@ final class _TinestLuaClock implements lua.LuaClock {
 }
 
 final class _TinestLuaIds implements lua.LuaIdGenerator {
-  const _TinestLuaIds(this._ids);
+  const new(this._ids);
 
   final IdGenerator _ids;
 
@@ -1172,7 +1154,7 @@ final class _TinestLuaIds implements lua.LuaIdGenerator {
 
 final class _TinestPluginSdkAuthoringProvider
     implements PluginSdkAuthoringProvider {
-  const _TinestPluginSdkAuthoringProvider();
+  const new();
 
   @override
   int get apiMajor => TinestLuaPluginSdk.apiMajor;

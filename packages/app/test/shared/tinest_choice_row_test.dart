@@ -33,11 +33,7 @@ void main() {
     // Ghost: the value reads as the row's own trailing copy. A solid field
     // parked in a list row is the shape this replaces.
     expect(
-      tester
-          .widget<TRSelect<String>>(
-            find.byType(TRSelect<String>),
-          )
-          .appearance,
+      tester.widget<TRSelect<String>>(find.byType(TRSelect<String>)).appearance,
       TRFieldAppearance.ghost,
     );
   });
@@ -59,10 +55,7 @@ void main() {
       find.descendant(of: select, matching: find.text('다크')),
     );
     final chevron = find
-        .descendant(
-          of: select,
-          matching: find.byType(CustomPaint),
-        )
+        .descendant(of: select, matching: find.byType(CustomPaint))
         .evaluate()
         .map(
           (element) => tester.getRect(
@@ -157,9 +150,7 @@ Widget _host({
   );
   return MaterialApp(
     theme: TinyrackTheme.light(),
-    home: Scaffold(
-      body: choice,
-    ),
+    home: Scaffold(body: choice),
   );
 }
 

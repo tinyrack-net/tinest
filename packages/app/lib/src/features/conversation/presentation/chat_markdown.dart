@@ -116,7 +116,7 @@ MarkdownStyleSheet chatMarkdownStyleSheet(BuildContext context) {
 /// value out of a token.
 class ChatMarkdownTheme extends StatelessWidget {
   /// Creates a shared Markdown stylesheet scope.
-  const ChatMarkdownTheme({required this.child, super.key});
+  const new({required this.child, super.key});
 
   /// Subtree whose Markdown bodies share one stylesheet.
   final Widget child;
@@ -138,10 +138,7 @@ class ChatMarkdownTheme extends StatelessWidget {
 }
 
 class _ChatMarkdownStyleScope extends InheritedWidget {
-  const _ChatMarkdownStyleScope({
-    required this.styleSheet,
-    required super.child,
-  });
+  const new({required this.styleSheet, required super.child});
 
   final MarkdownStyleSheet styleSheet;
 
@@ -163,7 +160,7 @@ class _ChatMarkdownStyleScope extends InheritedWidget {
 /// and localization types from leaking into the rest of Tinest.
 class ChatMarkdownBody extends StatelessWidget {
   /// Creates a Markdown body for one chat block.
-  const ChatMarkdownBody({required this.data, this.onTapLink, super.key});
+  const new({required this.data, this.onTapLink, super.key});
 
   /// Markdown source rendered by the legacy dependency.
   final String data;
@@ -217,7 +214,7 @@ Future<void> openChatLink(ExternalUrlOpener opener, String? href) async {
 /// every block boundary and the space after a bullet.
 class ChatMarkdownSelectionArea extends StatefulWidget {
   /// Creates a selectable Markdown document.
-  const ChatMarkdownSelectionArea({required this.child, super.key});
+  const new({required this.child, super.key});
 
   /// Markdown content and any response-owned actions below it.
   final Widget child;

@@ -7,7 +7,7 @@ abstract interface class Clock {
 /// Production clock over the system time.
 final class SystemClock implements Clock {
   /// Creates the production clock.
-  const SystemClock();
+  const new();
 
   @override
   DateTime nowUtc() => DateTime.now().toUtc();

@@ -11,7 +11,7 @@ import 'package:yaml/yaml.dart';
 /// Selects which project, if any, participates in skill resolution.
 final class SkillScope {
   /// Creates a scope; [projectRoot] is null for global sources alone.
-  const SkillScope({this.projectRoot});
+  const new({this.projectRoot});
 
   /// Global sources with no project overlay.
   static const SkillScope global = SkillScope();
@@ -38,7 +38,7 @@ enum SkillOrigin {
 /// One skill document read from a filesystem boundary.
 final class SkillDocument {
   /// Creates an immutable document snapshot.
-  const SkillDocument({
+  const new({
     required this.id,
     required this.sourcePath,
     required this.source,
@@ -61,7 +61,7 @@ final class SkillDocument {
 /// Metadata for one file bundled beside a skill document.
 final class SkillResource {
   /// Creates resource metadata.
-  const SkillResource({required this.path, required this.sizeBytes});
+  const new({required this.path, required this.sizeBytes});
 
   /// Forward-slash relative path within the skill directory.
   final String path;
@@ -98,11 +98,9 @@ abstract interface class SkillFiles {
 /// sibling activity does not become a catalog refresh.
 final class SkillWatchPathFilter {
   /// Creates a normalized path filter for one watcher subscription.
-  SkillWatchPathFilter({
-    required String skillRoot,
-    required String watchedRoot,
-  }) : _skillRoot = p.normalize(p.absolute(skillRoot)),
-       _watchedRoot = p.normalize(p.absolute(watchedRoot));
+  new({required String skillRoot, required String watchedRoot})
+    : _skillRoot = p.normalize(p.absolute(skillRoot)),
+      _watchedRoot = p.normalize(p.absolute(watchedRoot));
 
   final String _skillRoot;
   final String _watchedRoot;
@@ -132,7 +130,7 @@ final class SkillWatchPathFilter {
 /// instead of being provoked by load.
 final class SkillWatchEvent {
   /// Creates a notification for [path], moved to [destination] when renamed.
-  const SkillWatchEvent({required this.path, this.destination});
+  const new({required this.path, this.destination});
 
   /// The entry that changed, or the watched directory on watchers that report
   /// only the directory for every direct child change.
@@ -161,7 +159,7 @@ final class NativeSkillFiles implements SkillFiles {
   /// Shared and project trees retain the permissions chosen by their owner.
   /// [openWatch] is a seam for tests that need to control when a watch is
   /// armed relative to the directories appearing under it.
-  NativeSkillFiles(
+  new(
     String root, {
     required this.origin,
     this.createIfMissing = false,
@@ -205,9 +203,8 @@ final class NativeSkillFiles implements SkillFiles {
   /// fact.
   ///
   /// Read by tests only; nothing in the daemon needs it.
-  Set<String> get watchedPaths => Set<String>.unmodifiable(
-    _watchSubscriptions.keys,
-  );
+  Set<String> get watchedPaths =>
+      Set<String>.unmodifiable(_watchSubscriptions.keys);
 
   String _skillDirectory(String id) => p.join(_directory.path, id);
 
@@ -370,18 +367,12 @@ final class NativeSkillFiles implements SkillFiles {
     SkillWatchPathFilter pathFilter,
   ) {
     final skillRootExists = _directory.existsSync();
-    if (pathFilter.accepts(
-      event.path,
-      skillRootExists: skillRootExists,
-    )) {
+    if (pathFilter.accepts(event.path, skillRootExists: skillRootExists)) {
       return true;
     }
     final destination = event.destination;
     return destination != null &&
-        pathFilter.accepts(
-          destination,
-          skillRootExists: skillRootExists,
-        );
+        pathFilter.accepts(destination, skillRootExists: skillRootExists);
   }
 
   @override
@@ -466,7 +457,7 @@ final class NativeSkillFiles implements SkillFiles {
 /// Source-of-truth catalog merging built-in, user, config, and project skills.
 final class FileSkillStore {
   /// Creates a store over the global roots.
-  FileSkillStore({
+  new({
     required this.roots,
     this.builtIns = builtInSkills,
     this.watchDebounce = const Duration(milliseconds: 200),
@@ -511,9 +502,7 @@ final class FileSkillStore {
     return _initializeFuture ??= _serialize(() async {
       for (final root in roots) {
         await root.initialize();
-        _watchSubscriptions.add(
-          root.changes.listen((_) => _scheduleReload()),
-        );
+        _watchSubscriptions.add(root.changes.listen((_) => _scheduleReload()));
       }
       await _reloadGlobalLocked();
     });
@@ -525,7 +514,7 @@ final class FileSkillStore {
     SkillScope scope = SkillScope.global,
   }) async {
     await initialize();
-    return _serialize(() async {
+    return await _serialize(() async {
       final resolved = switch (view) {
         SkillListView.global => await _resolveLocked(SkillScope.global),
         SkillListView.project =>
@@ -567,7 +556,7 @@ final class FileSkillStore {
 
   Future<SkillTurnCatalog> _viewFor(String projectRoot) async {
     await initialize();
-    return _serialize(
+    return await _serialize(
       () async => SkillTurnCatalog._(
         await _resolveLocked(SkillScope(projectRoot: projectRoot)),
       ),
@@ -742,7 +731,7 @@ final class FileSkillStore {
 }
 
 final class _ProjectRoot {
-  _ProjectRoot({required this.files});
+  new({required this.files});
 
   final NativeSkillFiles files;
   Map<String, _ParsedSkill> parsed = <String, _ParsedSkill>{};
@@ -755,7 +744,7 @@ final class _ProjectRoot {
 }
 
 final class _ParsedSkill {
-  const _ParsedSkill({
+  const new({
     required this.id,
     required this.name,
     required this.description,
@@ -771,7 +760,7 @@ final class _ParsedSkill {
 }
 
 final class _ResolvedSkill {
-  const _ResolvedSkill({
+  const new({
     required this.id,
     required this.name,
     required this.description,
@@ -823,7 +812,7 @@ int _originRank(SkillOrigin origin) => switch (origin) {
 const _SkillMarkdownCodec _codec = _SkillMarkdownCodec();
 
 final class _SkillMarkdownCodec {
-  const _SkillMarkdownCodec();
+  const new();
 
   _ParsedSkill decode(SkillDocument document) {
     final parsed = _SkillMarkdownDocument.parse(document.source);
@@ -855,9 +844,9 @@ final class _SkillMarkdownCodec {
 }
 
 final class _SkillMarkdownDocument {
-  const _SkillMarkdownDocument({required this.frontmatter, required this.body});
+  const new({required this.frontmatter, required this.body});
 
-  factory _SkillMarkdownDocument.parse(String source) {
+  factory parse(String source) {
     final lines = source.replaceAll('\r\n', '\n').split('\n');
     var start = 0;
     while (start < lines.length && lines[start].trim().isEmpty) {
@@ -886,7 +875,7 @@ final class _SkillMarkdownDocument {
 /// Application service exposing skills to RPC callers and to turns.
 final class SkillCatalogService {
   /// Creates a skill application service.
-  SkillCatalogService({required this.store});
+  new({required this.store});
 
   /// Source-of-truth catalog backing this service.
   final FileSkillStore store;
@@ -920,7 +909,7 @@ final class SkillCatalogService {
 /// Immutable turn catalog and its trusted, always-injected instructions.
 final class SkillTurnCatalog
     implements SkillCatalog, ImplicitSkillDocumentSource {
-  SkillTurnCatalog._(List<_ResolvedSkill> skills)
+  new _(List<_ResolvedSkill> skills)
     : _skills = List<_ResolvedSkill>.unmodifiable(skills),
       _byName = <String, _ResolvedSkill>{
         for (final skill in skills) skill.name: skill,
@@ -935,10 +924,7 @@ final class SkillTurnCatalog
       ..sort(_compareDisplayOrder);
     return <ImplicitSkillDocument>[
       for (final skill in implicit)
-        ImplicitSkillDocument(
-          name: skill.name,
-          instructions: skill.body,
-        ),
+        ImplicitSkillDocument(name: skill.name, instructions: skill.body),
     ];
   }
 
@@ -947,10 +933,7 @@ final class SkillTurnCatalog
     final names = _byName.keys.toList()..sort();
     return <SkillSummary>[
       for (final name in names)
-        SkillSummary(
-          name: name,
-          description: _byName[name]!.description,
-        ),
+        SkillSummary(name: name, description: _byName[name]!.description),
     ];
   }
 
@@ -981,7 +964,7 @@ final class SkillTurnCatalog
       throw SkillLookupException('Skill has no bundled files: $name');
     }
     final guard = SkillPathGuard(directory);
-    return File(guard.resolveExisting(relativePath)).readAsString();
+    return await File(guard.resolveExisting(relativePath)).readAsString();
   }
 
   _ResolvedSkill _require(String name) {

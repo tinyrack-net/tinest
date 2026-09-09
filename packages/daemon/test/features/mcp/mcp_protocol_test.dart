@@ -116,10 +116,7 @@ void main() {
         },
         <String, dynamic>{
           'type': 'resource',
-          'resource': <String, dynamic>{
-            'uri': 'file:///a.bin',
-            'blob': 'AAAA',
-          },
+          'resource': <String, dynamic>{'uri': 'file:///a.bin', 'blob': 'AAAA'},
         },
         <String, dynamic>{
           'type': 'resource_link',
@@ -185,9 +182,8 @@ void main() {
       isEmpty,
     );
     expect(
-      McpCallToolResult.fromJson(<String, dynamic>{
-        'content': 'not-a-list',
-      }).content,
+      McpCallToolResult.fromJson(<String, dynamic>{'content': 'not-a-list'})
+          .content,
       isEmpty,
     );
     expect(
@@ -254,20 +250,18 @@ void main() {
     'resource template descriptors require a URI template',
     tags: const <String>['feature_test__mcp_resource_access__unit'],
     () {
-      final template = McpResourceTemplateDescriptor.fromJson(
-        <String, dynamic>{
-          'uriTemplate': 'file:///repo/{path}',
-          'name': 'Repository file',
-          'mimeType': 'text/plain',
-        },
-      );
+      final template = McpResourceTemplateDescriptor.fromJson(<String, dynamic>{
+        'uriTemplate': 'file:///repo/{path}',
+        'name': 'Repository file',
+        'mimeType': 'text/plain',
+      });
       expect(template.uriTemplate, 'file:///repo/{path}');
       expect(template.name, 'Repository file');
 
       expect(
-        () => McpResourceTemplateDescriptor.fromJson(
-          const <String, dynamic>{'name': 'no template'},
-        ),
+        () => McpResourceTemplateDescriptor.fromJson(const <String, dynamic>{
+          'name': 'no template',
+        }),
         throwsA(isA<McpProtocolException>()),
       );
     },

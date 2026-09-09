@@ -28,19 +28,14 @@ abstract interface class SessionInteractionPort {
 /// Owns pending approvals, questions, and input notifications.
 final class SessionInteractionCoordinator implements SessionInteractionPort {
   /// Creates a coordinator backed by the durable timeline.
-  SessionInteractionCoordinator({
+  new({
     required TimelineRepository timeline,
     required void Function(OutboundNotification event) events,
     required IdGenerator ids,
     required Clock clock,
   }) : this._(timeline, events, ids, clock);
 
-  SessionInteractionCoordinator._(
-    this._timeline,
-    this._events,
-    this._ids,
-    this._clock,
-  );
+  new _(this._timeline, this._events, this._ids, this._clock);
 
   final TimelineRepository _timeline;
   final void Function(OutboundNotification event) _events;
@@ -175,15 +170,13 @@ final class SessionInteractionCoordinator implements SessionInteractionPort {
       type: type,
       data: data,
     );
-    _events(
-      OutboundNotification(sessionsTimelineEventNotification, event),
-    );
+    _events(OutboundNotification(sessionsTimelineEventNotification, event));
   }
 }
 
 final class _TimelineUserQuestionCoordinator
     implements UserQuestionCoordinator {
-  const _TimelineUserQuestionCoordinator({
+  const new({
     required this.owner,
     required this.sessionId,
     required this.turnId,
@@ -261,7 +254,7 @@ final class _TimelineUserQuestionCoordinator
 }
 
 final class _TimelineApprovalCoordinator implements ApprovalCoordinator {
-  const _TimelineApprovalCoordinator({
+  const new({
     required this.owner,
     required this.sessionId,
     required this.turnId,
@@ -306,12 +299,9 @@ final class _TimelineApprovalCoordinator implements ApprovalCoordinator {
         active.complete(ApprovalDecision.denied);
       }
       unawaited(
-        owner._timeline.resolveApproval(
-          approval.id,
-          ApprovalStatus.cancelled,
-        ),
+        owner._timeline.resolveApproval(approval.id, ApprovalStatus.cancelled),
       );
     });
-    return completer.future;
+    return await completer.future;
   }
 }

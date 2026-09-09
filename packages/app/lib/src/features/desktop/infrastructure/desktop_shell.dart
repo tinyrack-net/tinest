@@ -144,7 +144,7 @@ String trayIconAssetPath({required TargetPlatform platform}) =>
 /// Production window adapter backed by `window_manager`.
 final class PluginDesktopWindow implements DesktopWindow {
   /// Creates the production window adapter.
-  PluginDesktopWindow({
+  new({
     TargetPlatform? platform,
     this.initialize = _ensureInitialized,
     this.configureCustomTitleBar = _configureCustomTitleBar,
@@ -316,11 +316,7 @@ final class PluginDesktopWindow implements DesktopWindow {
 }
 
 final class _WindowCloseRelay with WindowListener {
-  _WindowCloseRelay(
-    this.onClose,
-    this.onMaximizedChanged,
-    this.onVisibleChanged,
-  );
+  new(this.onClose, this.onMaximizedChanged, this.onVisibleChanged);
 
   final void Function() onClose;
   final ValueChanged<bool> onMaximizedChanged;
@@ -354,7 +350,7 @@ final class _WindowCloseRelay with WindowListener {
 /// Production tray adapter backed by `tray_manager`.
 final class PluginTrayIcon implements TrayIcon {
   /// Creates the production tray adapter.
-  PluginTrayIcon({
+  new({
     TargetPlatform? platform,
     this.setIcon = _setTrayIcon,
     this.setToolTip = _setTrayToolTip,
@@ -463,7 +459,7 @@ final class PluginTrayIcon implements TrayIcon {
 /// Production terminator that ends this process.
 final class ProcessAppTerminator implements AppTerminator {
   /// Creates the production terminator.
-  const ProcessAppTerminator({this.exitProcess = exit});
+  const new({this.exitProcess = exit});
 
   /// Injected process exit, which is the only part a test can drive.
   final Never Function(int code) exitProcess;
@@ -486,7 +482,7 @@ Menu _nativeMenu(TrayMenuModel menu) => Menu(
 );
 
 final class _TraySelectionRelay with TrayListener {
-  _TraySelectionRelay({
+  new({
     required this.onSelected,
     required this.onLeftClick,
     required this.onRightClick,
@@ -514,7 +510,7 @@ final class _TraySelectionRelay with TrayListener {
 /// Production login-item adapter backed by `launch_at_startup`.
 final class LaunchAtStartupRegistration implements AutostartRegistration {
   /// Creates the production login-item adapter.
-  const LaunchAtStartupRegistration({
+  const new({
     this.configure = _configureStartup,
     this.enableStartup = _enableStartup,
     this.disableStartup = _disableStartup,

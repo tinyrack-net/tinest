@@ -10,7 +10,7 @@ part 'plugin_settings_controller.g.dart';
 /// Plugin catalog and the Agent definitions that reference its contributions.
 final class PluginSettingsState {
   /// Creates an immutable plugin-management snapshot.
-  const PluginSettingsState({
+  const new({
     required this.plugins,
     required this.agents,
     required this.authoringEnvironments,
@@ -41,7 +41,7 @@ class PluginSettingsController extends _$PluginSettingsController {
       unawaited(refresh());
     });
     ref.onDispose(subscription.cancel);
-    return _load(api);
+    return await _load(api);
   }
 
   /// Reloads both plugin descriptors and their Agent references.
@@ -125,7 +125,7 @@ class PluginSettingsController extends _$PluginSettingsController {
     Map<String, dynamic> context = const <String, dynamic>{},
   }) async {
     final api = await requireHostApi(ref, hostId);
-    return api.plugins.renderPluginUi(
+    return await api.plugins.renderPluginUi(
       agentId: agentId,
       pluginId: pluginId,
       contributionId: contributionId,
@@ -161,7 +161,7 @@ class PluginSettingsController extends _$PluginSettingsController {
     required PluginUiActionDto action,
   }) async {
     final api = await requireHostApi(ref, hostId);
-    return api.plugins.dispatchPluginUiAction(
+    return await api.plugins.dispatchPluginUiAction(
       agentId: agentId,
       pluginId: pluginId,
       action: action,
@@ -208,12 +208,9 @@ class PluginSettingsController extends _$PluginSettingsController {
 /// Agent-owned plugin capability grants stored by the daemon, outside Agent MD.
 class AgentPluginGrantsController extends _$AgentPluginGrantsController {
   @override
-  Future<List<AgentPluginGrantDto>> build(
-    String hostId,
-    String agentId,
-  ) async {
+  Future<List<AgentPluginGrantDto>> build(String hostId, String agentId) async {
     final api = await watchHostApi(ref, hostId);
-    return api.plugins.listPluginGrants(agentId);
+    return await api.plugins.listPluginGrants(agentId);
   }
 
   /// Grants or revokes one exact capability for this Agent and plugin.
@@ -248,7 +245,7 @@ class PluginSessionControlController extends _$PluginSessionControlController {
     String contributionId,
   ) async {
     final api = await watchHostApi(ref, hostId);
-    return api.plugins.getPluginSessionControl(
+    return await api.plugins.getPluginSessionControl(
       sessionId: sessionId,
       pluginId: pluginId,
       contributionId: contributionId,

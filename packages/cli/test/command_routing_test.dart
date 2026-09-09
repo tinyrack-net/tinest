@@ -91,10 +91,13 @@ void main() {
 
     test('--api-key skips the prompt', () async {
       expect(
-        await run(
-          <String>['provider', 'connect', 'deepseek', '--api-key', 'inline'],
-          readSecret: () async => fail('the prompt must not run'),
-        ),
+        await run(<String>[
+          'provider',
+          'connect',
+          'deepseek',
+          '--api-key',
+          'inline',
+        ], readSecret: () async => fail('the prompt must not run')),
         0,
       );
 
@@ -270,10 +273,7 @@ void main() {
     });
 
     test('validate reports the validated revision', () async {
-      expect(
-        await run(<String>['plugin', 'validate', 'example.review']),
-        0,
-      );
+      expect(await run(<String>['plugin', 'validate', 'example.review']), 0);
 
       expect(client.validatedPlugins, <String>['example.review']);
       expect(out.text, contains('Valid example.review@1.0.0'));
@@ -281,10 +281,7 @@ void main() {
     });
 
     test('sdk-sync repairs the exact SDK authoring sidecar', () async {
-      expect(
-        await run(<String>['plugin', 'sdk-sync', 'example.review']),
-        0,
-      );
+      expect(await run(<String>['plugin', 'sdk-sync', 'example.review']), 0);
 
       expect(out.text, contains('sdk-abi-hash'));
       expect(out.text, contains('.luarc.json'));
@@ -420,19 +417,16 @@ void main() {
 
     test('secret remove does not prompt or reveal existence', () async {
       expect(
-        await run(
-          <String>[
-            'plugin',
-            'secret',
-            'remove',
-            'example.review',
-            '--agent',
-            'tinest',
-            '--name',
-            'API_TOKEN',
-          ],
-          readSecret: () async => fail('remove must not prompt'),
-        ),
+        await run(<String>[
+          'plugin',
+          'secret',
+          'remove',
+          'example.review',
+          '--agent',
+          'tinest',
+          '--name',
+          'API_TOKEN',
+        ], readSecret: () async => fail('remove must not prompt')),
         0,
       );
 
@@ -552,10 +546,7 @@ void main() {
 
   group('daemon relay', () {
     test('pair can enable relay and emit a machine-readable offer', () async {
-      expect(
-        await run(<String>['daemon', 'pair', '--relay', '--json']),
-        0,
-      );
+      expect(await run(<String>['daemon', 'pair', '--relay', '--json']), 0);
 
       expect(client.relayEnabled, isTrue);
       expect(out.text, contains('https://tinest.tinyrack.net/pair#offer='));
@@ -570,10 +561,7 @@ void main() {
       expect(await run(<String>['daemon', 'devices', 'list']), 0);
       expect(out.text, contains('Test phone'));
 
-      expect(
-        await run(<String>['daemon', 'devices', 'revoke', 'device-1']),
-        0,
-      );
+      expect(await run(<String>['daemon', 'devices', 'revoke', 'device-1']), 0);
       expect(client.revokedDevices, <String>['device-1']);
     });
 
@@ -664,7 +652,7 @@ final class _FakeHandle implements DaemonHandle {
 /// A [TinestClient] stand-in answering only the calls the CLI makes.
 final class _FakeClient
     implements TinestClient, ProvidersApi, AgentsApi, PluginsApi, RelayApi {
-  _FakeClient(this.now);
+  new(this.now);
 
   final DateTime now;
   final Map<String, String> apiKeys = <String, String>{};
@@ -950,7 +938,7 @@ final class _FakeClient
   @override
   Future<ProviderCatalogDto> refreshProviderCatalog() async {
     refreshes += 1;
-    return listProviderCatalog();
+    return await listProviderCatalog();
   }
 
   @override

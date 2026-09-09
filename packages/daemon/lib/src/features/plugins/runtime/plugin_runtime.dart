@@ -14,7 +14,7 @@ export 'plugin_sdk.dart';
 /// Validated document returned by the constructor-only Lua UI SDK.
 final class PluginUiCallbackDocument {
   /// Creates a normalized immutable UI callback result.
-  PluginUiCallbackDocument({
+  new({
     required Map<String, dynamic> root,
     required Set<String> actionIds,
     required this.constructorOwned,
@@ -37,7 +37,7 @@ final class PluginUiCallbackDocument {
 /// Safe rejection while decoding a Lua UI callback result.
 final class PluginUiCallbackDocumentException extends FormatException {
   /// Creates a UI callback validation failure.
-  PluginUiCallbackDocumentException(super.message);
+  new(super.message);
 }
 
 /// Expected refusal to run Lua after its runtime or session was torn down.
@@ -48,7 +48,7 @@ final class PluginUiCallbackDocumentException extends FormatException {
 /// arrive as `internal_error`, which the protocol reserves for defects.
 final class PluginRuntimeClosed implements Exception {
   /// Creates a closed-runtime refusal.
-  const PluginRuntimeClosed(this.message);
+  const new(this.message);
 
   /// User-safe reason.
   final String message;
@@ -250,13 +250,12 @@ String _canonicalRegistration(PluginRegistration registration) => jsonEncode(
 /// Core capability decision applied before a Lua callback reaches a host port.
 final class PluginCallAuthorization {
   /// Allows a callback when all [requiredCapabilities] remain effective.
-  const PluginCallAuthorization.allowed({
-    this.requiredCapabilities = const <String>{},
-  }) : allowed = true,
-       reason = null;
+  const new allowed({this.requiredCapabilities = const <String>{}})
+    : allowed = true,
+      reason = null;
 
   /// Denies a callback without invoking its host implementation.
-  const PluginCallAuthorization.denied(this.reason)
+  const new denied(this.reason)
     : allowed = false,
       requiredCapabilities = const <String>{};
 
@@ -273,7 +272,7 @@ final class PluginCallAuthorization {
 /// Immutable identity and capability ceiling for one named-handler call.
 final class PluginHostCallContext {
   /// Creates a callback context pinned to one plugin revision.
-  PluginHostCallContext({
+  new({
     required this.agentId,
     required this.sessionId,
     required this.workspaceId,
@@ -284,9 +283,7 @@ final class PluginHostCallContext {
     required Set<String> handlerCapabilities,
     required Set<String> handlerOperations,
   }) : manifestCapabilities = Set<String>.unmodifiable(manifestCapabilities),
-       effectiveCapabilities = Set<String>.unmodifiable(
-         effectiveCapabilities,
-       ),
+       effectiveCapabilities = Set<String>.unmodifiable(effectiveCapabilities),
        handlerCapabilities = Set<String>.unmodifiable(handlerCapabilities),
        handlerOperations = Set<String>.unmodifiable(handlerOperations);
 
@@ -339,7 +336,7 @@ abstract interface class PluginCancellationSignal {
 /// One opaque host resource that Lua may reference but never deserialize.
 final class PluginOpaqueResource<T extends Object> {
   /// Creates an opaque callback resource.
-  const PluginOpaqueResource({
+  const new({
     required this.value,
     required this.fileName,
     required this.mimeType,
@@ -362,7 +359,7 @@ final class PluginOpaqueResource<T extends Object> {
 /// JSON-compatible result returned by a capability-brokered callback.
 final class PluginCallbackResult<T extends Object> {
   /// Creates one callback result or stream event.
-  const PluginCallbackResult({
+  const new({
     required this.value,
     this.isError = false,
     this.resources = const [],
@@ -407,7 +404,7 @@ abstract interface class PluginCallbackRouter<T extends Object> {
 /// Result after a named handler reaches a terminal state.
 final class PluginInvocationResult<T extends Object> {
   /// Creates a completed invocation result.
-  PluginInvocationResult({
+  new({
     required this.pluginId,
     required this.revisionHash,
     required List<lua.LuaCellDelta<T>> deltas,
@@ -442,7 +439,7 @@ final class PluginInvocationResult<T extends Object> {
 
 /// A started named handler that may still require pull-based observation.
 final class PluginInvocation<T extends Object> {
-  PluginInvocation._({
+  new _({
     required this.pluginId,
     required this.revisionHash,
     required this._runtimeSession,
@@ -493,10 +490,7 @@ final class PluginInvocation<T extends Object> {
     int maxOutputTokens = 10000,
   }) async {
     while (running) {
-      await wait(
-        yieldTime: yieldTime,
-        maxOutputTokens: maxOutputTokens,
-      );
+      await wait(yieldTime: yieldTime, maxOutputTokens: maxOutputTokens);
     }
     return PluginInvocationResult<T>(
       pluginId: pluginId,
@@ -509,10 +503,7 @@ final class PluginInvocation<T extends Object> {
 /// Owns isolated Lua sessions over a shared native plugin-host distribution.
 final class PluginRuntime<T extends Object> implements PluginBundleInspector {
   /// Creates a runtime over injected native and revision ports.
-  PluginRuntime({
-    required this._luaRuntime,
-    required this.revisions,
-  });
+  new({required this._luaRuntime, required this.revisions});
 
   final lua.LuaToolRuntime<T> _luaRuntime;
 
@@ -675,9 +666,8 @@ final class PluginRuntime<T extends Object> implements PluginBundleInspector {
     if (_closed) return;
     _closed = true;
     await Future.wait(
-      List<PluginRuntimeSession<T>>.of(
-        _sessions,
-      ).map((session) => session.close()),
+      List<PluginRuntimeSession<T>>.of(_sessions)
+          .map((session) => session.close()),
     );
     _sessions.clear();
     await _luaRuntime.close();
@@ -686,7 +676,7 @@ final class PluginRuntime<T extends Object> implements PluginBundleInspector {
 
 /// Agent/session-isolated view of revision-pinned plugin handlers.
 final class PluginRuntimeSession<T extends Object> {
-  PluginRuntimeSession._({
+  new _({
     required this._owner,
     required this._runtimeSession,
     required this.agentId,
@@ -1040,7 +1030,7 @@ bool _sameBinding(
 
 final class _PluginHostCallbackDispatcher<T extends Object>
     implements lua.LuaHostCallbackDispatcher<T> {
-  const _PluginHostCallbackDispatcher({
+  const new({
     required this.context,
     required this.router,
     required this.effectFree,
@@ -1072,9 +1062,7 @@ final class _PluginHostCallbackDispatcher<T extends Object>
   }
 
   @override
-  Stream<lua.LuaHostResult<T>> open(
-    lua.LuaHostInvocation invocation,
-  ) async* {
+  Stream<lua.LuaHostResult<T>> open(lua.LuaHostInvocation invocation) async* {
     if (effectFree) {
       yield _registrationEffectError();
       return;
@@ -1145,9 +1133,7 @@ final class _PluginHostCallbackDispatcher<T extends Object>
     return null;
   }
 
-  lua.LuaHostResult<T>? _operationDenial(
-    lua.LuaHostInvocation invocation,
-  ) {
+  lua.LuaHostResult<T>? _operationDenial(lua.LuaHostInvocation invocation) {
     if (!invocation.name.startsWith('host.')) return null;
     final dynamicToken = invocation.arguments['_tinest_dynamic_token'];
     if (dynamicToken is String && dynamicToken.isNotEmpty) {
@@ -1187,16 +1173,15 @@ final class _PluginHostCallbackDispatcher<T extends Object>
 
 final class _RegistrationOnlyCallbackDispatcher<T extends Object>
     implements lua.LuaHostCallbackDispatcher<T> {
-  const _RegistrationOnlyCallbackDispatcher();
+  const new();
 
   @override
   Future<lua.LuaHostResult<T>> call(lua.LuaHostInvocation invocation) async =>
       _error();
 
   @override
-  Stream<lua.LuaHostResult<T>> open(
-    lua.LuaHostInvocation invocation,
-  ) => Stream<lua.LuaHostResult<T>>.value(_error());
+  Stream<lua.LuaHostResult<T>> open(lua.LuaHostInvocation invocation) =>
+      Stream<lua.LuaHostResult<T>>.value(_error());
 
   lua.LuaHostResult<T> _error() => lua.LuaHostResult<T>(
     value: 'tinest.plugin.define registration is effect-free.',
@@ -1206,7 +1191,7 @@ final class _RegistrationOnlyCallbackDispatcher<T extends Object>
 
 final class _RejectedNestedToolDispatcher<T extends Object>
     implements lua.LuaToolDispatcher<T> {
-  const _RejectedNestedToolDispatcher();
+  const new();
 
   @override
   Future<lua.LuaToolResult<T>> invoke(lua.LuaToolInvocation invocation) async =>
@@ -1219,7 +1204,7 @@ final class _RejectedNestedToolDispatcher<T extends Object>
 }
 
 final class _PluginCancellationAdapter implements lua.LuaCancellationSignal {
-  const _PluginCancellationAdapter(this.signal);
+  const new(this.signal);
 
   final PluginCancellationSignal signal;
 
@@ -1229,7 +1214,7 @@ final class _PluginCancellationAdapter implements lua.LuaCancellationSignal {
 
 final class _InvocationCancellationAdapter
     implements PluginInvocationCancellation {
-  const _InvocationCancellationAdapter(this.cancellation);
+  const new(this.cancellation);
 
   final lua.LuaInvocationCancellation cancellation;
 

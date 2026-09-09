@@ -22,7 +22,7 @@ typedef PluginWorktreeLookup = Future<WorktreeDto?> Function(String worktreeId);
 /// Reads, normalizes, and persists Agent-active Lua session controls.
 final class PluginSessionControlService<T extends Object> {
   /// Creates the service over typed ownership and persistence ports.
-  PluginSessionControlService({
+  new({
     required this.plugins,
     required this.runtime,
     required this.state,
@@ -61,18 +61,19 @@ final class PluginSessionControlService<T extends Object> {
       request.pluginId,
       request.contributionId,
     );
-    return _withPlugin(
-      owner,
-      request.pluginId,
-      (registration, descriptor, session, router) async {
-        final control = _control(
-          registration,
-          request.pluginId,
-          request.contributionId,
-        );
-        return _readValue(owner, descriptor, control);
-      },
-    );
+    return await _withPlugin(owner, request.pluginId, (
+      registration,
+      descriptor,
+      session,
+      router,
+    ) async {
+      final control = _control(
+        registration,
+        request.pluginId,
+        request.contributionId,
+      );
+      return await _readValue(owner, descriptor, control);
+    });
   }
 
   /// Runs the registered Lua normalizer and atomically stores its result.
@@ -87,99 +88,100 @@ final class PluginSessionControlService<T extends Object> {
         request.pluginId,
         request.contributionId,
       );
-      return _withPlugin(
-        owner,
-        request.pluginId,
-        (registration, descriptor, session, router) async {
-          final control = _control(
-            registration,
-            request.pluginId,
-            request.contributionId,
+      return await _withPlugin(owner, request.pluginId, (
+        registration,
+        descriptor,
+        session,
+        router,
+      ) async {
+        final control = _control(
+          registration,
+          request.pluginId,
+          request.contributionId,
+        );
+        final input = _normalizeAndValidate(
+          control,
+          request.value,
+          path: r'$.value',
+        );
+        await _requireCurrentGrants(
+          owner.definition.id,
+          request.pluginId,
+          control.requiredCapabilities,
+        );
+        final current = await state.read(
+          _scope(owner, request.pluginId),
+          _stateKey(control),
+        );
+        final currentValue = current == null
+            ? _defaultValue(control)
+            : _normalizeAndValidate(
+                control,
+                current.value,
+                path: r'$.currentValue',
+              );
+        final cancellation = _SessionControlCancellation();
+        final revoked = plugins.grants.revocations.listen((grant) {
+          if (grant.agentId == owner.definition.id &&
+              grant.pluginId == request.pluginId) {
+            cancellation.cancel();
+          }
+        });
+        try {
+          final invocation = await session.invoke(
+            pluginId: request.pluginId,
+            binding: control.binding,
+            arguments: <String, Object?>{
+              'agent_id': owner.definition.id,
+              'session_id': owner.session.id,
+              'workspace_id': owner.worktree.workspaceId,
+              'plugin_id': request.pluginId,
+              'contribution_id': control.id,
+              'value': input,
+              'current_value': currentValue,
+              'settings':
+                  owner.definition.pluginSettings[request.pluginId] ??
+                  const <String, dynamic>{},
+            },
+            callbackRouter: router,
+            cancellation: cancellation,
           );
-          final input = _normalizeAndValidate(
+          final completed = await invocation.complete();
+          if (completed.error != null) {
+            throw PluginSessionControlException(
+              'Session-control handler ${control.id} failed: '
+              '${completed.error!.message}',
+            );
+          }
+          if (completed.revisionHash !=
+              descriptor.revision!.executionRevisionHash) {
+            throw PluginSessionControlException(
+              'Session-control handler ${control.id} executed an '
+              'unexpected plugin revision.',
+            );
+          }
+          final normalized = _normalizeAndValidate(
             control,
-            request.value,
-            path: r'$.value',
+            completed.result,
+            path: r'$.result',
           );
-          await _requireCurrentGrants(
-            owner.definition.id,
-            request.pluginId,
-            control.requiredCapabilities,
-          );
-          final current = await state.read(
+          final stored = await state.compareAndSet(
             _scope(owner, request.pluginId),
             _stateKey(control),
+            expectedRevision: current?.revision ?? 0,
+            value: normalized,
           );
-          final currentValue = current == null
-              ? _defaultValue(control)
-              : _normalizeAndValidate(
-                  control,
-                  current.value,
-                  path: r'$.currentValue',
-                );
-          final cancellation = _SessionControlCancellation();
-          final revoked = plugins.grants.revocations.listen((grant) {
-            if (grant.agentId == owner.definition.id &&
-                grant.pluginId == request.pluginId) {
-              cancellation.cancel();
-            }
-          });
-          try {
-            final invocation = await session.invoke(
-              pluginId: request.pluginId,
-              binding: control.binding,
-              arguments: <String, Object?>{
-                'agent_id': owner.definition.id,
-                'session_id': owner.session.id,
-                'workspace_id': owner.worktree.workspaceId,
-                'plugin_id': request.pluginId,
-                'contribution_id': control.id,
-                'value': input,
-                'current_value': currentValue,
-                'settings':
-                    owner.definition.pluginSettings[request.pluginId] ??
-                    const <String, dynamic>{},
-              },
-              callbackRouter: router,
-              cancellation: cancellation,
-            );
-            final completed = await invocation.complete();
-            if (completed.error != null) {
-              throw PluginSessionControlException(
-                'Session-control handler ${control.id} failed: '
-                '${completed.error!.message}',
-              );
-            }
-            if (completed.revisionHash !=
-                descriptor.revision!.executionRevisionHash) {
-              throw PluginSessionControlException(
-                'Session-control handler ${control.id} executed an '
-                'unexpected plugin revision.',
-              );
-            }
-            final normalized = _normalizeAndValidate(
-              control,
-              completed.result,
-              path: r'$.result',
-            );
-            final stored = await state.compareAndSet(
-              _scope(owner, request.pluginId),
-              _stateKey(control),
-              expectedRevision: current?.revision ?? 0,
-              value: normalized,
-            );
-            return _dto(
-              owner,
-              descriptor,
-              control,
-              stored.value,
-              isDefault: false,
-            );
-          } finally {
-            await revoked.cancel();
-          }
-        },
-      );
+          return _dto(
+            owner,
+            descriptor,
+            control,
+            stored.value,
+            isDefault: false,
+          );
+        } finally {
+          await revoked.cancel();
+        }
+      });
     },
   );
 
@@ -206,17 +208,17 @@ final class PluginSessionControlService<T extends Object> {
     );
     final values = <String, Object?>{};
     for (final pluginId in definition.extensionIds) {
-      await _withPlugin(
-        owner,
-        pluginId,
-        (registration, descriptor, session, router) async {
-          for (final control in registration.sessionControls) {
-            final value = await _readValue(owner, descriptor, control);
-            values[control.id] = value.value;
-          }
-        },
-        prepare: false,
-      );
+      await _withPlugin(owner, pluginId, (
+        registration,
+        descriptor,
+        session,
+        router,
+      ) async {
+        for (final control in registration.sessionControls) {
+          final value = await _readValue(owner, descriptor, control);
+          values[control.id] = value.value;
+        }
+      }, prepare: false);
     }
     return Map<String, Object?>.unmodifiable(values);
   }
@@ -285,10 +287,7 @@ final class PluginSessionControlService<T extends Object> {
       )).descriptor;
     } on PluginRevisionUnavailable {
       if (!prepare) rethrow;
-      descriptor = await plugins.prepareForAgent(
-        owner.definition.id,
-        pluginId,
-      );
+      descriptor = await plugins.prepareForAgent(owner.definition.id, pluginId);
     }
     final revision = descriptor.revision;
     if (revision == null) {
@@ -357,18 +356,8 @@ final class PluginSessionControlService<T extends Object> {
     final isDefault = entry == null;
     final value = isDefault
         ? _defaultValue(control)
-        : _normalizeAndValidate(
-            control,
-            entry.value,
-            path: r'$.storedValue',
-          );
-    return _dto(
-      owner,
-      descriptor,
-      control,
-      value,
-      isDefault: isDefault,
-    );
+        : _normalizeAndValidate(control, entry.value, path: r'$.storedValue');
+    return _dto(owner, descriptor, control, value, isDefault: isDefault);
   }
 
   PluginSessionControlValueDto _dto(
@@ -433,10 +422,7 @@ final class PluginSessionControlService<T extends Object> {
   }
 
   PluginStateScope _scope(_SessionControlOwner owner, String pluginId) =>
-      PluginStateScope.session(
-        pluginId: pluginId,
-        sessionId: owner.session.id,
-      );
+      PluginStateScope.session(pluginId: pluginId, sessionId: owner.session.id);
 
   String _stateKey(PluginSessionControlRegistration control) =>
       '_tinest/session-control/${control.id.split('/').last}';
@@ -463,7 +449,7 @@ final class PluginSessionControlService<T extends Object> {
 /// Expected ownership, validation, handler, or persistence failure.
 final class PluginSessionControlException implements Exception {
   /// Creates a user-safe failure.
-  const PluginSessionControlException(this.message);
+  const new(this.message);
 
   /// Failure detail suitable for transport mapping.
   final String message;
@@ -473,7 +459,7 @@ final class PluginSessionControlException implements Exception {
 }
 
 final class _SessionControlOwner {
-  const _SessionControlOwner({
+  const new({
     required this.session,
     required this.definition,
     required this.worktree,
@@ -509,10 +495,7 @@ final class _SessionControlCancellation implements PluginCancellationSignal {
 
 final class _SessionControlCallbackRouter<T extends Object>
     implements PluginCallbackRouter<T> {
-  const _SessionControlCallbackRouter({
-    required this.grants,
-    required this.state,
-  });
+  const new({required this.grants, required this.state});
 
   final AgentPluginGrantStore grants;
   final PluginStateStore state;
@@ -564,7 +547,7 @@ final class _SessionControlCallbackRouter<T extends Object>
         isError: true,
       );
     }
-    return switch (name) {
+    return await switch (name) {
       'state.read' => _read(context, arguments),
       'state.compare_and_set' => _compareAndSet(context, arguments),
       'state.remove' => _remove(context, arguments),
@@ -587,9 +570,7 @@ final class _SessionControlCallbackRouter<T extends Object>
         _requiredString(arguments, 'key'),
       ),
     );
-    return PluginCallbackResult<T>(
-      value: pluginStateReadEnvelope(entry),
-    );
+    return PluginCallbackResult<T>(value: pluginStateReadEnvelope(entry));
   }
 
   Future<PluginCallbackResult<T>> _compareAndSet(
@@ -644,10 +625,7 @@ final class _SessionControlCallbackRouter<T extends Object>
       final expected = _integer(mutation['expected_revision']) ?? 0;
       mutations.add(
         mutation['remove'] == true
-            ? PluginStateMutation.remove(
-                key: key,
-                expectedRevision: expected,
-              )
+            ? PluginStateMutation.remove(key: key, expectedRevision: expected)
             : PluginStateMutation.put(
                 key: key,
                 expectedRevision: expected,

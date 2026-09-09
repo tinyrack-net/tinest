@@ -95,11 +95,7 @@ final class MemoryPluginStateStore implements PluginStateStore {
         throw StateError('A transaction may mutate each key only once.');
       }
       final actualRevision = values[mutation.key]?.revision ?? 0;
-      _checkRevision(
-        mutation.key,
-        mutation.expectedRevision,
-        actualRevision,
-      );
+      _checkRevision(mutation.key, mutation.expectedRevision, actualRevision);
       if (!mutation.remove) _validateJson(mutation.value);
     }
     for (final mutation in mutations) {
@@ -265,10 +261,7 @@ Map<String, PluginStateEntry> _copyEntries(
 
 PluginStateEntry? _copyEntry(PluginStateEntry? entry) => entry == null
     ? null
-    : PluginStateEntry(
-        revision: entry.revision,
-        value: _copyJson(entry.value),
-      );
+    : PluginStateEntry(revision: entry.revision, value: _copyJson(entry.value));
 
 void _validateJson(Object? value) {
   if (!_isJsonValue(value)) {
@@ -284,11 +277,8 @@ bool _isJsonValue(Object? value) => switch (value) {
   _ => false,
 };
 
-String _scopeKey(PluginStateScope scope) => jsonEncode(<Object?>[
-  scope.pluginId,
-  scope.kind.name,
-  scope.ownerId,
-]);
+String _scopeKey(PluginStateScope scope) =>
+    jsonEncode(<Object?>[scope.pluginId, scope.kind.name, scope.ownerId]);
 
 Object? _copyJson(Object? value) {
   _validateJson(value);

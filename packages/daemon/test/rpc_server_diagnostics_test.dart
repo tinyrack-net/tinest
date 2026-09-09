@@ -55,10 +55,7 @@ void main() {
         workspacesCatalogProcedure.name,
       );
       expect(diagnostics.reports.single.error, same(failure));
-      expect(
-        diagnostics.reports.single.stackTrace.toString(),
-        isNotEmpty,
-      );
+      expect(diagnostics.reports.single.stackTrace.toString(), isNotEmpty);
       expect(diagnostics.reports.single.traceId, 'trace-0');
     },
     tags: const <String>['feature_test__daemon_management__unit'],
@@ -151,7 +148,7 @@ Future<json_rpc.RpcException> _expectRpcException(Future<Object?> call) async {
 }
 
 final class _Report {
-  const _Report(this.method, this.error, this.stackTrace, this.traceId);
+  const new(this.method, this.error, this.stackTrace, this.traceId);
 
   final String method;
   final Object error;

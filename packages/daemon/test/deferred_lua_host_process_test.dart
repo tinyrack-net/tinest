@@ -15,13 +15,10 @@ void main() {
     final delegate = _RecordingLauncher();
     final resolution = Completer<lua.LuaHostCommand>();
     var resolverCalls = 0;
-    final launcher = DeferredLuaHostProcessLauncher(
-      () {
-        resolverCalls += 1;
-        return resolution.future;
-      },
-      delegate,
-    );
+    final launcher = DeferredLuaHostProcessLauncher(() {
+      resolverCalls += 1;
+      return resolution.future;
+    }, delegate);
 
     expect(resolverCalls, 0);
     expect(delegate.commands, isEmpty);
@@ -79,14 +76,11 @@ void main() {
   test('a failed deferred resolution is retried by the next start', () async {
     final delegate = _RecordingLauncher();
     var resolverCalls = 0;
-    final launcher = DeferredLuaHostProcessLauncher(
-      () async {
-        resolverCalls += 1;
-        if (resolverCalls == 1) throw StateError('staging failed');
-        return const lua.LuaHostCommand(executable: 'resolved-host');
-      },
-      delegate,
-    );
+    final launcher = DeferredLuaHostProcessLauncher(() async {
+      resolverCalls += 1;
+      if (resolverCalls == 1) throw StateError('staging failed');
+      return const lua.LuaHostCommand(executable: 'resolved-host');
+    }, delegate);
 
     await expectLater(
       launcher.start(
@@ -108,7 +102,7 @@ void main() {
 }
 
 final class _RecordingLauncher implements lua.LuaHostProcessLauncher {
-  _RecordingLauncher() : process = _RecordingProcess();
+  new() : process = _RecordingProcess();
 
   final _RecordingProcess process;
   final List<lua.LuaHostCommand> commands = <lua.LuaHostCommand>[];

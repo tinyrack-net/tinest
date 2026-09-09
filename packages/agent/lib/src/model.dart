@@ -40,7 +40,7 @@ class CancellationToken {
 /// AgentCancelledException defines a public contract.
 class AgentCancelledException implements Exception {
   /// Creates a [AgentCancelledException].
-  const AgentCancelledException();
+  const new();
 }
 
 /// A provider refused a request because the conversation outgrew its context
@@ -51,7 +51,7 @@ class AgentCancelledException implements Exception {
 /// the first is recoverable by compacting, the rest are not.
 class ModelContextOverflowException implements Exception {
   /// Creates a [ModelContextOverflowException].
-  const ModelContextOverflowException(this.message);
+  const new(this.message);
 
   /// The provider's own wording, kept for the failure surfaced to the user.
   final String message;
@@ -74,7 +74,7 @@ enum ModelToolKind {
 
 /// Provider-neutral model-facing tool declaration.
 sealed class ModelToolDefinition {
-  const ModelToolDefinition({required this.name, required this.description});
+  const new({required this.name, required this.description});
 
   /// The name public API member.
   final String name;
@@ -89,7 +89,7 @@ sealed class ModelToolDefinition {
 /// A strict or provider-owned JSON function tool.
 final class ModelFunctionToolDefinition extends ModelToolDefinition {
   /// Creates a function definition.
-  const ModelFunctionToolDefinition({
+  const new({
     required super.name,
     required super.description,
     required this.parameters,
@@ -109,7 +109,7 @@ final class ModelFunctionToolDefinition extends ModelToolDefinition {
 /// One function nested in a provider namespace.
 final class ModelNamespaceToolDefinition extends ModelToolDefinition {
   /// Creates a namespace definition.
-  const ModelNamespaceToolDefinition({
+  const new({
     required super.name,
     required super.description,
     required this.tools,
@@ -125,7 +125,7 @@ final class ModelNamespaceToolDefinition extends ModelToolDefinition {
 /// Provider-native BM25 discovery over deferred tool metadata.
 final class ModelDeferredSearchToolDefinition extends ModelToolDefinition {
   /// Creates a deferred search declaration.
-  const ModelDeferredSearchToolDefinition({
+  const new({
     required super.name,
     required super.description,
     required this.parameters,
@@ -141,7 +141,7 @@ final class ModelDeferredSearchToolDefinition extends ModelToolDefinition {
 /// ConversationToolCall defines a public contract.
 class ConversationToolCall {
   /// Creates a [ConversationToolCall].
-  const ConversationToolCall.function({
+  const new function({
     required this.callId,
     required this.name,
     required this.arguments,
@@ -149,14 +149,14 @@ class ConversationToolCall {
   }) : kind = ModelToolKind.function;
 
   /// Creates a provider-native deferred-search call.
-  const ConversationToolCall.deferredSearch({
+  const new deferredSearch({
     required this.callId,
     required this.name,
     required this.arguments,
   }) : namespace = null,
        kind = ModelToolKind.deferredSearch;
 
-  const ConversationToolCall._({
+  const new _({
     required this.callId,
     required this.name,
     required this.arguments,
@@ -165,14 +165,13 @@ class ConversationToolCall {
   });
 
   /// Creates a [ConversationToolCall].
-  factory ConversationToolCall.fromJson(Map<String, dynamic> json) =>
-      ConversationToolCall._(
-        callId: json['callId']! as String,
-        name: json['name']! as String,
-        namespace: json['namespace'] as String?,
-        kind: ModelToolKind.values.byName(json['kind']! as String),
-        arguments: Map<String, dynamic>.from(json['arguments']! as Map),
-      );
+  factory fromJson(Map<String, dynamic> json) => ConversationToolCall._(
+    callId: json['callId']! as String,
+    name: json['name']! as String,
+    namespace: json['namespace'] as String?,
+    kind: ModelToolKind.values.byName(json['kind']! as String),
+    arguments: Map<String, dynamic>.from(json['arguments']! as Map),
+  );
 
   /// The callId public API member.
   final String callId;
@@ -201,9 +200,9 @@ class ConversationToolCall {
 
 /// ConversationItem defines a public contract.
 sealed class ConversationItem {
-  const ConversationItem();
+  const new();
 
-  factory ConversationItem.fromJson(Map<String, dynamic> json) {
+  factory fromJson(Map<String, dynamic> json) {
     return switch (json['type']) {
       'user' => UserConversationItem(
         json['text']! as String,
@@ -261,7 +260,7 @@ sealed class ConversationItem {
 /// just before a provider request and is deliberately never serialized.
 class ConversationAttachment {
   /// Creates a conversation attachment reference.
-  const ConversationAttachment({
+  const new({
     required this.id,
     required this.fileName,
     required this.mimeType,
@@ -275,22 +274,21 @@ class ConversationAttachment {
   });
 
   /// Decodes a persisted attachment reference.
-  factory ConversationAttachment.fromJson(Map<String, dynamic> json) =>
-      ConversationAttachment(
-        id: json['id']! as String,
-        fileName: json['fileName']! as String,
-        mimeType: json['mimeType']! as String,
-        byteSize: json['byteSize']! as int,
-        path: json['path']! as String,
-        kind: json['kind'] == null
-            ? null
-            : AgentAttachmentKind.values.byName(json['kind']! as String),
-        sha256: json['sha256'] as String?,
-        createdAt: json['createdAt'] == null
-            ? null
-            : DateTime.parse(json['createdAt']! as String),
-        imageDetail: json['imageDetail'] as String?,
-      );
+  factory fromJson(Map<String, dynamic> json) => ConversationAttachment(
+    id: json['id']! as String,
+    fileName: json['fileName']! as String,
+    mimeType: json['mimeType']! as String,
+    byteSize: json['byteSize']! as int,
+    path: json['path']! as String,
+    kind: json['kind'] == null
+        ? null
+        : AgentAttachmentKind.values.byName(json['kind']! as String),
+    sha256: json['sha256'] as String?,
+    createdAt: json['createdAt'] == null
+        ? null
+        : DateTime.parse(json['createdAt']! as String),
+    imageDetail: json['imageDetail'] as String?,
+  );
 
   /// Stable daemon attachment identifier.
   final String id;
@@ -342,10 +340,7 @@ class ConversationAttachment {
 /// UserConversationItem defines a public contract.
 class UserConversationItem extends ConversationItem {
   /// Creates a [UserConversationItem].
-  const UserConversationItem(
-    this.text, {
-    this.attachments = const <ConversationAttachment>[],
-  });
+  const new(this.text, {this.attachments = const <ConversationAttachment>[]});
 
   /// The text public API member.
   final String text;
@@ -365,7 +360,7 @@ class UserConversationItem extends ConversationItem {
 /// AssistantConversationItem defines a public contract.
 class AssistantConversationItem extends ConversationItem {
   /// Creates a [AssistantConversationItem].
-  const AssistantConversationItem({
+  const new({
     required this.text,
     this.toolCalls = const <ConversationToolCall>[],
     this.opaqueItems = const <Map<String, dynamic>>[],
@@ -392,7 +387,7 @@ class AssistantConversationItem extends ConversationItem {
 /// ToolResultConversationItem defines a public contract.
 class ToolResultConversationItem extends ConversationItem {
   /// Creates a [ToolResultConversationItem].
-  const ToolResultConversationItem({
+  const new({
     required this.callId,
     required this.output,
     required this.toolKind,
@@ -457,7 +452,7 @@ enum ModelRole {
 /// A role-qualified prompt block supplied by an Agent driver.
 final class ModelRoleBlock {
   /// Creates one ordered prompt block.
-  const ModelRoleBlock({required this.role, required this.content});
+  const new({required this.role, required this.content});
 
   /// Provider-neutral role of this block.
   final ModelRole role;
@@ -475,7 +470,7 @@ final class ModelRoleBlock {
 /// ModelRequest defines a public contract.
 class ModelRequest {
   /// Creates a [ModelRequest].
-  const ModelRequest({
+  const new({
     required this.model,
     required this.blocks,
     required this.history,
@@ -505,13 +500,13 @@ class ModelRequest {
 
 /// ModelEvent defines a public contract.
 sealed class ModelEvent {
-  const ModelEvent();
+  const new();
 }
 
 /// ModelTextDelta defines a public contract.
 class ModelTextDelta extends ModelEvent {
   /// Creates a [ModelTextDelta].
-  const ModelTextDelta(this.delta);
+  const new(this.delta);
 
   /// The delta public API member.
   final String delta;
@@ -524,7 +519,7 @@ class ModelTextDelta extends ModelEvent {
 /// [AssistantConversationItem.opaqueItems] instead.
 class ModelReasoningDelta extends ModelEvent {
   /// Creates a reasoning text delta.
-  const ModelReasoningDelta(this.delta);
+  const new(this.delta);
 
   /// The next visible fragment of reasoning text.
   final String delta;
@@ -532,11 +527,7 @@ class ModelReasoningDelta extends ModelEvent {
 
 /// A typed tool call emitted by a model provider.
 sealed class ModelToolCall extends ModelEvent {
-  const ModelToolCall({
-    required this.callId,
-    required this.name,
-    this.namespace,
-  });
+  const new({required this.callId, required this.name, this.namespace});
 
   /// Provider call identifier.
   final String callId;
@@ -554,7 +545,7 @@ sealed class ModelToolCall extends ModelEvent {
 /// ModelFunctionCall defines a public contract.
 class ModelFunctionCall extends ModelToolCall {
   /// Creates a [ModelFunctionCall].
-  const ModelFunctionCall({
+  const new({
     required super.callId,
     required super.name,
     required this.arguments,
@@ -568,7 +559,7 @@ class ModelFunctionCall extends ModelToolCall {
 /// A provider-native deferred-search call.
 final class ModelDeferredSearchCall extends ModelToolCall {
   /// Creates a client-executed search call.
-  const ModelDeferredSearchCall({
+  const new({
     required super.callId,
     required super.name,
     required this.arguments,
@@ -582,10 +573,7 @@ final class ModelDeferredSearchCall extends ModelToolCall {
 /// ModelResponseCompleted defines a public contract.
 class ModelResponseCompleted extends ModelEvent {
   /// Creates a [ModelResponseCompleted].
-  const ModelResponseCompleted({
-    required this.assistant,
-    this.usage = const ModelUsage(),
-  });
+  const new({required this.assistant, this.usage = const ModelUsage()});
 
   /// The assistant public API member.
   final AssistantConversationItem assistant;
@@ -609,7 +597,7 @@ abstract interface class ModelGateway {
 /// ToolInvocation defines a public contract.
 class ToolInvocation {
   /// Creates a [ToolInvocation].
-  const ToolInvocation({
+  const new({
     required this.callId,
     required this.name,
     required this.arguments,
@@ -671,7 +659,7 @@ abstract interface class ApprovalPolicy {
 /// DefaultApprovalPolicy defines a public contract.
 class DefaultApprovalPolicy implements ApprovalPolicy {
   /// Creates a [DefaultApprovalPolicy].
-  const DefaultApprovalPolicy(this.mode);
+  const new(this.mode);
 
   /// The mode public API member.
   final AgentPermissionMode mode;
@@ -703,7 +691,7 @@ abstract interface class ApprovalCoordinator {
 /// One fixed choice the agent offered for a [UserQuestion].
 class UserQuestionOption {
   /// Creates a [UserQuestionOption].
-  const UserQuestionOption({required this.label, required this.description});
+  const new({required this.label, required this.description});
 
   /// The short choice shown on the control.
   final String label;
@@ -718,7 +706,7 @@ class UserQuestionOption {
 /// free-form answer beside them, so the agent never authors an "other" choice.
 class UserQuestion {
   /// Creates a [UserQuestion].
-  const UserQuestion({
+  const new({
     required this.id,
     required this.header,
     required this.question,
@@ -741,7 +729,7 @@ class UserQuestion {
 /// The user's answer to one [UserQuestion].
 class UserAnswer {
   /// Creates a [UserAnswer].
-  const UserAnswer({
+  const new({
     required this.questionId,
     required this.answer,
     required this.isFreeForm,
@@ -774,51 +762,50 @@ abstract interface class UserQuestionCoordinator {
 
 /// One provider-neutral content block returned by a tool.
 sealed class ToolContent {
-  const ToolContent();
+  const new();
 
   /// Restores one persisted content block.
-  factory ToolContent.fromJson(Map<String, dynamic> json) =>
-      switch (json['type']) {
-        'text' => ToolTextContent(
-          json['text']! as String,
-          annotations: _contentMap(json['annotations']),
-          meta: _contentMap(json['_meta']),
-        ),
-        'image' => ToolImageContent(
-          imageUrl: json['image_url']! as String,
-          detail: json['detail'] as String?,
-          annotations: _contentMap(json['annotations']),
-          meta: _contentMap(json['_meta']),
-        ),
-        'audio' => ToolAudioContent(
-          audioUrl: json['audio_url']! as String,
-          annotations: _contentMap(json['annotations']),
-          meta: _contentMap(json['_meta']),
-        ),
-        'resource' => ToolEmbeddedResourceContent(
-          uri: json['uri']! as String,
-          mimeType: json['mimeType'] as String?,
-          text: json['text'] as String?,
-          blob: json['blob'] as String?,
-          meta: json['_meta'] is Map
-              ? Map<String, dynamic>.from(json['_meta'] as Map)
-              : const <String, dynamic>{},
-          annotations: _contentMap(json['annotations']),
-        ),
-        'resource_link' => ToolResourceLinkContent(
-          name: json['name']! as String,
-          uri: json['uri']! as String,
-          title: json['title'] as String?,
-          description: json['description'] as String?,
-          mimeType: json['mimeType'] as String?,
-          size: json['size'] as int?,
-          meta: json['_meta'] is Map
-              ? Map<String, dynamic>.from(json['_meta'] as Map)
-              : const <String, dynamic>{},
-          annotations: _contentMap(json['annotations']),
-        ),
-        _ => throw FormatException('Unknown tool content: ${json['type']}'),
-      };
+  factory fromJson(Map<String, dynamic> json) => switch (json['type']) {
+    'text' => ToolTextContent(
+      json['text']! as String,
+      annotations: _contentMap(json['annotations']),
+      meta: _contentMap(json['_meta']),
+    ),
+    'image' => ToolImageContent(
+      imageUrl: json['image_url']! as String,
+      detail: json['detail'] as String?,
+      annotations: _contentMap(json['annotations']),
+      meta: _contentMap(json['_meta']),
+    ),
+    'audio' => ToolAudioContent(
+      audioUrl: json['audio_url']! as String,
+      annotations: _contentMap(json['annotations']),
+      meta: _contentMap(json['_meta']),
+    ),
+    'resource' => ToolEmbeddedResourceContent(
+      uri: json['uri']! as String,
+      mimeType: json['mimeType'] as String?,
+      text: json['text'] as String?,
+      blob: json['blob'] as String?,
+      meta: json['_meta'] is Map
+          ? Map<String, dynamic>.from(json['_meta'] as Map)
+          : const <String, dynamic>{},
+      annotations: _contentMap(json['annotations']),
+    ),
+    'resource_link' => ToolResourceLinkContent(
+      name: json['name']! as String,
+      uri: json['uri']! as String,
+      title: json['title'] as String?,
+      description: json['description'] as String?,
+      mimeType: json['mimeType'] as String?,
+      size: json['size'] as int?,
+      meta: json['_meta'] is Map
+          ? Map<String, dynamic>.from(json['_meta'] as Map)
+          : const <String, dynamic>{},
+      annotations: _contentMap(json['annotations']),
+    ),
+    _ => throw FormatException('Unknown tool content: ${json['type']}'),
+  };
 
   /// Durable MCP-compatible representation.
   Map<String, dynamic> toJson();
@@ -827,7 +814,7 @@ sealed class ToolContent {
 /// Text returned by a tool.
 final class ToolTextContent extends ToolContent {
   /// Creates text content.
-  const ToolTextContent(
+  const new(
     this.text, {
     this.annotations = const <String, dynamic>{},
     this.meta = const <String, dynamic>{},
@@ -854,7 +841,7 @@ final class ToolTextContent extends ToolContent {
 /// Image returned by a tool.
 final class ToolImageContent extends ToolContent {
   /// Creates image content.
-  const ToolImageContent({
+  const new({
     required this.imageUrl,
     this.detail,
     this.annotations = const <String, dynamic>{},
@@ -886,7 +873,7 @@ final class ToolImageContent extends ToolContent {
 /// Audio returned by a tool.
 final class ToolAudioContent extends ToolContent {
   /// Creates audio content.
-  const ToolAudioContent({
+  const new({
     required this.audioUrl,
     this.annotations = const <String, dynamic>{},
     this.meta = const <String, dynamic>{},
@@ -913,7 +900,7 @@ final class ToolAudioContent extends ToolContent {
 /// An embedded text or binary resource returned by a tool.
 final class ToolEmbeddedResourceContent extends ToolContent {
   /// Creates an embedded resource.
-  const ToolEmbeddedResourceContent({
+  const new({
     required this.uri,
     this.mimeType,
     this.text,
@@ -955,7 +942,7 @@ final class ToolEmbeddedResourceContent extends ToolContent {
 /// An MCP-style resource link returned by a tool.
 final class ToolResourceLinkContent extends ToolContent {
   /// Creates a resource link.
-  const ToolResourceLinkContent({
+  const new({
     required this.name,
     required this.uri,
     this.title,
@@ -1010,7 +997,7 @@ Map<String, dynamic> _contentMap(Object? value) =>
 /// ToolResult defines a public contract.
 class ToolResult {
   /// Creates a [ToolResult].
-  const ToolResult({
+  const new({
     required this.value,
     this.isError = false,
     this.content = const <ToolContent>[],

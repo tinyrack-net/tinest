@@ -167,112 +167,98 @@ void main() {
   Map<String, dynamic> drawerBadge(String text, String variant) =>
       <String, dynamic>{'type': 'badge', 'text': text, 'variant': variant};
 
-  testWidgets(
-    'the drawer lists nested subagents and opens a read-only tab',
-    (tester) async {
-      await tester.binding.setSurfaceSize(const Size(1280, 800));
-      addTearDown(() => tester.binding.setSurfaceSize(null));
-      final api = FakeTinestApi(
-        workspaces: <WorkspaceDto>[workspace],
-        worktrees: <WorktreeDto>[checkout],
-        agentDefinitions: const <AgentDefinitionDto>[drawerAgent],
-        plugins: const <PluginDescriptorDto>[drawerPlugin],
-        pluginUiDocuments: <String, PluginUiDocumentDto>{
-          drawerKey: drawerDocument(
-            title: '서브 에이전트 2개',
-            summary: <Map<String, dynamic>>[drawerBadge('1개 실행 중', 'info')],
-            items: <Map<String, dynamic>>[
-              drawerItem(
-                label: 'explore_auth',
-                description: '/root/explore_auth',
-                status: 'running',
-                sessionId: 'child-a',
-                children: <Map<String, dynamic>>[
-                  drawerItem(
-                    label: 'read_docs',
-                    description: '/root/explore_auth/read_docs',
-                    status: 'done',
-                    sessionId: 'grandchild',
-                  ),
-                ],
-              ),
-            ],
-          ),
-        },
-        agents: <SessionDto>[
-          root('main-session'),
-          subagent(
-            'child-a',
-            parentId: 'main-session',
-            taskName: 'explore_auth',
-            agentPath: '/root/explore_auth',
-          ),
-          subagent(
-            'grandchild',
-            parentId: 'child-a',
-            taskName: 'read_docs',
-            agentPath: '/root/explore_auth/read_docs',
-            lifecycle: AgentLifecycle.completed,
-            createdAt: now.add(const Duration(seconds: 1)),
-          ),
-        ],
-      );
-      final router = await pumpRoutedApp(
-        tester,
-        api,
-        initialLocation: sessionLocation('main-session'),
-        settle: false,
-      );
-      addTearDown(router.dispose);
-      await tester.pump(const Duration(seconds: 1));
+  testWidgets('the drawer lists nested subagents and opens a read-only tab', (
+    tester,
+  ) async {
+    await tester.binding.setSurfaceSize(const Size(1280, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    final api = FakeTinestApi(
+      workspaces: <WorkspaceDto>[workspace],
+      worktrees: <WorktreeDto>[checkout],
+      agentDefinitions: const <AgentDefinitionDto>[drawerAgent],
+      plugins: const <PluginDescriptorDto>[drawerPlugin],
+      pluginUiDocuments: <String, PluginUiDocumentDto>{
+        drawerKey: drawerDocument(
+          title: '서브 에이전트 2개',
+          summary: <Map<String, dynamic>>[drawerBadge('1개 실행 중', 'info')],
+          items: <Map<String, dynamic>>[
+            drawerItem(
+              label: 'explore_auth',
+              description: '/root/explore_auth',
+              status: 'running',
+              sessionId: 'child-a',
+              children: <Map<String, dynamic>>[
+                drawerItem(
+                  label: 'read_docs',
+                  description: '/root/explore_auth/read_docs',
+                  status: 'done',
+                  sessionId: 'grandchild',
+                ),
+              ],
+            ),
+          ],
+        ),
+      },
+      agents: <SessionDto>[
+        root('main-session'),
+        subagent(
+          'child-a',
+          parentId: 'main-session',
+          taskName: 'explore_auth',
+          agentPath: '/root/explore_auth',
+        ),
+        subagent(
+          'grandchild',
+          parentId: 'child-a',
+          taskName: 'read_docs',
+          agentPath: '/root/explore_auth/read_docs',
+          lifecycle: AgentLifecycle.completed,
+          createdAt: now.add(const Duration(seconds: 1)),
+        ),
+      ],
+    );
+    final router = await pumpRoutedApp(
+      tester,
+      api,
+      initialLocation: sessionLocation('main-session'),
+      settle: false,
+    );
+    addTearDown(router.dispose);
+    await tester.pump(const Duration(seconds: 1));
 
-      // Collapsed by default: the summary speaks, the rows stay hidden.
-      expect(find.text('서브 에이전트 2개'), findsOneWidget);
-      expect(find.text('1개 실행 중'), findsOneWidget);
-      expect(find.text('/root/explore_auth'), findsNothing);
+    // Collapsed by default: the summary speaks, the rows stay hidden.
+    expect(find.text('서브 에이전트 2개'), findsOneWidget);
+    expect(find.text('1개 실행 중'), findsOneWidget);
+    expect(find.text('/root/explore_auth'), findsNothing);
 
-      // Expanding lists every descendant, nested ones included. A running
-      // row keeps a spinner animating, so settle-style pumps would never
-      // finish; fixed pumps are used from here on.
-      await tester.tap(find.text('서브 에이전트 2개'));
-      await tester.pump();
-      await tester.pump(const Duration(seconds: 1));
-      expect(find.text('explore_auth'), findsOneWidget);
-      expect(find.text('/root/explore_auth/read_docs'), findsOneWidget);
+    // Expanding lists every descendant, nested ones included. A running
+    // row keeps a spinner animating, so settle-style pumps would never
+    // finish; fixed pumps are used from here on.
+    await tester.tap(find.text('서브 에이전트 2개'));
+    await tester.pump();
+    await tester.pump(const Duration(seconds: 1));
+    expect(find.text('explore_auth'), findsOneWidget);
+    expect(find.text('/root/explore_auth/read_docs'), findsOneWidget);
 
-      // Subagents never appear in the all-sessions menu.
-      await tester.tap(
-        find.byKey(const ValueKey('workspace-all-sessions-menu')),
-      );
-      await tester.pump(const Duration(seconds: 1));
-      expect(find.text('Session main-session'), findsWidgets);
-      // The expanded drawer behind the menu still shows the row text, so the
-      // absence check is scoped to menu items.
-      expect(
-        find.widgetWithText(TRMenuItem, 'read_docs'),
-        findsNothing,
-      );
-      expect(
-        find.widgetWithText(TRMenuItem, 'explore_auth'),
-        findsNothing,
-      );
-      await tester.tap(
-        find.byKey(const ValueKey('workspace-all-sessions-menu')),
-      );
-      await tester.pump(const Duration(seconds: 1));
+    // Subagents never appear in the all-sessions menu.
+    await tester.tap(find.byKey(const ValueKey('workspace-all-sessions-menu')));
+    await tester.pump(const Duration(seconds: 1));
+    expect(find.text('Session main-session'), findsWidgets);
+    // The expanded drawer behind the menu still shows the row text, so the
+    // absence check is scoped to menu items.
+    expect(find.widgetWithText(TRMenuItem, 'read_docs'), findsNothing);
+    expect(find.widgetWithText(TRMenuItem, 'explore_auth'), findsNothing);
+    await tester.tap(find.byKey(const ValueKey('workspace-all-sessions-menu')));
+    await tester.pump(const Duration(seconds: 1));
 
-      // Activating a row asks the host to open that session, and the host
-      // agrees because it is a descendant of the session the drawer sits on.
-      await tester.tap(find.text('explore_auth'));
-      await tester.pump();
-      await tester.pump(const Duration(seconds: 1));
-      expect(currentLocation(router), sessionLocation('child-a'));
-      expect(
-        find.byKey(const ValueKey('tr-tabs-close-child-a')),
-        findsOneWidget,
-      );
-    },
-  );
+    // Activating a row asks the host to open that session, and the host
+    // agrees because it is a descendant of the session the drawer sits on.
+    await tester.tap(find.text('explore_auth'));
+    await tester.pump();
+    await tester.pump(const Duration(seconds: 1));
+    expect(currentLocation(router), sessionLocation('child-a'));
+    expect(find.byKey(const ValueKey('tr-tabs-close-child-a')), findsOneWidget);
+  });
 
   testWidgets(
     'an expanded four-agent drawer fits above the composer in a short pane',
@@ -313,9 +299,7 @@ void main() {
         pluginUiDocuments: <String, PluginUiDocumentDto>{
           drawerKey: drawerDocument(
             title: '4 subagents',
-            summary: <Map<String, dynamic>>[
-              drawerBadge('4 running', 'info'),
-            ],
+            summary: <Map<String, dynamic>>[drawerBadge('4 running', 'info')],
             items: <Map<String, dynamic>>[
               for (final child in children)
                 drawerItem(
@@ -450,10 +434,9 @@ void main() {
       expect(find.byType(SessionComposer), findsNothing);
       await tester.tap(find.widgetWithText(TRButton, '승인'));
       await tester.pump(const Duration(seconds: 1));
-      expect(
-        api.approvalDecisions,
-        <({String id, bool approved})>[(id: 'approval', approved: true)],
-      );
+      expect(api.approvalDecisions, <({String id, bool approved})>[
+        (id: 'approval', approved: true),
+      ]);
 
       // The transcript streams live timeline events.
       api.emitTimeline('child-a', 'assistant.delta', <String, dynamic>{
@@ -569,82 +552,81 @@ void main() {
     },
   );
 
-  testWidgets(
-    'the collapsed drawer flags descendants that need the user',
-    (tester) async {
-      await tester.binding.setSurfaceSize(const Size(1280, 800));
-      addTearDown(() => tester.binding.setSurfaceSize(null));
-      final child = subagent(
-        'child-a',
-        parentId: 'main-session',
-        taskName: 'explore_auth',
-        agentPath: '/root/explore_auth',
-      );
-      final documents = <String, PluginUiDocumentDto>{
-        drawerKey: drawerDocument(
-          title: '서브 에이전트 1개',
-          summary: <Map<String, dynamic>>[drawerBadge('1개 실행 중', 'info')],
-          items: <Map<String, dynamic>>[
-            drawerItem(
-              label: 'explore_auth',
-              description: '/root/explore_auth',
-              status: 'running',
-              sessionId: 'child-a',
-            ),
-          ],
-        ),
-      };
-      final api = FakeTinestApi(
-        workspaces: <WorkspaceDto>[workspace],
-        worktrees: <WorktreeDto>[checkout],
-        agentDefinitions: const <AgentDefinitionDto>[drawerAgent],
-        plugins: const <PluginDescriptorDto>[drawerPlugin],
-        pluginUiDocuments: documents,
-        agents: <SessionDto>[root('main-session'), child],
-      );
-      final router = await pumpRoutedApp(
-        tester,
-        api,
-        initialLocation: sessionLocation('main-session'),
-        settle: false,
-      );
-      addTearDown(router.dispose);
-      await tester.pump(const Duration(seconds: 1));
-
-      // A working child is summarized as running and nothing else.
-      expect(find.text('1개 실행 중'), findsOneWidget);
-      expect(find.text('1개 승인 필요'), findsNothing);
-
-      // Once it parks on an approval the collapsed summary has to say so: the
-      // rows are hidden by default, so the badge is the only thing between a
-      // stuck tree and a user who never looks. The summary rides in the
-      // trigger, which is why a collapsed drawer can still carry it.
-      api.pluginUiDocuments[drawerKey] = drawerDocument(
+  testWidgets('the collapsed drawer flags descendants that need the user', (
+    tester,
+  ) async {
+    await tester.binding.setSurfaceSize(const Size(1280, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    final child = subagent(
+      'child-a',
+      parentId: 'main-session',
+      taskName: 'explore_auth',
+      agentPath: '/root/explore_auth',
+    );
+    final documents = <String, PluginUiDocumentDto>{
+      drawerKey: drawerDocument(
         title: '서브 에이전트 1개',
-        summary: <Map<String, dynamic>>[drawerBadge('1개 승인 필요', 'warning')],
+        summary: <Map<String, dynamic>>[drawerBadge('1개 실행 중', 'info')],
         items: <Map<String, dynamic>>[
           drawerItem(
             label: 'explore_auth',
             description: '/root/explore_auth',
-            status: 'blocked',
+            status: 'running',
             sessionId: 'child-a',
           ),
         ],
-      );
-      api.emit(
-        SessionUpdatedClientEvent(
-          child.copyWith(status: SessionStatus.waitingForApproval),
+      ),
+    };
+    final api = FakeTinestApi(
+      workspaces: <WorkspaceDto>[workspace],
+      worktrees: <WorktreeDto>[checkout],
+      agentDefinitions: const <AgentDefinitionDto>[drawerAgent],
+      plugins: const <PluginDescriptorDto>[drawerPlugin],
+      pluginUiDocuments: documents,
+      agents: <SessionDto>[root('main-session'), child],
+    );
+    final router = await pumpRoutedApp(
+      tester,
+      api,
+      initialLocation: sessionLocation('main-session'),
+      settle: false,
+    );
+    addTearDown(router.dispose);
+    await tester.pump(const Duration(seconds: 1));
+
+    // A working child is summarized as running and nothing else.
+    expect(find.text('1개 실행 중'), findsOneWidget);
+    expect(find.text('1개 승인 필요'), findsNothing);
+
+    // Once it parks on an approval the collapsed summary has to say so: the
+    // rows are hidden by default, so the badge is the only thing between a
+    // stuck tree and a user who never looks. The summary rides in the
+    // trigger, which is why a collapsed drawer can still carry it.
+    api.pluginUiDocuments[drawerKey] = drawerDocument(
+      title: '서브 에이전트 1개',
+      summary: <Map<String, dynamic>>[drawerBadge('1개 승인 필요', 'warning')],
+      items: <Map<String, dynamic>>[
+        drawerItem(
+          label: 'explore_auth',
+          description: '/root/explore_auth',
+          status: 'blocked',
+          sessionId: 'child-a',
         ),
-      );
-      // The drawer answers over the RPC, so the new document lands a frame
-      // after the tree moved rather than in the same one.
-      await tester.pump();
-      await tester.pump();
-      await tester.pump(const Duration(seconds: 1));
-      expect(find.text('1개 승인 필요'), findsOneWidget);
-      expect(find.text('1개 실행 중'), findsNothing);
-    },
-  );
+      ],
+    );
+    api.emit(
+      SessionUpdatedClientEvent(
+        child.copyWith(status: SessionStatus.waitingForApproval),
+      ),
+    );
+    // The drawer answers over the RPC, so the new document lands a frame
+    // after the tree moved rather than in the same one.
+    await tester.pump();
+    await tester.pump();
+    await tester.pump(const Duration(seconds: 1));
+    expect(find.text('1개 승인 필요'), findsOneWidget);
+    expect(find.text('1개 실행 중'), findsNothing);
+  });
 
   testWidgets(
     'a blocked subagent approval is answerable from the parent',
@@ -702,10 +684,9 @@ void main() {
       await tester.pump();
       await tester.tap(approve);
       await tester.pump(const Duration(seconds: 1));
-      expect(
-        api.approvalDecisions,
-        <({String id, bool approved})>[(id: 'approval', approved: true)],
-      );
+      expect(api.approvalDecisions, <({String id, bool approved})>[
+        (id: 'approval', approved: true),
+      ]);
       // Answering it never navigated away from the parent.
       expect(currentLocation(router), sessionLocation('main-session'));
     },

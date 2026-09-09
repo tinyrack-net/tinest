@@ -19,38 +19,30 @@ import '../../support/fake_tinest_api.dart';
 import '../../support/localization.dart';
 
 void main() {
-  testWidgets(
-    'configured providers occupy the collection pane',
-    (
-      tester,
-    ) async {
-      tester.view
-        ..devicePixelRatio = 1
-        ..physicalSize = const Size(1200, 900);
-      addTearDown(tester.view.reset);
-      await _pumpSettings(tester, FakeTinestApi());
+  testWidgets('configured providers occupy the collection pane', (
+    tester,
+  ) async {
+    tester.view
+      ..devicePixelRatio = 1
+      ..physicalSize = const Size(1200, 900);
+    addTearDown(tester.view.reset);
+    await _pumpSettings(tester, FakeTinestApi());
 
-      expect(
-        find.byKey(const ValueKey<String>('provider-connection-openai')),
-        findsOneWidget,
-      );
-      expect(find.byType(TRTreeNav<String>), findsOneWidget);
-      expect(find.byKey(const ValueKey('provider-add-openai')), findsNothing);
-      await tester.tap(
-        find.byKey(const ValueKey<String>('provider-add-button')),
-      );
-      await tester.pumpAndSettle();
-      expect(find.byKey(const ValueKey('provider-add-openai')), findsOneWidget);
-      expect(find.byType(TRAlertDialog), findsNothing);
-    },
-    tags: const <String>['feature_test__provider_catalog__widget'],
-  );
+    expect(
+      find.byKey(const ValueKey<String>('provider-connection-openai')),
+      findsOneWidget,
+    );
+    expect(find.byType(TRTreeNav<String>), findsOneWidget);
+    expect(find.byKey(const ValueKey('provider-add-openai')), findsNothing);
+    await tester.tap(find.byKey(const ValueKey<String>('provider-add-button')));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const ValueKey('provider-add-openai')), findsOneWidget);
+    expect(find.byType(TRAlertDialog), findsNothing);
+  }, tags: const <String>['feature_test__provider_catalog__widget']);
 
   testWidgets(
     'API key and prefix stay inline in the third pane',
-    (
-      tester,
-    ) async {
+    (tester) async {
       tester.view
         ..devicePixelRatio = 1
         ..physicalSize = const Size(1200, 900);
@@ -90,47 +82,41 @@ void main() {
     ],
   );
 
-  testWidgets(
-    'OAuth keeps progress and browser recovery in the detail pane',
-    (
-      tester,
-    ) async {
-      final api = FakeTinestApi(connections: <ProviderConnectionDto>[]);
-      final opener = _ExternalUrlOpener();
-      await _pumpSettings(tester, api, externalUrlOpener: opener);
+  testWidgets('OAuth keeps progress and browser recovery in the detail pane', (
+    tester,
+  ) async {
+    final api = FakeTinestApi(connections: <ProviderConnectionDto>[]);
+    final opener = _ExternalUrlOpener();
+    await _pumpSettings(tester, api, externalUrlOpener: opener);
 
-      await _openCatalog(tester);
-      await tester.tap(find.byKey(const ValueKey('provider-add-openai')));
-      await tester.pumpAndSettle();
-      await tester.tap(
-        find.byKey(const ValueKey<String>('provider-connect-submit')),
-      );
-      await tester.pump();
-      await tester.pump(const Duration(milliseconds: 100));
+    await _openCatalog(tester);
+    await tester.tap(find.byKey(const ValueKey('provider-add-openai')));
+    await tester.pumpAndSettle();
+    await tester.tap(
+      find.byKey(const ValueKey<String>('provider-connect-submit')),
+    );
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 100));
 
-      expect(find.text('로그인 대기 중'), findsWidgets);
-      expect(find.textContaining('auth.example'), findsOneWidget);
-      expect(
-        find.byKey(
-          const ValueKey<String>('provider-oauth-open-browser'),
-        ),
-        findsOneWidget,
-      );
-      expect(opener.opened, hasLength(1));
-      await tester.tap(
-        find.byKey(const ValueKey<String>('provider-oauth-open-browser')),
-      );
-      await tester.pump();
-      expect(opener.opened, hasLength(2));
-      await tester.tap(
-        find.byKey(const ValueKey<String>('provider-auth-cancel-attempt')),
-      );
-      await tester.pump();
-      expect(api.cancelledAuthAttempts, <String>['attempt']);
-      expect(find.byType(TRAlertDialog), findsNothing);
-    },
-    tags: const <String>['feature_test__provider_oauth__widget'],
-  );
+    expect(find.text('로그인 대기 중'), findsWidgets);
+    expect(find.textContaining('auth.example'), findsOneWidget);
+    expect(
+      find.byKey(const ValueKey<String>('provider-oauth-open-browser')),
+      findsOneWidget,
+    );
+    expect(opener.opened, hasLength(1));
+    await tester.tap(
+      find.byKey(const ValueKey<String>('provider-oauth-open-browser')),
+    );
+    await tester.pump();
+    expect(opener.opened, hasLength(2));
+    await tester.tap(
+      find.byKey(const ValueKey<String>('provider-auth-cancel-attempt')),
+    );
+    await tester.pump();
+    expect(api.cancelledAuthAttempts, <String>['attempt']);
+    expect(find.byType(TRAlertDialog), findsNothing);
+  }, tags: const <String>['feature_test__provider_oauth__widget']);
 
   testWidgets('OAuth browser failures use the shared danger alert', (
     tester,
@@ -160,35 +146,29 @@ void main() {
     expect(find.text('인증 페이지를 열 수 없습니다.'), findsOneWidget);
   }, tags: const <String>['feature_test__provider_oauth__widget']);
 
-  testWidgets(
-    'custom provider configuration is one inline form',
-    (
+  testWidgets('custom provider configuration is one inline form', (
+    tester,
+  ) async {
+    await _pumpSettings(
       tester,
-    ) async {
-      await _pumpSettings(
-        tester,
-        FakeTinestApi(connections: <ProviderConnectionDto>[]),
-      );
+      FakeTinestApi(connections: <ProviderConnectionDto>[]),
+    );
 
-      await _openCatalog(tester);
-      await tester.tap(find.byKey(const ValueKey('provider-add-custom')));
-      await tester.pumpAndSettle();
+    await _openCatalog(tester);
+    await tester.tap(find.byKey(const ValueKey('provider-add-custom')));
+    await tester.pumpAndSettle();
 
-      expect(_field('이름'), findsOneWidget);
-      expect(_field('기본 URL'), findsOneWidget);
-      expect(_field('모델 Prefix'), findsOneWidget);
-      expect(_field('API 키'), findsOneWidget);
-      expect(_field('Model ID'), findsOneWidget);
-      expect(find.byType(TRAlertDialog), findsNothing);
-    },
-    tags: const <String>['feature_test__provider_custom__widget'],
-  );
+    expect(_field('이름'), findsOneWidget);
+    expect(_field('기본 URL'), findsOneWidget);
+    expect(_field('모델 Prefix'), findsOneWidget);
+    expect(_field('API 키'), findsOneWidget);
+    expect(_field('Model ID'), findsOneWidget);
+    expect(find.byType(TRAlertDialog), findsNothing);
+  }, tags: const <String>['feature_test__provider_custom__widget']);
 
   testWidgets(
     'connection detail manages prefix without daemon model settings',
-    (
-      tester,
-    ) async {
+    (tester) async {
       final api = FakeTinestApi();
       await _pumpSettings(tester, api);
       await tester.tap(
@@ -204,9 +184,7 @@ void main() {
       expect(find.text('데몬 기본 모델'), findsNothing);
       // Save commits the whole record, so it lives in the pinned action bar
       // under the form rather than in the page header.
-      final save = find.byKey(
-        const ValueKey<String>('provider-prefix-save'),
-      );
+      final save = find.byKey(const ValueKey<String>('provider-prefix-save'));
       expect(
         find.ancestor(of: save, matching: find.byType(TRPaneHeader)),
         findsNothing,
@@ -395,10 +373,7 @@ void main() {
 
     expect(api.credentials['openai'], 'replacement-secret');
     expect(await api.providers.listProviderConnections(), hasLength(1));
-    expect(
-      (await api.providers.listProviderConnections()).single.id,
-      'openai',
-    );
+    expect((await api.providers.listProviderConnections()).single.id, 'openai');
   });
 
   testWidgets('failed OAuth stays in its pane and returns to the form', (
@@ -480,9 +455,7 @@ void main() {
       // Turning the control on asks for values; nothing here can guess them.
       await tester.tap(
         find.byKey(
-          const ValueKey<String>(
-            'provider-custom-control-0-reasoning_effort',
-          ),
+          const ValueKey<String>('provider-custom-control-0-reasoning_effort'),
         ),
       );
       await tester.pumpAndSettle();
@@ -504,9 +477,7 @@ void main() {
       await tester.enterText(_field('Model ID').last, 'deep-model');
       await tester.tap(
         find.byKey(
-          const ValueKey<String>(
-            'provider-custom-control-1-reasoning_effort',
-          ),
+          const ValueKey<String>('provider-custom-control-1-reasoning_effort'),
         ),
       );
       await tester.pumpAndSettle();
@@ -544,9 +515,7 @@ void main() {
     await tester.tap(find.byKey(const ValueKey('provider-add-custom')));
     await tester.pumpAndSettle();
     expect(find.text('Custom Provider 고급 설정'), findsOneWidget);
-    final create = find.byKey(
-      const ValueKey<String>('provider-custom-save'),
-    );
+    final create = find.byKey(const ValueKey<String>('provider-custom-save'));
     expect(
       find.ancestor(of: create, matching: find.byType(SettingsFormActions)),
       findsOneWidget,
@@ -557,10 +526,7 @@ void main() {
     );
 
     await tester.enterText(_field('이름'), 'Lab');
-    await tester.enterText(
-      _field('기본 URL'),
-      'http://127.0.0.1:9000/v1',
-    );
+    await tester.enterText(_field('기본 URL'), 'http://127.0.0.1:9000/v1');
     await tester.enterText(_field('API 키'), 'lab-secret');
     await tester.enterText(_field('Model ID').first, 'model-a');
     await tester.tap(
@@ -591,9 +557,7 @@ void main() {
     expect(edited.displayName, 'Lab Edited');
     expect(edited.modelPrefix, 'lab-edited');
 
-    final save = find.byKey(
-      const ValueKey<String>('provider-custom-save'),
-    );
+    final save = find.byKey(const ValueKey<String>('provider-custom-save'));
     expect(
       find.ancestor(of: save, matching: find.byType(SettingsFormActions)),
       findsOneWidget,
@@ -623,10 +587,7 @@ void main() {
       findsNothing,
     );
     expect(
-      find.ancestor(
-        of: disconnect,
-        matching: find.byType(SettingsSection),
-      ),
+      find.ancestor(of: disconnect, matching: find.byType(SettingsSection)),
       findsOneWidget,
     );
     expect(tester.widget<TRButton>(disconnect).intent, TRIntent.danger);
@@ -635,9 +596,7 @@ void main() {
     await tester.pumpAndSettle();
     expect(
       tester
-          .widget<TRButton>(
-            find.widgetWithText(TRButton, '연결 해제').last,
-          )
+          .widget<TRButton>(find.widgetWithText(TRButton, '연결 해제').last)
           .intent,
       TRIntent.danger,
     );
@@ -648,9 +607,7 @@ void main() {
       ProviderConnectionStatus.connected,
     );
 
-    final delete = find.byKey(
-      const ValueKey<String>('provider-custom-delete'),
-    );
+    final delete = find.byKey(const ValueKey<String>('provider-custom-delete'));
     await tester.scrollUntilVisible(
       delete,
       TRSpacing.fourExtraLarge,
@@ -680,9 +637,7 @@ void main() {
     'a disconnect completing after Settings closes does not reuse its pane',
     (tester) async {
       final disconnectGate = Completer<void>();
-      final api = FakeTinestApi(
-        providerDisconnectGate: disconnectGate.future,
-      );
+      final api = FakeTinestApi(providerDisconnectGate: disconnectGate.future);
       final router = await _pumpSettings(tester, api);
 
       await tester.tap(
@@ -690,9 +645,7 @@ void main() {
       );
       await tester.pumpAndSettle();
       await tester.tap(
-        find.byKey(
-          const ValueKey<String>('provider-connection-disconnect'),
-        ),
+        find.byKey(const ValueKey<String>('provider-connection-disconnect')),
       );
       await tester.pumpAndSettle();
       await tester.tap(find.widgetWithText(TRButton, '연결 해제').last);
@@ -741,35 +694,27 @@ void main() {
     expect(find.textContaining('연결 해제됨'), findsOneWidget);
   });
 
-  testWidgets(
-    'mobile add and Back move between collection and detail panes',
-    (
-      tester,
-    ) async {
-      tester.view
-        ..devicePixelRatio = 1
-        ..physicalSize = const Size(390, 760);
-      addTearDown(tester.view.reset);
-      await _pumpSettings(tester, FakeTinestApi());
+  testWidgets('mobile add and Back move between collection and detail panes', (
+    tester,
+  ) async {
+    tester.view
+      ..devicePixelRatio = 1
+      ..physicalSize = const Size(390, 760);
+    addTearDown(tester.view.reset);
+    await _pumpSettings(tester, FakeTinestApi());
 
-      expect(
-        find.byKey(const ValueKey<String>('provider-connection-openai')),
-        findsOneWidget,
-      );
-      await tester.tap(
-        find.byKey(const ValueKey<String>('provider-add-button')),
-      );
-      await tester.pumpAndSettle();
-      expect(find.byKey(const ValueKey('provider-add-openai')), findsOneWidget);
-    },
-    tags: const <String>['feature_test__provider_catalog__widget'],
-  );
+    expect(
+      find.byKey(const ValueKey<String>('provider-connection-openai')),
+      findsOneWidget,
+    );
+    await tester.tap(find.byKey(const ValueKey<String>('provider-add-button')));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const ValueKey('provider-add-openai')), findsOneWidget);
+  }, tags: const <String>['feature_test__provider_catalog__widget']);
 
   testWidgets(
     'a completing authorization does not undo where the user went next',
-    (
-      tester,
-    ) async {
+    (tester) async {
       tester.view
         ..devicePixelRatio = 1
         ..physicalSize = const Size(1200, 900);
@@ -836,9 +781,7 @@ void main() {
 
   testWidgets(
     'the catalog reopens after a connection completes the create flow',
-    (
-      tester,
-    ) async {
+    (tester) async {
       tester.view
         ..devicePixelRatio = 1
         ..physicalSize = const Size(1200, 900);
@@ -871,16 +814,12 @@ void main() {
         findsOneWidget,
       );
     },
-    tags: const <String>[
-      'feature_test__provider_catalog__widget',
-    ],
+    tags: const <String>['feature_test__provider_catalog__widget'],
   );
 
   testWidgets(
     'a failed connection shows the reason the daemon reported',
-    (
-      tester,
-    ) async {
+    (tester) async {
       final now = DateTime.utc(2026);
       await _pumpSettings(
         tester,
@@ -930,50 +869,41 @@ void main() {
     ],
   );
 
-  testWidgets(
-    'mobile Back walks the detail stack one level at a time',
-    (
+  testWidgets('mobile Back walks the detail stack one level at a time', (
+    tester,
+  ) async {
+    tester.view
+      ..devicePixelRatio = 1
+      ..physicalSize = const Size(390, 760);
+    addTearDown(tester.view.reset);
+    await _pumpSettings(
       tester,
-    ) async {
-      tester.view
-        ..devicePixelRatio = 1
-        ..physicalSize = const Size(390, 760);
-      addTearDown(tester.view.reset);
-      await _pumpSettings(
-        tester,
-        FakeTinestApi(connections: <ProviderConnectionDto>[]),
-      );
+      FakeTinestApi(connections: <ProviderConnectionDto>[]),
+    );
 
-      await _openCatalog(tester);
-      await tester.tap(find.byKey(const ValueKey('provider-add-deepseek')));
-      await tester.pumpAndSettle();
-      expect(_field('API 키'), findsOneWidget);
+    await _openCatalog(tester);
+    await tester.tap(find.byKey(const ValueKey('provider-add-deepseek')));
+    await tester.pumpAndSettle();
+    expect(_field('API 키'), findsOneWidget);
 
-      // The form covers the catalog, which covers the collection, so Back
-      // unwinds the same levels the taps built.
-      await tester.binding.handlePopRoute();
-      await tester.pumpAndSettle();
-      expect(_field('API 키'), findsNothing);
-      expect(
-        find.byKey(const ValueKey('provider-add-deepseek')),
-        findsOneWidget,
-      );
+    // The form covers the catalog, which covers the collection, so Back
+    // unwinds the same levels the taps built.
+    await tester.binding.handlePopRoute();
+    await tester.pumpAndSettle();
+    expect(_field('API 키'), findsNothing);
+    expect(find.byKey(const ValueKey('provider-add-deepseek')), findsOneWidget);
 
-      await tester.binding.handlePopRoute();
-      await tester.pumpAndSettle();
-      expect(
-        find.byKey(const ValueKey<String>('provider-add-button')),
-        findsOneWidget,
-      );
-    },
-    tags: const <String>['feature_test__provider_catalog__widget'],
-  );
+    await tester.binding.handlePopRoute();
+    await tester.pumpAndSettle();
+    expect(
+      find.byKey(const ValueKey<String>('provider-add-button')),
+      findsOneWidget,
+    );
+  }, tags: const <String>['feature_test__provider_catalog__widget']);
 
   testWidgets(
     'cancelling the preset form pops to the catalog it was pushed over',
-    (
-      tester,
-    ) async {
+    (tester) async {
       tester.view
         ..devicePixelRatio = 1
         ..physicalSize = const Size(1200, 900);
@@ -1005,52 +935,48 @@ void main() {
     tags: const <String>['feature_test__provider_catalog__widget'],
   );
 
-  testWidgets(
-    'provider route renders offline and unavailable daemon states',
-    (tester) async {
-      await _pumpSettings(tester, FakeTinestApi(), autoConnectEnabled: false);
-      expect(
-        find.byKey(const ValueKey<String>('settings-daemon-offline')),
-        findsOneWidget,
-      );
-      await tester.pumpWidget(const SizedBox.shrink());
-      await tester.pumpAndSettle();
+  testWidgets('provider route renders offline and unavailable daemon states', (
+    tester,
+  ) async {
+    await _pumpSettings(tester, FakeTinestApi(), autoConnectEnabled: false);
+    expect(
+      find.byKey(const ValueKey<String>('settings-daemon-offline')),
+      findsOneWidget,
+    );
+    await tester.pumpWidget(const SizedBox.shrink());
+    await tester.pumpAndSettle();
 
-      final router = GoRouter(
-        initialLocation: const ProviderSettingsRoute(
-          hostId: 'server',
-        ).location,
-        routes: $appRoutes,
-      );
-      addTearDown(router.dispose);
-      await tester.pumpWidget(
-        ProviderScope(
-          overrides: [
-            appServicesProvider.overrideWithValue(
-              const AppServices(
-                settings: _FailingStore(),
-                profiles: _FailingStore(),
-                credentials: _FailingStore(),
-                clients: _FailingStore(),
-                clientKind: 'test',
-              ),
+    final router = GoRouter(
+      initialLocation: const ProviderSettingsRoute(hostId: 'server').location,
+      routes: $appRoutes,
+    );
+    addTearDown(router.dispose);
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          appServicesProvider.overrideWithValue(
+            const AppServices(
+              settings: _FailingStore(),
+              profiles: _FailingStore(),
+              credentials: _FailingStore(),
+              clients: _FailingStore(),
+              clientKind: 'test',
             ),
-          ],
-          child: MaterialApp.router(
-            theme: testLightTheme,
-            darkTheme: testDarkTheme,
-            locale: testLocale,
-            localizationsDelegates: testLocalizationsDelegates,
-            supportedLocales: testSupportedLocales,
-            routerConfig: router,
           ),
+        ],
+        child: MaterialApp.router(
+          theme: testLightTheme,
+          darkTheme: testDarkTheme,
+          locale: testLocale,
+          localizationsDelegates: testLocalizationsDelegates,
+          supportedLocales: testSupportedLocales,
+          routerConfig: router,
         ),
-      );
-      await tester.pumpAndSettle();
-      expect(find.text('온라인 daemon 연결이 필요합니다.'), findsOneWidget);
-    },
-    tags: const <String>['feature_test__daemon_authentication__widget'],
-  );
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(find.text('온라인 daemon 연결이 필요합니다.'), findsOneWidget);
+  }, tags: const <String>['feature_test__daemon_authentication__widget']);
 }
 
 Finder _field(String label) => find.descendant(
@@ -1102,7 +1028,7 @@ Future<GoRouter> _pumpSettings(
 }
 
 final class _ExternalUrlOpener implements ExternalUrlOpener {
-  _ExternalUrlOpener({this.result = true});
+  new({this.result = true});
 
   final bool result;
   final List<Uri> opened = <Uri>[];
@@ -1115,7 +1041,7 @@ final class _ExternalUrlOpener implements ExternalUrlOpener {
 }
 
 final class _Ids implements AppIdGenerator {
-  const _Ids();
+  const new();
 
   @override
   String generate() => 'new-provider';
@@ -1127,7 +1053,7 @@ final class _FailingStore
         RemoteHostRepository,
         RemoteHostCredentialStore,
         HostClientFactory {
-  const _FailingStore();
+  const new();
 
   @override
   Future<AppSettings> loadSettings() =>

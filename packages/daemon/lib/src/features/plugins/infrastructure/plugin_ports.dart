@@ -36,13 +36,13 @@ abstract interface class PluginOperationCancellation {
 /// Raised by a host adapter after it stops I/O because its invocation ended.
 final class PluginHostOperationCancelledException implements Exception {
   /// Creates the cancellation sentinel.
-  const PluginHostOperationCancelledException();
+  const new();
 }
 
 /// One bounded HTTP request issued by an authorized Lua plugin.
 final class PluginNetworkRequest {
   /// Creates an immutable request after safety-kernel validation.
-  PluginNetworkRequest({
+  new({
     required this.uri,
     required this.method,
     required Map<String, String> headers,
@@ -74,16 +74,14 @@ final class PluginNetworkRequest {
 /// One bounded HTTP response returned to the Lua safety kernel.
 final class PluginNetworkResponse {
   /// Creates an immutable response.
-  PluginNetworkResponse({
+  new({
     required this.statusCode,
     required Map<String, List<String>> headers,
     required List<int> body,
-  }) : headers = Map<String, List<String>>.unmodifiable(
-         <String, List<String>>{
-           for (final entry in headers.entries)
-             entry.key: List<String>.unmodifiable(entry.value),
-         },
-       ),
+  }) : headers = Map<String, List<String>>.unmodifiable(<String, List<String>>{
+         for (final entry in headers.entries)
+           entry.key: List<String>.unmodifiable(entry.value),
+       }),
        body = List<int>.unmodifiable(body);
 
   /// HTTP status code.
@@ -108,7 +106,7 @@ abstract interface class PluginNetworkGateway {
 /// Exact secret namespace derived by the host, never accepted from Lua.
 final class PluginSecretScope {
   /// Creates an Agent/plugin-isolated secret namespace.
-  const PluginSecretScope({required this.agentId, required this.pluginId});
+  const new({required this.agentId, required this.pluginId});
 
   /// Agent definition that owns the secret.
   final String agentId;
@@ -177,30 +175,24 @@ enum PluginStateScopeKind {
 /// Stable identity of one plugin JSON state namespace.
 final class PluginStateScope {
   /// Creates plugin-global state.
-  const PluginStateScope.plugin({required this.pluginId})
+  const new plugin({required this.pluginId})
     : kind = PluginStateScopeKind.plugin,
       ownerId = null;
 
   /// Creates state isolated to one Agent.
-  const PluginStateScope.agent({
-    required this.pluginId,
-    required String agentId,
-  }) : kind = PluginStateScopeKind.agent,
-       ownerId = agentId;
+  const new agent({required this.pluginId, required String agentId})
+    : kind = PluginStateScopeKind.agent,
+      ownerId = agentId;
 
   /// Creates state isolated to one session.
-  const PluginStateScope.session({
-    required this.pluginId,
-    required String sessionId,
-  }) : kind = PluginStateScopeKind.session,
-       ownerId = sessionId;
+  const new session({required this.pluginId, required String sessionId})
+    : kind = PluginStateScopeKind.session,
+      ownerId = sessionId;
 
   /// Creates state isolated to one workspace.
-  const PluginStateScope.workspace({
-    required this.pluginId,
-    required String workspaceId,
-  }) : kind = PluginStateScopeKind.workspace,
-       ownerId = workspaceId;
+  const new workspace({required this.pluginId, required String workspaceId})
+    : kind = PluginStateScopeKind.workspace,
+      ownerId = workspaceId;
 
   /// Plugin that owns the namespace.
   final String pluginId;
@@ -218,7 +210,7 @@ final class PluginStateScope {
 /// One versioned JSON value in plugin state.
 final class PluginStateEntry {
   /// Creates a state entry.
-  const PluginStateEntry({required this.revision, required this.value});
+  const new({required this.revision, required this.value});
 
   /// Monotonically increasing compare-and-set revision.
   final int revision;
@@ -244,18 +236,16 @@ Map<String, Object?> pluginStateReadEnvelope(PluginStateEntry? entry) =>
 /// One compare-and-set mutation in an atomic transaction.
 final class PluginStateMutation {
   /// Creates a put mutation.
-  const PluginStateMutation.put({
+  const new put({
     required this.key,
     required this.expectedRevision,
     required this.value,
   }) : remove = false;
 
   /// Creates a remove mutation.
-  const PluginStateMutation.remove({
-    required this.key,
-    required this.expectedRevision,
-  }) : value = null,
-       remove = true;
+  const new remove({required this.key, required this.expectedRevision})
+    : value = null,
+      remove = true;
 
   /// State key.
   final String key;
@@ -273,7 +263,7 @@ final class PluginStateMutation {
 /// Raised when a plugin state compare-and-set observes another writer.
 final class PluginStateConflict implements Exception {
   /// Creates a state conflict.
-  const PluginStateConflict({
+  const new({
     required this.key,
     required this.expectedRevision,
     required this.actualRevision,
@@ -331,7 +321,7 @@ enum PluginJobStatus {
 /// Durable scheduler record for a named plugin handler.
 final class PluginJob {
   /// Creates a job.
-  const PluginJob({
+  const new({
     required this.id,
     required this.pluginId,
     required this.executionRevisionHash,
@@ -407,7 +397,7 @@ final class PluginJob {
 /// Raised when a scheduler tries to resolve a job owned by another lease.
 final class PluginJobLeaseConflict implements Exception {
   /// Creates a lease conflict.
-  const PluginJobLeaseConflict(this.jobId);
+  const new(this.jobId);
 
   /// Conflicting job.
   final String jobId;

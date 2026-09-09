@@ -23,7 +23,7 @@ class AgentCommandsController extends _$AgentCommandsController {
     final api = await watchHostApi(ref, hostId);
     _events = api.prompts.commandChanges.listen((_) => unawaited(refresh()));
     ref.onDispose(() => unawaited(_events?.cancel()));
-    return api.prompts.listCommands(workspaceId: workspaceId);
+    return await api.prompts.listCommands(workspaceId: workspaceId);
   }
 
   /// Reloads the catalog from the daemon.

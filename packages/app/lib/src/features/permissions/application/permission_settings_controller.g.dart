@@ -60,7 +60,7 @@ final class PermissionSettingsControllerProvider
 }
 
 String _$permissionSettingsControllerHash() =>
-    r'fac724f680c2ff932d00e8d06f41f40eda9946c4';
+    r'76659515d0f4df87e16a7b9f1feb9a4db66cc8e6';
 
 /// Owns the daemon-global permission default for one connected host.
 

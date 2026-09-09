@@ -11,7 +11,7 @@ import 'package:tinyrack_ui/tinyrack_ui.dart';
 /// Read-only catalog of the effective skills offered by one daemon.
 class SkillSettingsPage extends ConsumerStatefulWidget {
   /// Creates a skill catalog.
-  const SkillSettingsPage({
+  const new({
     required this.hostId,
     this.workspaceId,
     this.onWorkspaceChanged,
@@ -79,11 +79,7 @@ class _SkillSettingsPageState extends ConsumerState<SkillSettingsPage> {
     final view = workspaceId == null
         ? SkillListView.global
         : SkillListView.project;
-    final provider = skillsControllerProvider(
-      widget.hostId,
-      view,
-      workspaceId,
-    );
+    final provider = skillsControllerProvider(widget.hostId, view, workspaceId);
     final state = ref.watch(provider);
     return SettingsAsyncContent<List<SkillSummaryDto>>(
       state: state,
@@ -123,7 +119,7 @@ int _compareProjects(WorkspaceDto left, WorkspaceDto right) {
 }
 
 class _SkillCatalogBody extends StatelessWidget {
-  const _SkillCatalogBody({
+  const new({
     required this.projects,
     required this.workspaceId,
     required this.onWorkspaceChanged,

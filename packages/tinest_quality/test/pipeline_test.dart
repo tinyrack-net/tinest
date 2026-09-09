@@ -14,16 +14,13 @@ final Map<String, dynamic> _matrices = jsonDecode(
 void main() {
   useRepositoryRoot();
   final workflow = File('.github/workflows/pipeline.yml').readAsStringSync();
-  final nightlyWorkflow = File(
-    '.github/workflows/nightly.yml',
-  ).readAsStringSync();
+  final nightlyWorkflow = File('.github/workflows/nightly.yml')
+      .readAsStringSync();
   final relayWorkflowFile = File('.github/workflows/relay-release.yml');
   final relayWorkflow = relayWorkflowFile.existsSync()
       ? relayWorkflowFile.readAsStringSync()
       : '';
-  final relayDockerfile = File(
-    'packages/relay/Dockerfile',
-  ).readAsStringSync();
+  final relayDockerfile = File('packages/relay/Dockerfile').readAsStringSync();
   final relayPubspec = loadYaml(
     File('packages/relay/pubspec.yaml').readAsStringSync(),
   ) as YamlMap;
@@ -34,44 +31,36 @@ void main() {
   final ibusTerminalRunner = File(
     'packages/desktop_app/tool/run_linux_ibus_terminal_e2e.sh',
   ).readAsStringSync();
-  final androidBuild = File(
-    'packages/app/android/build.gradle.kts',
-  ).readAsStringSync();
-  final androidSettings = File(
-    'packages/app/android/settings.gradle.kts',
-  ).readAsStringSync();
+  final androidBuild = File('packages/app/android/build.gradle.kts')
+      .readAsStringSync();
+  final androidSettings = File('packages/app/android/settings.gradle.kts')
+      .readAsStringSync();
   final androidGradleWrapper = File(
     'packages/app/android/gradle/wrapper/gradle-wrapper.properties',
   ).readAsStringSync();
-  final androidAppBuild = File(
-    'packages/app/android/app/build.gradle.kts',
-  ).readAsStringSync();
+  final androidAppBuild = File('packages/app/android/app/build.gradle.kts')
+      .readAsStringSync();
   final appPubspec = File('packages/app/pubspec.yaml').readAsStringSync();
-  final iosDebugConfig = File(
-    'packages/app/ios/Flutter/Debug.xcconfig',
-  ).readAsStringSync();
-  final iosReleaseConfig = File(
-    'packages/app/ios/Flutter/Release.xcconfig',
-  ).readAsStringSync();
+  final iosDebugConfig = File('packages/app/ios/Flutter/Debug.xcconfig')
+      .readAsStringSync();
+  final iosReleaseConfig = File('packages/app/ios/Flutter/Release.xcconfig')
+      .readAsStringSync();
   final iosPodfileFile = File('packages/app/ios/Podfile');
   final iosPodfile = iosPodfileFile.existsSync()
       ? iosPodfileFile.readAsStringSync()
       : '';
-  final iosProject = File(
-    'packages/app/ios/Runner.xcodeproj/project.pbxproj',
-  ).readAsStringSync();
+  final iosProject = File('packages/app/ios/Runner.xcodeproj/project.pbxproj')
+      .readAsStringSync();
   final cargoKitCompat = File(
     'packages/app/android/cargokit-gradle9-compat.gradle',
   );
-  final windowsCmake = File(
-    'packages/desktop_app/windows/CMakeLists.txt',
-  ).readAsStringSync();
+  final windowsCmake = File('packages/desktop_app/windows/CMakeLists.txt')
+      .readAsStringSync();
   final windowsInstaller = File(
     'packages/desktop_app/windows/installer/tinest.iss',
   ).readAsStringSync();
-  final cliSmoke = File(
-    '.github/actions/smoke-cli-bundle/action.yml',
-  ).readAsStringSync();
+  final cliSmoke = File('.github/actions/smoke-cli-bundle/action.yml')
+      .readAsStringSync();
   final linuxDesktopDependencies = File(
     '.github/actions/install-linux-desktop-deps/action.yml',
   ).readAsStringSync();
@@ -243,21 +232,12 @@ void main() {
     // against 1.5), so the cache carries no precache bloat and the payload is
     // identical either way. Only throughput differs, and Windows restores at
     // ~6 MB/s against 48 MB/s for the same blob on macOS.
-    final setup = File(
-      '.github/actions/setup-flutter/action.yml',
-    ).readAsStringSync();
-    expect(
-      setup,
-      contains(
-        r"cache: ${{ runner.os != 'Windows' }}",
-      ),
-    );
+    final setup = File('.github/actions/setup-flutter/action.yml')
+        .readAsStringSync();
+    expect(setup, contains(r"cache: ${{ runner.os != 'Windows' }}"));
     expect(setup, isNot(contains('cache: true')));
     // One definition, so no job can quietly opt back into the slow path.
-    expect(
-      RegExp('setup-flutter').allMatches(workflow).length,
-      greaterThan(1),
-    );
+    expect(RegExp('setup-flutter').allMatches(workflow).length, greaterThan(1));
     expect(workflow, isNot(contains('subosito/flutter-action')));
   });
 
@@ -269,9 +249,7 @@ void main() {
     );
     expect(
       linuxDesktopDependencies,
-      contains(
-        'timeout --kill-after=10s 120s apt-get update --error-on=any',
-      ),
+      contains('timeout --kill-after=10s 120s apt-get update --error-on=any'),
     );
     expect(linuxDesktopDependencies, contains('Acquire::Retries=1'));
     expect(linuxDesktopDependencies, contains('Acquire::http::Timeout=15'));
@@ -284,10 +262,7 @@ void main() {
       linuxDesktopDependencies,
       contains('apt-get install --download-only'),
     );
-    expect(
-      linuxDesktopDependencies,
-      contains('apt-get install --no-download'),
-    );
+    expect(linuxDesktopDependencies, contains('apt-get install --no-download'));
 
     final download = linuxDesktopDependencies.indexOf(
       'apt-get install --download-only',
@@ -300,9 +275,7 @@ void main() {
     expect(download, lessThan(mutation));
     final mutationLine = linuxDesktopDependencies
         .split('\n')
-        .singleWhere(
-          (line) => line.contains('apt-get install --no-download'),
-        );
+        .singleWhere((line) => line.contains('apt-get install --no-download'));
     expect(
       mutationLine,
       isNot(contains('timeout')),
@@ -350,10 +323,7 @@ void main() {
     }
 
     // Cheap structural checks still protect every pull-request head.
-    for (final job in <String>[
-      'static-linux',
-      'generated-linux',
-    ]) {
+    for (final job in <String>['static-linux', 'generated-linux']) {
       expect(
         _job(workflow, job),
         isNot(contains("github.event_name != 'pull_request'")),
@@ -417,10 +387,7 @@ void main() {
   test('pull request jobs follow the conservative change scope', () {
     final scope = _job(workflow, 'changes');
     expect(scope, contains('scope='));
-    expect(
-      scope,
-      contains('dart packages/tinest_quality/bin/ci_scope.dart'),
-    );
+    expect(scope, contains('dart packages/tinest_quality/bin/ci_scope.dart'));
     expect(scope, isNot(contains('dart run tinest_quality ci-scope')));
 
     expect(
@@ -461,9 +428,8 @@ void main() {
     // to a shard` is what checks the list against the workspace.
     final coverage = _job(workflow, 'coverage-dart-linux');
     final packages =
-        ((jsonDecode(
-                  File('.github/dart-packages.json').readAsStringSync(),
-                ) as Map<String, dynamic>)['packages']!
+        ((jsonDecode(File('.github/dart-packages.json').readAsStringSync())
+                    as Map<String, dynamic>)['packages']!
                 as List<dynamic>)
             .cast<String>();
     expect(packages, hasLength(8));
@@ -493,10 +459,7 @@ void main() {
       expect(build, contains("github.event_name == 'workflow_dispatch'"));
       expect(build, contains('inputs.package_release'));
       expect(build, isNot(contains("github.ref == 'refs/heads/main'")));
-      expect(
-        androidRelease,
-        contains("startsWith(github.ref, 'refs/tags/v')"),
-      );
+      expect(androidRelease, contains("startsWith(github.ref, 'refs/tags/v')"));
       expect(
         androidRelease,
         contains("github.event_name == 'workflow_dispatch'"),
@@ -609,13 +572,9 @@ void main() {
       contains("needs.publish-release.result == 'success'"),
     );
     expect(publishWinget, contains('actions/checkout@v5'));
-    expect(
-      publishWinget,
-      contains('.github/scripts/publish-winget.ps1'),
-    );
-    final publishWingetScript = File(
-      '.github/scripts/publish-winget.ps1',
-    ).readAsStringSync();
+    expect(publishWinget, contains('.github/scripts/publish-winget.ps1'));
+    final publishWingetScript = File('.github/scripts/publish-winget.ps1')
+        .readAsStringSync();
     expect(publishWingetScript, contains('Tinyrack.Tinest'));
     expect(publishWingetScript, contains('Tinyrack.TinestCLI'));
     expect(publishWingetScript, contains('wingetcreate.exe update'));
@@ -624,16 +583,12 @@ void main() {
       publishWingetScript,
       contains('api.github.com/repos/microsoft/winget-pkgs/contents'),
     );
-    expect(
-      publishWingetScript,
-      contains('.github/winget/initial-manifests'),
-    );
+    expect(publishWingetScript, contains('.github/winget/initial-manifests'));
   });
 
   test('a failed WinGet publication can recover from a release tag', () {
-    final recovery = File(
-      '.github/workflows/recover-release-winget.yml',
-    ).readAsStringSync();
+    final recovery = File('.github/workflows/recover-release-winget.yml')
+        .readAsStringSync();
 
     expect(recovery, contains('release_tag:'));
     expect(recovery, contains('actions/checkout@v5'));
@@ -643,9 +598,8 @@ void main() {
   });
 
   test('a release web deployment can recover from a skipped publish job', () {
-    final recovery = File(
-      '.github/workflows/recover-release-web.yml',
-    ).readAsStringSync();
+    final recovery = File('.github/workflows/recover-release-web.yml')
+        .readAsStringSync();
 
     expect(recovery, contains('source_run_id:'));
     expect(recovery, contains('release_tag:'));
@@ -665,16 +619,10 @@ void main() {
     expect(relayWorkflow, contains('release verify relay'));
     expect(relayWorkflow, contains('linux/amd64,linux/arm64'));
     expect(relayWorkflow, contains('ghcr.io/tinyrack-net/tinest-relay'));
-    expect(
-      relayWorkflow,
-      contains(r'v${{ steps.version.outputs.version }}'),
-    );
+    expect(relayWorkflow, contains(r'v${{ steps.version.outputs.version }}'));
     expect(relayWorkflow, contains('latest'));
     expect(relayWorkflow, contains('actions/attest'));
-    expect(
-      relayWorkflow,
-      contains('packages/relay/tool/smoke_relay.dart'),
-    );
+    expect(relayWorkflow, contains('packages/relay/tool/smoke_relay.dart'));
     expect(relayWorkflow, contains('seq 1 80'));
     expect(relayWorkflow, isNot(contains('gh release create')));
   });
@@ -898,10 +846,7 @@ void main() {
     expect(job, contains('terminal_ibus_e2e_test.dart'));
     expect(job, isNot(contains('continue-on-error')));
     expect(job, isNot(contains('retry')));
-    expect(
-      ibusTerminalRunner,
-      contains('flutter pub get --enforce-lockfile'),
-    );
+    expect(ibusTerminalRunner, contains('flutter pub get --enforce-lockfile'));
     expect(job, isNot(contains('mise')));
     expect(ibusTerminalRunner, isNot(contains('mise')));
   });
@@ -946,10 +891,7 @@ void main() {
 
   test('the scanner no longer forces SwiftPM off while iOS uses CocoaPods', () {
     expect(appPubspec, contains('mobile_scanner: ^7.4.0'));
-    expect(
-      appPubspec,
-      isNot(contains('enable-swift-package-manager: false')),
-    );
+    expect(appPubspec, isNot(contains('enable-swift-package-manager: false')));
     expect(iosDebugConfig, contains('Pods-Runner.debug.xcconfig'));
     expect(iosReleaseConfig, contains('Pods-Runner.release.xcconfig'));
     expect(iosPodfile, contains("platform :ios, '13.0'"));
@@ -991,14 +933,8 @@ void main() {
   });
 
   test('Windows stages Lua with Flutter CMake in a short build tree', () {
-    expect(
-      windowsCmake,
-      contains(r'--cmake-executable "${CMAKE_COMMAND}"'),
-    );
-    expect(
-      windowsCmake,
-      contains(r'--build-directory "${LUA_RUNTIME_BUILD}"'),
-    );
+    expect(windowsCmake, contains(r'--cmake-executable "${CMAKE_COMMAND}"'));
+    expect(windowsCmake, contains(r'--build-directory "${LUA_RUNTIME_BUILD}"'));
     expect(windowsCmake, contains('run lua_tool_runtime:stage'));
     expect(windowsCmake, isNot(contains('tool/build_lua_host.dart')));
   });
@@ -1106,26 +1042,15 @@ void main() {
     // copies of one commit; a release that resolved them differently would
     // package the CLI with a shipworld that disagrees with the framework it
     // was built against. Comparing them keeps the SHA in one place.
-    final pubspec = File(
-      'packages/cli/pubspec.yaml',
-    ).readAsStringSync();
-    final dependencyRef = RegExp(
-      'ref: ([0-9a-f]{40})',
-    ).firstMatch(pubspec)?.group(1);
+    final pubspec = File('packages/cli/pubspec.yaml').readAsStringSync();
+    final dependencyRef = RegExp('ref: ([0-9a-f]{40})')
+        .firstMatch(pubspec)
+        ?.group(1);
     expect(dependencyRef, isNotNull);
-    expect(
-      workflow,
-      contains('TINYRACK_DART_PACKAGES_REF: $dependencyRef'),
-    );
+    expect(workflow, contains('TINYRACK_DART_PACKAGES_REF: $dependencyRef'));
     expect(workflow, contains('repository: tinyrack-net/dart-packages'));
-    expect(
-      workflow,
-      contains(r'ref: ${{ env.TINYRACK_DART_PACKAGES_REF }}'),
-    );
-    expect(
-      workflow,
-      contains('dart pub get --directory $shipworldRoot'),
-    );
+    expect(workflow, contains(r'ref: ${{ env.TINYRACK_DART_PACKAGES_REF }}'));
+    expect(workflow, contains('dart pub get --directory $shipworldRoot'));
     expect(workflow, contains('dart run $shipworldExecutable'));
     expect(workflow, isNot(contains('dart pub global activate shipworld')));
     expect(
@@ -1179,11 +1104,7 @@ void main() {
   test('release jobs use exact GitHub-hosted images directly', () {
     for (final name in <String>['build-and-package', 'build-cli']) {
       final job = _job(workflow, name);
-      expect(
-        job,
-        contains(r'runs-on: ${{ matrix.os }}'),
-        reason: name,
-      );
+      expect(job, contains(r'runs-on: ${{ matrix.os }}'), reason: name);
       expect(
         job,
         contains(r'architecture: ${{ matrix.sdk_arch }}'),
@@ -1211,9 +1132,8 @@ void main() {
   });
 
   test('the CLI smoke daemon uses a fixed port on its isolated runner', () {
-    final smoke = File(
-      '.github/actions/smoke-cli-bundle/action.yml',
-    ).readAsStringSync();
+    final smoke = File('.github/actions/smoke-cli-bundle/action.yml')
+        .readAsStringSync();
     expect(smoke, contains("default: '7399'"));
     expect(smoke, isNot(contains('RUNNER_NAME')));
     expect(smoke, isNot(contains('cksum')));
@@ -1236,9 +1156,8 @@ void main() {
     // smoke test passes whichever architecture came out. Without this an arm64
     // build would ship under an x64 name through the Homebrew formula and the
     // first sign would be an Intel user's crash.
-    final verifier = File(
-      '.github/actions/verify-macos-arch/action.yml',
-    ).readAsStringSync();
+    final verifier = File('.github/actions/verify-macos-arch/action.yml')
+        .readAsStringSync();
     expect(verifier, contains('lipo -archs'));
     expect(verifier, contains('*-x64) want=x86_64'));
     expect(verifier, contains('*-arm64) want=arm64'));
@@ -1302,9 +1221,8 @@ void main() {
   });
 
   test('hosted runners use Actions caches without environment branches', () {
-    final setup = File(
-      '.github/actions/setup-flutter/action.yml',
-    ).readAsStringSync();
+    final setup = File('.github/actions/setup-flutter/action.yml')
+        .readAsStringSync();
     expect(setup, contains(r"cache: ${{ runner.os != 'Windows' }}"));
     expect(setup, isNot(contains('runner.environment')));
     expect(setup, isNot(contains('pub-cache:')));
@@ -1327,9 +1245,7 @@ void main() {
       isNot(contains('./.github/actions/host-fingerprint')),
     );
     expect(
-      File(
-        '.github/actions/host-fingerprint/action.yml',
-      ).existsSync(),
+      File('.github/actions/host-fingerprint/action.yml').existsSync(),
       isFalse,
     );
   });
@@ -1338,9 +1254,10 @@ void main() {
 String _job(String workflow, String name) {
   final start = workflow.indexOf('  $name:\n');
   if (start < 0) throw StateError('Missing workflow job $name');
-  final next = RegExp(r'^  [a-z][a-z0-9-]*:$', multiLine: true).firstMatch(
-    workflow.substring(start + name.length + 3),
-  );
+  final next = RegExp(
+    r'^  [a-z][a-z0-9-]*:$',
+    multiLine: true,
+  ).firstMatch(workflow.substring(start + name.length + 3));
   final end = next == null
       ? workflow.length
       : start + name.length + 3 + next.start;

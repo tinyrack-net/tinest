@@ -35,17 +35,13 @@ abstract interface class PluginCliBackend {
   );
 
   /// Removes one exact plugin and Agent secret.
-  Future<void> removeSecret(
-    String pluginId,
-    String agentId,
-    String name,
-  );
+  Future<void> removeSecret(String pluginId, String agentId, String name);
 }
 
 /// Adapts only the daemon's [PluginsApi] to plugin-authoring commands.
 final class PluginsApiPluginCliBackend implements PluginCliBackend {
   /// Creates a client adapter without exposing filesystem operations.
-  const PluginsApiPluginCliBackend(this._plugins);
+  const new(this._plugins);
 
   final PluginsApi _plugins;
 
@@ -54,11 +50,8 @@ final class PluginsApiPluginCliBackend implements PluginCliBackend {
       _plugins.scaffoldPlugin(id, name);
 
   @override
-  Future<PluginDescriptorDto> fork(
-    String sourceId,
-    String id,
-    String name,
-  ) => _plugins.forkPlugin(sourceId: sourceId, id: id, name: name);
+  Future<PluginDescriptorDto> fork(String sourceId, String id, String name) =>
+      _plugins.forkPlugin(sourceId: sourceId, id: id, name: name);
 
   @override
   Future<PluginDescriptorDto> validate(String id) =>
@@ -90,15 +83,12 @@ final class PluginsApiPluginCliBackend implements PluginCliBackend {
   );
 
   @override
-  Future<void> removeSecret(
-    String pluginId,
-    String agentId,
-    String name,
-  ) => _plugins.removePluginSecret(
-    agentId: agentId,
-    pluginId: pluginId,
-    name: name,
-  );
+  Future<void> removeSecret(String pluginId, String agentId, String name) =>
+      _plugins.removePluginSecret(
+        agentId: agentId,
+        pluginId: pluginId,
+        name: name,
+      );
 }
 
 /// Scaffolds one user plugin under the daemon-owned app-data directory.
@@ -184,10 +174,7 @@ Future<int> pluginDoctor({
   final versionText = version?.stdout.trim() ?? '';
   final languageServerReady =
       version?.exitCode == 0 &&
-      _containsExactVersion(
-        versionText,
-        environment.luaLanguageServerVersion,
-      );
+      _containsExactVersion(versionText, environment.luaLanguageServerVersion);
   final healthy = environment.synchronized && languageServerReady;
   if (json) {
     output.writeln(
@@ -299,7 +286,7 @@ List<PluginDiagnosticDto> _luaLanguageServerDiagnostics(String output) {
 /// Result of one local editor-tool process without exposing `dart:io` types.
 final class PluginExternalProcessResult {
   /// Creates an immutable process result.
-  const PluginExternalProcessResult({
+  const new({
     required this.exitCode,
     required this.stdout,
     required this.stderr,

@@ -35,10 +35,7 @@ abstract interface class PermissionModeSource {
 /// Result returned after a harness completes a turn.
 class AgentRunResult {
   /// Creates an immutable turn result.
-  const AgentRunResult({
-    required this.conversationItems,
-    required this.toolRounds,
-  });
+  const new({required this.conversationItems, required this.toolRounds});
 
   /// Provider-visible conversation items produced by the turn.
   final List<ConversationItem> conversationItems;

@@ -26,9 +26,7 @@ abstract interface class LuaHostDistributionStager {
 final class NativeLuaHostDistributionStager
     implements LuaHostDistributionStager {
   /// Creates the native stager.
-  const NativeLuaHostDistributionStager({
-    this.cmakeExecutable = _resolveCmakeExecutable,
-  });
+  const new({this.cmakeExecutable = _resolveCmakeExecutable});
 
   /// Resolves CMake without assuming it is on PATH.
   final Future<String> Function() cmakeExecutable;
@@ -38,7 +36,7 @@ final class NativeLuaHostDistributionStager
     required String destination,
     required String packageRoot,
     required String buildDirectory,
-  }) async => lua.stageLuaToolRuntime(
+  }) async => await lua.stageLuaToolRuntime(
     destination: destination,
     packageRoot: packageRoot,
     buildDirectory: buildDirectory,
@@ -99,7 +97,7 @@ Future<lua.LuaHostCommand> resolveLuaHostCommand({
             final root = packageConfig.parent.uri.resolve(rootUri).toFilePath();
             final bootstrap = p.join(root, 'native', 'bootstrap.lua');
             if (File(bootstrap).existsSync()) {
-              return _stageDevelopmentLuaHost(
+              return await _stageDevelopmentLuaHost(
                 workspaceRoot: packageConfig.parent.parent.path,
                 packageRoot: root,
                 stager: stager,
@@ -140,7 +138,7 @@ Future<lua.LuaHostCommand> _stageDevelopmentLuaHost({
   if (_isCompleteHost(command)) return command;
 
   final inProgress = _developmentLuaHostStages[root];
-  if (inProgress != null) return inProgress;
+  if (inProgress != null) return await inProgress;
   final stage = _stageDevelopmentLuaHostWithFileLock(
     root: root,
     packageRoot: packageRoot,
@@ -177,9 +175,8 @@ Future<lua.LuaHostCommand> _stageDevelopmentLuaHostWithFileLock({
     final build = await Directory.systemTemp.createTemp(
       'tinest-lua-${_shortIdentity(packageRoot)}-',
     );
-    final staging = await Directory(p.dirname(root)).createTemp(
-      '${p.basename(root)}.staging-',
-    );
+    final staging = await Directory(p.dirname(root))
+        .createTemp('${p.basename(root)}.staging-');
     var promoted = false;
     try {
       final distribution = await stager.stage(
@@ -194,10 +191,7 @@ Future<lua.LuaHostCommand> _stageDevelopmentLuaHostWithFileLock({
       if (!_isCompleteHost(staged)) {
         throw StateError('The pinned Lua host staging output is incomplete.');
       }
-      final hostPath = _relativeStagedPath(
-        staging.path,
-        distribution.hostPath,
-      );
+      final hostPath = _relativeStagedPath(staging.path, distribution.hostPath);
       final bootstrapPath = _relativeStagedPath(
         staging.path,
         distribution.bootstrapPath,
@@ -288,9 +282,7 @@ bool _isCompleteHost(lua.LuaHostCommand command) =>
     File(command.arguments.single).existsSync();
 
 String _shortIdentity(String value) {
-  final digest = sha256.convert(
-    utf8.encode(p.normalize(p.absolute(value))),
-  );
+  final digest = sha256.convert(utf8.encode(p.normalize(p.absolute(value))));
   return digest.toString().substring(0, 16);
 }
 
@@ -358,7 +350,7 @@ List<String> _processOutputLines(Object? output) => output is String
 final class LuaCodeModeService {
   /// Creates a service over the process runtime supplied by the composition
   /// root.
-  LuaCodeModeService(this._runtime);
+  new(this._runtime);
 
   final lua.LuaToolRuntime<ConversationAttachment> _runtime;
   final Map<String, lua.LuaRuntimeSession<ConversationAttachment>> _sessions =
@@ -434,10 +426,7 @@ final class LuaCodeModeService {
           terminate: request.terminate,
         ),
         _executionContext(
-          LuaCodeModeContext(
-            cancellation: context.cancellation,
-            tools: tools,
-          ),
+          LuaCodeModeContext(cancellation: context.cancellation, tools: tools),
         ),
       ),
     );
@@ -454,9 +443,7 @@ final class LuaCodeModeService {
     cancellation: _TinestLuaCancellation(context.cancellation),
   );
 
-  LuaCellChunk _mapDelta(
-    lua.LuaCellDelta<ConversationAttachment> delta,
-  ) {
+  LuaCellChunk _mapDelta(lua.LuaCellDelta<ConversationAttachment> delta) {
     var error = delta.error?.message;
     final contextImages = <ConversationAttachment>[];
     for (final resource in delta.emittedResources) {
@@ -503,11 +490,7 @@ final class LuaCodeModeService {
 /// Session-scoped view that prevents cross-session cell access.
 final class SessionLuaCodeModeHost implements LuaCodeModeHost {
   /// Creates the scoped host.
-  const SessionLuaCodeModeHost(
-    this._service,
-    this._sessionId,
-    this._workingDirectory,
-  );
+  const new(this._service, this._sessionId, this._workingDirectory);
 
   final LuaCodeModeService _service;
   final String _sessionId;
@@ -533,7 +516,7 @@ final class SessionLuaCodeModeHost implements LuaCodeModeHost {
 
 final class _TinestLuaToolDispatcher
     implements lua.LuaToolDispatcher<ConversationAttachment> {
-  const _TinestLuaToolDispatcher(this._context);
+  const new(this._context);
 
   final LuaCodeModeContext _context;
 
@@ -571,7 +554,7 @@ final class _TinestLuaToolDispatcher
 }
 
 final class _TinestLuaCancellation implements lua.LuaCancellationSignal {
-  const _TinestLuaCancellation(this._token);
+  const new(this._token);
 
   final CancellationToken _token;
 

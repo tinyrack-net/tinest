@@ -30,7 +30,7 @@ IconData chatToolIcon(ChatToolGlyph glyph) => switch (glyph) {
 /// survives scrolling and newly arriving events.
 class ChatToolCard extends StatelessWidget {
   /// Creates a tool card.
-  const ChatToolCard({
+  const new({
     required this.activity,
     this.expanded = false,
     this.onToggle,
@@ -50,10 +50,7 @@ class ChatToolCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final activity = this.activity;
-    final presentation = describeToolActivity(
-      l10n,
-      activity,
-    );
+    final presentation = describeToolActivity(l10n, activity);
     final status = switch (activity.status) {
       ChatToolStatus.running => TRChatToolStatus.running,
       ChatToolStatus.succeeded =>
@@ -73,10 +70,7 @@ class ChatToolCard extends StatelessWidget {
       statusLabel: _statusLabel(l10n, status),
       open: expanded,
       onOpenChange: (_) => onToggle?.call(),
-      details: _ChatToolDetails(
-        activity: activity,
-        presentation: presentation,
-      ),
+      details: _ChatToolDetails(activity: activity, presentation: presentation),
     );
   }
 }
@@ -107,10 +101,7 @@ String _statusLabel(AppLocalizations l10n, TRChatToolStatus status) =>
     };
 
 class _ChatToolDetails extends StatelessWidget {
-  const _ChatToolDetails({
-    required this.activity,
-    required this.presentation,
-  });
+  const new({required this.activity, required this.presentation});
 
   final ChatToolActivity activity;
   final ChatToolPresentation presentation;
@@ -162,7 +153,7 @@ class _ChatToolDetails extends StatelessWidget {
 }
 
 class _ChatToolDetailLabel extends StatelessWidget {
-  const _ChatToolDetailLabel(this.label);
+  const new(this.label);
 
   final String label;
 
@@ -178,7 +169,7 @@ class _ChatToolDetailLabel extends StatelessWidget {
 }
 
 class _ChatToolBodyView extends StatelessWidget {
-  const _ChatToolBodyView({required this.body});
+  const new({required this.body});
 
   final ChatToolBody body;
 

@@ -24,7 +24,7 @@ abstract interface class RpcDiagnostics {
 /// Writes unhandled RPC errors to the daemon's standard error stream.
 final class StderrRpcDiagnostics implements RpcDiagnostics {
   /// Creates the standard-error diagnostics adapter.
-  const StderrRpcDiagnostics();
+  const new();
 
   @override
   void unhandledError(

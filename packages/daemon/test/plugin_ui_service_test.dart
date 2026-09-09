@@ -14,130 +14,117 @@ void main() {
     RpcBindingDescriptor binding(
       PluginUiService service,
       RpcProcedureDescriptor procedure,
-    ) => pluginUiRpcBindings(ui: service).singleWhere(
-      (candidate) => candidate.procedure.name == procedure.name,
-    );
+    ) => pluginUiRpcBindings(ui: service)
+        .singleWhere((candidate) => candidate.procedure.name == procedure.name);
 
-    test(
-      'render exposes a stable sanitized document failure',
-      () async {
-        final service = PluginUiService(
-          descriptors: _DescriptorReader(_uiDescriptor()),
-          runtime: const _RejectingUiRuntime(rejectRender: true),
-        );
+    test('render exposes a stable sanitized document failure', () async {
+      final service = PluginUiService(
+        descriptors: _DescriptorReader(_uiDescriptor()),
+        runtime: const _RejectingUiRuntime(rejectRender: true),
+      );
 
-        await expectLater(
-          binding(service, pluginsRenderUiProcedure).invoke(
-            const PluginUiRenderParamsDto(
-              agentId: 'agent',
-              pluginId: 'example.ui',
-              contributionId: 'card',
-              slot: PluginUiSlot.timeline,
-            ).toJson(),
-            RpcConnectionContext(),
-          ),
-          throwsA(
-            isA<RpcFailureException>()
-                .having(
-                  (error) => error.code,
-                  'code',
-                  RpcErrorCodes.pluginUiRejected,
-                )
-                .having(
-                  (error) => error.message,
-                  'message',
-                  'Plugin UI handler failed: '
-                      'UI callback must return a Tinest UI node.',
-                ),
-          ),
-        );
-      },
-      tags: const <String>['feature_test__plugin_ui__contract'],
-    );
-
-    test(
-      'dispatch exposes a stable sanitized document failure',
-      () async {
-        final service = PluginUiService(
-          descriptors: _DescriptorReader(_uiDescriptor()),
-          runtime: const _RejectingUiRuntime(),
-        );
-        final document = await service.render(
+      await expectLater(
+        binding(service, pluginsRenderUiProcedure).invoke(
           const PluginUiRenderParamsDto(
             agentId: 'agent',
             pluginId: 'example.ui',
             contributionId: 'card',
             slot: PluginUiSlot.timeline,
-          ),
-        );
+          ).toJson(),
+          RpcConnectionContext(),
+        ),
+        throwsA(
+          isA<RpcFailureException>()
+              .having(
+                (error) => error.code,
+                'code',
+                RpcErrorCodes.pluginUiRejected,
+              )
+              .having(
+                (error) => error.message,
+                'message',
+                'Plugin UI handler failed: '
+                    'UI callback must return a Tinest UI node.',
+              ),
+        ),
+      );
+    }, tags: const <String>['feature_test__plugin_ui__contract']);
 
-        await expectLater(
-          binding(service, pluginsDispatchUiActionProcedure).invoke(
-            jsonDecode(
-              jsonEncode(
-                PluginUiActionParamsDto(
-                  agentId: 'agent',
-                  pluginId: 'example.ui',
-                  action: PluginUiActionDto(
-                    documentId: document.id,
-                    actionId: 'refresh',
-                  ),
+    test('dispatch exposes a stable sanitized document failure', () async {
+      final service = PluginUiService(
+        descriptors: _DescriptorReader(_uiDescriptor()),
+        runtime: const _RejectingUiRuntime(),
+      );
+      final document = await service.render(
+        const PluginUiRenderParamsDto(
+          agentId: 'agent',
+          pluginId: 'example.ui',
+          contributionId: 'card',
+          slot: PluginUiSlot.timeline,
+        ),
+      );
+
+      await expectLater(
+        binding(service, pluginsDispatchUiActionProcedure).invoke(
+          jsonDecode(
+            jsonEncode(
+              PluginUiActionParamsDto(
+                agentId: 'agent',
+                pluginId: 'example.ui',
+                action: PluginUiActionDto(
+                  documentId: document.id,
+                  actionId: 'refresh',
                 ),
               ),
-            ) as Map<String, dynamic>,
-            RpcConnectionContext(),
-          ),
-          throwsA(
-            isA<RpcFailureException>()
-                .having(
-                  (error) => error.code,
-                  'code',
-                  RpcErrorCodes.pluginUiRejected,
-                )
-                .having(
-                  (error) => error.message,
-                  'message',
-                  'Plugin UI action failed: '
-                      'UI action callback must return a Tinest UI node.',
-                ),
-          ),
-        );
-      },
-      tags: const <String>['feature_test__plugin_ui__contract'],
-    );
-
-    test(
-      'render replaces an empty sanitized runtime failure',
-      () async {
-        final service = PluginUiService(
-          descriptors: _DescriptorReader(_uiDescriptor()),
-          runtime: const _RejectingUiRuntime(
-            rejectRender: true,
-            renderFailure: 'bundle/tinest.plugin_main.lua:42:',
-          ),
-        );
-
-        await expectLater(
-          binding(service, pluginsRenderUiProcedure).invoke(
-            const PluginUiRenderParamsDto(
-              agentId: 'agent',
-              pluginId: 'example.ui',
-              contributionId: 'card',
-              slot: PluginUiSlot.timeline,
-            ).toJson(),
-            RpcConnectionContext(),
-          ),
-          throwsA(
-            isA<RpcFailureException>().having(
-              (error) => error.message,
-              'message',
-              'Plugin UI callback failed.',
             ),
+          ) as Map<String, dynamic>,
+          RpcConnectionContext(),
+        ),
+        throwsA(
+          isA<RpcFailureException>()
+              .having(
+                (error) => error.code,
+                'code',
+                RpcErrorCodes.pluginUiRejected,
+              )
+              .having(
+                (error) => error.message,
+                'message',
+                'Plugin UI action failed: '
+                    'UI action callback must return a Tinest UI node.',
+              ),
+        ),
+      );
+    }, tags: const <String>['feature_test__plugin_ui__contract']);
+
+    test('render replaces an empty sanitized runtime failure', () async {
+      final service = PluginUiService(
+        descriptors: _DescriptorReader(_uiDescriptor()),
+        runtime: const _RejectingUiRuntime(
+          rejectRender: true,
+          renderFailure: 'bundle/tinest.plugin_main.lua:42:',
+        ),
+      );
+
+      await expectLater(
+        binding(service, pluginsRenderUiProcedure).invoke(
+          const PluginUiRenderParamsDto(
+            agentId: 'agent',
+            pluginId: 'example.ui',
+            contributionId: 'card',
+            slot: PluginUiSlot.timeline,
+          ).toJson(),
+          RpcConnectionContext(),
+        ),
+        throwsA(
+          isA<RpcFailureException>().having(
+            (error) => error.message,
+            'message',
+            'Plugin UI callback failed.',
           ),
-        );
-      },
-      tags: const <String>['feature_test__plugin_ui__contract'],
-    );
+        ),
+      );
+    }, tags: const <String>['feature_test__plugin_ui__contract']);
 
     // A slot renders against whatever revision the Agent has pinned right now.
     // Before the Agent's first turn nothing is pinned, and after shutdown the
@@ -159,35 +146,31 @@ void main() {
         code: RpcErrorCodes.pluginUiRejected,
       ),
     ]) {
-      test(
-        'render answers ${failure.name} with a translatable code',
-        () async {
-          final service = PluginUiService(
-            descriptors: _ThrowingDescriptorReader(failure.error),
-            runtime: const _RejectingUiRuntime(),
-          );
+      test('render answers ${failure.name} with a translatable code', () async {
+        final service = PluginUiService(
+          descriptors: _ThrowingDescriptorReader(failure.error),
+          runtime: const _RejectingUiRuntime(),
+        );
 
-          await expectLater(
-            binding(service, pluginsRenderUiProcedure).invoke(
-              const PluginUiRenderParamsDto(
-                agentId: 'agent',
-                pluginId: 'example.ui',
-                contributionId: 'card',
-                slot: PluginUiSlot.timeline,
-              ).toJson(),
-              RpcConnectionContext(),
+        await expectLater(
+          binding(service, pluginsRenderUiProcedure).invoke(
+            const PluginUiRenderParamsDto(
+              agentId: 'agent',
+              pluginId: 'example.ui',
+              contributionId: 'card',
+              slot: PluginUiSlot.timeline,
+            ).toJson(),
+            RpcConnectionContext(),
+          ),
+          throwsA(
+            isA<RpcFailureException>().having(
+              (error) => error.code,
+              'code',
+              failure.code,
             ),
-            throwsA(
-              isA<RpcFailureException>().having(
-                (error) => error.code,
-                'code',
-                failure.code,
-              ),
-            ),
-          );
-        },
-        tags: const <String>['feature_test__plugin_ui__contract'],
-      );
+          ),
+        );
+      }, tags: const <String>['feature_test__plugin_ui__contract']);
     }
   });
 
@@ -224,10 +207,7 @@ void main() {
                 'actionId': 'refresh',
               },
               'actions': <String, dynamic>{
-                'refresh': <String, dynamic>{
-                  'type': 'text',
-                  'text': 'After',
-                },
+                'refresh': <String, dynamic>{'type': 'text', 'text': 'After'},
               },
             },
           ),
@@ -266,57 +246,53 @@ void main() {
     tags: const <String>['feature_test__plugin_ui__unit'],
   );
 
-  test(
-    'rejects a contribution in a slot it did not declare',
-    () async {
-      const descriptor = PluginDescriptorDto(
-        apiMajor: 5,
-        id: 'example.controls',
-        version: '1.0.0',
-        name: 'Controls',
-        entrypoint: 'main.lua',
-        source: PluginSource.user,
-        sourcePath: 'plugins/example.controls',
+  test('rejects a contribution in a slot it did not declare', () async {
+    const descriptor = PluginDescriptorDto(
+      apiMajor: 5,
+      id: 'example.controls',
+      version: '1.0.0',
+      name: 'Controls',
+      entrypoint: 'main.lua',
+      source: PluginSource.user,
+      sourcePath: 'plugins/example.controls',
+      requestedCapabilities: <String>[],
+      revision: PluginRevisionDto(
+        pluginId: 'example.controls',
+        contentHash: 'revision',
+        manifestHash: 'manifest',
+        sdkAbiHash: 'sdk-abi-hash',
+        executionRevisionHash: 'execution-revision',
         requestedCapabilities: <String>[],
-        revision: PluginRevisionDto(
+      ),
+      contributions: <PluginContributionDto>[
+        PluginContributionDto(
           pluginId: 'example.controls',
-          contentHash: 'revision',
-          manifestHash: 'manifest',
-          sdkAbiHash: 'sdk-abi-hash',
-          executionRevisionHash: 'execution-revision',
-          requestedCapabilities: <String>[],
+          id: 'settings',
+          kind: PluginContributionKind.ui,
+          metadata: <String, dynamic>{
+            'slots': <String>['agentSettings'],
+            'document': <String, dynamic>{'type': 'text', 'text': 'Only'},
+          },
         ),
-        contributions: <PluginContributionDto>[
-          PluginContributionDto(
-            pluginId: 'example.controls',
-            id: 'settings',
-            kind: PluginContributionKind.ui,
-            metadata: <String, dynamic>{
-              'slots': <String>['agentSettings'],
-              'document': <String, dynamic>{'type': 'text', 'text': 'Only'},
-            },
-          ),
-        ],
-      );
-      final service = PluginUiService(
-        descriptors: const _DescriptorReader(descriptor),
-        runtime: const ManifestPluginUiRuntime(),
-      );
+      ],
+    );
+    final service = PluginUiService(
+      descriptors: const _DescriptorReader(descriptor),
+      runtime: const ManifestPluginUiRuntime(),
+    );
 
-      expect(
-        () => service.render(
-          const PluginUiRenderParamsDto(
-            agentId: 'agent',
-            pluginId: 'example.controls',
-            contributionId: 'settings',
-            slot: PluginUiSlot.dialog,
-          ),
+    expect(
+      () => service.render(
+        const PluginUiRenderParamsDto(
+          agentId: 'agent',
+          pluginId: 'example.controls',
+          contributionId: 'settings',
+          slot: PluginUiSlot.dialog,
         ),
-        throwsA(isA<PluginUiException>()),
-      );
-    },
-    tags: const <String>['feature_test__plugin_ui__unit'],
-  );
+      ),
+      throwsA(isA<PluginUiException>()),
+    );
+  }, tags: const <String>['feature_test__plugin_ui__unit']);
 
   test(
     'dispatches against the historical revision pinned at render time',
@@ -376,9 +352,7 @@ void main() {
 
       reader.descriptor = revisionOne.copyWith(
         version: '2.0.0',
-        revision: revisionOne.revision!.copyWith(
-          contentHash: 'revision-two',
-        ),
+        revision: revisionOne.revision!.copyWith(contentHash: 'revision-two'),
         contributions: <PluginContributionDto>[
           revisionOne.contributions.single.copyWith(
             metadata: const <String, dynamic>{
@@ -581,10 +555,7 @@ void main() {
         const PluginUiActionParamsDto(
           agentId: 'agent',
           pluginId: 'example.ui',
-          action: PluginUiActionDto(
-            documentId: 'missing',
-            actionId: 'refresh',
-          ),
+          action: PluginUiActionDto(documentId: 'missing', actionId: 'refresh'),
         ),
       ),
       throwsA(isA<PluginUiException>()),
@@ -744,10 +715,7 @@ void main() {
     final request = PluginUiActionParamsDto(
       agentId: 'agent',
       pluginId: 'example.ui',
-      action: PluginUiActionDto(
-        documentId: document.id,
-        actionId: 'refresh',
-      ),
+      action: PluginUiActionDto(documentId: document.id, actionId: 'refresh'),
     );
 
     final first = service.dispatch(request);
@@ -782,10 +750,7 @@ void main() {
         PluginUiActionParamsDto(
           agentId: 'agent',
           pluginId: 'example.ui',
-          action: PluginUiActionDto(
-            documentId: first.id,
-            actionId: 'refresh',
-          ),
+          action: PluginUiActionDto(documentId: first.id, actionId: 'refresh'),
         ),
       ),
       throwsA(isA<PluginUiException>()),
@@ -853,7 +818,7 @@ Object? _deepUiDocument() {
 }
 
 final class _DescriptorReader implements PluginDescriptorReader {
-  const _DescriptorReader(this.descriptor);
+  const new(this.descriptor);
 
   final PluginDescriptorDto descriptor;
 
@@ -865,7 +830,7 @@ final class _DescriptorReader implements PluginDescriptorReader {
 }
 
 final class _ThrowingDescriptorReader implements PluginDescriptorReader {
-  const _ThrowingDescriptorReader(this.error);
+  const new(this.error);
 
   final Exception error;
 
@@ -874,7 +839,7 @@ final class _ThrowingDescriptorReader implements PluginDescriptorReader {
 }
 
 final class _RejectingUiRuntime implements PluginUiRuntime {
-  const _RejectingUiRuntime({
+  const new({
     this.rejectRender = false,
     this.renderFailure =
         'Plugin UI handler failed: bundle/tinest.plugin_main.lua:42: '
@@ -918,7 +883,7 @@ final class _RejectingUiRuntime implements PluginUiRuntime {
 }
 
 final class _MutableDescriptorReader implements PluginDescriptorReader {
-  _MutableDescriptorReader(this.descriptor);
+  new(this.descriptor);
 
   PluginDescriptorDto descriptor;
 
@@ -931,7 +896,7 @@ final class _MutableDescriptorReader implements PluginDescriptorReader {
 
 final class _AgentDescriptorReader
     implements PluginDescriptorReader, AgentPluginDescriptorReader {
-  _AgentDescriptorReader(this.descriptor);
+  new(this.descriptor);
 
   final PluginDescriptorDto descriptor;
   String? agentId;

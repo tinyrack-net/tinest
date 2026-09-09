@@ -5,10 +5,7 @@ import 'package:app/src/devtools/desktop_host.dart';
 /// One independently runnable desktop E2E scenario.
 final class DesktopE2eScenario {
   /// Creates a catalog entry.
-  const DesktopE2eScenario({
-    required this.id,
-    required this.estimatedSeconds,
-  });
+  const new({required this.id, required this.estimatedSeconds});
 
   /// Stable command-line identifier.
   final String id;
@@ -35,7 +32,7 @@ const desktopE2eScenarios = <DesktopE2eScenario>[
 /// Typed command-line options for the app-owned E2E runner.
 final class DesktopE2eOptions {
   /// Creates parsed options.
-  const DesktopE2eOptions({
+  const new({
     required this.jobs,
     required this.seed,
     this.scenario,
@@ -58,7 +55,7 @@ final class DesktopE2eOptions {
 /// One deterministic subset of the scenario catalog.
 final class DesktopE2eLane {
   /// Creates a lane.
-  const DesktopE2eLane({required this.index, required this.scenarios});
+  const new({required this.index, required this.scenarios});
 
   /// Zero-based stable lane index.
   final int index;
@@ -76,7 +73,7 @@ final class DesktopE2eLane {
 /// One process invocation in a desktop E2E run.
 final class DesktopE2eCommand {
   /// Creates a process invocation.
-  const DesktopE2eCommand({
+  const new({
     required this.executable,
     required this.arguments,
     required this.workingDirectory,
@@ -112,10 +109,10 @@ final class DesktopE2eCommand {
 
 /// Platform-specific command plan for the complete desktop E2E suite.
 final class DesktopE2ePlan {
-  const DesktopE2ePlan._({required this.host, required this.device});
+  const new _({required this.host, required this.device});
 
   /// Creates a plan for [host].
-  factory DesktopE2ePlan.forHost(DesktopHost host) =>
+  factory forHost(DesktopHost host) =>
       DesktopE2ePlan._(host: host, device: host.name);
 
   /// Host operating system.
@@ -166,13 +163,11 @@ final class DesktopE2ePlan {
   }
 
   /// Builds the aggregate process command for [lane].
-  DesktopE2eCommand commandForLane(
-    DesktopE2eLane lane, {
-    required int seed,
-  }) => commandForScenarioIds(
-    lane.scenarios.map((scenario) => scenario.id).toList(growable: false),
-    seed: seed,
-  );
+  DesktopE2eCommand commandForLane(DesktopE2eLane lane, {required int seed}) =>
+      commandForScenarioIds(
+        lane.scenarios.map((scenario) => scenario.id).toList(growable: false),
+        seed: seed,
+      );
 
   /// Builds a focused CI command.
   DesktopE2eCommand commandForScenario(String scenarioId, {required int seed}) {
@@ -210,7 +205,7 @@ final class DesktopE2ePlan {
 /// Temporary, isolated resources owned by one lane.
 final class DesktopE2eLaneResources {
   /// Creates lane resources.
-  const DesktopE2eLaneResources({
+  const new({
     required this.home,
     required this.configHome,
     required this.temporaryDirectory,
@@ -278,10 +273,7 @@ abstract interface class DesktopE2eRuntime {
 
   /// Resets [laneIndex]'s Windows output before Flutter recreates ephemeral
   /// files.
-  Future<void> resetWindowsLaneBuild(
-    String projectDirectory,
-    int laneIndex,
-  );
+  Future<void> resetWindowsLaneBuild(String projectDirectory, int laneIndex);
 
   /// Deletes resources after the lane process exits.
   Future<void> deleteLaneResources(DesktopE2eLaneResources resources);
@@ -290,7 +282,7 @@ abstract interface class DesktopE2eRuntime {
 /// Result of one lane.
 final class DesktopE2eLaneResult {
   /// Creates a lane result.
-  const DesktopE2eLaneResult({
+  const new({
     required this.lane,
     required this.seed,
     required this.exitCode,
@@ -317,7 +309,7 @@ final class DesktopE2eLaneResult {
 /// Complete deterministic run result.
 final class DesktopE2eRunResult {
   /// Creates a run result.
-  const DesktopE2eRunResult(this.lanes);
+  const new(this.lanes);
 
   /// Results in deterministic lane order.
   final List<DesktopE2eLaneResult> lanes;
@@ -335,7 +327,7 @@ final class DesktopE2eRunResult {
 /// overlap while the next lane builds in its isolated output directory.
 final class DesktopE2eRunner {
   /// Creates a runner backed by [runtime].
-  const DesktopE2eRunner({
+  const new({
     required this.runtime,
     this.environment = const <String, String>{},
   });
@@ -450,9 +442,7 @@ final class DesktopE2eRunner {
           command.workingDirectory,
         );
         if (resetWindowsProjectBuildCache) {
-          await runtime.resetWindowsProjectBuildCache(
-            command.workingDirectory,
-          );
+          await runtime.resetWindowsProjectBuildCache(command.workingDirectory);
         }
         await runtime.resetWindowsLaneBuild(
           command.workingDirectory,
@@ -530,7 +520,7 @@ final class DesktopE2eRunner {
 }
 
 final class _RunningLane {
-  const _RunningLane({required this.buildReady, required this.result});
+  const new({required this.buildReady, required this.result});
 
   final Future<void> buildReady;
   final Future<DesktopE2eLaneResult> result;

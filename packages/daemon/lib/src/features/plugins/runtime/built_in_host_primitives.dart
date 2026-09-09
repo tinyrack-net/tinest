@@ -12,6 +12,7 @@ import 'package:daemon/src/shared/ports/mcp_host_primitives.dart';
 import 'package:file/file.dart' as file_api;
 import 'package:file/local.dart';
 import 'package:platform/platform.dart';
+import 'package:platform/testing.dart';
 import 'package:protocol/protocol.dart';
 
 /// Composition-root port that creates one turn's primitive registry.
@@ -50,7 +51,7 @@ abstract interface class SelectedLuaToolInvoker
 final class IoHostPrimitiveRegistryFactory
     implements HostPrimitiveRegistryFactory {
   /// Creates the native registry factory.
-  const IoHostPrimitiveRegistryFactory();
+  const new();
 
   @override
   HostPrimitiveRegistry create({
@@ -87,7 +88,7 @@ final class IoHostPrimitiveRegistryFactory
       luaCodeMode: luaCodeMode,
       selectedTools: selectedTools,
       fileSystem: const LocalFileSystem(),
-      platform: const LocalPlatform(),
+      platform: const Platform(),
     ),
   );
 }
@@ -95,7 +96,7 @@ final class IoHostPrimitiveRegistryFactory
 /// Turn-scoped ports used by the model-agnostic native primitive registry.
 final class BuiltInHostPrimitivePorts {
   /// Creates the primitive environment for one Agent turn.
-  const BuiltInHostPrimitivePorts({
+  const new({
     required this.workspaceRoot,
     required this.attachments,
     required this.attachmentReader,
@@ -185,34 +186,19 @@ HostPrimitiveRegistry builtInHostPrimitiveRegistry(
   final workspace = _WorkspacePrimitiveHost(ports);
   final registry = HostPrimitiveRegistry(<HostPrimitive<Object?, Object?>>[
     HostPrimitiveContracts.workspaceStat
-        .bind(
-          decode: _object,
-          invoke: workspace.stat,
-        )
+        .bind(decode: _object, invoke: workspace.stat)
         .erased,
     HostPrimitiveContracts.workspaceList
-        .bind(
-          decode: _object,
-          invoke: workspace.list,
-        )
+        .bind(decode: _object, invoke: workspace.list)
         .erased,
     HostPrimitiveContracts.workspaceReadText
-        .bind(
-          decode: _object,
-          invoke: workspace.readText,
-        )
+        .bind(decode: _object, invoke: workspace.readText)
         .erased,
     HostPrimitiveContracts.workspaceReadBlob
-        .bindOutput(
-          decode: _object,
-          invoke: workspace.readBlob,
-        )
+        .bindOutput(decode: _object, invoke: workspace.readBlob)
         .erased,
     HostPrimitiveContracts.workspaceWalk
-        .bind(
-          decode: _object,
-          invoke: workspace.walk,
-        )
+        .bind(decode: _object, invoke: workspace.walk)
         .erased,
     HostPrimitiveContracts.workspaceTransaction
         .bind(
@@ -256,12 +242,8 @@ HostPrimitiveRegistry builtInHostPrimitiveRegistry(
     HostPrimitiveContracts.attachmentPublish
         .bindOutput(
           decode: _object,
-          invoke: (arguments, context) => _publishAttachment(
-            ports,
-            workspace,
-            arguments,
-            context,
-          ),
+          invoke: (arguments, context) =>
+              _publishAttachment(ports, workspace, arguments, context),
         )
         .erased,
     HostPrimitiveContracts.attachmentRead
@@ -365,9 +347,7 @@ HostPrimitiveRegistry builtInHostPrimitiveRegistry(
   return registry;
 }
 
-String? _workspaceTransactionApprovalPreview(
-  Map<String, Object?> arguments,
-) {
+String? _workspaceTransactionApprovalPreview(Map<String, Object?> arguments) {
   final rawOperations = arguments['operations'];
   if (rawOperations is! List<Object?> || rawOperations.isEmpty) return null;
   final changes = <String>[];
@@ -381,7 +361,7 @@ String? _workspaceTransactionApprovalPreview(
 }
 
 final class _WorkspacePrimitiveHost {
-  _WorkspacePrimitiveHost(this.ports)
+  new(this.ports)
     : guard = WorkspacePathGuard(
         ports.workspaceRoot,
         fileSystem: ports.fileSystem,
@@ -537,14 +517,10 @@ final class _WorkspacePrimitiveHost {
       });
     }
     entries.sort(
-      (left, right) => (left['path']! as String).compareTo(
-        right['path']! as String,
-      ),
+      (left, right) =>
+          (left['path']! as String).compareTo(right['path']! as String),
     );
-    return <String, Object?>{
-      'entries': entries,
-      'truncated': truncated,
-    };
+    return <String, Object?>{'entries': entries, 'truncated': truncated};
   }
 
   Future<Map<String, Object?>> transaction(
@@ -658,7 +634,7 @@ final class _WorkspacePrimitiveHost {
 }
 
 final class _WorkspaceMutation {
-  const _WorkspaceMutation._({
+  const new _({
     required this.kind,
     required this.path,
     required this.relativePath,
@@ -666,7 +642,7 @@ final class _WorkspaceMutation {
     required this.previousBytes,
   });
 
-  const _WorkspaceMutation.write({
+  const new write({
     required String path,
     required String relativePath,
     required String content,
@@ -679,7 +655,7 @@ final class _WorkspaceMutation {
          previousBytes: previousBytes,
        );
 
-  const _WorkspaceMutation.delete({
+  const new delete({
     required String path,
     required String relativePath,
     required List<int> previousBytes,
@@ -916,10 +892,7 @@ Future<Map<String, Object?>> _readSkill(
     'instructions': content.instructions,
     'resources': <Map<String, Object?>>[
       for (final entry in content.resources)
-        <String, Object?>{
-          'path': entry.path,
-          'size_bytes': entry.sizeBytes,
-        },
+        <String, Object?>{'path': entry.path, 'size_bytes': entry.sizeBytes},
     ],
   };
 }
@@ -1017,23 +990,15 @@ List<HostPrimitive<Object?, Object?>> _luaCodeModePrimitives(
   HostPrimitiveContracts.luaRead
       .bindOutput(
         decode: _object,
-        invoke: (arguments, context) => _waitLuaCodeMode(
-          ports,
-          arguments,
-          context,
-          terminate: false,
-        ),
+        invoke: (arguments, context) =>
+            _waitLuaCodeMode(ports, arguments, context, terminate: false),
       )
       .erased,
   HostPrimitiveContracts.luaTerminate
       .bindOutput(
         decode: _object,
-        invoke: (arguments, context) => _waitLuaCodeMode(
-          ports,
-          arguments,
-          context,
-          terminate: true,
-        ),
+        invoke: (arguments, context) =>
+            _waitLuaCodeMode(ports, arguments, context, terminate: true),
       )
       .erased,
 ];
@@ -1087,15 +1052,14 @@ HostPrimitiveOutput<Object?> _luaChunkOutput(LuaCellChunk chunk) {
   );
 }
 
-Duration _luaYieldTime(Object? value) => Duration(
-  milliseconds: value is int ? value.clamp(100, 60000) : 10000,
-);
+Duration _luaYieldTime(Object? value) =>
+    Duration(milliseconds: value is int ? value.clamp(100, 60000) : 10000);
 
 int _luaOutputTokens(Object? value) =>
     value is int ? value.clamp(256, 100000) : 10000;
 
 final class _CellSelectedLuaToolInvoker implements LuaNestedToolInvoker {
-  const _CellSelectedLuaToolInvoker(this._delegate, this._allowedNames);
+  const new(this._delegate, this._allowedNames);
 
   final LuaNestedToolInvoker _delegate;
   final Set<String> _allowedNames;
@@ -1302,10 +1266,8 @@ List<HostPrimitive<Object?, Object?>> _mcpPrimitives(
   HostPrimitiveContracts.mcpInvokeTool
       .bind(
         decode: _object,
-        invoke: (arguments, context) => gateway.invokeTool(
-          arguments,
-          cancellation: context.cancellation,
-        ),
+        invoke: (arguments, context) =>
+            gateway.invokeTool(arguments, cancellation: context.cancellation),
       )
       .erased,
 ];
@@ -1349,7 +1311,7 @@ String _sessionStatusWireName(SessionStatus status) => switch (status) {
 };
 
 final class _PrimitiveCancellationToken extends CancellationToken {
-  _PrimitiveCancellationToken(HostPrimitiveCancellation? source) {
+  new(HostPrimitiveCancellation? source) {
     if (source?.isCancelled ?? false) cancel();
     source?.onCancel(cancel);
   }

@@ -13,77 +13,63 @@ import '../../support/fake_tinest_api.dart';
 void main() {
   final now = DateTime.utc(2026, 8, 3);
 
-  test(
-    'loads without awaiting daemon connections and connects hosts '
-    'independently',
-    () async {
-      final first = RemoteDaemonProfile(
-        id: 'first',
-        label: 'First',
-        connections: directHostConnections(Uri.parse('ws://first.test/ws')),
-        autoConnect: true,
-        createdAt: now,
-        updatedAt: now,
-      );
-      final second = RemoteDaemonProfile(
-        id: 'second',
-        label: 'Second',
-        connections: directHostConnections(Uri.parse('wss://second.test/ws')),
-        autoConnect: true,
-        createdAt: now,
-        updatedAt: now,
-      );
-      final store = MemoryAppStore(
-        settings: const AppSettings(embeddedDaemonEnabled: false),
-        profiles: <RemoteDaemonProfile>[first, second],
-        tokens: const <String, String>{'first': 'one', 'second': 'two'},
-      );
-      final firstConnect = Completer<TinestApi>();
-      final secondApi = FakeTinestApi(
-        serverInfo: _serverInfo('server-two'),
-      );
-      final factory = _ClientFactory(<String, Future<TinestApi>>{
-        'first.test': firstConnect.future,
-        'second.test': Future<TinestApi>.value(secondApi),
-      });
-      final registry = HostRegistry(
-        store: store,
-        clientFactory: factory,
-        ids: const _Ids(),
-        clock: _Clock(now),
-        delay: const _NoDelay(),
-        clientKind: 'test',
-      );
-      addTearDown(registry.close);
+  test('loads without awaiting daemon connections and connects hosts '
+      'independently', () async {
+    final first = RemoteDaemonProfile(
+      id: 'first',
+      label: 'First',
+      connections: directHostConnections(Uri.parse('ws://first.test/ws')),
+      autoConnect: true,
+      createdAt: now,
+      updatedAt: now,
+    );
+    final second = RemoteDaemonProfile(
+      id: 'second',
+      label: 'Second',
+      connections: directHostConnections(Uri.parse('wss://second.test/ws')),
+      autoConnect: true,
+      createdAt: now,
+      updatedAt: now,
+    );
+    final store = MemoryAppStore(
+      settings: const AppSettings(embeddedDaemonEnabled: false),
+      profiles: <RemoteDaemonProfile>[first, second],
+      tokens: const <String, String>{'first': 'one', 'second': 'two'},
+    );
+    final firstConnect = Completer<TinestApi>();
+    final secondApi = FakeTinestApi(serverInfo: _serverInfo('server-two'));
+    final factory = _ClientFactory(<String, Future<TinestApi>>{
+      'first.test': firstConnect.future,
+      'second.test': Future<TinestApi>.value(secondApi),
+    });
+    final registry = HostRegistry(
+      store: store,
+      clientFactory: factory,
+      ids: const _Ids(),
+      clock: _Clock(now),
+      delay: const _NoDelay(),
+      clientKind: 'test',
+    );
+    addTearDown(registry.close);
 
-      final loaded = await registry.load();
-      expect(loaded.runtimes.keys, containsAll(<String>['first', 'second']));
-      expect(loaded.runtimes['first']!.status, HostRuntimeStatus.connecting);
-      await _flush();
-      expect(
-        registry.value.runtimes['second']!.status,
-        HostRuntimeStatus.online,
-      );
-      expect(
-        registry.value.runtimes['first']!.status,
-        HostRuntimeStatus.connecting,
-      );
+    final loaded = await registry.load();
+    expect(loaded.runtimes.keys, containsAll(<String>['first', 'second']));
+    expect(loaded.runtimes['first']!.status, HostRuntimeStatus.connecting);
+    await _flush();
+    expect(registry.value.runtimes['second']!.status, HostRuntimeStatus.online);
+    expect(
+      registry.value.runtimes['first']!.status,
+      HostRuntimeStatus.connecting,
+    );
 
-      firstConnect.complete(
-        FakeTinestApi(serverInfo: _serverInfo('server-one')),
-      );
-      await _flush();
-      expect(
-        registry.value.runtimes['first']!.status,
-        HostRuntimeStatus.online,
-      );
-      expect(
-        factory.connectedHosts,
-        containsAll(<String>['first.test', 'second.test']),
-      );
-    },
-    tags: const <String>['feature_test__daemon_management__unit'],
-  );
+    firstConnect.complete(FakeTinestApi(serverInfo: _serverInfo('server-one')));
+    await _flush();
+    expect(registry.value.runtimes['first']!.status, HostRuntimeStatus.online);
+    expect(
+      factory.connectedHosts,
+      containsAll(<String>['first.test', 'second.test']),
+    );
+  }, tags: const <String>['feature_test__daemon_management__unit']);
 
   test(
     'offline profiles save before connection and disabled hosts remain idle',
@@ -112,10 +98,7 @@ void main() {
 
       expect(profile.id, 'generated-id');
       expect(store.profiles.single, profile);
-      expect(
-        store.tokens[profile.connections.single.credentialKey],
-        'secret',
-      );
+      expect(store.tokens[profile.connections.single.credentialKey], 'secret');
       expect(
         registry.value.runtimes[profile.id]!.status,
         HostRuntimeStatus.idle,
@@ -263,9 +246,7 @@ void main() {
     await _flush();
 
     final emitted = <String>[];
-    final subscription = registry.changes.listen(
-      (_) => emitted.add('emit'),
-    );
+    final subscription = registry.changes.listen((_) => emitted.add('emit'));
     addTearDown(subscription.cancel);
 
     final mutations = <String, Future<void> Function()>{
@@ -390,44 +371,40 @@ void main() {
     tags: const <String>['feature_test__settings_reset__unit'],
   );
 
-  test(
-    'a second concurrent reset is rejected without erasing twice',
-    () async {
-      final store = MemoryAppStore();
-      final calls = <String>[];
-      final eraser = _DataEraser(calls: calls);
-      final registry = HostRegistry(
-        store: store,
-        clientFactory: _ClientFactory(const <String, Future<TinestApi>>{}),
-        embeddedLauncher: _EmbeddedLauncher(calls: calls),
-        embeddedDataEraser: eraser,
-        ids: const _Ids(),
-        clock: _Clock(now),
-        delay: const _NoDelay(),
-        clientKind: 'desktop',
-      );
-      addTearDown(registry.close);
+  test('a second concurrent reset is rejected without erasing twice', () async {
+    final store = MemoryAppStore();
+    final calls = <String>[];
+    final eraser = _DataEraser(calls: calls);
+    final registry = HostRegistry(
+      store: store,
+      clientFactory: _ClientFactory(const <String, Future<TinestApi>>{}),
+      embeddedLauncher: _EmbeddedLauncher(calls: calls),
+      embeddedDataEraser: eraser,
+      ids: const _Ids(),
+      clock: _Clock(now),
+      delay: const _NoDelay(),
+      clientKind: 'desktop',
+    );
+    addTearDown(registry.close);
 
-      await registry.load();
-      await _flush();
+    await registry.load();
+    await _flush();
 
-      final first = registry.resetToFactoryDefaults();
-      await expectLater(
-        registry.resetToFactoryDefaults(),
-        throwsA(
-          isA<FactoryResetFailure>().having(
-            (error) => error.reason,
-            'reason',
-            FactoryResetFailureReason.incomplete,
-          ),
+    final first = registry.resetToFactoryDefaults();
+    await expectLater(
+      registry.resetToFactoryDefaults(),
+      throwsA(
+        isA<FactoryResetFailure>().having(
+          (error) => error.reason,
+          'reason',
+          FactoryResetFailureReason.incomplete,
         ),
-      );
-      await first;
+      ),
+    );
+    await first;
 
-      expect(eraser.erases, 1);
-    },
-    tags: const <String>['feature_test__settings_reset__unit'],
-  );
+    expect(eraser.erases, 1);
+  }, tags: const <String>['feature_test__settings_reset__unit']);
 
   test(
     'a surface without an embedded daemon still clears device-local data',
@@ -909,9 +886,7 @@ void main() {
 
       await registry.setEmbeddedDaemonEnabled(enabled: false);
       final starts = launcher.starts;
-      await registry.setEmbeddedDaemonExposure(
-        EmbeddedDaemonExposure.loopback,
-      );
+      await registry.setEmbeddedDaemonExposure(EmbeddedDaemonExposure.loopback);
       expect(launcher.starts, starts);
       expect(
         store.settings.embeddedDaemonExposure,
@@ -932,9 +907,8 @@ void main() {
           List<Future<TinestApi> Function()>.generate(
             2,
             (index) =>
-                () async => FakeTinestApi(
-                  serverInfo: _serverInfo('embedded-server'),
-                ),
+                () async =>
+                    FakeTinestApi(serverInfo: _serverInfo('embedded-server')),
           ),
         ),
         embeddedLauncher: launcher,
@@ -989,9 +963,8 @@ void main() {
           List<Future<TinestApi> Function()>.generate(
             3,
             (index) =>
-                () async => FakeTinestApi(
-                  serverInfo: _serverInfo('embedded-server'),
-                ),
+                () async =>
+                    FakeTinestApi(serverInfo: _serverInfo('embedded-server')),
           ),
         ),
         embeddedLauncher: launcher,
@@ -1340,9 +1313,7 @@ void main() {
         FakeTinestApi(serverInfo: _serverInfo('first-server')),
         closeFailure: clientFailure,
       );
-      final secondApi = FakeTinestApi(
-        serverInfo: _serverInfo('second-server'),
-      );
+      final secondApi = FakeTinestApi(serverInfo: _serverInfo('second-server'));
       final launcher = _EmbeddedLauncher(stopError: sessionFailure);
       final registry = HostRegistry(
         store: MemoryAppStore(
@@ -1442,10 +1413,7 @@ void main() {
       final changesDone = Completer<void>();
       registry.changes.listen(null, onDone: changesDone.complete);
 
-      await expectLater(
-        registry.shutdown(),
-        throwsA(same(cancelFailure)),
-      );
+      await expectLater(registry.shutdown(), throwsA(same(cancelFailure)));
 
       expect(embeddedApi.closeCalls, 1);
       expect(embeddedApi.delegate.isClosed, isTrue);
@@ -1484,10 +1452,7 @@ void main() {
     expect(store.profiles.single, same(profile));
     expect(store.relayCredentials.values.single.deviceId, 'device-1');
     expect(pairer.deviceName, 'My phone');
-    expect(
-      registry.value.runtimes[profile.id]!.status,
-      HostRuntimeStatus.idle,
-    );
+    expect(registry.value.runtimes[profile.id]!.status, HostRuntimeStatus.idle);
   });
 
   test(
@@ -1646,7 +1611,7 @@ Future<void> _flush() async {
 }
 
 final class _ClientFactory implements HostClientFactory {
-  _ClientFactory(this.clients);
+  new(this.clients);
 
   final Map<String, Future<TinestApi>> clients;
   final List<String> connectedHosts = <String>[];
@@ -1667,7 +1632,7 @@ final class _ClientFactory implements HostClientFactory {
 }
 
 final class _ControlledApi implements TinestApi {
-  _ControlledApi(
+  new(
     this.delegate, {
     this.closeFailure,
     Stream<ClientConnectionState>? states,
@@ -1729,7 +1694,7 @@ final class _ControlledApi implements TinestApi {
 }
 
 final class _SequenceClientFactory implements HostClientFactory {
-  _SequenceClientFactory(this.results);
+  new(this.results);
 
   final List<Future<TinestApi> Function()> results;
   int attempts = 0;
@@ -1748,13 +1713,10 @@ final class _SequenceClientFactory implements HostClientFactory {
 }
 
 final class _PathClientFactory implements HostClientFactory {
-  _PathClientFactory(
-    Map<String, List<Future<TinestApi> Function()>> results,
-  ) : _results = results.map(
-        (key, value) => MapEntry(
-          key,
-          List<Future<TinestApi> Function()>.of(value),
-        ),
+  new(Map<String, List<Future<TinestApi> Function()>> results)
+    : _results = results.map(
+        (key, value) =>
+            MapEntry(key, List<Future<TinestApi> Function()>.of(value)),
       );
 
   final Map<String, List<Future<TinestApi> Function()>> _results;
@@ -1802,7 +1764,7 @@ final class _ManualProbeTask implements HostPathProbeTask {
 }
 
 final class _EmbeddedLauncher implements EmbeddedDaemonLauncher {
-  _EmbeddedLauncher({
+  new({
     this.firstStopGate,
     this.stopError,
     this.failingStarts = const <int>{},
@@ -1845,7 +1807,7 @@ final class _EmbeddedLauncher implements EmbeddedDaemonLauncher {
 }
 
 final class _EmbeddedSession implements EmbeddedDaemonSession {
-  _EmbeddedSession({this.stopGate, this.stopError, this.calls});
+  new({this.stopGate, this.stopError, this.calls});
 
   final Completer<void>? stopGate;
   final Error? stopError;
@@ -1855,9 +1817,8 @@ final class _EmbeddedSession implements EmbeddedDaemonSession {
   HostEndpoint get endpoint => HostEndpoint.parse('ws://embedded.test/ws');
 
   @override
-  DaemonCredentials get credentials => const DaemonCredentials(
-    bearerToken: 'embedded-bearer',
-  );
+  DaemonCredentials get credentials =>
+      const DaemonCredentials(bearerToken: 'embedded-bearer');
 
   @override
   String get serverId => 'embedded-server';
@@ -1873,7 +1834,7 @@ final class _EmbeddedSession implements EmbeddedDaemonSession {
 }
 
 final class _DataEraser implements EmbeddedDaemonDataEraser {
-  _DataEraser({required this.calls, this.failure});
+  new({required this.calls, this.failure});
 
   final List<String> calls;
   final FactoryResetFailure? failure;
@@ -1889,14 +1850,14 @@ final class _DataEraser implements EmbeddedDaemonDataEraser {
 }
 
 final class _Ids implements AppIdGenerator {
-  const _Ids();
+  const new();
 
   @override
   String generate() => 'generated-id';
 }
 
 final class _Clock implements AppClock {
-  const _Clock(this.value);
+  const new(this.value);
 
   final DateTime value;
 
@@ -1905,7 +1866,7 @@ final class _Clock implements AppClock {
 }
 
 final class _NoDelay implements AppDelay {
-  const _NoDelay();
+  const new();
 
   @override
   Future<void> wait(Duration duration) async {}
@@ -1949,7 +1910,7 @@ final class _RecordingDelay implements AppDelay {
 }
 
 final class _FailingProfiles implements RemoteHostRepository {
-  const _FailingProfiles();
+  const new();
 
   @override
   Future<void> deleteProfile(String profileId) async {}
@@ -1964,11 +1925,11 @@ final class _FailingProfiles implements RemoteHostRepository {
 }
 
 final class _ProfileWriteFailure implements Exception {
-  const _ProfileWriteFailure();
+  const new();
 }
 
 final class _FailingEmbeddedLauncher implements EmbeddedDaemonLauncher {
-  const _FailingEmbeddedLauncher();
+  const new();
 
   @override
   Future<EmbeddedDaemonSession> start({

@@ -28,7 +28,7 @@ const _hostId = 'host-entry-position';
 final _createdAt = DateTime.utc(2026, 8, 15);
 
 final class _NoopUrlOpener implements ExternalUrlOpener {
-  const _NoopUrlOpener();
+  const new();
 
   @override
   Future<bool> open(Uri uri) => Future<bool>.value(false);

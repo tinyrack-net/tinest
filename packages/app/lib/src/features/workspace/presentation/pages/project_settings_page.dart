@@ -25,7 +25,7 @@ String formatHookCommands(List<String> commands) => commands.join('\n');
 /// Per-project settings manager for one connected daemon.
 class ProjectSettingsPage extends ConsumerWidget {
   /// Creates a project settings page.
-  const ProjectSettingsPage({
+  const new({
     required this.hostId,
     required this.paneController,
     required this.slot,
@@ -74,9 +74,8 @@ class ProjectSettingsPage extends ConsumerWidget {
                         ref.invalidate(workspaceCatalogControllerProvider),
                   )
                 : SettingsEmptyState(
-                    title: AppLocalizations.of(
-                      context,
-                    ).projectSettingsSelectProject,
+                    title: AppLocalizations.of(context)
+                        .projectSettingsSelectProject,
                     icon: const Icon(TinestIcons.folder),
                   ),
             data: (value) {
@@ -103,9 +102,8 @@ class ProjectSettingsPage extends ConsumerWidget {
                 SettingsPaneSlot.detail =>
                   selected == null
                       ? SettingsEmptyState(
-                          title: AppLocalizations.of(
-                            context,
-                          ).projectSettingsSelectProject,
+                          title: AppLocalizations.of(context)
+                              .projectSettingsSelectProject,
                           icon: const Icon(TinestIcons.folder),
                         )
                       : _ProjectEditor(
@@ -120,11 +118,8 @@ class ProjectSettingsPage extends ConsumerWidget {
   }
 
   List<WorkspaceDto> _projects(UnifiedWorkspaceCatalogState state) =>
-      <WorkspaceDto>[
-        ...?state.catalogs[hostId]?.workspaces,
-      ]..sort(
-        (a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()),
-      );
+      <WorkspaceDto>[...?state.catalogs[hostId]?.workspaces]
+        ..sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
 
   void _scheduleInitialSelection(String projectId) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -142,11 +137,11 @@ class ProjectSettingsPage extends ConsumerWidget {
 /// Owns the selected project independently from either rendered pane slot.
 class ProjectSettingsPaneController extends SettingsPaneController<String> {
   /// Creates a project pane controller.
-  ProjectSettingsPaneController();
+  new();
 }
 
 class _ProjectList extends StatelessWidget {
-  const _ProjectList({
+  const new({
     required this.projects,
     required this.selectedId,
     required this.onSelected,
@@ -196,11 +191,7 @@ class _ProjectList extends StatelessWidget {
 }
 
 class _ProjectEditor extends ConsumerStatefulWidget {
-  const _ProjectEditor({
-    required this.hostId,
-    required this.workspace,
-    super.key,
-  });
+  const new({required this.hostId, required this.workspace, super.key});
 
   final String hostId;
   final WorkspaceDto workspace;
@@ -245,9 +236,7 @@ class _ProjectEditorState extends ConsumerState<_ProjectEditor> {
     final hostShellState = ref.watch(hostShellProvider);
     return SettingsAsyncContent<ProjectSettingsResultDto>(
       state: state,
-      loading: SettingsSkeletonLayout.form(
-        semanticLabel: l10n.settingsLoading,
-      ),
+      loading: SettingsSkeletonLayout.form(semanticLabel: l10n.settingsLoading),
       error: (error, _) => SettingsErrorState(
         error: error,
         onRetry: () => ref.invalidate(provider),
@@ -356,9 +345,7 @@ class _ProjectEditorState extends ConsumerState<_ProjectEditor> {
                 banner: hostShellState.hasError
                     ? TRAlert(
                         title: TRText.inherit(
-                          l10n.settingsRefreshFailed(
-                            '${hostShellState.error}',
-                          ),
+                          l10n.settingsRefreshFailed('${hostShellState.error}'),
                         ),
                         variant: TRStatusVariant.danger,
                       )
@@ -366,18 +353,14 @@ class _ProjectEditorState extends ConsumerState<_ProjectEditor> {
                 children: hostShellState.hasValue
                     ? <Widget>[
                         TRTextField(
-                          key: const ValueKey<String>(
-                            'host-shell-executable',
-                          ),
+                          key: const ValueKey<String>('host-shell-executable'),
                           controller: _hostShellExecutable,
                           enabled: !_saving,
                           label: l10n.projectSettingsShellExecutable,
                           placeholder: '/bin/zsh',
                         ),
                         TRTextField(
-                          key: const ValueKey<String>(
-                            'host-shell-arguments',
-                          ),
+                          key: const ValueKey<String>('host-shell-arguments'),
                           controller: _hostShellArguments,
                           enabled: !_saving,
                           minLines: 2,
@@ -424,9 +407,7 @@ class _ProjectEditorState extends ConsumerState<_ProjectEditor> {
               arguments: parseHookCommands(_hostShellArguments.text),
             );
       await ref
-          .read(
-            hostShellSettingsControllerProvider(widget.hostId).notifier,
-          )
+          .read(hostShellSettingsControllerProvider(widget.hostId).notifier)
           .save(hostShell);
       await ref
           .read(

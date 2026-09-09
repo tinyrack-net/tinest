@@ -154,27 +154,23 @@ void main() {
     tags: const <String>['feature_test__settings_language__widget'],
   );
 
-  testWidgets(
-    'a stored language is applied on the next start',
-    (tester) async {
-      final store = MemoryAppStore(
-        settings: const AppSettings(
-          embeddedDaemonEnabled: false,
-          localeTag: 'en',
-        ),
-      );
-      await tester.pumpWidget(_app(store));
-      await tester.pumpAndSettle();
+  testWidgets('a stored language is applied on the next start', (tester) async {
+    final store = MemoryAppStore(
+      settings: const AppSettings(
+        embeddedDaemonEnabled: false,
+        localeTag: 'en',
+      ),
+    );
+    await tester.pumpWidget(_app(store));
+    await tester.pumpAndSettle();
 
-      await tester.tap(
-        find.byKey(const ValueKey<String>('workspace-settings-button')),
-      );
-      await tester.pumpAndSettle();
+    await tester.tap(
+      find.byKey(const ValueKey<String>('workspace-settings-button')),
+    );
+    await tester.pumpAndSettle();
 
-      expect(find.text('Settings'), findsOneWidget);
-    },
-    tags: const <String>['feature_test__settings_language__widget'],
-  );
+    expect(find.text('Settings'), findsOneWidget);
+  }, tags: const <String>['feature_test__settings_language__widget']);
 
   testWidgets(
     'the appearance setting repaints the app and persists the choice',
@@ -229,75 +225,65 @@ void main() {
     tags: const <String>['feature_test__settings_appearance__widget'],
   );
 
-  testWidgets(
-    'a stored appearance choice is applied on the next start',
-    (tester) async {
-      final store = MemoryAppStore(
-        settings: const AppSettings(
-          embeddedDaemonEnabled: false,
-          themeMode: AppThemeMode.dark,
-        ),
-      );
-      await tester.pumpWidget(_app(store));
-      await tester.pumpAndSettle();
+  testWidgets('a stored appearance choice is applied on the next start', (
+    tester,
+  ) async {
+    final store = MemoryAppStore(
+      settings: const AppSettings(
+        embeddedDaemonEnabled: false,
+        themeMode: AppThemeMode.dark,
+      ),
+    );
+    await tester.pumpWidget(_app(store));
+    await tester.pumpAndSettle();
 
-      expect(_appThemeMode(tester), ThemeMode.dark);
-      expect(_renderedBrightness(tester), Brightness.dark);
-    },
-    tags: const <String>['feature_test__settings_appearance__widget'],
-  );
+    expect(_appThemeMode(tester), ThemeMode.dark);
+    expect(_renderedBrightness(tester), Brightness.dark);
+  }, tags: const <String>['feature_test__settings_appearance__widget']);
 
-  testWidgets(
-    'the startup toggles persist and re-register the login item',
-    (tester) async {
-      final store = MemoryAppStore(
-        settings: const AppSettings(embeddedDaemonEnabled: false),
-      );
-      final autostart = FakeAutostartRegistration(enabled: true);
-      await tester.pumpWidget(_app(store, autostart: autostart));
-      await tester.pumpAndSettle();
+  testWidgets('the startup toggles persist and re-register the login item', (
+    tester,
+  ) async {
+    final store = MemoryAppStore(
+      settings: const AppSettings(embeddedDaemonEnabled: false),
+    );
+    final autostart = FakeAutostartRegistration(enabled: true);
+    await tester.pumpWidget(_app(store, autostart: autostart));
+    await tester.pumpAndSettle();
 
-      await tester.tap(
-        find.byKey(const ValueKey<String>('workspace-settings-button')),
-      );
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('일반'));
-      await tester.pumpAndSettle();
+    await tester.tap(
+      find.byKey(const ValueKey<String>('workspace-settings-button')),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('일반'));
+    await tester.pumpAndSettle();
 
-      expect(store.settings.startAtBoot, isTrue);
-      expect(store.settings.startMinimizedAtBoot, isTrue);
+    expect(store.settings.startAtBoot, isTrue);
+    expect(store.settings.startMinimizedAtBoot, isTrue);
 
-      // Turning off "start minimized" keeps the login item but has to rewrite
-      // the arguments it records.
-      final startMinimized = find.byKey(
-        const ValueKey<String>('general-settings-start-minimized'),
-      );
-      await tester.ensureVisible(startMinimized);
-      await tester.pumpAndSettle();
-      await tester.tap(startMinimized);
-      await tester.pumpAndSettle();
-      expect(store.settings.startMinimizedAtBoot, isFalse);
-      expect(
-        autostart.applications.last,
-        (enabled: true, minimized: false),
-      );
+    // Turning off "start minimized" keeps the login item but has to rewrite
+    // the arguments it records.
+    final startMinimized = find.byKey(
+      const ValueKey<String>('general-settings-start-minimized'),
+    );
+    await tester.ensureVisible(startMinimized);
+    await tester.pumpAndSettle();
+    await tester.tap(startMinimized);
+    await tester.pumpAndSettle();
+    expect(store.settings.startMinimizedAtBoot, isFalse);
+    expect(autostart.applications.last, (enabled: true, minimized: false));
 
-      final startAtBoot = find.byKey(
-        const ValueKey<String>('general-settings-start-at-boot'),
-      );
-      await tester.ensureVisible(startAtBoot);
-      await tester.pumpAndSettle();
-      await tester.tap(startAtBoot);
-      await tester.pumpAndSettle();
-      expect(store.settings.startAtBoot, isFalse);
-      expect(autostart.enabled, isFalse);
-      expect(
-        autostart.applications.last,
-        (enabled: false, minimized: false),
-      );
-    },
-    tags: const <String>['feature_test__settings_startup__widget'],
-  );
+    final startAtBoot = find.byKey(
+      const ValueKey<String>('general-settings-start-at-boot'),
+    );
+    await tester.ensureVisible(startAtBoot);
+    await tester.pumpAndSettle();
+    await tester.tap(startAtBoot);
+    await tester.pumpAndSettle();
+    expect(store.settings.startAtBoot, isFalse);
+    expect(autostart.enabled, isFalse);
+    expect(autostart.applications.last, (enabled: false, minimized: false));
+  }, tags: const <String>['feature_test__settings_startup__widget']);
 
   testWidgets(
     'start minimized is disabled while the app does not start at login',
@@ -350,76 +336,67 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(startAtBoot);
       await tester.pumpAndSettle();
-      expect(
-        autostart.applications.single,
-        (enabled: true, minimized: true),
-      );
+      expect(autostart.applications.single, (enabled: true, minimized: true));
     },
     tags: const <String>['feature_test__settings_startup__widget'],
   );
 
-  testWidgets(
-    'a disabled start minimized shows a stored off choice as off',
-    (tester) async {
-      final store = MemoryAppStore(
-        settings: const AppSettings(
-          embeddedDaemonEnabled: false,
-          startAtBoot: false,
-          startMinimizedAtBoot: false,
-        ),
-      );
-      await tester.pumpWidget(
-        _app(store, autostart: FakeAutostartRegistration()),
-      );
-      await tester.pumpAndSettle();
+  testWidgets('a disabled start minimized shows a stored off choice as off', (
+    tester,
+  ) async {
+    final store = MemoryAppStore(
+      settings: const AppSettings(
+        embeddedDaemonEnabled: false,
+        startAtBoot: false,
+        startMinimizedAtBoot: false,
+      ),
+    );
+    await tester.pumpWidget(
+      _app(store, autostart: FakeAutostartRegistration()),
+    );
+    await tester.pumpAndSettle();
 
-      await tester.tap(
-        find.byKey(const ValueKey<String>('workspace-settings-button')),
-      );
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('일반'));
-      await tester.pumpAndSettle();
+    await tester.tap(
+      find.byKey(const ValueKey<String>('workspace-settings-button')),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('일반'));
+    await tester.pumpAndSettle();
 
-      // The row reports the stored preference either way, so it must not
-      // report a stored off as on any more than it forced a stored on to off.
-      expect(
-        tester.widget<TinestSwitchRow>(
-          find.byKey(
-            const ValueKey<String>('general-settings-start-minimized'),
-          ),
-        ),
-        isA<TinestSwitchRow>()
-            .having((row) => row.onChanged, 'onChanged', isNull)
-            .having((row) => row.value, 'value', isFalse),
-      );
-    },
-    tags: const <String>['feature_test__settings_startup__widget'],
-  );
+    // The row reports the stored preference either way, so it must not
+    // report a stored off as on any more than it forced a stored on to off.
+    expect(
+      tester.widget<TinestSwitchRow>(
+        find.byKey(const ValueKey<String>('general-settings-start-minimized')),
+      ),
+      isA<TinestSwitchRow>()
+          .having((row) => row.onChanged, 'onChanged', isNull)
+          .having((row) => row.value, 'value', isFalse),
+    );
+  }, tags: const <String>['feature_test__settings_startup__widget']);
 
-  testWidgets(
-    'a build without login items hides the startup card entirely',
-    (tester) async {
-      final store = MemoryAppStore(
-        settings: const AppSettings(embeddedDaemonEnabled: false),
-      );
-      await tester.pumpWidget(_app(store));
-      await tester.pumpAndSettle();
+  testWidgets('a build without login items hides the startup card entirely', (
+    tester,
+  ) async {
+    final store = MemoryAppStore(
+      settings: const AppSettings(embeddedDaemonEnabled: false),
+    );
+    await tester.pumpWidget(_app(store));
+    await tester.pumpAndSettle();
 
-      await tester.tap(
-        find.byKey(const ValueKey<String>('workspace-settings-button')),
-      );
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('일반'));
-      await tester.pumpAndSettle();
+    await tester.tap(
+      find.byKey(const ValueKey<String>('workspace-settings-button')),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('일반'));
+    await tester.pumpAndSettle();
 
-      expect(find.text('표시 언어'), findsOneWidget);
-      expect(
-        find.byKey(const ValueKey<String>('general-settings-start-at-boot')),
-        findsNothing,
-      );
-    },
-    tags: const <String>['feature_test__settings_startup__widget'],
-  );
+    expect(find.text('표시 언어'), findsOneWidget);
+    expect(
+      find.byKey(const ValueKey<String>('general-settings-start-at-boot')),
+      findsNothing,
+    );
+  }, tags: const <String>['feature_test__settings_startup__widget']);
 }
 
 Finder _selectTrigger(String key) => find.descendant(
@@ -447,7 +424,7 @@ Widget _app(MemoryAppStore store, {AutostartRegistration? autostart}) =>
     );
 
 final class _OfflineClients implements HostClientFactory {
-  const _OfflineClients();
+  const new();
 
   @override
   Future<TinestApi> connect({

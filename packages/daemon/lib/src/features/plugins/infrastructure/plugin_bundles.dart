@@ -12,16 +12,14 @@ import 'package:yaml/yaml.dart';
 /// A validated immutable plugin revision and its bundled Lua/Markdown bytes.
 final class PluginBundle implements PluginLuaProgramSource {
   /// Creates a plugin bundle from already validated data.
-  PluginBundle({
+  new({
     required this.descriptor,
     required this.revision,
     required Map<String, Uint8List> assets,
-  }) : assets = Map<String, Uint8List>.unmodifiable(
-         <String, Uint8List>{
-           for (final entry in assets.entries)
-             entry.key: Uint8List.fromList(entry.value),
-         },
-       );
+  }) : assets = Map<String, Uint8List>.unmodifiable(<String, Uint8List>{
+         for (final entry in assets.entries)
+           entry.key: Uint8List.fromList(entry.value),
+       });
 
   /// Validated manifest metadata.
   @override
@@ -39,7 +37,7 @@ final class PluginBundle implements PluginLuaProgramSource {
 /// Raised when a source or cached plugin package violates the public format.
 final class PluginBundleFormatException extends FormatException {
   /// Creates a bundle format failure.
-  const PluginBundleFormatException(super.message, {this.path});
+  const new(super.message, {this.path});
 
   /// Relative or absolute path associated with the failure.
   final String? path;
@@ -48,7 +46,7 @@ final class PluginBundleFormatException extends FormatException {
 /// Expected absence of an installed or Agent-pinned plugin revision.
 final class PluginRevisionUnavailable implements Exception {
   /// Creates an unavailable revision failure.
-  const PluginRevisionUnavailable(this.message);
+  const new(this.message);
 
   /// User-safe reason.
   final String message;
@@ -76,7 +74,7 @@ abstract interface class PluginBundleInspector {
 /// `tinest.plugin.define` registration is not.
 final class PluginBundleInspectionException implements Exception {
   /// Creates an inspection failure suitable for a plugin diagnostic.
-  const PluginBundleInspectionException(this.message, {this.path});
+  const new(this.message, {this.path});
 
   /// User-safe failure description.
   final String message;
@@ -116,7 +114,7 @@ abstract interface class PluginRevisionCache {
 /// Read-only product bundle of plugins that reserve the `tinest.*` namespace.
 final class BuiltInPluginCatalog implements PluginBundleLoader {
   /// Creates the immutable embedded catalog.
-  const BuiltInPluginCatalog();
+  const new();
 
   /// Built-in plugin IDs in deterministic display order.
   List<String> get ids => List<String>.unmodifiable(
@@ -157,12 +155,10 @@ final class BuiltInPluginCatalog implements PluginBundleLoader {
 /// every other valid ID to `<config>/v5/plugins`.
 final class NativePluginBundleLoader implements PluginBundleLoader {
   /// Creates a loader from the daemon config directory and embedded catalog.
-  NativePluginBundleLoader(
-    String configDirectory, {
-    this.builtIns = const BuiltInPluginCatalog(),
-  }) : _pluginsRoot = p.normalize(
-         p.absolute(p.join(configDirectory, 'v5', 'plugins')),
-       );
+  new(String configDirectory, {this.builtIns = const BuiltInPluginCatalog()})
+    : _pluginsRoot = p.normalize(
+        p.absolute(p.join(configDirectory, 'v5', 'plugins')),
+      );
 
   /// Read-only product-owned namespace.
   final BuiltInPluginCatalog builtIns;
@@ -173,11 +169,11 @@ final class NativePluginBundleLoader implements PluginBundleLoader {
   Future<PluginBundle> load(String id) async {
     _validatePluginId(id, allowReserved: true);
     if (_isReserved(id)) {
-      return builtIns.load(id);
+      return await builtIns.load(id);
     }
     _validateDirectoryIdentity(id);
     final directory = Directory(p.join(_pluginsRoot, id));
-    return _loadPluginDirectory(
+    return await _loadPluginDirectory(
       directory,
       expectedId: id,
       source: PluginSource.user,
@@ -205,7 +201,7 @@ final class NativePluginBundleLoader implements PluginBundleLoader {
 /// Native immutable cache rooted at `<state>/v5/plugin-cache`.
 final class NativePluginRevisionCache implements PluginRevisionCache {
   /// Creates a revision cache from the daemon state directory.
-  NativePluginRevisionCache(String stateDirectory)
+  new(String stateDirectory)
     : _cacheRoot = p.normalize(
         p.absolute(p.join(stateDirectory, 'v5', 'plugin-cache')),
       );
@@ -241,10 +237,7 @@ final class NativePluginRevisionCache implements PluginRevisionCache {
     );
   }
 
-  Future<void> _storeRevision(
-    Directory pluginRoot,
-    PluginBundle bundle,
-  ) async {
+  Future<void> _storeRevision(Directory pluginRoot, PluginBundle bundle) async {
     _validateHash(bundle.revision.executionRevisionHash);
     final revisionDirectory = Directory(
       p.join(pluginRoot.path, bundle.revision.contentHash),
@@ -263,10 +256,7 @@ final class NativePluginRevisionCache implements PluginRevisionCache {
       try {
         for (final entry in bundle.assets.entries) {
           final target = File(
-            p.joinAll(<String>[
-              temporary.path,
-              ...p.posix.split(entry.key),
-            ]),
+            p.joinAll(<String>[temporary.path, ...p.posix.split(entry.key)]),
           );
           _requireWithin(temporary.path, target.path);
           await target.parent.create(recursive: true);
@@ -288,16 +278,11 @@ final class NativePluginRevisionCache implements PluginRevisionCache {
         }
       }
     }
-    final executionPointers = Directory(
-      p.join(pluginRoot.path, 'executions'),
-    );
+    final executionPointers = Directory(p.join(pluginRoot.path, 'executions'));
     await executionPointers.create();
     await _writeAtomic(
       File(
-        p.join(
-          executionPointers.path,
-          bundle.revision.executionRevisionHash,
-        ),
+        p.join(executionPointers.path, bundle.revision.executionRevisionHash),
       ),
       '${bundle.revision.contentHash}\n',
     );
@@ -378,7 +363,7 @@ final class NativePluginRevisionCache implements PluginRevisionCache {
 /// Applies source revisions while retaining the last known good bundle.
 final class PluginRevisionCatalog {
   /// Creates a revision catalog over injected source and cache ports.
-  PluginRevisionCatalog({required this.loader, required this.cache});
+  new({required this.loader, required this.cache});
 
   /// App-data or built-in source boundary.
   final PluginBundleLoader loader;
@@ -457,10 +442,7 @@ final class PluginRevisionCatalog {
       );
     }
     final inMemory =
-        <PluginBundle>[
-          ..._installed.values,
-          ..._agentActive.values,
-        ].where(
+        <PluginBundle>[..._installed.values, ..._agentActive.values].where(
           (bundle) =>
               bundle.descriptor.id == id &&
               bundle.revision.executionRevisionHash == executionRevisionHash,
@@ -668,15 +650,11 @@ final class PluginRevisionCatalog {
         descriptor.apiMajor != candidate.descriptor.apiMajor ||
         descriptor.requestedCapabilities
             .toSet()
-            .difference(
-              candidate.descriptor.requestedCapabilities.toSet(),
-            )
+            .difference(candidate.descriptor.requestedCapabilities.toSet())
             .isNotEmpty ||
         candidate.descriptor.requestedCapabilities
             .toSet()
-            .difference(
-              descriptor.requestedCapabilities.toSet(),
-            )
+            .difference(descriptor.requestedCapabilities.toSet())
             .isNotEmpty) {
       throw PluginBundleInspectionException(
         'Lua registration changed immutable manifest or revision metadata.',
@@ -764,9 +742,7 @@ Future<PluginBundle> _loadPluginDirectory(
       );
     }
     final absolute = p.normalize(p.absolute(entity.path));
-    final resolved = p.normalize(
-      File(entity.path).resolveSymbolicLinksSync(),
-    );
+    final resolved = p.normalize(File(entity.path).resolveSymbolicLinksSync());
     if (!_resolvesAsDirectChild(absolute, resolved) ||
         !_isWithin(resolvedRoot, resolved)) {
       throw PluginBundleFormatException(
@@ -998,9 +974,8 @@ _parseManifest(String source, {required String sourcePath}) {
     );
   }
   for (final capability in capabilities) {
-    if (!RegExp(
-      r'^[a-z][a-z0-9]*(?:\.[a-z][a-z0-9_]*)+$',
-    ).hasMatch(capability)) {
+    if (!RegExp(r'^[a-z][a-z0-9]*(?:\.[a-z][a-z0-9_]*)+$')
+        .hasMatch(capability)) {
       throw PluginBundleFormatException(
         'Invalid plugin capability: $capability.',
         path: sourcePath,
@@ -1016,11 +991,7 @@ _parseManifest(String source, {required String sourcePath}) {
   );
 }
 
-String _manifestString(
-  Map<String, Object?> values,
-  String key,
-  String path,
-) {
+String _manifestString(Map<String, Object?> values, String key, String path) {
   final value = values[key];
   if (value is! String || value.trim().isEmpty) {
     throw PluginBundleFormatException(

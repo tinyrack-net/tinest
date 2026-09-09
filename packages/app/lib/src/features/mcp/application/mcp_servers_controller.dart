@@ -9,7 +9,7 @@ part 'mcp_servers_controller.g.dart';
 /// MCP server editor data owned by one daemon.
 final class McpServersState {
   /// Creates immutable MCP server state.
-  const McpServersState({required this.servers});
+  const new({required this.servers});
 
   /// Every server visible to this daemon and the selected worktree.
   final List<McpServerStateDto> servers;
@@ -47,9 +47,7 @@ class McpServersController extends _$McpServersController {
     final api = await requireHostApi(ref, hostId);
     final servers = await api.mcp.listMcpServers(worktreeId: worktreeId);
     if (!ref.mounted || generation != _refreshGeneration) return;
-    state = AsyncData<McpServersState>(
-      McpServersState(servers: servers),
-    );
+    state = AsyncData<McpServersState>(McpServersState(servers: servers));
   }
 
   /// Adds one user-scoped server.
@@ -92,7 +90,7 @@ class McpServersController extends _$McpServersController {
   /// Connects an unsaved configuration to report what it publishes.
   Future<McpServerStateDto> test(McpServerConfigDto server) async {
     final api = await requireHostApi(ref, hostId);
-    return api.mcp.testMcpServer(server);
+    return await api.mcp.testMcpServer(server);
   }
 
   /// Stores one secret an MCP configuration may reference.

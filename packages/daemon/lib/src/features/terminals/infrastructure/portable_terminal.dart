@@ -7,7 +7,7 @@ import 'package:ptyworld/ptyworld.dart';
 /// Production cross-platform PTY adapter.
 final class PtyworldTerminalGateway implements TerminalGateway {
   /// Creates the production PTY adapter.
-  const PtyworldTerminalGateway();
+  const new();
 
   @override
   Future<TerminalProcess> start({
@@ -35,7 +35,7 @@ final class PtyworldTerminalGateway implements TerminalGateway {
 }
 
 final class _TinyrackTerminalProcess implements TerminalProcess {
-  const _TinyrackTerminalProcess(this._process);
+  const new(this._process);
 
   final PtyProcess _process;
 

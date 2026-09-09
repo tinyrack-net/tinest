@@ -4,13 +4,13 @@ import 'package:app/src/features/conversation/application/chat_timeline_model.da
 
 /// Decoded shape of `tool.completed.output`, which some tools double-encode.
 sealed class ChatToolOutput {
-  const ChatToolOutput();
+  const new();
 }
 
 /// Output that decoded into a JSON object.
 final class ChatToolJsonObject extends ChatToolOutput {
   /// Creates a decoded JSON object output.
-  const ChatToolJsonObject(this.value);
+  const new(this.value);
 
   /// The decoded object.
   final Map<String, dynamic> value;
@@ -19,7 +19,7 @@ final class ChatToolJsonObject extends ChatToolOutput {
 /// Output that decoded into a JSON array.
 final class ChatToolJsonArray extends ChatToolOutput {
   /// Creates a decoded JSON array output.
-  const ChatToolJsonArray(this.value);
+  const new(this.value);
 
   /// The decoded array.
   final List<dynamic> value;
@@ -28,7 +28,7 @@ final class ChatToolJsonArray extends ChatToolOutput {
 /// Output that is plain text, or JSON that failed to decode.
 final class ChatToolPlainText extends ChatToolOutput {
   /// Creates a plain-text output.
-  const ChatToolPlainText(this.value);
+  const new(this.value);
 
   /// The raw text.
   final String value;
@@ -52,19 +52,19 @@ ChatToolOutput decodeToolOutput(String raw) {
 
 /// Expanded body of one tool activity.
 sealed class ChatToolBody {
-  const ChatToolBody();
+  const new();
 }
 
 /// Nothing to show beyond the summary.
 final class ChatToolEmptyBody extends ChatToolBody {
   /// Creates an empty body.
-  const ChatToolEmptyBody();
+  const new();
 }
 
 /// Monospace text such as command output or a file slice.
 final class ChatToolTextBody extends ChatToolBody {
   /// Creates a text body.
-  const ChatToolTextBody(this.text);
+  const new(this.text);
 
   /// The text to render.
   final String text;
@@ -115,7 +115,7 @@ enum ChatToolGlyph {
 /// Everything the UI needs to draw one tool activity, from data only.
 final class ChatToolPresentation {
   /// Creates a tool presentation.
-  const ChatToolPresentation({
+  const new({
     required this.glyph,
     required this.title,
     required this.resultLine,

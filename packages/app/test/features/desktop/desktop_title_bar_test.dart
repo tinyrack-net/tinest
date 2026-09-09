@@ -61,9 +61,8 @@ void main() {
   testWidgets(
     'Linux custom title bar drives window controls and close-to-tray',
     (tester) async {
-      final linuxChrome = PluginDesktopWindow(
-        platform: TargetPlatform.linux,
-      ).chrome;
+      final linuxChrome = PluginDesktopWindow(platform: TargetPlatform.linux)
+          .chrome;
       final harness = build(chrome: linuxChrome);
       await tester.pumpWidget(harness.app);
       await tester.pumpAndSettle();
@@ -209,62 +208,52 @@ void main() {
     tags: const <String>['feature_test__desktop_window_chrome__widget'],
   );
 
-  testWidgets(
-    'the View menu toggles the sidebar repeatedly',
-    (tester) async {
-      final harness = build();
-      await tester.pumpWidget(harness.app);
+  testWidgets('the View menu toggles the sidebar repeatedly', (tester) async {
+    final harness = build();
+    await tester.pumpWidget(harness.app);
+    await tester.pumpAndSettle();
+
+    Finder viewItem(String label) => find.descendant(
+      of: find.byType(TRMenuItem),
+      matching: find.text(label),
+    );
+
+    Future<void> openViewMenu() async {
+      await tester.tap(find.text('View'));
       await tester.pumpAndSettle();
+    }
 
-      Finder viewItem(String label) => find.descendant(
-        of: find.byType(TRMenuItem),
-        matching: find.text(label),
-      );
+    await openViewMenu();
+    expect(viewItem('Hide sidebar'), findsOneWidget);
+    expect(
+      tester.widget<TRMenuCheckboxItem>(find.byType(TRMenuCheckboxItem)).value,
+      isTrue,
+    );
 
-      Future<void> openViewMenu() async {
-        await tester.tap(find.text('View'));
-        await tester.pumpAndSettle();
-      }
+    await tester.tap(viewItem('Hide sidebar'));
+    await tester.pumpAndSettle();
+    expect(harness.store.settings.sidebarCollapsed, isTrue);
+    expect(find.byType(TRMenuCheckboxItem), findsNothing);
 
-      await openViewMenu();
-      expect(viewItem('Hide sidebar'), findsOneWidget);
-      expect(
-        tester
-            .widget<TRMenuCheckboxItem>(find.byType(TRMenuCheckboxItem))
-            .value,
-        isTrue,
-      );
+    await openViewMenu();
+    expect(viewItem('Show sidebar'), findsOneWidget);
+    expect(
+      tester.widget<TRMenuCheckboxItem>(find.byType(TRMenuCheckboxItem)).value,
+      isFalse,
+    );
 
-      await tester.tap(viewItem('Hide sidebar'));
-      await tester.pumpAndSettle();
-      expect(harness.store.settings.sidebarCollapsed, isTrue);
-      expect(find.byType(TRMenuCheckboxItem), findsNothing);
+    await tester.tap(viewItem('Show sidebar'));
+    await tester.pumpAndSettle();
+    expect(harness.store.settings.sidebarCollapsed, isFalse);
+    expect(find.byType(TRMenuCheckboxItem), findsNothing);
 
-      await openViewMenu();
-      expect(viewItem('Show sidebar'), findsOneWidget);
-      expect(
-        tester
-            .widget<TRMenuCheckboxItem>(find.byType(TRMenuCheckboxItem))
-            .value,
-        isFalse,
-      );
-
-      await tester.tap(viewItem('Show sidebar'));
-      await tester.pumpAndSettle();
-      expect(harness.store.settings.sidebarCollapsed, isFalse);
-      expect(find.byType(TRMenuCheckboxItem), findsNothing);
-
-      await openViewMenu();
-      expect(viewItem('Hide sidebar'), findsOneWidget);
-      expect(
-        tester
-            .widget<TRMenuCheckboxItem>(find.byType(TRMenuCheckboxItem))
-            .value,
-        isTrue,
-      );
-    },
-    tags: const <String>['feature_test__desktop_window_chrome__widget'],
-  );
+    await openViewMenu();
+    expect(viewItem('Hide sidebar'), findsOneWidget);
+    expect(
+      tester.widget<TRMenuCheckboxItem>(find.byType(TRMenuCheckboxItem)).value,
+      isTrue,
+    );
+  }, tags: const <String>['feature_test__desktop_window_chrome__widget']);
 
   testWidgets(
     'the title bar and its controls sit on the compact control size',
@@ -329,30 +318,28 @@ void main() {
     tags: const <String>['feature_test__desktop_window_chrome__widget'],
   );
 
-  testWidgets(
-    'an open menu drops below the menubar instead of covering it',
-    (tester) async {
-      final harness = build();
-      await tester.pumpWidget(harness.app);
-      await tester.pumpAndSettle();
+  testWidgets('an open menu drops below the menubar instead of covering it', (
+    tester,
+  ) async {
+    final harness = build();
+    await tester.pumpWidget(harness.app);
+    await tester.pumpAndSettle();
 
-      final menubar = tester.getRect(find.byType(TRMenubar));
-      await tester.tap(find.text('File'));
-      await tester.pumpAndSettle();
+    final menubar = tester.getRect(find.byType(TRMenubar));
+    await tester.tap(find.text('File'));
+    await tester.pumpAndSettle();
 
-      final panel = tester.getRect(
-        find
-            .ancestor(
-              of: find.widgetWithText(TRMenuItem, 'Quit'),
-              matching: find.byType(Material),
-            )
-            .first,
-      );
-      expect(panel.top, menubar.bottom);
-      expect(tester.getRect(find.text('Help')).overlaps(panel), isFalse);
-    },
-    tags: const <String>['feature_test__desktop_window_chrome__widget'],
-  );
+    final panel = tester.getRect(
+      find
+          .ancestor(
+            of: find.widgetWithText(TRMenuItem, 'Quit'),
+            matching: find.byType(Material),
+          )
+          .first,
+    );
+    expect(panel.top, menubar.bottom);
+    expect(tester.getRect(find.text('Help')).overlaps(panel), isFalse);
+  }, tags: const <String>['feature_test__desktop_window_chrome__widget']);
 
   testWidgets(
     'a menu stays open when a keyboard tooltip on the home pane closes',
@@ -394,9 +381,8 @@ void main() {
       expect(chip, findsOneWidget);
       // This harness pins the app to English, so the tooltip is read from
       // the same locale the widget renders in rather than written out.
-      final tooltip = lookupAppLocalizations(
-        const Locale('en'),
-      ).workspaceProjectChipTooltip;
+      final tooltip = lookupAppLocalizations(const Locale('en'))
+          .workspaceProjectChipTooltip;
       var reached = false;
       for (var attempt = 0; attempt < 40 && !reached; attempt += 1) {
         await tester.sendKeyEvent(LogicalKeyboardKey.tab);

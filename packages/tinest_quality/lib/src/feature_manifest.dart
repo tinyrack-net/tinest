@@ -1,8 +1,6 @@
 import 'package:tinest_quality/src/feature_verifier.dart';
 
-const Set<FeatureSurface> _desktop = <FeatureSurface>{
-  FeatureSurface.desktop,
-};
+const Set<FeatureSurface> _desktop = <FeatureSurface>{FeatureSurface.desktop};
 // Web reaches a daemon exactly the way mobile does, through the shared
 // remote-only bootstrap, so every scenario mobile supports it supports too.
 const Set<FeatureSurface> _allSurfaces = <FeatureSurface>{
@@ -181,9 +179,7 @@ const List<FeatureContract> tinestFeatureManifest = <FeatureContract>[
         'Keeps settings navigation usable while asynchronous reads show '
         'shape-preserving skeletons, transition to loaded content, or surface '
         'failures with an explicit Retry action.',
-    requiredLayers: <FeatureVerificationLayer>{
-      FeatureVerificationLayer.widget,
-    },
+    requiredLayers: <FeatureVerificationLayer>{FeatureVerificationLayer.widget},
   ),
   FeatureContract(
     id: 'workspace.async.loading',
@@ -191,9 +187,7 @@ const List<FeatureContract> tinestFeatureManifest = <FeatureContract>[
         'Keeps workspace navigation and interactions responsive while '
         'asynchronous reads show shape-preserving skeletons and optimistic '
         'placeholders that transition to loaded content.',
-    requiredLayers: <FeatureVerificationLayer>{
-      FeatureVerificationLayer.widget,
-    },
+    requiredLayers: <FeatureVerificationLayer>{FeatureVerificationLayer.widget},
   ),
   FeatureContract(
     id: 'settings.reset',
@@ -804,9 +798,7 @@ const List<FeatureContract> tinestFeatureManifest = <FeatureContract>[
     description:
         'Pins the modern Codex v2 tool contract, distinguishes Tinest '
         'extensions and exclusions, and verifies typed wire declarations.',
-    requiredLayers: <FeatureVerificationLayer>{
-      FeatureVerificationLayer.unit,
-    },
+    requiredLayers: <FeatureVerificationLayer>{FeatureVerificationLayer.unit},
   ),
   FeatureContract(
     id: 'tool.exec.session',
@@ -1367,10 +1359,7 @@ const List<FeatureContract> tinestFeatureManifest = <FeatureContract>[
     description:
         'Owns one concrete daemon default model and resolves new sessions from '
         'the chat override, agent model, then daemon default.',
-    apiMethods: <String>[
-      'models.getSettings',
-      'models.setDefaultModel',
-    ],
+    apiMethods: <String>['models.getSettings', 'models.setDefaultModel'],
     routes: <String>['ModelSettingsRoute'],
     requiredLayers: <FeatureVerificationLayer>{
       FeatureVerificationLayer.unit,

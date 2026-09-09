@@ -20,7 +20,7 @@ Timer _realTimer(Duration delay, void Function() run) => Timer(delay, run);
 /// may still be starting, or may have dropped and be retrying.
 final class McpServerUnavailable implements Exception {
   /// Creates an [McpServerUnavailable].
-  const McpServerUnavailable(this.server);
+  const new(this.server);
 
   /// Configured id of the server that could not answer.
   final String server;
@@ -32,7 +32,7 @@ final class McpServerUnavailable implements Exception {
 /// A server is ready, but it does not publish the requested tool.
 final class McpToolUnavailable implements Exception {
   /// Creates an unavailable-tool diagnostic.
-  const McpToolUnavailable({required this.server, required this.tool});
+  const new({required this.server, required this.tool});
 
   /// Configured server id.
   final String server;
@@ -47,7 +47,7 @@ final class McpToolUnavailable implements Exception {
 /// One raw external tool descriptor paired with its publishing server.
 final class McpServerTool {
   /// Creates a raw catalog entry.
-  const McpServerTool({required this.server, required this.descriptor});
+  const new({required this.server, required this.descriptor});
 
   /// Configured id of the publishing server.
   final String server;
@@ -59,7 +59,7 @@ final class McpServerTool {
 /// One resource paired with the server that publishes it.
 final class McpServerResource {
   /// Creates an [McpServerResource].
-  const McpServerResource({required this.server, required this.descriptor});
+  const new({required this.server, required this.descriptor});
 
   /// Configured id of the owning server.
   final String server;
@@ -71,10 +71,7 @@ final class McpServerResource {
 /// One resource template paired with the server that publishes it.
 final class McpServerResourceTemplate {
   /// Creates an [McpServerResourceTemplate].
-  const McpServerResourceTemplate({
-    required this.server,
-    required this.descriptor,
-  });
+  const new({required this.server, required this.descriptor});
 
   /// Configured id of the owning server.
   final String server;
@@ -90,7 +87,7 @@ final class McpServerResourceTemplate {
 /// start degrades to a diagnostic rather than failing the daemon or the turn.
 final class McpRuntime {
   /// Creates a service reading its servers from the daemon configuration.
-  McpRuntime({
+  new({
     required this._store,
     required this._credentials,
     required this._transports,
@@ -252,9 +249,7 @@ final class McpRuntime {
 
   /// Whether [server] is visible to [workspaceRoot] and ready to answer.
   bool isReady(String server, {String? workspaceRoot}) =>
-      _visibleConnections(
-        workspaceRoot: workspaceRoot,
-      )[server]?.status ==
+      _visibleConnections(workspaceRoot: workspaceRoot)[server]?.status ==
       McpServerStatus.ready;
 
   /// Reads one resource from [server].
@@ -270,7 +265,7 @@ final class McpRuntime {
         ? connection?.client
         : null;
     if (client == null) throw McpServerUnavailable(server);
-    return client.readResource(uri);
+    return await client.readResource(uri);
   }
 
   /// Why the project configuration for [workspaceRoot] could not be read.
@@ -294,7 +289,7 @@ final class McpRuntime {
     if (!client.tools.any((descriptor) => descriptor.name == tool)) {
       throw McpToolUnavailable(server: server, tool: tool);
     }
-    return client.callTool(tool, arguments, cancellation: cancellation);
+    return await client.callTool(tool, arguments, cancellation: cancellation);
   }
 
   /// Connects the servers declared by [workspaceRoot], if any.
@@ -579,7 +574,7 @@ final class McpRuntime {
 }
 
 final class _Project {
-  _Project({required this.rootPath, required this.lastUsedAt});
+  new({required this.rootPath, required this.lastUsedAt});
 
   final String rootPath;
   final Map<String, _Connection> connections = <String, _Connection>{};
@@ -600,7 +595,7 @@ final class _Project {
 }
 
 final class _Connection {
-  _Connection({
+  new({
     required this.config,
     required this.sourcePath,
     required this.scope,

@@ -8,7 +8,7 @@ import 'support/daemon_lock_holder.dart';
 
 /// Records every filesystem interaction so ordering can be asserted.
 final class _RecordingDataFiles implements DaemonDataFiles {
-  _RecordingDataFiles({
+  new({
     required Set<String> entries,
     Set<String> directories = const <String>{},
     this.lockFailure,
@@ -76,70 +76,62 @@ void main() {
     files: files,
   );
 
-  test(
-    'erases every allowlisted entry and keeps managed checkouts',
-    () async {
-      final files = _RecordingDataFiles(
-        entries: <String>{
-          home('tinest.sqlite'),
-          home('tinest.sqlite-wal'),
-          home('attachments'),
-          home('plugin-state.json'),
-          home('daemon.lock'),
-          home('worktrees'),
-          config('secrets.json'),
-          config('plugin-secrets.json'),
-          config('config.json'),
-          config('agents'),
-          config('skills'),
-        },
-        directories: <String>{
-          home('attachments'),
-          home('worktrees'),
-          config('agents'),
-          config('skills'),
-        },
-      );
-
-      await reset(files).eraseAll();
-
-      expect(files.deleted, <String>[
+  test('erases every allowlisted entry and keeps managed checkouts', () async {
+    final files = _RecordingDataFiles(
+      entries: <String>{
         home('tinest.sqlite'),
         home('tinest.sqlite-wal'),
         home('attachments'),
         home('plugin-state.json'),
         home('daemon.lock'),
+        home('worktrees'),
         config('secrets.json'),
         config('plugin-secrets.json'),
         config('config.json'),
         config('agents'),
         config('skills'),
-      ]);
-      expect(files.deleted, isNot(contains(home('worktrees'))));
-      expect(
-        files.deleted,
-        isNot(contains(p.canonicalize('/state/tinyrack-tinest'))),
-      );
-      expect(
-        files.deleted,
-        isNot(contains(p.canonicalize('/config/tinyrack-tinest'))),
-      );
-      expect(DaemonDataReset.preservedHomeEntries, <String>['v5/worktrees']);
-    },
-    tags: const <String>['feature_test__settings_reset__unit'],
-  );
+      },
+      directories: <String>{
+        home('attachments'),
+        home('worktrees'),
+        config('agents'),
+        config('skills'),
+      },
+    );
 
-  test(
-    'tolerates missing entries',
-    () async {
-      final files = _RecordingDataFiles(entries: <String>{});
+    await reset(files).eraseAll();
 
-      await reset(files).eraseAll();
+    expect(files.deleted, <String>[
+      home('tinest.sqlite'),
+      home('tinest.sqlite-wal'),
+      home('attachments'),
+      home('plugin-state.json'),
+      home('daemon.lock'),
+      config('secrets.json'),
+      config('plugin-secrets.json'),
+      config('config.json'),
+      config('agents'),
+      config('skills'),
+    ]);
+    expect(files.deleted, isNot(contains(home('worktrees'))));
+    expect(
+      files.deleted,
+      isNot(contains(p.canonicalize('/state/tinyrack-tinest'))),
+    );
+    expect(
+      files.deleted,
+      isNot(contains(p.canonicalize('/config/tinyrack-tinest'))),
+    );
+    expect(DaemonDataReset.preservedHomeEntries, <String>['v5/worktrees']);
+  }, tags: const <String>['feature_test__settings_reset__unit']);
 
-      expect(files.deleted, isEmpty);
-    },
-    tags: const <String>['feature_test__settings_reset__unit'],
-  );
+  test('tolerates missing entries', () async {
+    final files = _RecordingDataFiles(entries: <String>{});
+
+    await reset(files).eraseAll();
+
+    expect(files.deleted, isEmpty);
+  }, tags: const <String>['feature_test__settings_reset__unit']);
 
   test(
     'visits each entry once when config and state collapse into one directory',
@@ -225,71 +217,63 @@ void main() {
     tags: const <String>['feature_test__settings_reset__unit'],
   );
 
-  test(
-    'v5 reset never touches preserved v2, v3, or v4 namespaces',
-    () async {
-      final files = _RecordingDataFiles(
-        entries: <String>{
-          p.join('/state/tinyrack-tinest', 'v2'),
-          p.join('/state/tinyrack-tinest', 'v3'),
-          p.join('/state/tinyrack-tinest', 'v4'),
-          home('tinest.sqlite'),
-        },
-        directories: <String>{
-          p.join('/state/tinyrack-tinest', 'v2'),
-          p.join('/state/tinyrack-tinest', 'v3'),
-          p.join('/state/tinyrack-tinest', 'v4'),
-        },
-      );
+  test('v5 reset never touches preserved v2, v3, or v4 namespaces', () async {
+    final files = _RecordingDataFiles(
+      entries: <String>{
+        p.join('/state/tinyrack-tinest', 'v2'),
+        p.join('/state/tinyrack-tinest', 'v3'),
+        p.join('/state/tinyrack-tinest', 'v4'),
+        home('tinest.sqlite'),
+      },
+      directories: <String>{
+        p.join('/state/tinyrack-tinest', 'v2'),
+        p.join('/state/tinyrack-tinest', 'v3'),
+        p.join('/state/tinyrack-tinest', 'v4'),
+      },
+    );
 
-      await reset(files).eraseAll();
+    await reset(files).eraseAll();
 
-      expect(files.deleted, <String>[home('tinest.sqlite')]);
-    },
-    tags: const <String>['feature_test__settings_reset__unit'],
-  );
+    expect(files.deleted, <String>[home('tinest.sqlite')]);
+  }, tags: const <String>['feature_test__settings_reset__unit']);
 
-  test(
-    'legacy cleanup requires and removes only explicit versions',
-    () async {
-      final files = _RecordingDataFiles(
-        entries: <String>{
-          p.join('/state/tinyrack-tinest', 'v2'),
-          p.join('/config/tinyrack-tinest', 'v2'),
-          p.join('/state/tinyrack-tinest', 'v3'),
-        },
-        directories: <String>{
-          p.join('/state/tinyrack-tinest', 'v2'),
-          p.join('/config/tinyrack-tinest', 'v2'),
-          p.join('/state/tinyrack-tinest', 'v3'),
-        },
-      );
-      final cleanup = DaemonLegacyDataCleanup(
-        configDirectory: '/config/tinyrack-tinest',
-        homeDirectory: '/state/tinyrack-tinest',
-        files: files,
-      );
+  test('legacy cleanup requires and removes only explicit versions', () async {
+    final files = _RecordingDataFiles(
+      entries: <String>{
+        p.join('/state/tinyrack-tinest', 'v2'),
+        p.join('/config/tinyrack-tinest', 'v2'),
+        p.join('/state/tinyrack-tinest', 'v3'),
+      },
+      directories: <String>{
+        p.join('/state/tinyrack-tinest', 'v2'),
+        p.join('/config/tinyrack-tinest', 'v2'),
+        p.join('/state/tinyrack-tinest', 'v3'),
+      },
+    );
+    final cleanup = DaemonLegacyDataCleanup(
+      configDirectory: '/config/tinyrack-tinest',
+      homeDirectory: '/state/tinyrack-tinest',
+      files: files,
+    );
 
-      await cleanup.erase(versions: const <int>{2});
+    await cleanup.erase(versions: const <int>{2});
 
-      expect(
-        files.deleted,
-        containsAll(<String>[
-          p.canonicalize(p.join('/state/tinyrack-tinest', 'v2')),
-          p.canonicalize(p.join('/config/tinyrack-tinest', 'v2')),
-        ]),
-      );
-      expect(
-        files.deleted,
-        isNot(contains(p.canonicalize(p.join('/state/tinyrack-tinest', 'v3')))),
-      );
-      await expectLater(
-        cleanup.erase(versions: const <int>{4}),
-        throwsArgumentError,
-      );
-    },
-    tags: const <String>['feature_test__settings_reset__unit'],
-  );
+    expect(
+      files.deleted,
+      containsAll(<String>[
+        p.canonicalize(p.join('/state/tinyrack-tinest', 'v2')),
+        p.canonicalize(p.join('/config/tinyrack-tinest', 'v2')),
+      ]),
+    );
+    expect(
+      files.deleted,
+      isNot(contains(p.canonicalize(p.join('/state/tinyrack-tinest', 'v3')))),
+    );
+    await expectLater(
+      cleanup.erase(versions: const <int>{4}),
+      throwsArgumentError,
+    );
+  }, tags: const <String>['feature_test__settings_reset__unit']);
 
   group('NativeDaemonDataFiles', () {
     late Directory root;
@@ -312,15 +296,11 @@ void main() {
         await File(p.join(stateV5.path, 'tinest.sqlite')).writeAsString('db');
         await File(p.join(stateV5.path, 'daemon.lock')).writeAsString('');
         await Directory(p.join(stateV5.path, 'attachments')).create();
-        await File(
-          p.join(stateV5.path, 'worktrees', 'repo', 'main.dart'),
-        ).create(recursive: true);
-        await File(
-          p.join(configV5.path, 'secrets.json'),
-        ).writeAsString('{}');
-        await File(
-          p.join(configV5.path, 'agents', 'tinest.md'),
-        ).create(recursive: true);
+        await File(p.join(stateV5.path, 'worktrees', 'repo', 'main.dart'))
+            .create(recursive: true);
+        await File(p.join(configV5.path, 'secrets.json')).writeAsString('{}');
+        await File(p.join(configV5.path, 'agents', 'tinest.md'))
+            .create(recursive: true);
 
         await DaemonDataReset(
           configDirectory: configRoot.path,
@@ -345,9 +325,8 @@ void main() {
           isFalse,
         );
         expect(
-          File(
-            p.join(stateV5.path, 'worktrees', 'repo', 'main.dart'),
-          ).existsSync(),
+          File(p.join(stateV5.path, 'worktrees', 'repo', 'main.dart'))
+              .existsSync(),
           isTrue,
         );
         expect(state.existsSync(), isTrue);

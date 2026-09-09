@@ -54,15 +54,13 @@ void main() {
     expect(environment.synchronized, isTrue);
     expect(environment.sdkAbiHash, _Sdk.abi);
     expect(
-      await File(
-        p.join(environment.sdkLibraryPath, 'tinest.lua'),
-      ).readAsString(),
+      await File(p.join(environment.sdkLibraryPath, 'tinest.lua'))
+          .readAsString(),
       contains('---@class tinest.Api'),
     );
     final metadata = jsonDecode(
-      await File(
-        p.join(p.dirname(environment.sdkLibraryPath), 'sdk.json'),
-      ).readAsString(),
+      await File(p.join(p.dirname(environment.sdkLibraryPath), 'sdk.json'))
+          .readAsString(),
     ) as Map<String, dynamic>;
     expect(metadata, <String, dynamic>{
       'apiMajor': 5,
@@ -83,10 +81,7 @@ void main() {
       allOf(contains('---@meta tinest.types'), contains('.Types')),
     );
     expect(p.isWithin(plugin.path, libraries.last), isFalse);
-    expect(
-      luarc['runtime.builtin'],
-      containsPair('debug', 'disable'),
-    );
+    expect(luarc['runtime.builtin'], containsPair('debug', 'disable'));
     expect(luarc['runtime.builtin'], containsPair('basic', 'disable'));
     expect(luarc['runtime.builtin'], containsPair('coroutine', 'disable'));
     expect(luarc['runtime.builtin'], containsPair('io', 'disable'));
@@ -210,10 +205,7 @@ return tinest.plugin.define({})
 
   test('native scaffold installs a reference-based typed workspace', () async {
     await plugin.delete(recursive: true);
-    final sources = NativePluginSourceCatalog(
-      config.path,
-      authoring: service,
-    );
+    final sources = NativePluginSourceCatalog(config.path, authoring: service);
 
     await sources.scaffold('acme.reader', 'Reader');
 
@@ -228,13 +220,10 @@ return tinest.plugin.define({})
         'host operation',
       if (RegExp(r'\bactionId\s*=').hasMatch(source)) 'UI action',
       if (RegExp(r'\bcontribution_id\s*=').hasMatch(source)) 'UI contribution',
-      if (RegExp(
-        r'''tinest\.scheduler\.[a-z_]+\s*\(\s*["']''',
-      ).hasMatch(source))
+      if (RegExp(r'''tinest\.scheduler\.[a-z_]+\s*\(\s*["']''')
+          .hasMatch(source))
         'scheduled handler',
-      if (RegExp(
-        r'''tinest\.tools\.invoke\s*\(\s*["']''',
-      ).hasMatch(source))
+      if (RegExp(r'''tinest\.tools\.invoke\s*\(\s*["']''').hasMatch(source))
         'tool invocation',
     ];
     expect(
@@ -243,23 +232,18 @@ return tinest.plugin.define({})
       reason: 'The scaffold must wire executable behavior through SDK refs.',
     );
     expect(File(p.join(plugin.path, '.luarc.json')).existsSync(), isTrue);
-    final bundle = await NativePluginBundleLoader(config.path).load(
-      'acme.reader',
-    );
+    final bundle = await NativePluginBundleLoader(config.path)
+        .load('acme.reader');
     expect(bundle.assets, isNot(contains('.luarc.json')));
     expect(bundle.revision.sdkAbiHash, hasLength(64));
   });
 
   test('native fork synchronizes the target to the exact SDK ABI', () async {
     await plugin.delete(recursive: true);
-    final sources = NativePluginSourceCatalog(
-      config.path,
-      authoring: service,
-    );
+    final sources = NativePluginSourceCatalog(config.path, authoring: service);
     await sources.scaffold('acme.source', 'Source');
-    final source = await NativePluginBundleLoader(
-      config.path,
-    ).load('acme.source');
+    final source = await NativePluginBundleLoader(config.path)
+        .load('acme.source');
 
     await sources.fork(source, 'acme.reader', 'Reader');
 
@@ -275,12 +259,8 @@ return tinest.plugin.define({})
       environment.sdkLibraryPath,
     );
     expect(
-      File(
-        p.join(
-          p.dirname(environment.sdkLibraryPath),
-          'sdk.json',
-        ),
-      ).existsSync(),
+      File(p.join(p.dirname(environment.sdkLibraryPath), 'sdk.json'))
+          .existsSync(),
       isTrue,
     );
   });
@@ -321,7 +301,7 @@ return tinest.plugin.define({})
 }
 
 final class _Sdk implements PluginSdkAuthoringProvider {
-  const _Sdk();
+  const new();
 
   static const String abi =
       'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa';

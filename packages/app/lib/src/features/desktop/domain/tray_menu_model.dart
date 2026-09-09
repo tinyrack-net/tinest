@@ -31,7 +31,7 @@ const String trayItemSeparator = 'tray.separator';
 @immutable
 final class TrayMenuEntry {
   /// Creates a selectable or informational tray row.
-  const TrayMenuEntry({
+  const new({
     required this.key,
     required this.label,
     this.action,
@@ -39,7 +39,7 @@ final class TrayMenuEntry {
   });
 
   /// Creates the divider between two groups of rows.
-  const TrayMenuEntry.separator()
+  const new separator()
     : key = trayItemSeparator,
       label = '',
       action = null,
@@ -79,7 +79,7 @@ final class TrayMenuEntry {
 @immutable
 final class TrayMenuModel {
   /// Creates a tray presentation.
-  const TrayMenuModel({required this.tooltip, required this.entries});
+  const new({required this.tooltip, required this.entries});
 
   /// Hover text of the tray icon.
   final String tooltip;

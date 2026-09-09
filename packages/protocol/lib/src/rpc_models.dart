@@ -884,9 +884,8 @@ abstract class WorktreeArchivePreviewResultDto
   }) = _WorktreeArchivePreviewResultDto;
 
   /// Decodes an archive preview result.
-  factory WorktreeArchivePreviewResultDto.fromJson(
-    Map<String, dynamic> json,
-  ) => _$WorktreeArchivePreviewResultDtoFromJson(json);
+  factory WorktreeArchivePreviewResultDto.fromJson(Map<String, dynamic> json) =>
+      _$WorktreeArchivePreviewResultDtoFromJson(json);
 }
 
 @freezed
@@ -982,10 +981,8 @@ enum TerminalRestoreMode {
 /// Cell geometry an attaching client is claiming for the pseudo-terminal.
 abstract class TerminalViewportDto with _$TerminalViewportDto {
   /// Creates a viewport claim.
-  const factory TerminalViewportDto({
-    required int columns,
-    required int rows,
-  }) = _TerminalViewportDto;
+  const factory TerminalViewportDto({required int columns, required int rows}) =
+      _TerminalViewportDto;
 
   /// Decodes a viewport claim.
   factory TerminalViewportDto.fromJson(Map<String, dynamic> json) =>

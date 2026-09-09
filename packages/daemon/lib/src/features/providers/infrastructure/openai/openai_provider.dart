@@ -14,7 +14,7 @@ class OpenAIProviderConfig {
   /// Every optional behaviour is stated by the caller. A default here would be
   /// a second place for one vendor's answer to hide, which is what let the
   /// platform-only fields reach every compatible endpoint.
-  const OpenAIProviderConfig({
+  const new({
     required this.id,
     required this.baseUrl,
     this.apiKey = '',
@@ -72,7 +72,7 @@ class OpenAIProviderConfig {
 /// OpenAIProviderException defines a public contract.
 class OpenAIProviderException implements Exception {
   /// Creates a [OpenAIProviderException].
-  const OpenAIProviderException(this.message, {this.retryable = false});
+  const new(this.message, {this.retryable = false});
 
   /// The message public API member.
   final String message;
@@ -177,7 +177,7 @@ String? _deferredSearchName(List<ModelToolDefinition> tools) {
 /// OpenAIResponsesProvider defines a public contract.
 class OpenAIResponsesProvider implements ModelGateway {
   /// Creates a [OpenAIResponsesProvider].
-  OpenAIResponsesProvider(OpenAIProviderConfig config, {Dio? dio})
+  new(OpenAIProviderConfig config, {Dio? dio})
     : _config = config,
       _dio = dio ?? Dio(BaseOptions(baseUrl: config.baseUrl));
 
@@ -373,10 +373,7 @@ class OpenAIResponsesProvider implements ModelGateway {
               });
             }
           }
-          result.add(<String, dynamic>{
-            'role': 'user',
-            'content': content,
-          });
+          result.add(<String, dynamic>{'role': 'user', 'content': content});
         case AssistantConversationItem(
           :final text,
           :final toolCalls,
@@ -602,10 +599,8 @@ class OpenAIResponsesProvider implements ModelGateway {
           }
           final calls = output
               .map(
-                (item) => _toolCall(
-                  item,
-                  deferredSearchName: deferredSearchName,
-                ),
+                (item) =>
+                    _toolCall(item, deferredSearchName: deferredSearchName),
               )
               .whereType<ModelToolCall>()
               .map(

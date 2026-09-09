@@ -22,7 +22,7 @@ const _hostId = 'host-scroll-contract';
 final _createdAt = DateTime.utc(2026, 8, 13);
 
 final class _NoopUrlOpener implements ExternalUrlOpener {
-  const _NoopUrlOpener();
+  const new();
 
   @override
   Future<bool> open(Uri uri) => Future<bool>.value(false);
@@ -143,7 +143,7 @@ Widget _streamingConversationHarness(
 );
 
 final class _StreamingConversationHarness extends StatefulWidget {
-  const _StreamingConversationHarness({super.key});
+  const new({super.key});
 
   @override
   State<_StreamingConversationHarness> createState() =>
@@ -228,9 +228,7 @@ final class _StreamingConversationHarnessState
 void main() {
   testWidgets(
     'timeline rows use shared horizontal, gap, and trailing padding tokens',
-    tags: const <String>[
-      'feature_test__turn_execution__widget',
-    ],
+    tags: const <String>['feature_test__turn_execution__widget'],
     (tester) async {
       await _useDesktopViewport(tester);
       final history = _messages(2);
@@ -326,10 +324,7 @@ void main() {
         find.byKey(const ValueKey<String>('streaming-response')),
         findsNothing,
       );
-      expect(
-        find.byKey(const ValueKey<String>('chat-running')),
-        findsNothing,
-      );
+      expect(find.byKey(const ValueKey<String>('chat-running')), findsNothing);
     },
   );
 
@@ -427,13 +422,14 @@ void main() {
         );
         _expectTrailingPinned(tester, reason: 'sent ${testCase.name}');
 
+        final detailChunk = List<String>.generate(
+          8,
+          (index) => 'Detail $index.',
+        ).join('\n\n');
         final chunks = <String>[
           'Starting with a short response.',
           '\n\nThe second chunk expands the response.',
-          '\n\n${List<String>.generate(
-            8,
-            (index) => 'Detail $index.',
-          ).join('\n\n')}',
+          '\n\n$detailChunk',
           '\n\nFinal streamed paragraph.',
         ];
         for (var index = 0; index < chunks.length; index += 1) {
@@ -592,9 +588,7 @@ void main() {
   testWidgets(
     'switching sessions clears disclosure state retained by the timeline '
     'widget',
-    tags: const <String>[
-      'feature_test__turn_execution__widget',
-    ],
+    tags: const <String>['feature_test__turn_execution__widget'],
     (tester) async {
       await _useDesktopViewport(tester);
       final positions = _PositionStore();
@@ -969,9 +963,7 @@ void main() {
   testWidgets(
     'a session left at its newest message reopens there rather than on the '
     'row that happened to be under the reader',
-    tags: const <String>[
-      'feature_test__turn_execution__widget',
-    ],
+    tags: const <String>['feature_test__turn_execution__widget'],
     (tester) async {
       await _useDesktopViewport(tester);
       final positions = _PositionStore();

@@ -6,7 +6,7 @@ import 'package:tinyrack_ui/tinyrack_ui.dart';
 /// Applies the Tinest design system and context-menu contract to termworld.
 final class TinestTerminalView extends StatefulWidget {
   /// Creates a token-backed terminal viewport for Tinest.
-  const TinestTerminalView({
+  const new({
     required this.terminal,
     required this.controller,
     this.contextMenuItems,

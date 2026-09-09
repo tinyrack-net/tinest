@@ -56,7 +56,7 @@ final class PluginSettingsControllerProvider
 }
 
 String _$pluginSettingsControllerHash() =>
-    r'0cb028a7944b5caa88e9f6974abd24181f978f80';
+    r'da6ed6c53d614a6d9b984a7c93c424bcfbceeed4';
 
 /// Loads and mutates the v5 plugin catalog for one connected daemon.
 
@@ -164,7 +164,7 @@ final class AgentPluginGrantsControllerProvider
 }
 
 String _$agentPluginGrantsControllerHash() =>
-    r'9353a6fa3f917892d257f50cfa9b9fc36d13194b';
+    r'224f9f49a81e151ac04dcb9281e2eb5932d8d9b5';
 
 /// Agent-owned plugin capability grants stored by the daemon, outside Agent MD.
 
@@ -283,7 +283,7 @@ final class PluginSessionControlControllerProvider
 }
 
 String _$pluginSessionControlControllerHash() =>
-    r'24355b78e95717c02dc181298674cfbef58db865';
+    r'98e081d0dce0b11eade1b104e3a41161359b6acf';
 
 /// Reads and mutates one durable Agent-owned plugin session control.
 

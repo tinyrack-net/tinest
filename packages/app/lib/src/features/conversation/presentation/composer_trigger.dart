@@ -21,7 +21,7 @@ const String _fileSigil = '@';
 @immutable
 final class ComposerTrigger {
   /// Creates a trigger.
-  const ComposerTrigger({
+  const new({
     required this.kind,
     required this.start,
     required this.end,
@@ -98,12 +98,7 @@ ComposerTrigger? parseComposerTrigger(TextEditingValue value) {
   final query = text.substring(start + 1, caret);
   if (query.length > composerTriggerMaxQuery) return null;
 
-  return ComposerTrigger(
-    kind: kind,
-    start: start,
-    end: caret,
-    query: query,
-  );
+  return ComposerTrigger(kind: kind, start: start, end: caret, query: query);
 }
 
 /// Whether only whitespace precedes [index] in the whole message.
@@ -142,9 +137,7 @@ TextEditingValue applyComposerCompletion({
   // any range the input method was still tracking.
   return TextEditingValue(
     text: '$before$inserted$after',
-    selection: TextSelection.collapsed(
-      offset: before.length + inserted.length,
-    ),
+    selection: TextSelection.collapsed(offset: before.length + inserted.length),
   );
 }
 

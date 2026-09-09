@@ -13,7 +13,7 @@ typedef DaemonEnvironment = LocalDaemonEnvironment;
 /// Production [DaemonEnvironment] backed by `dart:io`.
 final class IoDaemonEnvironment implements DaemonEnvironment {
   /// Creates the production adapter.
-  const IoDaemonEnvironment();
+  const new();
 
   @override
   Map<String, String> get values => Platform.environment;
@@ -46,7 +46,7 @@ enum RelayTlsPolicy {
 /// Typed relay settings for one daemon process.
 final class RelayDaemonConfig {
   /// Creates relay settings, defaulting to the official Tinyrack endpoint.
-  const RelayDaemonConfig({
+  const new({
     this.enabled = false,
     Uri? endpoint,
     this.tlsPolicy = RelayTlsPolicy.systemTrust,
@@ -69,7 +69,7 @@ final class RelayDaemonConfig {
 /// DaemonConfig defines a public contract.
 class DaemonConfig {
   /// Creates a [DaemonConfig].
-  const DaemonConfig({
+  const new({
     required this.homeDirectory,
     String? configDirectory,
     this.userHomeDirectory,
@@ -84,33 +84,32 @@ class DaemonConfig {
   }) : configDirectory = configDirectory ?? homeDirectory;
 
   /// Creates a [DaemonConfig].
-  factory DaemonConfig.fromIsolateMessage(Map<Object?, Object?> value) =>
-      DaemonConfig(
-        homeDirectory: value['homeDirectory']! as String,
-        configDirectory: value['configDirectory'] as String?,
-        userHomeDirectory: value['userHomeDirectory'] as String?,
-        osHomeDirectory: value['osHomeDirectory'] as String?,
-        host: value['host']! as String,
-        port: value['port']! as int,
-        bearerToken: value['bearerToken'] as String?,
-        version: value['version']! as String,
-        useEnvironmentCredentials: value['useEnvironmentCredentials']! as bool,
-        allowedOrigins: <String>{
-          ...(value['allowedOrigins']! as List<Object?>).cast<String>(),
-        },
-        relay: RelayDaemonConfig(
-          enabled: value['relayEnabled']! as bool,
-          endpoint: value['relayEndpoint'] == null
-              ? null
-              : Uri.parse(value['relayEndpoint']! as String),
-          tlsPolicy: RelayTlsPolicy.values.byName(
-            value['relayTlsPolicy']! as String,
-          ),
-        ),
-      );
+  factory fromIsolateMessage(Map<Object?, Object?> value) => DaemonConfig(
+    homeDirectory: value['homeDirectory']! as String,
+    configDirectory: value['configDirectory'] as String?,
+    userHomeDirectory: value['userHomeDirectory'] as String?,
+    osHomeDirectory: value['osHomeDirectory'] as String?,
+    host: value['host']! as String,
+    port: value['port']! as int,
+    bearerToken: value['bearerToken'] as String?,
+    version: value['version']! as String,
+    useEnvironmentCredentials: value['useEnvironmentCredentials']! as bool,
+    allowedOrigins: <String>{
+      ...(value['allowedOrigins']! as List<Object?>).cast<String>(),
+    },
+    relay: RelayDaemonConfig(
+      enabled: value['relayEnabled']! as bool,
+      endpoint: value['relayEndpoint'] == null
+          ? null
+          : Uri.parse(value['relayEndpoint']! as String),
+      tlsPolicy: RelayTlsPolicy.values.byName(
+        value['relayTlsPolicy']! as String,
+      ),
+    ),
+  );
 
   /// Creates a [DaemonConfig].
-  factory DaemonConfig.fromEnvironment({
+  factory fromEnvironment({
     DaemonEnvironment environment = const IoDaemonEnvironment(),
   }) {
     final values = environment.values;

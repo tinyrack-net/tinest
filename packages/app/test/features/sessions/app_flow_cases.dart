@@ -131,11 +131,9 @@ void _registerSessionsAppFlows() {
         final timelineState = tester.state<State<StatefulWidget>>(timeline);
 
         final created = api.createdSessions.single;
-        api.emitTimeline(
-          created.id,
-          'assistant.delta',
-          <String, dynamic>{'text': 'First response'},
-        );
+        api.emitTimeline(created.id, 'assistant.delta', <String, dynamic>{
+          'text': 'First response',
+        });
         await tester.pump();
 
         expect(
@@ -209,9 +207,7 @@ void _registerSessionsAppFlows() {
       expect(
         find.descendant(
           of: strip,
-          matching: find.byKey(
-            const ValueKey<String>('tr-tabs-indicator-one'),
-          ),
+          matching: find.byKey(const ValueKey<String>('tr-tabs-indicator-one')),
         ),
         findsOneWidget,
       );
@@ -390,9 +386,7 @@ void _registerSessionsAppFlows() {
         greaterThan(0.5),
       );
 
-      final sourceTab = find.byKey(
-        const ValueKey<String>('tr-tabs-tab-one'),
-      );
+      final sourceTab = find.byKey(const ValueKey<String>('tr-tabs-tab-one'));
       final targetStrip = find.byType(TRTabs).last;
       await tester.dragFrom(
         tester.getCenter(sourceTab),
@@ -405,10 +399,7 @@ void _registerSessionsAppFlows() {
       await tester.pumpAndSettle();
       expect(find.byType(TRSplitView), findsOneWidget);
       expect(find.byKey(const ValueKey('workspace-pane')), findsNWidgets(2));
-      expect(
-        find.byKey(const ValueKey('workspace-split-down')),
-        findsNothing,
-      );
+      expect(find.byKey(const ValueKey('workspace-split-down')), findsNothing);
 
       tester.view.physicalSize = const Size(1199, 760);
       await tester.pumpAndSettle();
@@ -442,9 +433,7 @@ void _registerSessionsAppFlows() {
         tester.state<ScrollableState>(viewport).position.maxScrollExtent,
         greaterThan(0),
       );
-      final newTabMenu = find.byKey(
-        const ValueKey('workspace-new-tab-menu'),
-      );
+      final newTabMenu = find.byKey(const ValueKey('workspace-new-tab-menu'));
       expect(newTabMenu, findsOneWidget);
       expect(
         tester.getTopRight(newTabMenu).dx,
@@ -476,56 +465,43 @@ void _registerSessionsAppFlows() {
     tags: const <String>['feature_test__session_tabs__widget'],
   );
 
-  testWidgets(
-    'session tabs close locally and reopen from the picker',
-    (
+  testWidgets('session tabs close locally and reopen from the picker', (
+    tester,
+  ) async {
+    await _setTestViewport(tester, const Size(1400, 760));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    final first = session('one');
+    final api = FakeTinestApi(
+      workspaces: <WorkspaceDto>[workspace],
+      worktrees: <WorktreeDto>[checkout],
+      agents: <SessionDto>[first],
+    );
+    final router = await _pumpRoute(
       tester,
-    ) async {
-      await _setTestViewport(tester, const Size(1400, 760));
-      addTearDown(() => tester.binding.setSurfaceSize(null));
-      final first = session('one');
-      final api = FakeTinestApi(
-        workspaces: <WorkspaceDto>[workspace],
-        worktrees: <WorktreeDto>[checkout],
-        agents: <SessionDto>[first],
-      );
-      final router = await _pumpRoute(
-        tester,
-        api,
-        SessionRoute(
-          hostId: 'server',
-          workspaceId: workspace.id,
-          worktreeId: checkout.id,
-          sessionId: first.id,
-        ).location,
-      );
-      addTearDown(router.dispose);
+      api,
+      SessionRoute(
+        hostId: 'server',
+        workspaceId: workspace.id,
+        worktreeId: checkout.id,
+        sessionId: first.id,
+      ).location,
+    );
+    addTearDown(router.dispose);
 
-      await tester.tap(
-        find.byKey(const ValueKey('tr-tabs-close-one')),
-      );
-      await tester.pumpAndSettle();
-      expect(find.text('코딩 요청으로 새 session을 시작하세요.'), findsOneWidget);
-      expect(
-        await api.sessions.listSessions(worktreeId: checkout.id),
-        <SessionDto>[
-          first,
-        ],
-      );
+    await tester.tap(find.byKey(const ValueKey('tr-tabs-close-one')));
+    await tester.pumpAndSettle();
+    expect(find.text('코딩 요청으로 새 session을 시작하세요.'), findsOneWidget);
+    expect(
+      await api.sessions.listSessions(worktreeId: checkout.id),
+      <SessionDto>[first],
+    );
 
-      await tester.tap(
-        find.byKey(const ValueKey('workspace-all-sessions-menu')),
-      );
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('Session one'));
-      await tester.pumpAndSettle();
-      expect(
-        find.byKey(const ValueKey('tr-tabs-close-one')),
-        findsOneWidget,
-      );
-    },
-    tags: const <String>['feature_test__session_tabs__widget'],
-  );
+    await tester.tap(find.byKey(const ValueKey('workspace-all-sessions-menu')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Session one'));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const ValueKey('tr-tabs-close-one')), findsOneWidget);
+  }, tags: const <String>['feature_test__session_tabs__widget']);
 
   testWidgets(
     'switching between tab kinds leaves the sidebar exactly as it was',
@@ -632,9 +608,7 @@ void _registerSessionsAppFlows() {
         );
         addTearDown(router.dispose);
 
-        await tester.tap(
-          find.byKey(const ValueKey('workspace-new-tab-menu')),
-        );
+        await tester.tap(find.byKey(const ValueKey('workspace-new-tab-menu')));
         await tester.pumpAndSettle();
 
         for (final label in const <String>['새 session', '새 터미널']) {
@@ -779,42 +753,38 @@ void _registerSessionsAppFlows() {
       expected: 'Safe daemon detail.',
     ),
   ]) {
-    testWidgets(
-      'terminal failure ${failure.code} has a safe description',
-      (
+    testWidgets('terminal failure ${failure.code} has a safe description', (
+      tester,
+    ) async {
+      await _setTestViewport(tester, const Size(1400, 760));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+      final router = await _pumpRoute(
         tester,
-      ) async {
-        await _setTestViewport(tester, const Size(1400, 760));
-        addTearDown(() => tester.binding.setSurfaceSize(null));
-        final router = await _pumpRoute(
-          tester,
-          FakeTinestApi(
-            workspaces: <WorkspaceDto>[workspace],
-            worktrees: <WorktreeDto>[checkout],
-            terminalCreateError: TinestClientException(
-              failure.message,
-              code: failure.code,
-            ),
+        FakeTinestApi(
+          workspaces: <WorkspaceDto>[workspace],
+          worktrees: <WorktreeDto>[checkout],
+          terminalCreateError: TinestClientException(
+            failure.message,
+            code: failure.code,
           ),
-          WorktreeRoute(
-            hostId: 'server',
-            workspaceId: workspace.id,
-            worktreeId: checkout.id,
-          ).location,
-        );
-        addTearDown(router.dispose);
+        ),
+        WorktreeRoute(
+          hostId: 'server',
+          workspaceId: workspace.id,
+          worktreeId: checkout.id,
+        ).location,
+      );
+      addTearDown(router.dispose);
 
-        await tester.tap(find.byKey(const ValueKey('workspace-new-tab-menu')));
-        await tester.pumpAndSettle();
-        await tester.tap(find.byKey(const ValueKey('workspace-new-terminal')));
-        await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const ValueKey('workspace-new-tab-menu')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const ValueKey('workspace-new-terminal')));
+      await tester.pumpAndSettle();
 
-        expect(find.text(failure.expected), findsOneWidget);
-        expect(find.byType(TerminalView), findsNothing);
-        expect(tester.takeException(), isNull);
-      },
-      tags: const <String>['feature_test__terminal_lifecycle__widget'],
-    );
+      expect(find.text(failure.expected), findsOneWidget);
+      expect(find.byType(TerminalView), findsNothing);
+      expect(tester.takeException(), isNull);
+    }, tags: const <String>['feature_test__terminal_lifecycle__widget']);
   }
 
   testWidgets('terminal tab shows attach failures and closes exited shells', (
@@ -974,10 +944,7 @@ void _registerSessionsAppFlows() {
         await tester.pump();
       }
 
-      expect(
-        api.terminalWrites.map((write) => write.data).join(),
-        '반갑다',
-      );
+      expect(api.terminalWrites.map((write) => write.data).join(), '반갑다');
       expect(
         api.terminalWrites.map((write) => write.terminalId).toSet(),
         <String>{liveTerminal.id},
@@ -1049,10 +1016,7 @@ void _registerSessionsAppFlows() {
       }
       debugDefaultTargetPlatformOverride = null;
 
-      expect(
-        api.terminalWrites.map((write) => write.data).join(),
-        '한솔',
-      );
+      expect(api.terminalWrites.map((write) => write.data).join(), '한솔');
     },
     tags: const <String>['feature_test__terminal_lifecycle__widget'],
   );
@@ -1224,287 +1188,264 @@ void _registerSessionsAppFlows() {
     tags: const <String>['feature_test__terminal_lifecycle__widget'],
   );
 
-  testWidgets(
-    'creates a session and sends a coding request',
-    (tester) async {
-      await _setTestViewport(tester, const Size(1500, 760));
-      addTearDown(() => tester.binding.setSurfaceSize(null));
-      const planner = AgentDefinitionDto(
-        version: 5,
-        id: 'planner',
-        name: 'Planner',
-        description: 'Plans changes',
-        mode: AgentMode.primary,
-        model: AgentModelSelectionDto(
-          source: AgentModelSource.session,
+  testWidgets('creates a session and sends a coding request', (tester) async {
+    await _setTestViewport(tester, const Size(1500, 760));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    const planner = AgentDefinitionDto(
+      version: 5,
+      id: 'planner',
+      name: 'Planner',
+      description: 'Plans changes',
+      mode: AgentMode.primary,
+      model: AgentModelSelectionDto(source: AgentModelSource.session),
+      driverId: 'tinest.standard/driver',
+      extensionIds: <String>[],
+      toolIds: <String>['tinest.files/read_file'],
+      pluginSettings: <String, Map<String, dynamic>>{},
+      callableAgentIds: <String>[],
+      prompt: 'Plan first.',
+      contentHash: 'planner-hash',
+      sourcePath: '/config/agents/planner.md',
+    );
+    final api = FakeTinestApi(
+      workspaces: <WorkspaceDto>[workspace],
+      worktrees: <WorktreeDto>[checkout],
+      agentDefinitions: const <AgentDefinitionDto>[planner],
+      connections: <ProviderConnectionDto>[
+        ProviderConnectionDto(
+          id: 'openai',
+          definitionId: 'openai',
+          displayName: 'OpenAI',
+          status: ProviderConnectionStatus.connected,
+          authKind: ProviderAuthKind.apiKey,
+          credentialOrigin: ProviderCredentialOrigin.stored,
+          createdAt: now,
+          updatedAt: now,
         ),
-        driverId: 'tinest.standard/driver',
-        extensionIds: <String>[],
-        toolIds: <String>['tinest.files/read_file'],
-        pluginSettings: <String, Map<String, dynamic>>{},
-        callableAgentIds: <String>[],
-        prompt: 'Plan first.',
-        contentHash: 'planner-hash',
-        sourcePath: '/config/agents/planner.md',
-      );
-      final api = FakeTinestApi(
-        workspaces: <WorkspaceDto>[workspace],
-        worktrees: <WorktreeDto>[checkout],
-        agentDefinitions: const <AgentDefinitionDto>[planner],
-        connections: <ProviderConnectionDto>[
-          ProviderConnectionDto(
-            id: 'openai',
-            definitionId: 'openai',
-            displayName: 'OpenAI',
-            status: ProviderConnectionStatus.connected,
-            authKind: ProviderAuthKind.apiKey,
-            credentialOrigin: ProviderCredentialOrigin.stored,
-            createdAt: now,
-            updatedAt: now,
-          ),
-          ProviderConnectionDto(
-            id: 'deepseek',
-            definitionId: 'deepseek',
-            displayName: 'DeepSeek',
-            status: ProviderConnectionStatus.connected,
-            authKind: ProviderAuthKind.apiKey,
-            credentialOrigin: ProviderCredentialOrigin.stored,
-            createdAt: now,
-            updatedAt: now,
+        ProviderConnectionDto(
+          id: 'deepseek',
+          definitionId: 'deepseek',
+          displayName: 'DeepSeek',
+          status: ProviderConnectionStatus.connected,
+          authKind: ProviderAuthKind.apiKey,
+          credentialOrigin: ProviderCredentialOrigin.stored,
+          createdAt: now,
+          updatedAt: now,
+        ),
+      ],
+      models: const <String, List<ProviderModelDto>>{
+        'deepseek': <ProviderModelDto>[
+          ProviderModelDto(
+            connectionId: 'deepseek',
+            id: 'deepseek/gpt-5.6-sol',
+            providerModelId: 'gpt-5.6-sol',
+            label: 'Shared Model',
+            source: ProviderModelSource.bundled,
+            capabilities: ModelCapabilitiesDto(
+              streaming: CapabilitySupport.supported,
+              toolCalling: CapabilitySupport.supported,
+            ),
           ),
         ],
-        models: const <String, List<ProviderModelDto>>{
-          'deepseek': <ProviderModelDto>[
-            ProviderModelDto(
-              connectionId: 'deepseek',
-              id: 'deepseek/gpt-5.6-sol',
-              providerModelId: 'gpt-5.6-sol',
-              label: 'Shared Model',
-              source: ProviderModelSource.bundled,
-              capabilities: ModelCapabilitiesDto(
-                streaming: CapabilitySupport.supported,
-                toolCalling: CapabilitySupport.supported,
-              ),
-            ),
-          ],
-        },
-      );
-      final router = await _pumpRoute(
-        tester,
-        api,
-        WorktreeRoute(
-          hostId: 'server',
-          workspaceId: workspace.id,
-          worktreeId: checkout.id,
-        ).location,
-      );
-      addTearDown(router.dispose);
+      },
+    );
+    final router = await _pumpRoute(
+      tester,
+      api,
+      WorktreeRoute(
+        hostId: 'server',
+        workspaceId: workspace.id,
+        worktreeId: checkout.id,
+      ).location,
+    );
+    addTearDown(router.dispose);
 
-      await tester.pumpAndSettle();
-      expect(find.byKey(const ValueKey('session-composer-agent')), findsOne);
-      expect(find.text('Planner'), findsOneWidget);
-      expect(
-        find.byKey(const ValueKey('session-composer-provider')),
-        findsNothing,
-      );
-      await tester.tap(find.byKey(const ValueKey('session-composer-model')));
-      await tester.pumpAndSettle();
-      expect(find.textContaining('openai/gpt-5.6-sol'), findsOneWidget);
-      expect(find.textContaining('deepseek/gpt-5.6-sol'), findsOneWidget);
-      await tester.enterText(
-        find.byType(TRTextField).last,
-        'DeepSeek',
-      );
-      await tester.pumpAndSettle();
-      expect(find.textContaining('openai/gpt-5.6-sol'), findsNothing);
-      expect(
-        find.text('DeepSeek · deepseek/gpt-5.6-sol'),
-        findsOneWidget,
-      );
-      await tester.tap(
-        find.byKey(const ValueKey('model-option-deepseek-gpt-5.6-sol')),
-      );
-      await tester.pumpAndSettle();
+    await tester.pumpAndSettle();
+    expect(find.byKey(const ValueKey('session-composer-agent')), findsOne);
+    expect(find.text('Planner'), findsOneWidget);
+    expect(
+      find.byKey(const ValueKey('session-composer-provider')),
+      findsNothing,
+    );
+    await tester.tap(find.byKey(const ValueKey('session-composer-model')));
+    await tester.pumpAndSettle();
+    expect(find.textContaining('openai/gpt-5.6-sol'), findsOneWidget);
+    expect(find.textContaining('deepseek/gpt-5.6-sol'), findsOneWidget);
+    await tester.enterText(find.byType(TRTextField).last, 'DeepSeek');
+    await tester.pumpAndSettle();
+    expect(find.textContaining('openai/gpt-5.6-sol'), findsNothing);
+    expect(find.text('DeepSeek · deepseek/gpt-5.6-sol'), findsOneWidget);
+    await tester.tap(
+      find.byKey(const ValueKey('model-option-deepseek-gpt-5.6-sol')),
+    );
+    await tester.pumpAndSettle();
 
-      await tester.enterText(
-        find.byKey(const ValueKey('session-composer-input')),
-        'Run the tests',
-      );
-      await tester.tap(find.byKey(const ValueKey('session-composer-send')));
-      await tester.pumpAndSettle();
+    await tester.enterText(
+      find.byKey(const ValueKey('session-composer-input')),
+      'Run the tests',
+    );
+    await tester.tap(find.byKey(const ValueKey('session-composer-send')));
+    await tester.pumpAndSettle();
 
-      final created = api.createdSessions.single;
-      expect(created.agentDefinitionId, 'planner');
-      expect(created.title, 'Run the tests');
-      expect(
-        created.model,
-        const ModelSelectionDto(
-          modelId: 'deepseek/gpt-5.6-sol',
+    final created = api.createdSessions.single;
+    expect(created.agentDefinitionId, 'planner');
+    expect(created.title, 'Run the tests');
+    expect(
+      created.model,
+      const ModelSelectionDto(modelId: 'deepseek/gpt-5.6-sol'),
+    );
+    expect(api.startedPrompts, <String>['Run the tests']);
+  }, tags: const <String>['feature_test__session_lifecycle__widget']);
+
+  testWidgets('composer pins a model at creation and replaces it mid-session', (
+    tester,
+  ) async {
+    await _setTestViewport(tester, const Size(1500, 760));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    const fast = ProviderModelDto(
+      connectionId: 'openai',
+      id: 'openai/gpt-5.6-fast',
+      providerModelId: 'gpt-5.6-fast',
+      label: 'GPT-5.6 Fast',
+      source: ProviderModelSource.bundled,
+      capabilities: ModelCapabilitiesDto(
+        streaming: CapabilitySupport.supported,
+        toolCalling: CapabilitySupport.supported,
+      ),
+    );
+    final api = FakeTinestApi(
+      workspaces: <WorkspaceDto>[workspace],
+      worktrees: <WorktreeDto>[checkout],
+      connections: <ProviderConnectionDto>[
+        ProviderConnectionDto(
+          id: 'openai',
+          definitionId: 'openai',
+          displayName: 'OpenAI',
+          status: ProviderConnectionStatus.connected,
+          authKind: ProviderAuthKind.apiKey,
+          credentialOrigin: ProviderCredentialOrigin.stored,
+          createdAt: now,
+          updatedAt: now,
         ),
-      );
-      expect(api.startedPrompts, <String>['Run the tests']);
-    },
-    tags: const <String>['feature_test__session_lifecycle__widget'],
-  );
-
-  testWidgets(
-    'composer pins a model at creation and replaces it mid-session',
-    (tester) async {
-      await _setTestViewport(tester, const Size(1500, 760));
-      addTearDown(() => tester.binding.setSurfaceSize(null));
-      const fast = ProviderModelDto(
-        connectionId: 'openai',
-        id: 'openai/gpt-5.6-fast',
-        providerModelId: 'gpt-5.6-fast',
-        label: 'GPT-5.6 Fast',
-        source: ProviderModelSource.bundled,
-        capabilities: ModelCapabilitiesDto(
-          streaming: CapabilitySupport.supported,
-          toolCalling: CapabilitySupport.supported,
+        ProviderConnectionDto(
+          id: 'deepseek',
+          definitionId: 'deepseek',
+          displayName: 'DeepSeek',
+          status: ProviderConnectionStatus.degraded,
+          authKind: ProviderAuthKind.apiKey,
+          credentialOrigin: ProviderCredentialOrigin.stored,
+          createdAt: now,
+          updatedAt: now,
         ),
-      );
-      final api = FakeTinestApi(
-        workspaces: <WorkspaceDto>[workspace],
-        worktrees: <WorktreeDto>[checkout],
-        connections: <ProviderConnectionDto>[
-          ProviderConnectionDto(
-            id: 'openai',
-            definitionId: 'openai',
-            displayName: 'OpenAI',
-            status: ProviderConnectionStatus.connected,
-            authKind: ProviderAuthKind.apiKey,
-            credentialOrigin: ProviderCredentialOrigin.stored,
-            createdAt: now,
-            updatedAt: now,
+      ],
+      agentDefinitions: const <AgentDefinitionDto>[
+        AgentDefinitionDto(
+          version: 5,
+          id: 'tinest',
+          name: 'Tinest',
+          description: 'Coding agent',
+          mode: AgentMode.primary,
+          model: AgentModelSelectionDto(
+            source: AgentModelSource.fixed,
+            modelId: 'openai/gpt-5.6-sol',
           ),
-          ProviderConnectionDto(
-            id: 'deepseek',
-            definitionId: 'deepseek',
-            displayName: 'DeepSeek',
-            status: ProviderConnectionStatus.degraded,
-            authKind: ProviderAuthKind.apiKey,
-            credentialOrigin: ProviderCredentialOrigin.stored,
-            createdAt: now,
-            updatedAt: now,
+          driverId: 'tinest.standard/driver',
+          extensionIds: <String>[],
+          toolIds: <String>['tinest.files/read_file'],
+          pluginSettings: <String, Map<String, dynamic>>{},
+          callableAgentIds: <String>[],
+          prompt: 'Code carefully.',
+          contentHash: 'tinest-hash',
+          sourcePath: '/config/agents/tinest.md',
+          isBuiltIn: true,
+        ),
+      ],
+      models: <String, List<ProviderModelDto>>{
+        'openai': <ProviderModelDto>[
+          const ProviderModelDto(
+            connectionId: 'openai',
+            id: 'openai/gpt-5.6-sol',
+            providerModelId: 'gpt-5.6-sol',
+            label: 'GPT-5.6 Sol',
+            source: ProviderModelSource.bundled,
+            capabilities: ModelCapabilitiesDto(
+              streaming: CapabilitySupport.supported,
+              toolCalling: CapabilitySupport.supported,
+            ),
+          ),
+          fast,
+        ],
+        'deepseek': <ProviderModelDto>[
+          const ProviderModelDto(
+            connectionId: 'deepseek',
+            id: 'deepseek/deepseek-v4',
+            providerModelId: 'deepseek-v4',
+            label: 'DeepSeek V4',
+            source: ProviderModelSource.bundled,
+            capabilities: ModelCapabilitiesDto(
+              streaming: CapabilitySupport.supported,
+              toolCalling: CapabilitySupport.supported,
+            ),
           ),
         ],
-        agentDefinitions: const <AgentDefinitionDto>[
-          AgentDefinitionDto(
-            version: 5,
-            id: 'tinest',
-            name: 'Tinest',
-            description: 'Coding agent',
-            mode: AgentMode.primary,
-            model: AgentModelSelectionDto(
-              source: AgentModelSource.fixed,
-              modelId: 'openai/gpt-5.6-sol',
-            ),
-            driverId: 'tinest.standard/driver',
-            extensionIds: <String>[],
-            toolIds: <String>['tinest.files/read_file'],
-            pluginSettings: <String, Map<String, dynamic>>{},
-            callableAgentIds: <String>[],
-            prompt: 'Code carefully.',
-            contentHash: 'tinest-hash',
-            sourcePath: '/config/agents/tinest.md',
-            isBuiltIn: true,
-          ),
-        ],
-        models: <String, List<ProviderModelDto>>{
-          'openai': <ProviderModelDto>[
-            const ProviderModelDto(
-              connectionId: 'openai',
-              id: 'openai/gpt-5.6-sol',
-              providerModelId: 'gpt-5.6-sol',
-              label: 'GPT-5.6 Sol',
-              source: ProviderModelSource.bundled,
-              capabilities: ModelCapabilitiesDto(
-                streaming: CapabilitySupport.supported,
-                toolCalling: CapabilitySupport.supported,
-              ),
-            ),
-            fast,
-          ],
-          'deepseek': <ProviderModelDto>[
-            const ProviderModelDto(
-              connectionId: 'deepseek',
-              id: 'deepseek/deepseek-v4',
-              providerModelId: 'deepseek-v4',
-              label: 'DeepSeek V4',
-              source: ProviderModelSource.bundled,
-              capabilities: ModelCapabilitiesDto(
-                streaming: CapabilitySupport.supported,
-                toolCalling: CapabilitySupport.supported,
-              ),
-            ),
-          ],
-        },
-      );
-      final router = await _pumpRoute(
-        tester,
-        api,
-        WorktreeRoute(
-          hostId: 'server',
-          workspaceId: workspace.id,
-          worktreeId: checkout.id,
-        ).location,
-      );
-      addTearDown(router.dispose);
-      await tester.pumpAndSettle();
+      },
+    );
+    final router = await _pumpRoute(
+      tester,
+      api,
+      WorktreeRoute(
+        hostId: 'server',
+        workspaceId: workspace.id,
+        worktreeId: checkout.id,
+      ).location,
+    );
+    addTearDown(router.dispose);
+    await tester.pumpAndSettle();
 
-      await tester.tap(find.byKey(const ValueKey('session-composer-model')));
-      await tester.pumpAndSettle();
-      await tester.tap(
-        find.byKey(const ValueKey('model-option-openai-gpt-5.6-fast')),
-      );
-      await tester.pumpAndSettle();
-      expect(find.text('GPT-5.6 Fast'), findsOneWidget);
+    await tester.tap(find.byKey(const ValueKey('session-composer-model')));
+    await tester.pumpAndSettle();
+    await tester.tap(
+      find.byKey(const ValueKey('model-option-openai-gpt-5.6-fast')),
+    );
+    await tester.pumpAndSettle();
+    expect(find.text('GPT-5.6 Fast'), findsOneWidget);
 
-      await tester.enterText(
-        find.byKey(const ValueKey('session-composer-input')),
-        'Speed up the build',
-      );
-      await tester.tap(find.byKey(const ValueKey('session-composer-send')));
-      await tester.pumpAndSettle();
-      expect(
-        api.createdSessions.single.model,
-        const ModelSelectionDto(
-          modelId: 'openai/gpt-5.6-fast',
-        ),
-      );
+    await tester.enterText(
+      find.byKey(const ValueKey('session-composer-input')),
+      'Speed up the build',
+    );
+    await tester.tap(find.byKey(const ValueKey('session-composer-send')));
+    await tester.pumpAndSettle();
+    expect(
+      api.createdSessions.single.model,
+      const ModelSelectionDto(modelId: 'openai/gpt-5.6-fast'),
+    );
 
-      await tester.tap(find.byKey(const ValueKey('session-composer-model')));
-      await tester.pumpAndSettle();
-      await tester.tap(
-        find.byKey(const ValueKey('model-option-deepseek-deepseek-v4')),
-      );
-      await tester.pumpAndSettle();
-      expect(
-        api.updatedSessionModels.single.model,
-        const ModelSelectionDto(
-          modelId: 'deepseek/deepseek-v4',
-        ),
-      );
+    await tester.tap(find.byKey(const ValueKey('session-composer-model')));
+    await tester.pumpAndSettle();
+    await tester.tap(
+      find.byKey(const ValueKey('model-option-deepseek-deepseek-v4')),
+    );
+    await tester.pumpAndSettle();
+    expect(
+      api.updatedSessionModels.single.model,
+      const ModelSelectionDto(modelId: 'deepseek/deepseek-v4'),
+    );
 
-      await tester.tap(find.byKey(const ValueKey('session-composer-model')));
-      await tester.pumpAndSettle();
-      expect(
-        find.byKey(const ValueKey('model-option-inherit')),
-        findsNothing,
-      );
-      await tester.sendKeyEvent(LogicalKeyboardKey.escape);
-      await tester.pumpAndSettle();
-      expect(
-        api.updatedSessionModels.last.model,
-        const ModelSelectionDto(modelId: 'deepseek/deepseek-v4'),
-      );
-      expect(
-        (await api.sessions.listSessions()).single.model,
-        const ModelSelectionDto(modelId: 'deepseek/deepseek-v4'),
-      );
-    },
-    tags: const <String>['feature_test__session_lifecycle__widget'],
-  );
+    await tester.tap(find.byKey(const ValueKey('session-composer-model')));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const ValueKey('model-option-inherit')), findsNothing);
+    await tester.sendKeyEvent(LogicalKeyboardKey.escape);
+    await tester.pumpAndSettle();
+    expect(
+      api.updatedSessionModels.last.model,
+      const ModelSelectionDto(modelId: 'deepseek/deepseek-v4'),
+    );
+    expect(
+      (await api.sessions.listSessions()).single.model,
+      const ModelSelectionDto(modelId: 'deepseek/deepseek-v4'),
+    );
+  }, tags: const <String>['feature_test__session_lifecycle__widget']);
 
   testWidgets(
     'composer snapshots model controls and resets optional settings',

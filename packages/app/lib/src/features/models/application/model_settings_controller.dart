@@ -10,7 +10,7 @@ class ModelSettingsController extends _$ModelSettingsController {
   @override
   Future<DaemonModelSettingsDto> build(String hostId) async {
     final api = await requireHostApi(ref, hostId);
-    return api.models.getSettings();
+    return await api.models.getSettings();
   }
 
   /// Persists and exposes a concrete runnable daemon default.

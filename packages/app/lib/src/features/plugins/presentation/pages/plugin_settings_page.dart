@@ -17,7 +17,7 @@ import 'package:url_launcher/url_launcher.dart';
 /// Installed built-in and app-data plugin management for one daemon.
 class PluginSettingsPage extends ConsumerWidget {
   /// Creates the plugin settings page.
-  const PluginSettingsPage({
+  const new({
     required this.hostId,
     required this.paneController,
     required this.slot,
@@ -59,12 +59,8 @@ class PluginSettingsPage extends ConsumerWidget {
                 title: AppLocalizations.of(context).pluginSettingsSelect,
                 icon: const Icon(TinestIcons.extension),
               ),
-        data: (value) => _buildPane(
-          context,
-          ref,
-          value,
-          showsSplit: showsSplit,
-        ),
+        data: (value) =>
+            _buildPane(context, ref, value, showsSplit: showsSplit),
       ),
     );
   }
@@ -210,7 +206,7 @@ class PluginSettingsPaneController extends SettingsPaneCoordinatorBase {
 }
 
 class _PluginList extends StatelessWidget {
-  const _PluginList({
+  const new({
     required this.plugins,
     required this.selectedId,
     required this.onSelected,
@@ -283,7 +279,7 @@ class _PluginList extends StatelessWidget {
 }
 
 class _PluginDetailPane extends ConsumerStatefulWidget {
-  const _PluginDetailPane({
+  const new({
     required this.hostId,
     required this.plugin,
     required this.authoring,
@@ -324,9 +320,8 @@ class _PluginDetailPaneState extends ConsumerState<_PluginDetailPane> {
         .where(
           (contribution) =>
               contribution.kind == PluginContributionKind.ui &&
-              _contributionSlots(contribution).contains(
-                PluginUiSlot.agentSettings.name,
-              ),
+              _contributionSlots(contribution)
+                  .contains(PluginUiSlot.agentSettings.name),
         )
         .toList(growable: false);
     return SettingsDestinationScaffold(
@@ -389,9 +384,7 @@ class _PluginDetailPaneState extends ConsumerState<_PluginDetailPane> {
                 ? null
                 : TRAlert(
                     variant: TRStatusVariant.danger,
-                    title: TRText.inherit(
-                      l10n.pluginSettingsActionFailed,
-                    ),
+                    title: TRText.inherit(l10n.pluginSettingsActionFailed),
                     description: TRText.inherit('$_error'),
                   ),
             children: <Widget>[
@@ -424,12 +417,10 @@ class _PluginDetailPaneState extends ConsumerState<_PluginDetailPane> {
                 // Even shortened, a monospace digest and its label stop
                 // sharing a line once the reader scales the text up.
                 controlLayout: SettingsControlLayout.stacked,
-                control: TRCode(
-                  switch (plugin.revision?.contentHash) {
-                    final hash? => pluginRevisionLabel(hash),
-                    null => l10n.pluginSettingsRevisionMissing,
-                  },
-                ),
+                control: TRCode(switch (plugin.revision?.contentHash) {
+                  final hash? => pluginRevisionLabel(hash),
+                  null => l10n.pluginSettingsRevisionMissing,
+                }),
               ),
             ],
           ),
@@ -447,9 +438,8 @@ class _PluginDetailPaneState extends ConsumerState<_PluginDetailPane> {
                   runSpacing: TRSpacing.small,
                   children: plugin.requestedCapabilities
                       .map(
-                        (capability) => TRBadge(
-                          child: TRText.inherit(capability),
-                        ),
+                        (capability) =>
+                            TRBadge(child: TRText.inherit(capability)),
                       )
                       .toList(growable: false),
                 ),
@@ -484,15 +474,11 @@ class _PluginDetailPaneState extends ConsumerState<_PluginDetailPane> {
                 SettingsRow(
                   title: TRText.inherit(l10n.pluginSettingsLuaLs),
                   description: TRText.inherit(authoring.sdkLibraryPath),
-                  control: TRText.inherit(
-                    authoring.luaLanguageServerVersion,
-                  ),
+                  control: TRText.inherit(authoring.luaLanguageServerVersion),
                 ),
                 SettingsRow(
                   title: TRText.inherit(l10n.pluginSettingsLuaConfig),
-                  description: TRText.inherit(
-                    authoring.configurationPath,
-                  ),
+                  description: TRText.inherit(authoring.configurationPath),
                   control: TRButton(
                     key: const ValueKey<String>('plugin-sdk-sync-button'),
                     appearance: TRAppearance.outline,
@@ -518,9 +504,7 @@ class _PluginDetailPaneState extends ConsumerState<_PluginDetailPane> {
               if (widget.agents.isEmpty)
                 TRAlert(
                   variant: TRStatusVariant.warning,
-                  title: TRText.inherit(
-                    l10n.pluginSettingsAgentsNone,
-                  ),
+                  title: TRText.inherit(l10n.pluginSettingsAgentsNone),
                   description: TRText.inherit(
                     l10n.pluginSettingsReloadNeedsAgent,
                   ),
@@ -673,7 +657,7 @@ class _PluginDetailPaneState extends ConsumerState<_PluginDetailPane> {
 }
 
 class _ForkPluginDialog extends StatefulWidget {
-  const _ForkPluginDialog({
+  const new({
     required this.source,
     required this.existingIds,
     required this.onFork,
@@ -799,7 +783,7 @@ class _ForkPluginDialogState extends State<_ForkPluginDialog> {
 }
 
 class _CreatePluginPane extends StatefulWidget {
-  const _CreatePluginPane({
+  const new({
     required this.existingIds,
     required this.onCancel,
     required this.onCreate,
@@ -866,9 +850,7 @@ class _CreatePluginPaneState extends State<_CreatePluginPane> {
                 ? null
                 : TRAlert(
                     variant: TRStatusVariant.danger,
-                    title: TRText.inherit(
-                      l10n.pluginSettingsActionFailed,
-                    ),
+                    title: TRText.inherit(l10n.pluginSettingsActionFailed),
                     description: TRText.inherit('$_error'),
                   ),
             children: <Widget>[
@@ -904,10 +886,7 @@ class _CreatePluginPaneState extends State<_CreatePluginPane> {
       _error = null;
     });
     try {
-      final plugin = await widget.onCreate(
-        _id.text.trim(),
-        _name.text.trim(),
-      );
+      final plugin = await widget.onCreate(_id.text.trim(), _name.text.trim());
       if (mounted) widget.onCreated(plugin);
     } on Object catch (error) {
       if (mounted) {
@@ -920,13 +899,11 @@ class _CreatePluginPaneState extends State<_CreatePluginPane> {
   }
 }
 
-String _pluginSourceLabel(
-  AppLocalizations l10n,
-  PluginSource source,
-) => switch (source) {
-  PluginSource.builtIn => l10n.pluginSettingsSourceBuiltIn,
-  PluginSource.user => l10n.pluginSettingsSourceUser,
-};
+String _pluginSourceLabel(AppLocalizations l10n, PluginSource source) =>
+    switch (source) {
+      PluginSource.builtIn => l10n.pluginSettingsSourceBuiltIn,
+      PluginSource.user => l10n.pluginSettingsSourceUser,
+    };
 
 String _contributionKindLabel(
   AppLocalizations l10n,

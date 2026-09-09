@@ -253,10 +253,7 @@ void main() {
 
   test('exit codes cover every documented failure kind', () {
     expect(resolveExitCode(const FormatException('bad')), usageExitCode);
-    expect(
-      resolveExitCode(const SocketException('down')),
-      unavailableExitCode,
-    );
+    expect(resolveExitCode(const SocketException('down')), unavailableExitCode);
     expect(
       resolveExitCode(WebSocketChannelException('down')),
       unavailableExitCode,

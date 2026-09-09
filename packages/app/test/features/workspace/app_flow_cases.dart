@@ -98,126 +98,110 @@ void _registerWorkspaceAppFlows() {
     },
     tags: const <String>['feature_test__workspace_catalog__widget'],
   );
-  testWidgets(
-    'desktop workspace uses a flat workspace tree and session tabs',
-    (tester) async {
-      await _setTestViewport(tester, const Size(1280, 800));
-      addTearDown(() => tester.binding.setSurfaceSize(null));
-      final first = session('one');
-      final second = session('two');
-      final api = FakeTinestApi(
-        workspaces: <WorkspaceDto>[workspace],
-        worktrees: <WorktreeDto>[checkout],
-        agents: <SessionDto>[first, second],
-      );
-      final router = await _pumpRoute(
-        tester,
-        api,
-        SessionRoute(
-          hostId: 'server',
-          workspaceId: workspace.id,
-          worktreeId: checkout.id,
-          sessionId: first.id,
-        ).location,
-      );
-      addTearDown(router.dispose);
-
-      expect(find.text('Workspaces'), findsOneWidget);
-      expect(find.byKey(const ValueKey('workspace-new-button')), findsOne);
-      expect(
-        find.byKey(const ValueKey<String>('workspace-sidebar-surface')),
-        findsOneWidget,
-      );
-      // The daemon has no tree level of its own; it names the workspace row.
-      expect(
-        find.text('Test daemon · ${workspace.rootPath}'),
-        findsOneWidget,
-      );
-      expect(find.text('main'), findsOneWidget);
-      expect(find.text('Agents'), findsNothing);
-      expect(find.text('Session one'), findsWidgets);
-
-      await tester.tap(
-        find.byKey(const ValueKey('workspace-all-sessions-menu')),
-      );
-      await tester.pumpAndSettle();
-      expect(find.text('Session two'), findsOneWidget);
-      await tester.tap(find.text('Session two'));
-      await tester.pumpAndSettle();
-      expect(router.state.uri.path, contains('two'));
-    },
-    tags: const <String>['feature_test__workspace_catalog__widget'],
-  );
-
-  testWidgets(
-    'archives a managed worktree from the sidebar',
-    (
+  testWidgets('desktop workspace uses a flat workspace tree and session tabs', (
+    tester,
+  ) async {
+    await _setTestViewport(tester, const Size(1280, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    final first = session('one');
+    final second = session('two');
+    final api = FakeTinestApi(
+      workspaces: <WorkspaceDto>[workspace],
+      worktrees: <WorktreeDto>[checkout],
+      agents: <SessionDto>[first, second],
+    );
+    final router = await _pumpRoute(
       tester,
-    ) async {
-      await _setTestViewport(tester, const Size(1400, 760));
-      addTearDown(() => tester.binding.setSurfaceSize(null));
-      final managed = WorktreeDto(
-        id: 'external',
+      api,
+      SessionRoute(
+        hostId: 'server',
         workspaceId: workspace.id,
-        name: 'feature/settings',
-        path: '/worktrees/feature-settings',
-        branch: 'feature/settings',
-        kind: WorktreeKind.linked,
-        isTinestOwned: false,
-        createdAt: now,
-      );
-      final api =
-          FakeTinestApi(
-              workspaces: <WorkspaceDto>[workspace],
-              worktrees: <WorktreeDto>[checkout, managed],
-            )
-            ..archiveWorktreeHookRuns = const <WorktreeHookRunDto>[
-              WorktreeHookRunDto(
-                phase: WorktreeHookPhase.teardown,
-                command: 'docker compose down',
-                exitCode: 1,
-                stdout: '',
-                stderr: 'no such service',
-              ),
-            ];
-      final router = await _pumpRoute(
-        tester,
-        api,
-        WorktreeRoute(
-          hostId: 'server',
-          workspaceId: workspace.id,
-          worktreeId: managed.id,
-        ).location,
-      );
-      addTearDown(router.dispose);
-      await tester.pumpAndSettle();
+        worktreeId: checkout.id,
+        sessionId: first.id,
+      ).location,
+    );
+    addTearDown(router.dispose);
 
-      expect(findAccessibleAction('새 worktree'), findsNothing);
-      expect(find.text('feature/settings'), findsWidgets);
+    expect(find.text('Workspaces'), findsOneWidget);
+    expect(find.byKey(const ValueKey('workspace-new-button')), findsOne);
+    expect(
+      find.byKey(const ValueKey<String>('workspace-sidebar-surface')),
+      findsOneWidget,
+    );
+    // The daemon has no tree level of its own; it names the workspace row.
+    expect(find.text('Test daemon · ${workspace.rootPath}'), findsOneWidget);
+    expect(find.text('main'), findsOneWidget);
+    expect(find.text('Agents'), findsNothing);
+    expect(find.text('Session one'), findsWidgets);
 
-      final menus = findAccessibleAction('Worktree 메뉴');
-      await tester.tap(menus.last);
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('Archive'));
-      await tester.pumpAndSettle();
-      expect(find.textContaining('Archive할까요?'), findsOneWidget);
-      expect(
-        find.text('checkout 디렉터리가 제거됩니다.'),
-        findsOneWidget,
-      );
-      await tester.tap(find.widgetWithText(TRButton, 'Archive'));
-      await tester.pumpAndSettle();
-      expect(find.text('feature/settings'), findsNothing);
-      expect(router.routeInformationProvider.value.uri.path, '/');
-      // Teardown never blocks the archive, so the failure is only reported.
-      expect(
-        find.text('Teardown 실패 (exit 1): docker compose down'),
-        findsOneWidget,
-      );
-      expect(find.textContaining('no such service'), findsOneWidget);
-    },
-    tags: const <String>['feature_test__worktree_lifecycle__widget'],
-  );
+    await tester.tap(find.byKey(const ValueKey('workspace-all-sessions-menu')));
+    await tester.pumpAndSettle();
+    expect(find.text('Session two'), findsOneWidget);
+    await tester.tap(find.text('Session two'));
+    await tester.pumpAndSettle();
+    expect(router.state.uri.path, contains('two'));
+  }, tags: const <String>['feature_test__workspace_catalog__widget']);
+
+  testWidgets('archives a managed worktree from the sidebar', (tester) async {
+    await _setTestViewport(tester, const Size(1400, 760));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    final managed = WorktreeDto(
+      id: 'external',
+      workspaceId: workspace.id,
+      name: 'feature/settings',
+      path: '/worktrees/feature-settings',
+      branch: 'feature/settings',
+      kind: WorktreeKind.linked,
+      isTinestOwned: false,
+      createdAt: now,
+    );
+    final api =
+        FakeTinestApi(
+            workspaces: <WorkspaceDto>[workspace],
+            worktrees: <WorktreeDto>[checkout, managed],
+          )
+          ..archiveWorktreeHookRuns = const <WorktreeHookRunDto>[
+            WorktreeHookRunDto(
+              phase: WorktreeHookPhase.teardown,
+              command: 'docker compose down',
+              exitCode: 1,
+              stdout: '',
+              stderr: 'no such service',
+            ),
+          ];
+    final router = await _pumpRoute(
+      tester,
+      api,
+      WorktreeRoute(
+        hostId: 'server',
+        workspaceId: workspace.id,
+        worktreeId: managed.id,
+      ).location,
+    );
+    addTearDown(router.dispose);
+    await tester.pumpAndSettle();
+
+    expect(findAccessibleAction('새 worktree'), findsNothing);
+    expect(find.text('feature/settings'), findsWidgets);
+
+    final menus = findAccessibleAction('Worktree 메뉴');
+    await tester.tap(menus.last);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Archive'));
+    await tester.pumpAndSettle();
+    expect(find.textContaining('Archive할까요?'), findsOneWidget);
+    expect(find.text('checkout 디렉터리가 제거됩니다.'), findsOneWidget);
+    await tester.tap(find.widgetWithText(TRButton, 'Archive'));
+    await tester.pumpAndSettle();
+    expect(find.text('feature/settings'), findsNothing);
+    expect(router.routeInformationProvider.value.uri.path, '/');
+    // Teardown never blocks the archive, so the failure is only reported.
+    expect(
+      find.text('Teardown 실패 (exit 1): docker compose down'),
+      findsOneWidget,
+    );
+    expect(find.textContaining('no such service'), findsOneWidget);
+  }, tags: const <String>['feature_test__worktree_lifecycle__widget']);
 
   testWidgets(
     'an archive that outlives its sidebar finishes without throwing',
@@ -305,9 +289,7 @@ void _registerWorkspaceAppFlows() {
       expect(find.text('폴더 추가'), findsNothing);
       await tester.tap(find.byKey(const ValueKey('new-workspace-project')));
       await tester.pumpAndSettle();
-      await tester.tap(
-        find.byKey(const ValueKey('new-workspace-project-add')),
-      );
+      await tester.tap(find.byKey(const ValueKey('new-workspace-project-add')));
       await tester.pumpAndSettle();
 
       expect(find.text('Daemon의 폴더 선택'), findsOneWidget);
@@ -326,48 +308,46 @@ void _registerWorkspaceAppFlows() {
     tags: const <String>['feature_test__workspace_registration__widget'],
   );
 
-  testWidgets(
-    'the sidebar collapses and restores from persisted settings',
-    (tester) async {
-      await _setTestViewport(tester, const Size(1400, 900));
-      addTearDown(() => tester.binding.setSurfaceSize(null));
-      final api = FakeTinestApi(
-        workspaces: <WorkspaceDto>[workspace],
-        worktrees: <WorktreeDto>[checkout],
-      );
-      final store = MemoryAppStore();
-      final router = await _pumpRoute(
-        tester,
-        api,
-        const WorkspaceHomeRoute().location,
-        store: store,
-      );
-      addTearDown(router.dispose);
-      await tester.pumpAndSettle();
+  testWidgets('the sidebar collapses and restores from persisted settings', (
+    tester,
+  ) async {
+    await _setTestViewport(tester, const Size(1400, 900));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    final api = FakeTinestApi(
+      workspaces: <WorkspaceDto>[workspace],
+      worktrees: <WorktreeDto>[checkout],
+    );
+    final store = MemoryAppStore();
+    final router = await _pumpRoute(
+      tester,
+      api,
+      const WorkspaceHomeRoute().location,
+      store: store,
+    );
+    addTearDown(router.dispose);
+    await tester.pumpAndSettle();
 
-      expect(find.byKey(const ValueKey('workspace-new-button')), findsOne);
-      await tester.tap(find.byKey(const ValueKey('workspace-sidebar-toggle')));
-      // Toggling refreshes the host registry; the composer must keep its
-      // loaded state instead of flashing an empty-state error.
-      await tester.pump();
-      expect(find.text('먼저 프로젝트를 추가하세요.'), findsNothing);
-      expect(
-        find.byKey(const ValueKey('session-composer-settings')),
-        findsNothing,
-      );
-      expect(find.byKey(const ValueKey('session-composer-agent')), findsOne);
-      expect(find.text('사용 가능한 primary Agent가 없습니다.'), findsNothing);
-      await tester.pumpAndSettle();
-      expect(find.byKey(const ValueKey('workspace-new-button')), findsNothing);
-      expect(store.settings.sidebarCollapsed, isTrue);
+    expect(find.byKey(const ValueKey('workspace-new-button')), findsOne);
+    await tester.tap(find.byKey(const ValueKey('workspace-sidebar-toggle')));
+    // Toggling refreshes the host registry; the composer must keep its
+    // loaded state instead of flashing an empty-state error.
+    await tester.pump();
+    expect(find.text('먼저 프로젝트를 추가하세요.'), findsNothing);
+    expect(
+      find.byKey(const ValueKey('session-composer-settings')),
+      findsNothing,
+    );
+    expect(find.byKey(const ValueKey('session-composer-agent')), findsOne);
+    expect(find.text('사용 가능한 primary Agent가 없습니다.'), findsNothing);
+    await tester.pumpAndSettle();
+    expect(find.byKey(const ValueKey('workspace-new-button')), findsNothing);
+    expect(store.settings.sidebarCollapsed, isTrue);
 
-      await tester.tap(find.byKey(const ValueKey('workspace-sidebar-toggle')));
-      await tester.pumpAndSettle();
-      expect(find.byKey(const ValueKey('workspace-new-button')), findsOne);
-      expect(store.settings.sidebarCollapsed, isFalse);
-    },
-    tags: const <String>['feature_test__workspace_catalog__widget'],
-  );
+    await tester.tap(find.byKey(const ValueKey('workspace-sidebar-toggle')));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const ValueKey('workspace-new-button')), findsOne);
+    expect(store.settings.sidebarCollapsed, isFalse);
+  }, tags: const <String>['feature_test__workspace_catalog__widget']);
 
   testWidgets(
     'the desktop sidebar collapses and restores without reserving a pane',
@@ -401,35 +381,33 @@ void _registerWorkspaceAppFlows() {
     tags: const <String>['feature_test__workspace_catalog__widget'],
   );
 
-  testWidgets(
-    'reduced motion collapses the sidebar without animating',
-    (tester) async {
-      await _setTestViewport(tester, const Size(1400, 900));
-      addTearDown(() => tester.binding.setSurfaceSize(null));
-      final api = FakeTinestApi(
-        workspaces: <WorkspaceDto>[workspace],
-        worktrees: <WorktreeDto>[checkout],
-      );
-      final router = await _pumpRoute(
-        tester,
-        api,
-        const WorkspaceHomeRoute().location,
-        store: MemoryAppStore(),
-        disableAnimations: true,
-      );
-      addTearDown(router.dispose);
-      await tester.pumpAndSettle();
+  testWidgets('reduced motion collapses the sidebar without animating', (
+    tester,
+  ) async {
+    await _setTestViewport(tester, const Size(1400, 900));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    final api = FakeTinestApi(
+      workspaces: <WorkspaceDto>[workspace],
+      worktrees: <WorktreeDto>[checkout],
+    );
+    final router = await _pumpRoute(
+      tester,
+      api,
+      const WorkspaceHomeRoute().location,
+      store: MemoryAppStore(),
+      disableAnimations: true,
+    );
+    addTearDown(router.dispose);
+    await tester.pumpAndSettle();
 
-      final surface = find.byKey(const ValueKey('workspace-sidebar-surface'));
-      expect(tester.getSize(surface).width, greaterThan(0));
+    final surface = find.byKey(const ValueKey('workspace-sidebar-surface'));
+    expect(tester.getSize(surface).width, greaterThan(0));
 
-      await tester.tap(find.byKey(const ValueKey('workspace-sidebar-toggle')));
-      // One frame settles the persisted flag and the collapse together.
-      await tester.pump();
-      expect(surface, findsNothing);
-    },
-    tags: const <String>['feature_test__workspace_catalog__widget'],
-  );
+    await tester.tap(find.byKey(const ValueKey('workspace-sidebar-toggle')));
+    // One frame settles the persisted flag and the collapse together.
+    await tester.pump();
+    expect(surface, findsNothing);
+  }, tags: const <String>['feature_test__workspace_catalog__widget']);
 
   testWidgets(
     'a collapsed sidebar is unreachable by pointer, semantics, and keyboard',
@@ -535,9 +513,7 @@ void _registerWorkspaceAppFlows() {
     addTearDown(router.dispose);
 
     expect(find.text('New workspace'), findsOneWidget);
-    final back = find.byKey(
-      const ValueKey<String>('workspace-back-button'),
-    );
+    final back = find.byKey(const ValueKey<String>('workspace-back-button'));
     expect(back, findsOneWidget);
     await tester.tap(back);
     await tester.pumpAndSettle();

@@ -12,7 +12,7 @@ import 'package:material_ui/material_ui.dart';
 /// Everything the desktop entrypoint resolves before it can build [TinestApp].
 class DesktopBoot {
   /// Bundles one desktop startup result.
-  const DesktopBoot({
+  const new({
     required this.services,
     required this.window,
     required this.tray,

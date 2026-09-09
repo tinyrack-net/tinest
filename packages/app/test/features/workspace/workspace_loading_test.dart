@@ -164,13 +164,13 @@ void main() {
 }
 
 final class _GatedHostRegistry extends HostRegistryController {
-  _GatedHostRegistry(this.gate);
+  new(this.gate);
 
   final Future<void> gate;
 
   @override
   Future<HostRegistryState> build() async {
     await gate;
-    return super.build();
+    return await super.build();
   }
 }

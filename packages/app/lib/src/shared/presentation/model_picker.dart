@@ -9,10 +9,7 @@ import 'package:tinyrack_ui/tinyrack_ui.dart';
 /// One model offered by the combined provider model Select.
 final class ModelPickerOption {
   /// Creates a provider-qualified model option.
-  const ModelPickerOption({
-    required this.providerName,
-    required this.model,
-  });
+  const new({required this.providerName, required this.model});
 
   /// User-facing name of the provider connection.
   final String providerName;
@@ -21,9 +18,7 @@ final class ModelPickerOption {
   final ProviderModelDto model;
 
   /// Selection persisted on the session.
-  ModelSelectionDto get selection => ModelSelectionDto(
-    modelId: model.id,
-  );
+  ModelSelectionDto get selection => ModelSelectionDto(modelId: model.id);
 }
 
 /// Loads the provider-qualified models displayed by a Select.
@@ -35,7 +30,7 @@ typedef ModelPickerOptionsLoader = Future<List<ModelPickerOption>> Function();
 /// because both surfaces belong to the same [TRSelect].
 class AsyncModelSelect extends StatefulWidget {
   /// Creates a model Select backed by [loadOptions].
-  const AsyncModelSelect({
+  const new({
     required this.loadOptions,
     required this.currentSelection,
     required this.onValueChange,
@@ -167,7 +162,7 @@ class _AsyncModelSelectState extends State<AsyncModelSelect> {
       onValueChange: (option) {
         if (option != null) {
           unawaited(
-            Future<void>.sync(() async => widget.onValueChange(option)),
+            Future<void>.sync(() async => await widget.onValueChange(option)),
           );
         }
       },

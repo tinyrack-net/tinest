@@ -47,7 +47,7 @@ enum WorktreeFailureReason {
 /// client needs to explain the failure without parsing [message].
 final class WorktreeFailure implements Exception {
   /// Creates a typed worktree lifecycle failure.
-  const WorktreeFailure(
+  const new(
     this.reason,
     this.message, {
     this.details = const <String, dynamic>{},
@@ -69,7 +69,7 @@ final class WorktreeFailure implements Exception {
 /// Repository and checkout lifecycle application service.
 final class WorkspaceOperations {
   /// Creates a workspace service from typed persistence and host ports.
-  WorkspaceOperations(
+  new(
     this._workspaces,
     this._worktrees,
     this._agents,
@@ -144,7 +144,7 @@ final class WorkspaceOperations {
       ),
     );
     final checkout = await _worktrees.getByPath(rootPath);
-    return _worktrees.upsert(
+    return await _worktrees.upsert(
       WorktreeDto(
         id: checkout?.id ?? homeWorktreeId,
         workspaceId: workspace.id,
@@ -166,9 +166,7 @@ final class WorkspaceOperations {
   Future<WorkspaceRegisterResultDto> register(
     WorkspaceRegisterParamsDto request,
   ) async {
-    final selectedPath = _paths.canonicalizeExistingDirectory(
-      request.rootPath,
-    );
+    final selectedPath = _paths.canonicalizeExistingDirectory(request.rootPath);
     // Registration merges by root path, so without this the home directory
     // would silently return the home workspace, which every project list
     // filters out.
@@ -247,7 +245,7 @@ final class WorkspaceOperations {
         await _listWorktrees(workspace.rootPath),
       );
     }
-    return catalog();
+    return await catalog();
   }
 
   /// Removes a workspace registration when no session history references it.
@@ -277,7 +275,7 @@ final class WorkspaceOperations {
     if (worktree == null || worktree.archivedAt != null) {
       throw const FormatException('Active worktree not found.');
     }
-    return _fileIndex.search(
+    return await _fileIndex.search(
       FileSearchRequest(
         root: worktree.path,
         query: request.query,
@@ -310,7 +308,7 @@ final class WorkspaceOperations {
         'Workspace is not a Git repository.',
       );
     }
-    return _git.listBranches(workspace.rootPath);
+    return await _git.listBranches(workspace.rootPath);
   }
 
   /// Returns the `.tinest/config.json` settings of one registered workspace.
@@ -330,7 +328,7 @@ final class WorkspaceOperations {
   ) async {
     final workspace = await _requireWorkspace(request.workspaceId);
     await _projectSettings.save(workspace.rootPath, request.settings);
-    return getProjectSettings(workspace.id);
+    return await getProjectSettings(workspace.id);
   }
 
   /// Creates a managed checkout from a new or existing local branch.
@@ -425,11 +423,7 @@ final class WorkspaceOperations {
       // A setup failure means the checkout is not safe to use. Remove the
       // Tinest-owned path before hiding it from the active catalog so a failed
       // bootstrap cannot leave an apparently usable worktree behind.
-      await _git.removeWorktree(
-        workspace.rootPath,
-        worktree.path,
-        force: true,
-      );
+      await _git.removeWorktree(workspace.rootPath, worktree.path, force: true);
       final archivedAt = _clock.nowUtc();
       await _worktrees.archive(worktree.id, archivedAt);
       return WorktreeResultDto(
@@ -686,9 +680,7 @@ final class WorkspaceOperations {
     final activeWorktrees = await _worktrees.list(workspaceId: workspace.id);
     for (var index = 0; index < snapshots.length; index += 1) {
       final snapshot = snapshots[index];
-      var existing = await _worktrees.getByPathIncludingArchived(
-        snapshot.path,
-      );
+      var existing = await _worktrees.getByPathIncludingArchived(snapshot.path);
       for (final worktree in activeWorktrees) {
         if (existing != null) break;
         if (_sameWorktreePath(worktree.path, snapshot.path)) {
@@ -816,16 +808,13 @@ abstract interface class WorktreeLifecyclePort {
   Future<WorktreeArchivePreviewDto> previewArchive(String worktreeId);
 
   /// Archives a checkout after enforcing safety rules.
-  Future<WorktreeResultDto> archive(
-    String worktreeId, {
-    required bool force,
-  });
+  Future<WorktreeResultDto> archive(String worktreeId, {required bool force});
 }
 
 /// Cohesive workspace catalog view over shared workspace operations.
 final class WorkspaceCatalogService implements WorkspaceCatalogPort {
   /// Creates the workspace catalog service.
-  const WorkspaceCatalogService(this._operations);
+  const new(this._operations);
 
   final WorkspaceOperations _operations;
 
@@ -860,7 +849,7 @@ final class WorkspaceCatalogService implements WorkspaceCatalogPort {
 /// Cohesive managed-worktree lifecycle view over shared workspace operations.
 final class WorktreeLifecycleService implements WorktreeLifecyclePort {
   /// Creates the managed-worktree lifecycle service.
-  const WorktreeLifecycleService(this._operations);
+  const new(this._operations);
 
   final WorkspaceOperations _operations;
 
@@ -881,10 +870,8 @@ final class WorktreeLifecycleService implements WorktreeLifecyclePort {
   Future<WorktreeArchivePreviewDto> previewArchive(String worktreeId) =>
       _operations.previewArchive(worktreeId);
   @override
-  Future<WorktreeResultDto> archive(
-    String worktreeId, {
-    required bool force,
-  }) => _operations.archive(worktreeId, force: force);
+  Future<WorktreeResultDto> archive(String worktreeId, {required bool force}) =>
+      _operations.archive(worktreeId, force: force);
 }
 
 /// Longest chain of derived `-2`, `-3`, ... candidates before giving up.

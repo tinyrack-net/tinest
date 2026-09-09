@@ -11,7 +11,7 @@ const int composerSuggestionLimit = 8;
 @immutable
 final class ComposerSuggestion {
   /// Creates a suggestion.
-  const ComposerSuggestion({
+  const new({
     required this.id,
     required this.label,
     required this.replacement,
@@ -86,9 +86,7 @@ List<FileMatchDto> rankFileMatches(List<FileMatchDto> matches, String query) {
       right.match.relativePath,
     ),
   );
-  return List<FileMatchDto>.unmodifiable(
-    scored.map((entry) => entry.match),
-  );
+  return List<FileMatchDto>.unmodifiable(scored.map((entry) => entry.match));
 }
 
 /// Builds the rows shown for an `@` trigger.

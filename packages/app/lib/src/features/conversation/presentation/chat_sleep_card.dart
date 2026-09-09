@@ -15,7 +15,7 @@ const Duration _tick = Duration(milliseconds: 500);
 /// correct across a reconnect: the elapsed time is recomputed, never counted.
 class ChatSleepCard extends StatefulWidget {
   /// Creates a sleep card.
-  const ChatSleepCard({required this.sleep, super.key});
+  const new({required this.sleep, super.key});
 
   /// The sleep call this card renders.
   final ChatSleep sleep;

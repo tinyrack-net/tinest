@@ -12,7 +12,7 @@ enum CiChangeScope {
   /// The complete workspace must be verified.
   full('full');
 
-  const CiChangeScope(this.outputValue);
+  new(this.outputValue);
 
   /// Value emitted for consumption by GitHub Actions.
   final String outputValue;

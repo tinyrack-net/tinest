@@ -5,7 +5,7 @@ import 'package:daemon/src/features/relay/application/relay_pairing_service.dart
 /// Transport-neutral current relay state.
 final class RelayStatus {
   /// Creates relay state.
-  const RelayStatus({
+  const new({
     required this.enabled,
     required this.connected,
     required this.endpoint,
@@ -28,7 +28,7 @@ final class RelayStatus {
 /// Transport-neutral short-lived pairing offer.
 final class RelayPairingOfferInfo {
   /// Creates pairing offer metadata.
-  const RelayPairingOfferInfo({required this.url, required this.expiresAt});
+  const new({required this.url, required this.expiresAt});
 
   /// Fragment-only pairing URL.
   final String url;
@@ -40,7 +40,7 @@ final class RelayPairingOfferInfo {
 /// Transport-neutral approved device metadata.
 final class RelayDeviceInfo {
   /// Creates approved device metadata.
-  const RelayDeviceInfo({
+  const new({
     required this.id,
     required this.name,
     required this.registeredAt,
@@ -69,7 +69,7 @@ typedef RelayEndpointApplier = Future<void> Function(Uri endpoint);
 /// Daemon relay configuration, pairing, and device-revocation service.
 final class RelayControlService {
   /// Creates relay control state for one daemon.
-  RelayControlService({
+  new({
     required this._enabled,
     required this.endpoint,
     required this.serverId,

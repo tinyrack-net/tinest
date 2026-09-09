@@ -17,7 +17,7 @@ import 'package:protocol/protocol.dart';
 /// Immutable inputs that one Agent-owned Lua driver may arrange as it chooses.
 final class LuaAgentHarnessRequest {
   /// Creates one revision-pinned turn request.
-  LuaAgentHarnessRequest({
+  new({
     required this.definition,
     required this.sessionId,
     required this.turnId,
@@ -181,7 +181,7 @@ final class InvocationLocalSelectedLuaToolInvoker
 /// Side effects the harness reports without coupling to daemon persistence.
 final class LuaAgentHarnessCallbacks {
   /// Creates callback ports for one turn.
-  const LuaAgentHarnessCallbacks({
+  const new({
     required this.onEvent,
     required this.onStatus,
     required this.onProviderItems,
@@ -205,7 +205,7 @@ final class LuaAgentHarnessCallbacks {
 /// Exact metadata needed to preserve actions for an emitted UI snapshot.
 final class LuaAgentHarnessUiSnapshot {
   /// Creates one revision-pinned declarative UI publication.
-  const LuaAgentHarnessUiSnapshot({
+  const new({
     required this.plugin,
     required this.contribution,
     required this.request,
@@ -228,7 +228,7 @@ final class LuaAgentHarnessUiSnapshot {
 /// Runs an Agent definition through exactly one revision-pinned Lua driver.
 final class LuaAgentHarness {
   /// Creates a harness over the shared isolated plugin runtime.
-  const LuaAgentHarness({required this.runtime});
+  const new({required this.runtime});
 
   /// General-purpose Lua plugin host.
   final PluginRuntime<ConversationAttachment> runtime;
@@ -410,9 +410,7 @@ final class LuaAgentHarness {
           'plugin_settings': pluginSettings,
           'model': <String, Object?>{
             'id': request.modelId,
-            'capabilities': _modelCapabilitiesJson(
-              request.modelCapabilities,
-            ),
+            'capabilities': _modelCapabilitiesJson(request.modelCapabilities),
           },
           'context': <String, Object?>{
             if (request.contextWindowTokens != null)
@@ -484,7 +482,7 @@ final class _TurnCallbackRouter
     implements
         PluginCallbackRouter<ConversationAttachment>,
         SelectedLuaToolInvoker {
-  _TurnCallbackRouter({
+  new({
     required this.request,
     required this.callbacks,
     required this.session,
@@ -921,30 +919,30 @@ final class _TurnCallbackRouter
           value: _surfaceSelectedTools(context, arguments),
         );
       case 'tools.invoke':
-        return _invokePluginTool(context, arguments);
+        return await _invokePluginTool(context, arguments);
       case 'tools.dynamic_begin':
-        return _beginDynamicTool(context, arguments);
+        return await _beginDynamicTool(context, arguments);
       case 'tools.dynamic_end':
-        return _endDynamicTool(context, arguments);
+        return await _endDynamicTool(context, arguments);
       case 'state.read':
-        return _readState(context, arguments);
+        return await _readState(context, arguments);
       case 'state.compare_and_set':
-        return _compareAndSetState(context, arguments);
+        return await _compareAndSetState(context, arguments);
       case 'state.remove':
-        return _removeState(context, arguments);
+        return await _removeState(context, arguments);
       case 'state.transaction':
-        return _transactState(context, arguments);
+        return await _transactState(context, arguments);
       case 'scheduler.schedule':
       case 'scheduler.continue_after_turn':
-        return _schedule(context, name, arguments);
+        return await _schedule(context, name, arguments);
       case 'scheduler.cancel':
-        return _cancelScheduledJob(context, arguments);
+        return await _cancelScheduledJob(context, arguments);
       default:
         if (name.startsWith('ui.')) {
           return _queueUiPublication(context, name, arguments);
         }
         if (name.startsWith('host.')) {
-          return _invokeHostPrimitive(
+          return await _invokeHostPrimitive(
             context,
             name,
             publicArguments,
@@ -1686,9 +1684,9 @@ final class _TurnCallbackRouter
           );
         }
       }
-      final tools = _list(
-        arguments['tools'],
-      ).map(_modelTool).toList(growable: false);
+      final tools = _list(arguments['tools'])
+          .map(_modelTool)
+          .toList(growable: false);
       final surfaceError = _selectedToolCompatibilityError(
         tools,
         request.modelCapabilities,
@@ -1723,15 +1721,10 @@ final class _TurnCallbackRouter
           case ModelReasoningDelta(:final delta):
             await callbacks.onEvent(
               'assistant.reasoning.delta',
-              <String, dynamic>{
-                'text': delta,
-              },
+              <String, dynamic>{'text': delta},
             );
             yield PluginCallbackResult<ConversationAttachment>(
-              value: <String, Object?>{
-                'type': 'reasoning',
-                'delta': delta,
-              },
+              value: <String, Object?>{'type': 'reasoning', 'delta': delta},
             );
           case ModelTextDelta(:final delta):
             await callbacks.onEvent('assistant.delta', <String, dynamic>{
@@ -1765,10 +1758,7 @@ final class _TurnCallbackRouter
             }
             await callbacks.onEvent('model.usage', usage.toJson());
             yield PluginCallbackResult<ConversationAttachment>(
-              value: <String, Object?>{
-                'type': 'usage',
-                ...usage.toJson(),
-              },
+              value: <String, Object?>{'type': 'usage', ...usage.toJson()},
             );
             yield PluginCallbackResult<ConversationAttachment>(
               value: <String, Object?>{
@@ -2065,10 +2055,7 @@ final class _TurnCallbackRouter
     final contextItem = result.contextImages.isEmpty
         ? null
         : UserConversationItem('', attachments: result.contextImages);
-    await persist(<ConversationItem>[
-      item,
-      ?contextItem,
-    ]);
+    await persist(<ConversationItem>[item, ?contextItem]);
     for (final notification in result.notifications) {
       await callbacks.onEvent('tool.notification', <String, dynamic>{
         'callId': callId,
@@ -2135,11 +2122,7 @@ final class _TurnCallbackRouter
     final outputSchema = tool.outputSchema;
     if (outputSchema != null) {
       try {
-        validatePluginJsonSchema(
-          outputSchema,
-          resultValue,
-          path: r'$.result',
-        );
+        validatePluginJsonSchema(outputSchema, resultValue, path: r'$.result');
       } on PluginJsonValidationException catch (error) {
         discardUiPublications();
         return ToolResult(
@@ -2330,7 +2313,7 @@ final class _TurnCallbackRouter
     _DynamicToolRecord? dynamicRecord,
   }) async {
     if (_primitives.descriptor(operation) != null) {
-      return _invokeRegisteredHostPrimitive(
+      return await _invokeRegisteredHostPrimitive(
         pluginContext,
         operation,
         arguments,
@@ -2659,7 +2642,7 @@ Future<Map<String, Object?>> _readPluginSecret(
 }
 
 final class _PluginCancellation implements PluginCancellationSignal {
-  const _PluginCancellation(this.token);
+  const new(this.token);
 
   final CancellationToken token;
 
@@ -2668,7 +2651,7 @@ final class _PluginCancellation implements PluginCancellationSignal {
 }
 
 final class _HostPrimitiveCancellation implements HostPrimitiveCancellation {
-  const _HostPrimitiveCancellation(this.source);
+  const new(this.source);
 
   final PluginInvocationCancellation source;
 
@@ -2681,7 +2664,7 @@ final class _HostPrimitiveCancellation implements HostPrimitiveCancellation {
 
 final class _NetworkOperationCancellation
     implements PluginOperationCancellation {
-  const _NetworkOperationCancellation(this.source);
+  const new(this.source);
 
   final HostPrimitiveCancellation? source;
 
@@ -2693,7 +2676,7 @@ final class _NetworkOperationCancellation
 }
 
 final class _ActiveToolCall {
-  _ActiveToolCall({
+  new({
     required this.callId,
     required this.contributionId,
     required this.arguments,
@@ -2706,7 +2689,7 @@ final class _ActiveToolCall {
 }
 
 final class _PendingDynamicToolCall {
-  const _PendingDynamicToolCall({
+  const new({
     required this.identity,
     required this.pluginId,
     required this.revisionHash,
@@ -2739,7 +2722,7 @@ String _dynamicToolIdentity(
 ) => '$pluginId\u0000$revisionHash\u0000$token';
 
 final class _DynamicToolRecord {
-  const _DynamicToolRecord({
+  const new({
     required this.token,
     required this.privateRefId,
     required this.ephemeral,
@@ -2776,7 +2759,7 @@ final class _DynamicToolRecord {
 }
 
 final class _PendingUiPublication {
-  const _PendingUiPublication({
+  const new({
     required this.operation,
     required this.pluginId,
     required this.revisionHash,
@@ -3017,19 +3000,18 @@ Map<String, dynamic> _pluginConversationItemJson(ConversationItem item) =>
       }
     : item.toJson();
 
-Map<String, dynamic> _publicAttachmentJson(
-  ConversationAttachment attachment,
-) => <String, dynamic>{
-  'id': attachment.id,
-  'fileName': attachment.fileName,
-  'mimeType': attachment.mimeType,
-  'byteSize': attachment.byteSize,
-  if (attachment.kind != null) 'kind': attachment.kind!.name,
-  if (attachment.sha256 != null) 'sha256': attachment.sha256,
-  if (attachment.createdAt != null)
-    'createdAt': attachment.createdAt!.toIso8601String(),
-  if (attachment.imageDetail != null) 'imageDetail': attachment.imageDetail,
-};
+Map<String, dynamic> _publicAttachmentJson(ConversationAttachment attachment) =>
+    <String, dynamic>{
+      'id': attachment.id,
+      'fileName': attachment.fileName,
+      'mimeType': attachment.mimeType,
+      'byteSize': attachment.byteSize,
+      if (attachment.kind != null) 'kind': attachment.kind!.name,
+      if (attachment.sha256 != null) 'sha256': attachment.sha256,
+      if (attachment.createdAt != null)
+        'createdAt': attachment.createdAt!.toIso8601String(),
+      if (attachment.imageDetail != null) 'imageDetail': attachment.imageDetail,
+    };
 
 Map<String, dynamic> _normalizeDriverHistoryItem(Object? value) {
   final item = _dynamicObject(value);
@@ -3263,10 +3245,7 @@ String _requiredString(Map<String, Object?> value, String key) {
   return result;
 }
 
-Map<String, Object?> _requiredSchema(
-  Map<String, Object?> value,
-  String key,
-) {
+Map<String, Object?> _requiredSchema(Map<String, Object?> value, String key) {
   final schema = value[key];
   if (schema is List<Object?> && schema.isEmpty) {
     return const <String, Object?>{};
@@ -3276,9 +3255,7 @@ Map<String, Object?> _requiredSchema(
     throw FormatException('$key must be a JSON schema object.');
   }
   final normalized = normalizePluginJson(schema, path: r'$.dynamic.schema');
-  return Map<String, Object?>.unmodifiable(
-    normalized! as Map<String, Object?>,
-  );
+  return Map<String, Object?>.unmodifiable(normalized! as Map<String, Object?>);
 }
 
 Set<String> _stringSet(Object? value, String label) {

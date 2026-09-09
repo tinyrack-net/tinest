@@ -20,7 +20,7 @@ enum RelayAttachmentOperation {
 
 /// Validated metadata for an attachment stream open record.
 final class RelayAttachmentOpen {
-  RelayAttachmentOpen._({
+  new _({
     required this.operation,
     this.fileName,
     this.mimeType,
@@ -29,7 +29,7 @@ final class RelayAttachmentOpen {
   });
 
   /// Opens a client-to-daemon upload.
-  factory RelayAttachmentOpen.upload({
+  factory upload({
     required String fileName,
     required String mimeType,
     required int byteSize,
@@ -46,7 +46,7 @@ final class RelayAttachmentOpen {
   }
 
   /// Opens a daemon-to-client download.
-  factory RelayAttachmentOpen.download({required String attachmentId}) {
+  factory download({required String attachmentId}) {
     if (attachmentId.isEmpty) {
       throw const FormatException('Invalid relay attachment download.');
     }
@@ -57,7 +57,7 @@ final class RelayAttachmentOpen {
   }
 
   /// Decodes strict operation-specific metadata.
-  factory RelayAttachmentOpen.decode(List<int> bytes) {
+  factory decode(List<int> bytes) {
     final value = jsonDecode(utf8.decode(bytes));
     if (value is! Map<String, dynamic>) {
       throw const FormatException(

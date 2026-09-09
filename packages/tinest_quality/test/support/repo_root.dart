@@ -4,9 +4,8 @@ import 'dart:io';
 void useRepositoryRoot() {
   var candidate = Directory.current.absolute;
   while (true) {
-    if (File(
-      '${candidate.path}/packages/tinest_quality/pubspec.yaml',
-    ).existsSync()) {
+    if (File('${candidate.path}/packages/tinest_quality/pubspec.yaml')
+        .existsSync()) {
       Directory.current = candidate.path;
       return;
     }

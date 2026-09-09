@@ -17,7 +17,7 @@ import 'package:web_socket_channel/web_socket_channel.dart';
 /// Hosts authenticated HTTP/WebSocket lifecycle over feature RPC bindings.
 final class DaemonRpcServer implements RpcSessionHost {
   /// Creates the transport-only daemon server.
-  DaemonRpcServer({
+  new({
     required this.bindings,
     required this.attachments,
     required this.serverInfo,
@@ -193,7 +193,7 @@ bool _constantTimeEquals(String? candidate, String expected) {
 }
 
 final class _ClientSession {
-  _ClientSession({
+  new({
     required this.channel,
     required this.bindings,
     required this.serverInfo,
@@ -253,9 +253,8 @@ final class _ClientSession {
       throw json_rpc.RpcException(
         1001,
         'Unsupported protocol version.',
-        data: const RpcFailureDto(
-          code: RpcErrorCodes.protocolMismatch,
-        ).toJson(),
+        data: const RpcFailureDto(code: RpcErrorCodes.protocolMismatch)
+            .toJson(),
       );
     }
     _handshakeComplete = true;
@@ -274,9 +273,8 @@ final class _ClientSession {
       throw json_rpc.RpcException(
         1000,
         'Handshake required.',
-        data: const RpcFailureDto(
-          code: RpcErrorCodes.handshakeRequired,
-        ).toJson(),
+        data: const RpcFailureDto(code: RpcErrorCodes.handshakeRequired)
+            .toJson(),
       );
     }
     try {

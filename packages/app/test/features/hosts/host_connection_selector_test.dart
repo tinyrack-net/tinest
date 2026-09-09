@@ -51,9 +51,7 @@ void main() {
         RemoteDaemonProfile(
           id: 'server',
           label: 'server',
-          connections: directHostConnections(
-            Uri.parse('ws://server.test/ws'),
-          ),
+          connections: directHostConnections(Uri.parse('ws://server.test/ws')),
           autoConnect: true,
           createdAt: now,
           updatedAt: now,
@@ -111,94 +109,82 @@ void main() {
     tags: const <String>['feature_test__session_tabs__unit'],
   );
 
-  test(
-    'a device-settings write never reloads the session catalog',
-    () async {
-      final host = connectedHost();
-      addTearDown(host.container.dispose);
-      await host.container.read(hostRegistryControllerProvider.future);
-      await Future<void>.delayed(Duration.zero);
-      final sessions = sessionsControllerProvider('server', worktree.id);
-      host.container.listen(sessions, (_, _) {});
-      await host.container.read(sessions.future);
-      final loads = host.api.listSessionsCount;
+  test('a device-settings write never reloads the session catalog', () async {
+    final host = connectedHost();
+    addTearDown(host.container.dispose);
+    await host.container.read(hostRegistryControllerProvider.future);
+    await Future<void>.delayed(Duration.zero);
+    final sessions = sessionsControllerProvider('server', worktree.id);
+    host.container.listen(sessions, (_, _) {});
+    await host.container.read(sessions.future);
+    final loads = host.api.listSessionsCount;
 
-      await host.container
-          .read(hostRegistryControllerProvider.notifier)
-          .setSidebarCollapsed(collapsed: true);
-      await Future<void>.delayed(Duration.zero);
+    await host.container
+        .read(hostRegistryControllerProvider.notifier)
+        .setSidebarCollapsed(collapsed: true);
+    await Future<void>.delayed(Duration.zero);
 
-      expect(host.api.listSessionsCount, loads);
-    },
-    tags: const <String>['feature_test__session_tabs__unit'],
-  );
+    expect(host.api.listSessionsCount, loads);
+  }, tags: const <String>['feature_test__session_tabs__unit']);
 
-  test(
-    'a registry that cannot load surfaces its failure',
-    () async {
-      final container = ProviderContainer(
-        overrides: [
-          appServicesProvider.overrideWithValue(
-            const AppServices(
-              settings: _FailingStore(),
-              profiles: _FailingStore(),
-              credentials: _FailingStore(),
-              clients: _FailingStore(),
-              clientKind: 'test',
-            ),
+  test('a registry that cannot load surfaces its failure', () async {
+    final container = ProviderContainer(
+      overrides: [
+        appServicesProvider.overrideWithValue(
+          const AppServices(
+            settings: _FailingStore(),
+            profiles: _FailingStore(),
+            credentials: _FailingStore(),
+            clients: _FailingStore(),
+            clientKind: 'test',
           ),
-        ],
-      );
-      addTearDown(container.dispose);
+        ),
+      ],
+    );
+    addTearDown(container.dispose);
 
-      await expectLater(
-        container.read(hostRegistryControllerProvider.future),
-        throwsA(isA<StateError>()),
-      );
+    await expectLater(
+      container.read(hostRegistryControllerProvider.future),
+      throwsA(isA<StateError>()),
+    );
 
-      final probe = FutureProvider<TinestApi?>(
-        (ref) => watchConnectedHostApi(ref, 'server'),
-      );
-      container.listen(probe, (_, _) {});
-      expect(container.read(probe).error, isA<StateError>());
-    },
-    tags: const <String>['feature_test__session_tabs__unit'],
-  );
+    final probe = FutureProvider<TinestApi?>(
+      (ref) => watchConnectedHostApi(ref, 'server'),
+    );
+    container.listen(probe, (_, _) {});
+    expect(container.read(probe).error, isA<StateError>());
+  }, tags: const <String>['feature_test__session_tabs__unit']);
 
-  test(
-    'a disconnected host reports a loaded connection with no API',
-    () async {
-      final store = MemoryAppStore(
-        settings: const AppSettings(embeddedDaemonEnabled: false),
-      );
-      final container = ProviderContainer(
-        overrides: [
-          appServicesProvider.overrideWithValue(
-            AppServices(
-              settings: store,
-              profiles: store,
-              credentials: store,
-              clients: const _HostClients(<String, TinestApi>{}),
-              clientKind: 'test',
-            ),
+  test('a disconnected host reports a loaded connection with no API', () async {
+    final store = MemoryAppStore(
+      settings: const AppSettings(embeddedDaemonEnabled: false),
+    );
+    final container = ProviderContainer(
+      overrides: [
+        appServicesProvider.overrideWithValue(
+          AppServices(
+            settings: store,
+            profiles: store,
+            credentials: store,
+            clients: const _HostClients(<String, TinestApi>{}),
+            clientKind: 'test',
           ),
-        ],
-      );
-      addTearDown(container.dispose);
-      await container.read(hostRegistryControllerProvider.future);
+        ),
+      ],
+    );
+    addTearDown(container.dispose);
+    await container.read(hostRegistryControllerProvider.future);
 
-      final probe = Provider<HostApiConnection>(
-        (ref) => watchHostConnection(ref, 'missing'),
-      );
-      expect(container.read(probe), (
-        loaded: true,
-        api: null,
-        error: null,
-        stackTrace: null,
-      ));
-    },
-    tags: const <String>['feature_test__session_tabs__unit'],
-  );
+    final probe = Provider<HostApiConnection>(
+      (ref) => watchHostConnection(ref, 'missing'),
+    );
+    expect(container.read(probe), (
+      loaded: true,
+      api: null,
+      error: null,
+      stackTrace: null,
+    ));
+  }, tags: const <String>['feature_test__session_tabs__unit']);
 }
 
 final class _FailingStore
@@ -207,7 +193,7 @@ final class _FailingStore
         RemoteHostRepository,
         RemoteHostCredentialStore,
         HostClientFactory {
-  const _FailingStore();
+  const new();
 
   @override
   Future<AppSettings> loadSettings() =>
@@ -251,7 +237,7 @@ final class _FailingStore
 }
 
 final class _HostClients implements HostClientFactory {
-  const _HostClients(this.apis);
+  const new(this.apis);
 
   final Map<String, TinestApi> apis;
 

@@ -6,7 +6,7 @@ import 'package:protocol/protocol.dart';
 /// Reads the authenticated ChatGPT quota surface used by Codex subscriptions.
 final class OpenAIProviderUsageGateway implements ProviderUsageGateway {
   /// Creates the production usage transport.
-  const OpenAIProviderUsageGateway(this._dio);
+  const new(this._dio);
 
   final Dio _dio;
 
@@ -41,10 +41,7 @@ final class OpenAIProviderUsageGateway implements ProviderUsageGateway {
 /// Parses the stable, non-secret subset of ChatGPT's quota response.
 ProviderUsagePayload parseOpenAIProviderUsage(Map<String, dynamic> json) {
   final windows = <ProviderUsageWindowDto>[];
-  void addWindow(
-    ProviderUsageWindowKind kind,
-    Object? raw,
-  ) {
+  void addWindow(ProviderUsageWindowKind kind, Object? raw) {
     if (raw is! Map) return;
     final value = Map<String, dynamic>.from(raw);
     final used = _number(value['used_percent']);

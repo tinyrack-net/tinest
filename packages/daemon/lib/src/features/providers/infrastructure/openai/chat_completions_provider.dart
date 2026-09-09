@@ -12,7 +12,7 @@ import 'package:dio/dio.dart';
 /// OpenAIChatCompletionsProvider defines a public contract.
 class OpenAIChatCompletionsProvider implements ModelGateway {
   /// Creates a [OpenAIChatCompletionsProvider].
-  OpenAIChatCompletionsProvider(OpenAIProviderConfig config, {Dio? dio})
+  new(OpenAIProviderConfig config, {Dio? dio})
     : _config = config,
       _dio = dio ?? Dio(BaseOptions(baseUrl: config.baseUrl));
 

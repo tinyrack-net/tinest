@@ -67,10 +67,7 @@ void main() {
     await revisions.reload(
       'acme.reader',
       agentId: 'agent-1',
-      approvedCapabilities: const <String>{
-        'model.call',
-        'tools.invoke',
-      },
+      approvedCapabilities: const <String>{'model.call', 'tools.invoke'},
     );
     runtime = PluginRuntime<Object>(
       luaRuntime: lua.LuaToolRuntime<Object>(
@@ -113,26 +110,22 @@ void main() {
       'bindingId': 'read',
       'declaredOperations': <String>['tools.invoke'],
     });
-    expect(
-      registration.tools.single.declaredOperations,
-      const <String>{'tools.invoke'},
-    );
-    expect(
-      registration.driver?.declaredOperations,
-      const <String>{'model.open'},
-    );
-    expect(
-      registration.hooks.single.declaredOperations,
-      const <String>{'tools.invoke'},
-    );
+    expect(registration.tools.single.declaredOperations, const <String>{
+      'tools.invoke',
+    });
+    expect(registration.driver?.declaredOperations, const <String>{
+      'model.open',
+    });
+    expect(registration.hooks.single.declaredOperations, const <String>{
+      'tools.invoke',
+    });
     expect(
       registration.sessionControls.single.declaredOperations,
       const <String>{'tools.invoke'},
     );
-    expect(
-      registration.ui.single.declaredOperations,
-      const <String>{'tools.invoke'},
-    );
+    expect(registration.ui.single.declaredOperations, const <String>{
+      'tools.invoke',
+    });
     expect(toolContribution.tool?.originPluginId, 'acme.reader');
     expect(toolContribution.tool?.contributionId, 'read');
     expect(toolContribution.tool?.kind, AgentToolKind.function);
@@ -202,9 +195,8 @@ void main() {
     expect(descriptor.id, 'acme.scaffold');
     expect(descriptor.diagnostics, isEmpty);
     expect(
-      File(
-        p.join(root.path, 'v5', 'plugins', 'acme.scaffold', 'main.lua'),
-      ).existsSync(),
+      File(p.join(root.path, 'v5', 'plugins', 'acme.scaffold', 'main.lua'))
+          .existsSync(),
       isTrue,
     );
   });
@@ -246,11 +238,7 @@ void main() {
             'tools.invoke',
           },
           'tinest.files': <String>{'workspace.read'},
-          'tinest.plan': <String>{
-            'state.read',
-            'state.write',
-            'ui.publish',
-          },
+          'tinest.plan': <String>{'state.read', 'state.write', 'ui.publish'},
           'tinest.goal': <String>{
             'state.read',
             'state.write',
@@ -258,10 +246,7 @@ void main() {
             'ui.publish',
           },
           'tinest.edit': <String>{'workspace.read', 'workspace.patch'},
-          'tinest.terminal': <String>{
-            'process.execute',
-            'process.write',
-          },
+          'tinest.terminal': <String>{'process.execute', 'process.write'},
           'tinest.attachments': <String>{
             'workspace.read',
             'attachment.publish',
@@ -369,9 +354,7 @@ void main() {
         'tinest.mcp/tool_search',
       ]);
       expect(
-        registrations['tinest.mcp']!.templates.map(
-          (template) => template.id,
-        ),
+        registrations['tinest.mcp']!.templates.map((template) => template.id),
         <String>['tinest.mcp/tool_bridge'],
       );
       expect(
@@ -625,10 +608,7 @@ return tinest.plugin.define({})
     await effectRevisions.reload(
       'acme.reader',
       agentId: 'effect-agent',
-      approvedCapabilities: const <String>{
-        'model.call',
-        'tools.invoke',
-      },
+      approvedCapabilities: const <String>{'model.call', 'tools.invoke'},
     );
     final effectRuntime = PluginRuntime<Object>(
       luaRuntime: lua.LuaToolRuntime<Object>(
@@ -650,10 +630,7 @@ return tinest.plugin.define({})
     final router = _RecordingRouter();
 
     await expectLater(
-      effectSession.register(
-        pluginId: 'acme.reader',
-        callbackRouter: router,
-      ),
+      effectSession.register(pluginId: 'acme.reader', callbackRouter: router),
       throwsA(isA<PluginRegistrationException>()),
     );
     expect(router.calls, isEmpty);
@@ -976,10 +953,7 @@ return tinest.plugin.define({tools = {tool}, ui = {card}})
       value: const <String, Object?>{'text': 'approved'},
       values: const <String, Object?>{
         'tools.list': <Object?>[
-          <String, Object?>{
-            'id': 'acme.reader/read',
-            'name': 'Read',
-          },
+          <String, Object?>{'id': 'acme.reader/read', 'name': 'Read'},
         ],
       },
     );
@@ -1003,10 +977,10 @@ return tinest.plugin.define({tools = {tool}, ui = {card}})
     ]);
     expect(router.calls.last.context.pluginId, 'acme.reader');
     expect(router.calls.last.context.revisionHash, 'execution-revision-1');
-    expect(
-      router.calls.last.context.effectiveCapabilities,
-      const <String>{'model.call', 'tools.invoke'},
-    );
+    expect(router.calls.last.context.effectiveCapabilities, const <String>{
+      'model.call',
+      'tools.invoke',
+    });
   });
 
   test('preserves enriched tool result metadata across the Lua SDK', () async {
@@ -1026,10 +1000,7 @@ return tinest.plugin.define({tools = {tool}, ui = {card}})
       },
       values: const <String, Object?>{
         'tools.list': <Object?>[
-          <String, Object?>{
-            'id': 'acme.reader/read',
-            'name': 'Read',
-          },
+          <String, Object?>{'id': 'acme.reader/read', 'name': 'Read'},
         ],
       },
     );
@@ -1138,10 +1109,7 @@ return {}
     await revisions.reload(
       'acme.reader',
       agentId: 'agent-2',
-      approvedCapabilities: const <String>{
-        'model.call',
-        'tools.invoke',
-      },
+      approvedCapabilities: const <String>{'model.call', 'tools.invoke'},
     );
     final malformedRuntime = PluginRuntime<Object>(
       luaRuntime: lua.LuaToolRuntime<Object>(
@@ -1459,7 +1427,7 @@ return tinest.plugin.define({
 }
 
 final class _BundleLoader implements PluginBundleLoader {
-  const _BundleLoader(this.bundle);
+  const new(this.bundle);
 
   final PluginBundle bundle;
 
@@ -1468,7 +1436,7 @@ final class _BundleLoader implements PluginBundleLoader {
 }
 
 final class _MutableBundleLoader implements PluginBundleLoader {
-  _MutableBundleLoader(this.bundle);
+  new(this.bundle);
 
   PluginBundle bundle;
 
@@ -1477,7 +1445,7 @@ final class _MutableBundleLoader implements PluginBundleLoader {
 }
 
 final class _MapBundleLoader implements PluginBundleLoader {
-  const _MapBundleLoader(this.bundles);
+  const new(this.bundles);
 
   final Map<String, PluginBundle> bundles;
 
@@ -1486,7 +1454,7 @@ final class _MapBundleLoader implements PluginBundleLoader {
 }
 
 final class _SourceCatalog implements PluginSourceCatalog {
-  const _SourceCatalog(this.ids);
+  const new(this.ids);
 
   final List<String> ids;
 
@@ -1542,7 +1510,7 @@ final class _MemoryRevisionCache implements PluginRevisionCache {
 }
 
 final class _RecordingRouter implements PluginCallbackRouter<Object> {
-  _RecordingRouter({
+  new({
     this.authorization = const PluginCallAuthorization.denied('not expected'),
     this.value,
     this.values = const <String, Object?>{},
@@ -1581,7 +1549,7 @@ final class _RecordingRouter implements PluginCallbackRouter<Object> {
 }
 
 final class _Call {
-  const _Call(this.context, this.name);
+  const new(this.context, this.name);
 
   final PluginHostCallContext context;
   final String name;

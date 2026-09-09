@@ -8,7 +8,7 @@ const String geminiInteractionsWireId = 'gemini-interactions';
 /// Gemini Interactions v1 transport.
 final class GeminiInteractionsWire implements ProviderWireProtocol {
   /// Creates the wire with an optional deterministic HTTP client factory.
-  const GeminiInteractionsWire({this.dioFactory});
+  const new({this.dioFactory});
 
   /// Injectable client factory used by contract tests.
   final Dio Function(ProviderEndpoint endpoint)? dioFactory;

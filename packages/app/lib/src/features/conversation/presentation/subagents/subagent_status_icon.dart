@@ -8,11 +8,7 @@ import 'package:protocol/protocol.dart';
 /// [TinestStatusIcon], shared with every other surface that reports work.
 class SubagentStatusIcon extends StatelessWidget {
   /// Creates a lifecycle indicator.
-  const SubagentStatusIcon({
-    required this.lifecycle,
-    this.status,
-    super.key,
-  });
+  const new({required this.lifecycle, this.status, super.key});
 
   /// The lifecycle to render; null renders as pending.
   final AgentLifecycle? lifecycle;

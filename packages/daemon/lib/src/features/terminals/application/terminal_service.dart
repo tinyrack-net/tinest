@@ -40,7 +40,7 @@ enum TerminalCreationFailureReason {
 /// Sanitized application failure raised before a terminal becomes live.
 final class TerminalCreationException implements Exception {
   /// Creates a typed terminal creation failure.
-  const TerminalCreationException(this.reason, this.message);
+  const new(this.reason, this.message);
 
   /// Stable reason translated by the transport boundary.
   final TerminalCreationFailureReason reason;
@@ -55,7 +55,7 @@ final class TerminalCreationException implements Exception {
 /// Owns live terminals, their screens, and a short output tail.
 final class TerminalService {
   /// Creates a terminal service around injected host boundaries.
-  TerminalService({
+  new({
     required this.gateway,
     required this.screens,
     required this.worktreePath,
@@ -302,11 +302,7 @@ final class TerminalService {
 }
 
 final class _LiveTerminal {
-  _LiveTerminal({
-    required this.process,
-    required this.screen,
-    required this.dto,
-  });
+  new({required this.process, required this.screen, required this.dto});
   final TerminalProcess process;
 
   /// Parsed mirror of everything this terminal has emitted.

@@ -5,13 +5,13 @@
 /// configuration onto these specs.
 sealed class McpTransportSpec {
   /// Creates a [McpTransportSpec].
-  const McpTransportSpec();
+  const new();
 }
 
 /// Launches a child process and speaks newline-delimited JSON over its stdio.
 final class McpStdioSpec extends McpTransportSpec {
   /// Creates a [McpStdioSpec].
-  const McpStdioSpec({
+  const new({
     required this.command,
     this.args = const <String>[],
     this.env = const <String, String>{},
@@ -34,10 +34,7 @@ final class McpStdioSpec extends McpTransportSpec {
 /// Posts JSON-RPC messages to a Streamable HTTP endpoint.
 final class McpHttpSpec extends McpTransportSpec {
   /// Creates a [McpHttpSpec].
-  const McpHttpSpec({
-    required this.url,
-    this.headers = const <String, String>{},
-  });
+  const new({required this.url, this.headers = const <String, String>{}});
 
   /// The single endpoint every message is posted to.
   final Uri url;
@@ -49,7 +46,7 @@ final class McpHttpSpec extends McpTransportSpec {
 /// A closed or never-started transport was asked to carry a message.
 class McpTransportClosed implements Exception {
   /// Creates a [McpTransportClosed].
-  const McpTransportClosed([this.reason]);
+  const new([this.reason]);
 
   /// Why the transport is unusable, when known.
   final String? reason;

@@ -169,9 +169,8 @@ void main() {
               localizationsDelegates: testLocalizationsDelegates,
               supportedLocales: testSupportedLocales,
               routerConfig: router,
-              builder: (context, child) => TinestUiDensity(
-                child: child ?? const SizedBox.shrink(),
-              ),
+              builder: (context, child) =>
+                  TinestUiDensity(child: child ?? const SizedBox.shrink()),
             ),
           ),
         );
@@ -182,18 +181,12 @@ void main() {
         // retain the shell and content Page identities.
         unawaited(router.push<void>(locations[1]));
         await tester.pumpAndSettle();
-        expect(
-          router.state.uri.path,
-          Uri.parse(locations[1]).path,
-        );
+        expect(router.state.uri.path, Uri.parse(locations[1]).path);
         expect(tester.state(find.byType(WorkspacePage)), same(page));
         for (final location in locations.skip(2)) {
           unawaited(router.replace<void>(location));
           await tester.pumpAndSettle();
-          expect(
-            router.state.uri.path,
-            Uri.parse(location).path,
-          );
+          expect(router.state.uri.path, Uri.parse(location).path);
           expect(tester.state(find.byType(WorkspacePage)), same(page));
         }
         expect(tester.takeException(), isNull);
@@ -564,9 +557,8 @@ Future<void> _verifyRoute(
           localizationsDelegates: testLocalizationsDelegates,
           supportedLocales: testSupportedLocales,
           routerConfig: router,
-          builder: (context, child) => TinestUiDensity(
-            child: child ?? const SizedBox.shrink(),
-          ),
+          builder: (context, child) =>
+              TinestUiDensity(child: child ?? const SizedBox.shrink()),
         ),
       ),
     );

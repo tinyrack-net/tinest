@@ -8,7 +8,7 @@ WebSocketConnector createConnector() => const IoWebSocketConnector();
 /// IoWebSocketConnector defines a public contract.
 final class IoWebSocketConnector implements WebSocketConnector {
   /// Creates a [IoWebSocketConnector].
-  const IoWebSocketConnector({
+  const new({
     this.connectTimeout = const Duration(seconds: 10),
     this.pingInterval = const Duration(seconds: 10),
   });

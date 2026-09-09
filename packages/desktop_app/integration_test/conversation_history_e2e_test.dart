@@ -162,44 +162,40 @@ void main() {
       final restoredItem = _chatItem(savedPosition.key);
       var restorationState = 'the restored timeline was not evaluated';
       try {
-        await pumpUntilCondition(
-          tester,
-          () {
-            final matchingItems = restoredItem.evaluate().length;
-            final timeline = tester.widget<ChatTimelineView>(
-              find.byType(ChatTimelineView),
+        await pumpUntilCondition(tester, () {
+          final matchingItems = restoredItem.evaluate().length;
+          final timeline = tester.widget<ChatTimelineView>(
+            find.byType(ChatTimelineView),
+          );
+          if (matchingItems != 1) {
+            final scrollables = _timeline.evaluate().length;
+            final extentAfter = scrollables == 1
+                ? _position(tester).extentAfter.toString()
+                : 'unavailable';
+            final modelContains = timeline.items.any(
+              (item) => item.key == savedPosition.key,
             );
-            if (matchingItems != 1) {
-              final scrollables = _timeline.evaluate().length;
-              final extentAfter = scrollables == 1
-                  ? _position(tester).extentAfter.toString()
-                  : 'unavailable';
-              final modelContains = timeline.items.any(
-                (item) => item.key == savedPosition.key,
-              );
-              restorationState =
-                  'matchingItems=$matchingItems, '
-                  'modelContains=$modelContains, '
-                  'modelItems=${timeline.items.length}, '
-                  'snapshot=${timeline.readingPosition != null}, '
-                  'extentAfter=$extentAfter';
-              return false;
-            }
-            final viewport = tester.getRect(_timeline);
-            final item = tester.getRect(restoredItem);
-            final restoredOffset = item.top - viewport.top;
-            final hasSnapshot = timeline.readingPosition != null;
             restorationState =
-                'matchingItems=1, snapshot=$hasSnapshot, '
-                'expectedOffset=${savedPosition.viewportOffset}, '
-                'actualOffset=$restoredOffset, '
-                'extentAfter=${_position(tester).extentAfter}';
-            return (restoredOffset - savedPosition.viewportOffset).abs() <=
-                    _geometryTolerance &&
-                _position(tester).extentAfter > 1;
-          },
-          'the saved history row to return to its viewport position',
-        );
+                'matchingItems=$matchingItems, '
+                'modelContains=$modelContains, '
+                'modelItems=${timeline.items.length}, '
+                'snapshot=${timeline.readingPosition != null}, '
+                'extentAfter=$extentAfter';
+            return false;
+          }
+          final viewport = tester.getRect(_timeline);
+          final item = tester.getRect(restoredItem);
+          final restoredOffset = item.top - viewport.top;
+          final hasSnapshot = timeline.readingPosition != null;
+          restorationState =
+              'matchingItems=1, snapshot=$hasSnapshot, '
+              'expectedOffset=${savedPosition.viewportOffset}, '
+              'actualOffset=$restoredOffset, '
+              'extentAfter=${_position(tester).extentAfter}';
+          return (restoredOffset - savedPosition.viewportOffset).abs() <=
+                  _geometryTolerance &&
+              _position(tester).extentAfter > 1;
+        }, 'the saved history row to return to its viewport position');
       } on TestFailure catch (error) {
         throw TestFailure('$error Last restoration state: $restorationState');
       }
@@ -451,7 +447,7 @@ Finder _sessionTimeline(String sessionId) => find.byWidgetPredicate(
 
 final class _HistoryCatalogMetadataSource
     implements ProviderCatalogMetadataSource {
-  const _HistoryCatalogMetadataSource();
+  const new();
 
   @override
   Future<Map<String, List<ProviderCatalogMetadata>>> fetch(

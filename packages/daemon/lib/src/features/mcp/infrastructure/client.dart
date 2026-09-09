@@ -11,7 +11,7 @@ import 'package:daemon/src/shared/ports/request_cancellation.dart';
 /// finished, and the caller builds a new one.
 final class McpClient {
   /// Creates a client that talks over [transport].
-  McpClient({
+  new({
     required this.transport,
     this.clientVersion = '0.0.0',
     this.requestTimeout = const Duration(seconds: 60),
@@ -104,18 +104,14 @@ final class McpClient {
 
     final Map<String, dynamic> result;
     try {
-      result = await _request(
-        McpMethod.initialize,
-        <String, dynamic>{
-          'protocolVersion': preferredMcpProtocolVersion,
-          'capabilities': <String, dynamic>{'tools': <String, dynamic>{}},
-          'clientInfo': <String, dynamic>{
-            'name': clientName,
-            'version': clientVersion,
-          },
+      result = await _request(McpMethod.initialize, <String, dynamic>{
+        'protocolVersion': preferredMcpProtocolVersion,
+        'capabilities': <String, dynamic>{'tools': <String, dynamic>{}},
+        'clientInfo': <String, dynamic>{
+          'name': clientName,
+          'version': clientVersion,
         },
-        timeout: initializeTimeout,
-      );
+      }, timeout: initializeTimeout);
     } on Object {
       await close();
       rethrow;
@@ -295,9 +291,7 @@ final class McpClient {
     T Function(Map<String, dynamic> json) decode,
     String? cursor,
   ) async {
-    final result = await _request(method, <String, dynamic>{
-      'cursor': ?cursor,
-    });
+    final result = await _request(method, <String, dynamic>{'cursor': ?cursor});
     final decoded = <T>[];
     final entries = result[key];
     if (entries is List) {

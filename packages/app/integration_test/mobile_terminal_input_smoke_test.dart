@@ -48,10 +48,10 @@ Future<void> _sendEditingState(
   TextEditingValue value,
 ) async {
   final message = SystemChannels.textInput.codec.encodeMethodCall(
-    MethodCall(
-      'TextInputClient.updateEditingState',
-      <Object?>[-1, value.toJSON()],
-    ),
+    MethodCall('TextInputClient.updateEditingState', <Object?>[
+      -1,
+      value.toJSON(),
+    ]),
   );
   await tester.binding.defaultBinaryMessenger.handlePlatformMessage(
     SystemChannels.textInput.name,
@@ -158,10 +158,7 @@ void main() {
       );
       await tester.pump();
 
-      expect(
-        api.terminalWrites.map((write) => write.data).join(),
-        '한글입력\r',
-      );
+      expect(api.terminalWrites.map((write) => write.data).join(), '한글입력\r');
       expect(
         api.terminalWrites.map((write) => write.terminalId).toSet(),
         <String>{_terminal.id},

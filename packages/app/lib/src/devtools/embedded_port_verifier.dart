@@ -5,7 +5,7 @@ import 'package:path/path.dart' as p;
 /// A test-isolation rule violation about machine-global daemon resources.
 final class EmbeddedPortViolation {
   /// Creates an [EmbeddedPortViolation].
-  const EmbeddedPortViolation({
+  const new({
     required this.path,
     required this.line,
     required this.rule,
@@ -37,7 +37,7 @@ final class EmbeddedPortViolation {
 /// `melos run:daemon`, then fail with `embeddedPortInUse`.
 final class EmbeddedPortVerifier {
   /// Creates a verifier rooted at [workspaceRoot].
-  const EmbeddedPortVerifier(this.workspaceRoot);
+  const new(this.workspaceRoot);
 
   /// The Pub workspace root to inspect.
   final String workspaceRoot;

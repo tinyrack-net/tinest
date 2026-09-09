@@ -73,7 +73,7 @@ void main() {
 }
 
 final class _Clock implements Clock {
-  const _Clock(this.now);
+  const new(this.now);
   final DateTime now;
 
   @override

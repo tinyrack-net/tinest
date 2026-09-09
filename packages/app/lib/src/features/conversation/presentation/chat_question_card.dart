@@ -21,11 +21,7 @@ const String _otherValue = 'other';
 /// the user is never forced into an option that does not fit.
 class ChatQuestionCard extends ConsumerStatefulWidget {
   /// Creates a [ChatQuestionCard].
-  const ChatQuestionCard({
-    required this.hostId,
-    required this.request,
-    super.key,
-  });
+  const new({required this.hostId, required this.request, super.key});
 
   /// Stable host profile containing the question's session.
   final String? hostId;
@@ -151,9 +147,7 @@ class _ChatQuestionCardState extends ConsumerState<ChatQuestionCard> {
     final lastQuestion = _activeQuestionIndex == questions.length - 1;
     final answers = _answers;
     return Padding(
-      padding: const EdgeInsets.symmetric(
-        vertical: TRSpacing.extraSmall,
-      ),
+      padding: const EdgeInsets.symmetric(vertical: TRSpacing.extraSmall),
       child: TRCard(
         key: ValueKey<String>('chat-question-${widget.request.id}'),
         padding: TRCardPadding.none,
@@ -246,7 +240,7 @@ class _ChatQuestionCardState extends ConsumerState<ChatQuestionCard> {
 }
 
 class _QuestionSection extends StatelessWidget {
-  const _QuestionSection({
+  const new({
     required this.question,
     required this.selected,
     required this.freeFormController,
@@ -320,7 +314,7 @@ class _QuestionSection extends StatelessWidget {
 }
 
 class _OptionLabel extends StatelessWidget {
-  const _OptionLabel({required this.option});
+  const new({required this.option});
 
   final UserQuestionOptionDto option;
 

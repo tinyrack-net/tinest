@@ -18,7 +18,7 @@ const int defaultProjectDocMaxBytes = 32 * 1024;
 /// Workspace documentation collected for one turn.
 class ProjectDoc {
   /// Creates a [ProjectDoc].
-  const ProjectDoc({required this.text, required this.paths});
+  const new({required this.text, required this.paths});
 
   /// The concatenated documents, outermost directory first.
   final String text;
@@ -47,7 +47,7 @@ class ProjectDoc {
 /// it is read, and a working directory outside it collapses to the root.
 class ProjectDocLoader {
   /// Creates a [ProjectDocLoader].
-  ProjectDocLoader({
+  new({
     this._fileSystem = const LocalFileSystem(),
     this.maxBytes = defaultProjectDocMaxBytes,
   });

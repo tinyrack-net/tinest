@@ -30,104 +30,100 @@ void main() {
     );
   });
 
-  test(
-    'persists typed settings and profiles without bearer tokens',
-    () async {
-      final preferences = await SharedPreferences.getInstance();
-      final store = SharedPreferencesAppStore(preferences);
-      const secureStorage = FlutterSecureStorage();
-      const credentials = SecureRemoteHostCredentialStore(secureStorage);
-      final now = DateTime.utc(2026, 8, 3);
-      final profile = RemoteDaemonProfile(
-        id: 'host-id',
-        label: 'Production',
-        connections: directHostConnections(
-          Uri.parse('wss://tinest.example.com/ws'),
-        ),
-        autoConnect: true,
-        serverId: 'server-id',
-        createdAt: now,
-        updatedAt: now,
-        lastConnectedAt: now,
-      );
+  test('persists typed settings and profiles without bearer tokens', () async {
+    final preferences = await SharedPreferences.getInstance();
+    final store = SharedPreferencesAppStore(preferences);
+    const secureStorage = FlutterSecureStorage();
+    const credentials = SecureRemoteHostCredentialStore(secureStorage);
+    final now = DateTime.utc(2026, 8, 3);
+    final profile = RemoteDaemonProfile(
+      id: 'host-id',
+      label: 'Production',
+      connections: directHostConnections(
+        Uri.parse('wss://tinest.example.com/ws'),
+      ),
+      autoConnect: true,
+      serverId: 'server-id',
+      createdAt: now,
+      updatedAt: now,
+      lastConnectedAt: now,
+    );
 
-      const selection = WorkspaceSelection(
-        hostId: 'host-id',
-        workspaceId: 'workspace-id',
-        worktreeId: 'worktree-id',
-      );
-      await store.saveSettings(
-        AppSettings(
-          embeddedDaemonEnabled: false,
-          embeddedDaemonExposure: EmbeddedDaemonExposure.allInterfaces,
-          embeddedDaemonPort: 8123,
-          lastActiveHostId: 'host-id',
-          lastWorktree: selection,
-          sessionTabs: <String, SessionTabPreference>{
-            selection.storageKey: const SessionTabPreference(
-              tabs: <WorkspaceTabPreference>[
-                WorkspaceTabPreference(
-                  id: 'session:agent-1',
-                  kind: WorkspaceTabTargetKind.session,
-                  targetId: 'agent-1',
-                ),
-                WorkspaceTabPreference(
-                  id: 'session:agent-2',
-                  kind: WorkspaceTabTargetKind.session,
-                  targetId: 'agent-2',
-                ),
-              ],
-              root: WorkspacePanePreference(
-                id: 'pane:one',
-                tabIds: <String>['session:agent-1', 'session:agent-2'],
-                activeTabId: 'session:agent-2',
+    const selection = WorkspaceSelection(
+      hostId: 'host-id',
+      workspaceId: 'workspace-id',
+      worktreeId: 'worktree-id',
+    );
+    await store.saveSettings(
+      AppSettings(
+        embeddedDaemonEnabled: false,
+        embeddedDaemonExposure: EmbeddedDaemonExposure.allInterfaces,
+        embeddedDaemonPort: 8123,
+        lastActiveHostId: 'host-id',
+        lastWorktree: selection,
+        sessionTabs: <String, SessionTabPreference>{
+          selection.storageKey: const SessionTabPreference(
+            tabs: <WorkspaceTabPreference>[
+              WorkspaceTabPreference(
+                id: 'session:agent-1',
+                kind: WorkspaceTabTargetKind.session,
+                targetId: 'agent-1',
               ),
-              focusedPaneId: 'pane:one',
+              WorkspaceTabPreference(
+                id: 'session:agent-2',
+                kind: WorkspaceTabTargetKind.session,
+                targetId: 'agent-2',
+              ),
+            ],
+            root: WorkspacePanePreference(
+              id: 'pane:one',
+              tabIds: <String>['session:agent-1', 'session:agent-2'],
+              activeTabId: 'session:agent-2',
             ),
-          },
-          sidebarCollapsed: true,
-          localeTag: 'en',
-          startAtBoot: false,
-          startMinimizedAtBoot: false,
-          themeMode: AppThemeMode.dark,
-        ),
-      );
-      await store.upsertProfile(profile);
-      await credentials.writeBearerToken('host-id', 'bearer-secret');
+            focusedPaneId: 'pane:one',
+          ),
+        },
+        sidebarCollapsed: true,
+        localeTag: 'en',
+        startAtBoot: false,
+        startMinimizedAtBoot: false,
+        themeMode: AppThemeMode.dark,
+      ),
+    );
+    await store.upsertProfile(profile);
+    await credentials.writeBearerToken('host-id', 'bearer-secret');
 
-      final restored = await store.loadSettings();
-      expect(
-        restored.embeddedDaemonExposure,
-        EmbeddedDaemonExposure.allInterfaces,
-      );
-      expect(restored.embeddedDaemonPort, 8123);
-      expect(restored.lastWorktree, selection);
-      expect(restored.sidebarCollapsed, isTrue);
-      expect(restored.localeTag, 'en');
-      expect(restored.startAtBoot, isFalse);
-      expect(restored.startMinimizedAtBoot, isFalse);
-      expect(restored.themeMode, AppThemeMode.dark);
-      expect(
-        restored.sessionTabs[selection.storageKey]?.tabs.map((tab) => tab.id),
-        <String>['session:agent-1', 'session:agent-2'],
-      );
-      expect(
-        (await store.listProfiles())
-            .single
-            .directConnections
-            .single
-            .endpoint
-            .websocketUri,
-        profile.directConnections.single.endpoint.websocketUri,
-      );
-      expect(await credentials.readBearerToken('host-id'), 'bearer-secret');
-      final document = preferences.getString(
-        SharedPreferencesAppStore.documentKey,
-      );
-      expect(document, isNot(contains('bearer-secret')));
-    },
-    tags: const <String>['feature_test__daemon_exposure__contract'],
-  );
+    final restored = await store.loadSettings();
+    expect(
+      restored.embeddedDaemonExposure,
+      EmbeddedDaemonExposure.allInterfaces,
+    );
+    expect(restored.embeddedDaemonPort, 8123);
+    expect(restored.lastWorktree, selection);
+    expect(restored.sidebarCollapsed, isTrue);
+    expect(restored.localeTag, 'en');
+    expect(restored.startAtBoot, isFalse);
+    expect(restored.startMinimizedAtBoot, isFalse);
+    expect(restored.themeMode, AppThemeMode.dark);
+    expect(
+      restored.sessionTabs[selection.storageKey]?.tabs.map((tab) => tab.id),
+      <String>['session:agent-1', 'session:agent-2'],
+    );
+    expect(
+      (await store.listProfiles())
+          .single
+          .directConnections
+          .single
+          .endpoint
+          .websocketUri,
+      profile.directConnections.single.endpoint.websocketUri,
+    );
+    expect(await credentials.readBearerToken('host-id'), 'bearer-secret');
+    final document = preferences.getString(
+      SharedPreferencesAppStore.documentKey,
+    );
+    expect(document, isNot(contains('bearer-secret')));
+  }, tags: const <String>['feature_test__daemon_exposure__contract']);
 
   test(
     'clearing drops the document after every queued write settles',
@@ -164,36 +160,30 @@ void main() {
     tags: const <String>['feature_test__settings_reset__unit'],
   );
 
-  test(
-    'clearing bearer tokens removes only remote host entries',
-    () async {
-      FlutterSecureStorage.setMockInitialValues(<String, String>{
-        'unrelated.plugin.key': 'keep-me',
-        'tinyrack_tinest.remote_host_token.legacy': 'v3-secret',
-      });
-      const credentials = SecureRemoteHostCredentialStore(
-        FlutterSecureStorage(),
-      );
-      await credentials.writeBearerToken('first', 'one');
-      await credentials.writeBearerToken('second', 'two');
+  test('clearing bearer tokens removes only remote host entries', () async {
+    FlutterSecureStorage.setMockInitialValues(<String, String>{
+      'unrelated.plugin.key': 'keep-me',
+      'tinyrack_tinest.remote_host_token.legacy': 'v3-secret',
+    });
+    const credentials = SecureRemoteHostCredentialStore(FlutterSecureStorage());
+    await credentials.writeBearerToken('first', 'one');
+    await credentials.writeBearerToken('second', 'two');
 
-      await credentials.deleteAllBearerTokens();
+    await credentials.deleteAllBearerTokens();
 
-      expect(await credentials.readBearerToken('first'), isNull);
-      expect(await credentials.readBearerToken('second'), isNull);
-      expect(
-        await const FlutterSecureStorage().read(key: 'unrelated.plugin.key'),
-        'keep-me',
-      );
-      expect(
-        await const FlutterSecureStorage().read(
-          key: 'tinyrack_tinest.remote_host_token.legacy',
-        ),
-        'v3-secret',
-      );
-    },
-    tags: const <String>['feature_test__settings_reset__unit'],
-  );
+    expect(await credentials.readBearerToken('first'), isNull);
+    expect(await credentials.readBearerToken('second'), isNull);
+    expect(
+      await const FlutterSecureStorage().read(key: 'unrelated.plugin.key'),
+      'keep-me',
+    );
+    expect(
+      await const FlutterSecureStorage().read(
+        key: 'tinyrack_tinest.remote_host_token.legacy',
+      ),
+      'v3-secret',
+    );
+  }, tags: const <String>['feature_test__settings_reset__unit']);
 
   test('fresh storage ignores legacy singleton host keys', () async {
     SharedPreferences.setMockInitialValues(<String, Object>{
@@ -237,9 +227,8 @@ void main() {
         }),
       );
 
-      final restored = await SharedPreferencesAppStore(
-        preferences,
-      ).loadSettings();
+      final restored = await SharedPreferencesAppStore(preferences)
+          .loadSettings();
       expect(restored.lastActiveHostId, 'server');
       expect(restored.sidebarCollapsed, isTrue);
       expect(restored.sessionTabs, isEmpty);
@@ -249,9 +238,7 @@ void main() {
   test('updates and removes profiles and their secure credentials', () async {
     final preferences = await SharedPreferences.getInstance();
     final store = SharedPreferencesAppStore(preferences);
-    const credentials = SecureRemoteHostCredentialStore(
-      FlutterSecureStorage(),
-    );
+    const credentials = SecureRemoteHostCredentialStore(FlutterSecureStorage());
     final createdAt = DateTime.utc(2026, 8, 3);
     final original = RemoteDaemonProfile(
       id: 'host-id',
@@ -286,9 +273,7 @@ void main() {
   test('persists relay paths, device keys, and split pane trees', () async {
     final preferences = await SharedPreferences.getInstance();
     final store = SharedPreferencesAppStore(preferences);
-    const credentials = SecureRemoteHostCredentialStore(
-      FlutterSecureStorage(),
-    );
+    const credentials = SecureRemoteHostCredentialStore(FlutterSecureStorage());
     final createdAt = DateTime.utc(2026, 8, 8);
     final relay = RelayHostConnection(
       id: 'relay-path',
@@ -374,10 +359,7 @@ void main() {
     expect(restoredCredential?.privateKey, deviceCredential.privateKey);
 
     await credentials.deleteRelayCredential('relay-credential');
-    expect(
-      await credentials.readRelayCredential('relay-credential'),
-      isNull,
-    );
+    expect(await credentials.readRelayCredential('relay-credential'), isNull);
   });
 
   test('rejects malformed relay device credentials', () async {
@@ -437,23 +419,19 @@ void main() {
     ],
   );
 
-  test(
-    'every appearance choice is written by name and read back',
-    () async {
-      final preferences = await SharedPreferences.getInstance();
-      final store = SharedPreferencesAppStore(preferences);
+  test('every appearance choice is written by name and read back', () async {
+    final preferences = await SharedPreferences.getInstance();
+    final store = SharedPreferencesAppStore(preferences);
 
-      for (final mode in AppThemeMode.values) {
-        await store.saveSettings(AppSettings(themeMode: mode));
-        expect(
-          preferences.getString(SharedPreferencesAppStore.documentKey),
-          contains('"themeMode":"${mode.name}"'),
-        );
-        expect((await store.loadSettings()).themeMode, mode);
-      }
-    },
-    tags: const <String>['feature_test__settings_appearance__unit'],
-  );
+    for (final mode in AppThemeMode.values) {
+      await store.saveSettings(AppSettings(themeMode: mode));
+      expect(
+        preferences.getString(SharedPreferencesAppStore.documentKey),
+        contains('"themeMode":"${mode.name}"'),
+      );
+      expect((await store.loadSettings()).themeMode, mode);
+    }
+  }, tags: const <String>['feature_test__settings_appearance__unit']);
 
   test('rejects incompatible and malformed settings documents', () async {
     final preferences = await SharedPreferences.getInstance();

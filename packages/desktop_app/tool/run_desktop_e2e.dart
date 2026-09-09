@@ -86,7 +86,7 @@ Future<int> _runDesktopE2e(DesktopE2eOptions options) async {
 }
 
 final class _IoDesktopE2eRuntime implements DesktopE2eRuntime {
-  const _IoDesktopE2eRuntime();
+  const new();
 
   @override
   Future<DesktopE2eBuildLease> acquireProjectBuildLease(
@@ -127,13 +127,11 @@ final class _IoDesktopE2eRuntime implements DesktopE2eRuntime {
   }
 
   @override
-  Future<void> resetWindowsLaneBuild(
-    String projectDirectory,
-    int laneIndex,
-  ) => resetWindowsE2eLaneBuild(
-    projectDirectory: projectDirectory,
-    laneIndex: laneIndex,
-  );
+  Future<void> resetWindowsLaneBuild(String projectDirectory, int laneIndex) =>
+      resetWindowsE2eLaneBuild(
+        projectDirectory: projectDirectory,
+        laneIndex: laneIndex,
+      );
 
   @override
   Future<DesktopE2eLaneResources> createLaneResources(int laneIndex) async {
@@ -200,7 +198,7 @@ final class _IoDesktopE2eRuntime implements DesktopE2eRuntime {
 }
 
 final class _IoDesktopE2eBuildLease implements DesktopE2eBuildLease {
-  _IoDesktopE2eBuildLease(this._handle);
+  new(this._handle);
 
   RandomAccessFile? _handle;
 
@@ -227,11 +225,9 @@ String _stablePathHash(String value) {
 }
 
 final class _IoDesktopE2eProcess implements DesktopE2eProcess {
-  _IoDesktopE2eProcess({
-    required Process process,
-    required String readinessMarker,
-  }) : exitCode = process.exitCode,
-       ready = _waitForMarker(process.exitCode, readinessMarker);
+  new({required Process process, required String readinessMarker})
+    : exitCode = process.exitCode,
+      ready = _waitForMarker(process.exitCode, readinessMarker);
 
   @override
   final Future<int> exitCode;

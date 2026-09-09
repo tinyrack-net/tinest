@@ -76,16 +76,13 @@ void main() {
       invoke: (_, _) async => const <String, Object?>{'text': ''},
     );
 
-    expect(
-      primitive.descriptor.toJson(),
-      <String, Object?>{
-        'operation': 'workspace.read_text',
-        'capability': 'workspace.read',
-        'effect': 'read',
-        'luaInputType': 'any',
-        'luaOutputType': 'any',
-      },
-    );
+    expect(primitive.descriptor.toJson(), <String, Object?>{
+      'operation': 'workspace.read_text',
+      'capability': 'workspace.read',
+      'effect': 'read',
+      'luaInputType': 'any',
+      'luaOutputType': 'any',
+    });
     expect(
       primitive.descriptor.toJson().keys,
       isNot(containsAll(<String>['name', 'description', 'inputSchema'])),
@@ -183,26 +180,21 @@ void main() {
       invoke: (_, _) => const <String, Object?>{'text': ''},
     );
 
-    expect(
-      primitive.descriptor.toJson(),
-      <String, Object?>{
-        'operation': 'host.workspace.read_text',
-        'capability': 'workspace.read',
-        'effect': 'read',
-        'luaInputType': 'tinest.WorkspaceReadTextInput',
-        'luaOutputType': 'tinest.WorkspaceReadTextOutput',
-      },
-    );
+    expect(primitive.descriptor.toJson(), <String, Object?>{
+      'operation': 'host.workspace.read_text',
+      'capability': 'workspace.read',
+      'effect': 'read',
+      'luaInputType': 'tinest.WorkspaceReadTextInput',
+      'luaOutputType': 'tinest.WorkspaceReadTextOutput',
+    });
   });
 
   test('public contract catalog rejects duplicate operation ids', () {
     expect(
-      () => indexHostPrimitiveContracts(
-        const <PublicHostPrimitiveContract>[
-          HostPrimitiveContracts.workspaceReadText,
-          HostPrimitiveContracts.workspaceReadText,
-        ],
-      ),
+      () => indexHostPrimitiveContracts(const <PublicHostPrimitiveContract>[
+        HostPrimitiveContracts.workspaceReadText,
+        HostPrimitiveContracts.workspaceReadText,
+      ]),
       throwsStateError,
     );
   });

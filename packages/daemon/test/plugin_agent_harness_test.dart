@@ -194,69 +194,133 @@ void main() {
     },
   );
 
-  test(
-    'the built-in standard driver builds every prompt block from the '
-    'universal role set',
-    () async {
-      const agentId = 'universal-role-agent';
-      final standard = await const BuiltInPluginCatalog().load(
-        'tinest.standard',
-      );
-      final revisions = PluginRevisionCatalog(
-        loader: _BundleLoader(standard),
-        cache: _MemoryRevisionCache(),
-      );
-      final capabilities = standard.descriptor.requestedCapabilities.toSet();
-      await revisions.reload(
-        standard.descriptor.id,
-        agentId: agentId,
-        approvedCapabilities: capabilities,
-      );
-      final runtime = _pluginRuntime(stagedHost, revisions);
-      addTearDown(runtime.close);
-      final model = _RecordingModelGateway();
+  test('the built-in standard driver builds every prompt block from the '
+      'universal role set', () async {
+    const agentId = 'universal-role-agent';
+    final standard = await const BuiltInPluginCatalog().load('tinest.standard');
+    final revisions = PluginRevisionCatalog(
+      loader: _BundleLoader(standard),
+      cache: _MemoryRevisionCache(),
+    );
+    final capabilities = standard.descriptor.requestedCapabilities.toSet();
+    await revisions.reload(
+      standard.descriptor.id,
+      agentId: agentId,
+      approvedCapabilities: capabilities,
+    );
+    final runtime = _pluginRuntime(stagedHost, revisions);
+    addTearDown(runtime.close);
+    final model = _RecordingModelGateway();
 
-      await LuaAgentHarness(runtime: runtime).startTurn(
+    await LuaAgentHarness(runtime: runtime).startTurn(
+      request: LuaAgentHarnessRequest(
+        definition: const AgentDefinitionDto(
+          version: 5,
+          id: agentId,
+          name: 'Universal Role Agent',
+          description: '',
+          mode: AgentMode.primary,
+          model: AgentModelSelectionDto(source: AgentModelSource.session),
+          driverId: 'tinest.standard/driver',
+          extensionIds: <String>[],
+          toolIds: <String>[],
+          pluginSettings: <String, Map<String, dynamic>>{},
+          callableAgentIds: <String>[],
+          prompt: 'AGENT BODY',
+          contentHash: 'universal-role-agent-hash',
+          sourcePath: 'universal-role-agent.md',
+        ),
+        sessionId: 'universal-role-session',
+        turnId: 'universal-role-turn',
+        workspaceRoot: Directory.current.path,
+        prompt: 'run',
+        modelId: 'universal-role-model',
+        model: model,
+        modelCapabilities: const AgentModelCapabilities(
+          streaming: AgentCapabilitySupport.supported,
+        ),
+        history: const <ConversationItem>[],
+        // Exercises the permission-policy, project-document and agent-prompt
+        // blocks in one turn, so every prompt-composition path is covered.
+        projectDocument: 'PROJECT DOCUMENT',
+        extensionData: const <String, Object?>{
+          'host_policy': <String, Object?>{
+            'permission_mode': 'readOnly',
+            'workspace_root': '/workspace',
+          },
+        },
+        allowedCapabilitiesByPlugin: <String, Set<String>>{
+          standard.descriptor.id: capabilities,
+        },
+        state: MemoryPluginStateStore(),
+      ),
+      callbacks: LuaAgentHarnessCallbacks(
+        onEvent: (_, _) {},
+        onStatus: (_, {error}) {},
+        onProviderItems: (_) {},
+      ),
+      cancellation: CancellationToken(),
+    );
+
+    // A driver may only name roles every transport accepts. One vendor's
+    // superset reaches the others as an unknown role and fails the request.
+    expect(model.requests, isNotEmpty);
+    expect(
+      model.requests
+          .expand((request) => request.blocks)
+          .map((block) => block.role.name)
+          .toSet(),
+      everyElement(isIn(<String>['system', 'user', 'assistant'])),
+    );
+  });
+
+  test('model.open rejects a role outside the neutral vocabulary', () async {
+    final bundle = _rawRoleDriverBundle('developer');
+    final revisions = PluginRevisionCatalog(
+      loader: _BundleLoader(bundle),
+      cache: _MemoryRevisionCache(),
+    );
+    await revisions.reload(
+      bundle.descriptor.id,
+      agentId: 'agent-1',
+      approvedCapabilities: const <String>{'model.call', 'tools.list'},
+    );
+    final runtime = _pluginRuntime(stagedHost, revisions);
+    addTearDown(runtime.close);
+    final model = _RecordingModelGateway();
+
+    await expectLater(
+      LuaAgentHarness(runtime: runtime).startTurn(
         request: LuaAgentHarnessRequest(
           definition: const AgentDefinitionDto(
             version: 5,
-            id: agentId,
-            name: 'Universal Role Agent',
+            id: 'agent-1',
+            name: 'Agent',
             description: '',
             mode: AgentMode.primary,
             model: AgentModelSelectionDto(source: AgentModelSource.session),
-            driverId: 'tinest.standard/driver',
+            driverId: 'acme.raw-role/driver',
             extensionIds: <String>[],
             toolIds: <String>[],
             pluginSettings: <String, Map<String, dynamic>>{},
             callableAgentIds: <String>[],
             prompt: 'AGENT BODY',
-            contentHash: 'universal-role-agent-hash',
-            sourcePath: 'universal-role-agent.md',
+            contentHash: 'agent-hash',
+            sourcePath: 'agent.md',
           ),
-          sessionId: 'universal-role-session',
-          turnId: 'universal-role-turn',
+          sessionId: 'session-1',
+          turnId: 'unsupported-role-turn',
           workspaceRoot: Directory.current.path,
           prompt: 'run',
-          modelId: 'universal-role-model',
+          modelId: 'model-1',
           model: model,
           modelCapabilities: const AgentModelCapabilities(
             streaming: AgentCapabilitySupport.supported,
           ),
           history: const <ConversationItem>[],
-          // Exercises the permission-policy, project-document and agent-prompt
-          // blocks in one turn, so every prompt-composition path is covered.
-          projectDocument: 'PROJECT DOCUMENT',
-          extensionData: const <String, Object?>{
-            'host_policy': <String, Object?>{
-              'permission_mode': 'readOnly',
-              'workspace_root': '/workspace',
-            },
+          allowedCapabilitiesByPlugin: const <String, Set<String>>{
+            'acme.raw-role': <String>{'model.call', 'tools.list'},
           },
-          allowedCapabilitiesByPlugin: <String, Set<String>>{
-            standard.descriptor.id: capabilities,
-          },
-          state: MemoryPluginStateStore(),
         ),
         callbacks: LuaAgentHarnessCallbacks(
           onEvent: (_, _) {},
@@ -264,94 +328,19 @@ void main() {
           onProviderItems: (_) {},
         ),
         cancellation: CancellationToken(),
-      );
-
-      // A driver may only name roles every transport accepts. One vendor's
-      // superset reaches the others as an unknown role and fails the request.
-      expect(model.requests, isNotEmpty);
-      expect(
-        model.requests
-            .expand((request) => request.blocks)
-            .map((block) => block.role.name)
-            .toSet(),
-        everyElement(isIn(<String>['system', 'user', 'assistant'])),
-      );
-    },
-  );
-
-  test(
-    'model.open rejects a role outside the neutral vocabulary',
-    () async {
-      final bundle = _rawRoleDriverBundle('developer');
-      final revisions = PluginRevisionCatalog(
-        loader: _BundleLoader(bundle),
-        cache: _MemoryRevisionCache(),
-      );
-      await revisions.reload(
-        bundle.descriptor.id,
-        agentId: 'agent-1',
-        approvedCapabilities: const <String>{'model.call', 'tools.list'},
-      );
-      final runtime = _pluginRuntime(stagedHost, revisions);
-      addTearDown(runtime.close);
-      final model = _RecordingModelGateway();
-
-      await expectLater(
-        LuaAgentHarness(runtime: runtime).startTurn(
-          request: LuaAgentHarnessRequest(
-            definition: const AgentDefinitionDto(
-              version: 5,
-              id: 'agent-1',
-              name: 'Agent',
-              description: '',
-              mode: AgentMode.primary,
-              model: AgentModelSelectionDto(source: AgentModelSource.session),
-              driverId: 'acme.raw-role/driver',
-              extensionIds: <String>[],
-              toolIds: <String>[],
-              pluginSettings: <String, Map<String, dynamic>>{},
-              callableAgentIds: <String>[],
-              prompt: 'AGENT BODY',
-              contentHash: 'agent-hash',
-              sourcePath: 'agent.md',
-            ),
-            sessionId: 'session-1',
-            turnId: 'unsupported-role-turn',
-            workspaceRoot: Directory.current.path,
-            prompt: 'run',
-            modelId: 'model-1',
-            model: model,
-            modelCapabilities: const AgentModelCapabilities(
-              streaming: AgentCapabilitySupport.supported,
-            ),
-            history: const <ConversationItem>[],
-            allowedCapabilitiesByPlugin: const <String, Set<String>>{
-              'acme.raw-role': <String>{'model.call', 'tools.list'},
-            },
-          ),
-          callbacks: LuaAgentHarnessCallbacks(
-            onEvent: (_, _) {},
-            onStatus: (_, {error}) {},
-            onProviderItems: (_) {},
-          ),
-          cancellation: CancellationToken(),
+      ),
+      throwsA(
+        isA<StateError>().having(
+          (error) => error.message,
+          'message',
+          allOf(contains('"developer"'), contains('system, user, assistant')),
         ),
-        throwsA(
-          isA<StateError>().having(
-            (error) => error.message,
-            'message',
-            allOf(
-              contains('"developer"'),
-              contains('system, user, assistant'),
-            ),
-          ),
-        ),
-      );
-      // The role never reaches the transport, so no provider can answer 400
-      // for a vocabulary the runtime should have rejected itself.
-      expect(model.requests, isEmpty);
-    },
-  );
+      ),
+    );
+    // The role never reaches the transport, so no provider can answer 400
+    // for a vocabulary the runtime should have rejected itself.
+    expect(model.requests, isEmpty);
+  });
 
   test(
     'driver media requirements are checked against the selected model',
@@ -382,9 +371,7 @@ void main() {
                 name: 'Agent',
                 description: '',
                 mode: AgentMode.primary,
-                model: AgentModelSelectionDto(
-                  source: AgentModelSource.session,
-                ),
+                model: AgentModelSelectionDto(source: AgentModelSource.session),
                 driverId: 'acme.driver/driver',
                 extensionIds: <String>[],
                 toolIds: <String>[],
@@ -435,37 +422,34 @@ void main() {
       AgentCapabilitySupport.unknown,
       AgentCapabilitySupport.unsupported,
     ]) {
-      test(
-        'model.open rejects a $kind tool when subtype support is '
-        '${support.name}',
-        () async {
-          final model = _RecordingModelGateway();
-          const base = AgentModelCapabilities(
-            streaming: AgentCapabilitySupport.supported,
-            toolCalling: AgentCapabilitySupport.supported,
-          );
-          final capabilities = kind == 'function'
-              ? base.copyWith(functionTools: support)
-              : base.copyWith(deferredTools: support);
-          await expectLater(
-            _runModelToolSurfaceTurn(
-              stagedHost: stagedHost,
-              bundle: _modelToolSurfaceBundle(kind: kind),
-              toolIds: <String>['acme.surface/tool'],
-              capabilities: capabilities,
-              model: model,
+      test('model.open rejects a $kind tool when subtype support is '
+          '${support.name}', () async {
+        final model = _RecordingModelGateway();
+        const base = AgentModelCapabilities(
+          streaming: AgentCapabilitySupport.supported,
+          toolCalling: AgentCapabilitySupport.supported,
+        );
+        final capabilities = kind == 'function'
+            ? base.copyWith(functionTools: support)
+            : base.copyWith(deferredTools: support);
+        await expectLater(
+          _runModelToolSurfaceTurn(
+            stagedHost: stagedHost,
+            bundle: _modelToolSurfaceBundle(kind: kind),
+            toolIds: <String>['acme.surface/tool'],
+            capabilities: capabilities,
+            model: model,
+          ),
+          throwsA(
+            isA<StateError>().having(
+              (error) => error.message,
+              'message',
+              contains('Model does not support selected'),
             ),
-            throwsA(
-              isA<StateError>().having(
-                (error) => error.message,
-                'message',
-                contains('Model does not support selected'),
-              ),
-            ),
-          );
-          expect(model.requests, isEmpty);
-        },
-      );
+          ),
+        );
+        expect(model.requests, isEmpty);
+      });
     }
   }
 
@@ -518,91 +502,88 @@ void main() {
     },
   );
 
-  test(
-    'surfaced dynamic ToolRef executes its closure through the full host '
-    'tool boundary',
-    () async {
-      final bundle = _dynamicToolExecutionBundle();
-      final revisions = PluginRevisionCatalog(
-        loader: _BundleLoader(bundle),
-        cache: _MemoryRevisionCache(),
-      );
-      final grants = bundle.descriptor.requestedCapabilities.toSet();
-      await revisions.reload(
-        bundle.descriptor.id,
-        agentId: 'dynamic-agent',
-        approvedCapabilities: grants,
-      );
-      final runtime = _pluginRuntime(stagedHost, revisions);
-      addTearDown(runtime.close);
-      final model = _DynamicToolModelGateway();
-      final host = _CountingPrimitiveHost();
-      final persisted = <ConversationItem>[];
-      final completed = <Map<String, dynamic>>[];
+  test('surfaced dynamic ToolRef executes its closure through the full host '
+      'tool boundary', () async {
+    final bundle = _dynamicToolExecutionBundle();
+    final revisions = PluginRevisionCatalog(
+      loader: _BundleLoader(bundle),
+      cache: _MemoryRevisionCache(),
+    );
+    final grants = bundle.descriptor.requestedCapabilities.toSet();
+    await revisions.reload(
+      bundle.descriptor.id,
+      agentId: 'dynamic-agent',
+      approvedCapabilities: grants,
+    );
+    final runtime = _pluginRuntime(stagedHost, revisions);
+    addTearDown(runtime.close);
+    final model = _DynamicToolModelGateway();
+    final host = _CountingPrimitiveHost();
+    final persisted = <ConversationItem>[];
+    final completed = <Map<String, dynamic>>[];
 
-      final result = await LuaAgentHarness(runtime: runtime).startTurn(
-        request: LuaAgentHarnessRequest(
-          definition: const AgentDefinitionDto(
-            version: 5,
-            id: 'dynamic-agent',
-            name: 'Dynamic Agent',
-            description: '',
-            mode: AgentMode.primary,
-            model: AgentModelSelectionDto(source: AgentModelSource.session),
-            driverId: 'acme.dynamic/driver',
-            extensionIds: <String>[],
-            toolIds: <String>[],
-            pluginSettings: <String, Map<String, dynamic>>{},
-            callableAgentIds: <String>[],
-            prompt: '',
-            contentHash: 'dynamic-agent-hash',
-            sourcePath: 'dynamic-agent.md',
-          ),
-          sessionId: 'dynamic-session',
-          turnId: 'dynamic-turn',
-          workspaceRoot: Directory.current.path,
-          prompt: 'read',
-          modelId: 'dynamic-model',
-          model: model,
-          modelCapabilities: const AgentModelCapabilities(
-            streaming: AgentCapabilitySupport.supported,
-            toolCalling: AgentCapabilitySupport.supported,
-            functionTools: AgentCapabilitySupport.supported,
-          ),
-          history: const <ConversationItem>[],
-          allowedCapabilitiesByPlugin: <String, Set<String>>{
-            bundle.descriptor.id: grants,
-          },
-          primitives: host.registry,
-          ids: _HostIds('dynamic'),
+    final result = await LuaAgentHarness(runtime: runtime).startTurn(
+      request: LuaAgentHarnessRequest(
+        definition: const AgentDefinitionDto(
+          version: 5,
+          id: 'dynamic-agent',
+          name: 'Dynamic Agent',
+          description: '',
+          mode: AgentMode.primary,
+          model: AgentModelSelectionDto(source: AgentModelSource.session),
+          driverId: 'acme.dynamic/driver',
+          extensionIds: <String>[],
+          toolIds: <String>[],
+          pluginSettings: <String, Map<String, dynamic>>{},
+          callableAgentIds: <String>[],
+          prompt: '',
+          contentHash: 'dynamic-agent-hash',
+          sourcePath: 'dynamic-agent.md',
         ),
-        callbacks: LuaAgentHarnessCallbacks(
-          onEvent: (type, data) {
-            if (type == 'tool.completed') completed.add(data);
-          },
-          onStatus: (_, {error}) {},
-          onProviderItems: persisted.addAll,
+        sessionId: 'dynamic-session',
+        turnId: 'dynamic-turn',
+        workspaceRoot: Directory.current.path,
+        prompt: 'read',
+        modelId: 'dynamic-model',
+        model: model,
+        modelCapabilities: const AgentModelCapabilities(
+          streaming: AgentCapabilitySupport.supported,
+          toolCalling: AgentCapabilitySupport.supported,
+          functionTools: AgentCapabilitySupport.supported,
         ),
-        cancellation: CancellationToken(),
-      );
+        history: const <ConversationItem>[],
+        allowedCapabilitiesByPlugin: <String, Set<String>>{
+          bundle.descriptor.id: grants,
+        },
+        primitives: host.registry,
+        ids: _HostIds('dynamic'),
+      ),
+      callbacks: LuaAgentHarnessCallbacks(
+        onEvent: (type, data) {
+          if (type == 'tool.completed') completed.add(data);
+        },
+        onStatus: (_, {error}) {},
+        onProviderItems: persisted.addAll,
+      ),
+      cancellation: CancellationToken(),
+    );
 
-      expect(result.toolRounds, 1);
-      expect(host.readCount, 1);
-      expect(
-        host.statCount,
-        0,
-        reason: 'a dynamic callback may invoke only the primitives in uses',
-      );
-      expect(model.requests, hasLength(2));
-      expect(model.requests.first.tools.single.name, 'dynamic_runtime_tool');
-      expect(completed.single, containsPair('callId', 'dynamic-call'));
-      expect(completed.single, containsPair('isError', false));
-      expect(
-        persisted.whereType<ToolResultConversationItem>().single.output,
-        'read_file executed',
-      );
-    },
-  );
+    expect(result.toolRounds, 1);
+    expect(host.readCount, 1);
+    expect(
+      host.statCount,
+      0,
+      reason: 'a dynamic callback may invoke only the primitives in uses',
+    );
+    expect(model.requests, hasLength(2));
+    expect(model.requests.first.tools.single.name, 'dynamic_runtime_tool');
+    expect(completed.single, containsPair('callId', 'dynamic-call'));
+    expect(completed.single, containsPair('isError', false));
+    expect(
+      persisted.whereType<ToolResultConversationItem>().single.output,
+      'read_file executed',
+    );
+  });
 
   test(
     'uses gates exact host operations per contribution and shared closure',
@@ -803,18 +784,16 @@ void main() {
       final outputs = completions.map((event) => event['output']).toList();
       expect(
         <Object?>[outputs[0], outputs[1], outputs[2], outputs[4]],
-        <Object?>[
-          'function:1',
-          'deferred:1',
-          'raw source',
-          'function:1',
-        ],
+        <Object?>['function:1', 'deferred:1', 'raw source', 'function:1'],
       );
       expect(outputs[3], contains('invalid_tool_arguments'));
-      expect(
-        completions.map((event) => event['isError']),
-        <Object?>[false, false, false, true, false],
-      );
+      expect(completions.map((event) => event['isError']), <Object?>[
+        false,
+        false,
+        false,
+        true,
+        false,
+      ]);
     },
   );
 
@@ -1130,9 +1109,7 @@ void main() {
       );
       expect(
         Map<String, Object?>.from(
-          Map<String, Object?>.from(
-                rawArguments['mapped']! as Map,
-              )['first']!
+          Map<String, Object?>.from(rawArguments['mapped']! as Map)['first']!
               as Map,
         ),
         containsPair('optional', null),
@@ -1146,128 +1123,118 @@ void main() {
     },
   );
 
-  test(
-    'Lua code driver omits optional wait nulls before invocation',
-    () async {
-      const agentId = 'lua-code-null-agent';
-      final luaCode = await const BuiltInPluginCatalog().load(
-        'tinest.lua-code',
-      );
-      final revisions = PluginRevisionCatalog(
-        loader: _BundleLoader(luaCode),
-        cache: _MemoryRevisionCache(),
-      );
-      final capabilities = luaCode.descriptor.requestedCapabilities.toSet();
-      await revisions.reload(
-        luaCode.descriptor.id,
-        agentId: agentId,
-        approvedCapabilities: capabilities,
-      );
-      final runtime = _pluginRuntime(stagedHost, revisions);
-      addTearDown(runtime.close);
-      final model = _ScriptedModelGateway(<_ModelStep>[
-        _ModelStep.events(<ModelEvent>[
-          const ModelFunctionCall(
-            callId: 'wait-null-call',
-            name: 'wait',
-            arguments: <String, dynamic>{
-              'cell_id': 'cell-1',
-              'yield_time_ms': null,
-              'max_tokens': null,
-              'terminate': null,
-            },
-          ),
-          const ModelResponseCompleted(
-            assistant: AssistantConversationItem(
-              text: '',
-              toolCalls: <ConversationToolCall>[
-                ConversationToolCall.function(
-                  callId: 'wait-null-call',
-                  name: 'wait',
-                  arguments: <String, dynamic>{
-                    'cell_id': 'cell-1',
-                    'yield_time_ms': null,
-                    'max_tokens': null,
-                    'terminate': null,
-                  },
-                ),
-              ],
-            ),
-          ),
-        ]),
-        _ModelStep.completion('done'),
-      ]);
-      final reads = <Map<String, Object?>>[];
-      final primitives = HostPrimitiveRegistry(
-        <HostPrimitive<Object?, Object?>>[
-          HostPrimitiveContracts.luaRead
-              .bind(
-                decode: _primitiveArguments,
-                invoke: (arguments, _) {
-                  reads.add(arguments);
-                  return <String, Object?>{'output': 'waited'};
-                },
-              )
-              .erased,
-        ],
-      );
-      final persisted = <ConversationItem>[];
-
-      final result = await LuaAgentHarness(runtime: runtime).startTurn(
-        request: LuaAgentHarnessRequest(
-          definition: const AgentDefinitionDto(
-            version: 5,
-            id: agentId,
-            name: 'Lua Code Null Agent',
-            description: '',
-            mode: AgentMode.primary,
-            model: AgentModelSelectionDto(source: AgentModelSource.session),
-            driverId: 'tinest.lua-code/driver',
-            extensionIds: <String>[],
-            toolIds: <String>[
-              'tinest.lua-code/exec',
-              'tinest.lua-code/wait',
-            ],
-            pluginSettings: <String, Map<String, dynamic>>{},
-            callableAgentIds: <String>[],
-            prompt: '',
-            contentHash: 'lua-code-null-agent-hash',
-            sourcePath: 'lua-code-null-agent.md',
-          ),
-          sessionId: 'lua-code-null-session',
-          turnId: 'lua-code-null-turn',
-          workspaceRoot: Directory.current.path,
-          prompt: 'wait',
-          modelId: 'lua-code-null-model',
-          model: model,
-          modelCapabilities: const AgentModelCapabilities(
-            streaming: AgentCapabilitySupport.supported,
-            toolCalling: AgentCapabilitySupport.supported,
-            functionTools: AgentCapabilitySupport.supported,
-          ),
-          history: const <ConversationItem>[],
-          allowedCapabilitiesByPlugin: <String, Set<String>>{
-            luaCode.descriptor.id: capabilities,
+  test('Lua code driver omits optional wait nulls before invocation', () async {
+    const agentId = 'lua-code-null-agent';
+    final luaCode = await const BuiltInPluginCatalog().load('tinest.lua-code');
+    final revisions = PluginRevisionCatalog(
+      loader: _BundleLoader(luaCode),
+      cache: _MemoryRevisionCache(),
+    );
+    final capabilities = luaCode.descriptor.requestedCapabilities.toSet();
+    await revisions.reload(
+      luaCode.descriptor.id,
+      agentId: agentId,
+      approvedCapabilities: capabilities,
+    );
+    final runtime = _pluginRuntime(stagedHost, revisions);
+    addTearDown(runtime.close);
+    final model = _ScriptedModelGateway(<_ModelStep>[
+      _ModelStep.events(<ModelEvent>[
+        const ModelFunctionCall(
+          callId: 'wait-null-call',
+          name: 'wait',
+          arguments: <String, dynamic>{
+            'cell_id': 'cell-1',
+            'yield_time_ms': null,
+            'max_tokens': null,
+            'terminate': null,
           },
-          primitives: primitives,
-          policyFactory: (_) => const _AllowPolicy(),
         ),
-        callbacks: LuaAgentHarnessCallbacks(
-          onEvent: (_, _) {},
-          onStatus: (_, {error}) {},
-          onProviderItems: persisted.addAll,
+        const ModelResponseCompleted(
+          assistant: AssistantConversationItem(
+            text: '',
+            toolCalls: <ConversationToolCall>[
+              ConversationToolCall.function(
+                callId: 'wait-null-call',
+                name: 'wait',
+                arguments: <String, dynamic>{
+                  'cell_id': 'cell-1',
+                  'yield_time_ms': null,
+                  'max_tokens': null,
+                  'terminate': null,
+                },
+              ),
+            ],
+          ),
         ),
-        cancellation: CancellationToken(),
-      );
+      ]),
+      _ModelStep.completion('done'),
+    ]);
+    final reads = <Map<String, Object?>>[];
+    final primitives = HostPrimitiveRegistry(<HostPrimitive<Object?, Object?>>[
+      HostPrimitiveContracts.luaRead
+          .bind(
+            decode: _primitiveArguments,
+            invoke: (arguments, _) {
+              reads.add(arguments);
+              return <String, Object?>{'output': 'waited'};
+            },
+          )
+          .erased,
+    ]);
+    final persisted = <ConversationItem>[];
 
-      expect(result.toolRounds, 1);
-      expect(reads, <Map<String, Object?>>[
-        <String, Object?>{'handle': 'cell-1'},
-      ]);
-      final stored = persisted.whereType<ToolResultConversationItem>().single;
-      expect(stored.isError, isFalse);
-    },
-  );
+    final result = await LuaAgentHarness(runtime: runtime).startTurn(
+      request: LuaAgentHarnessRequest(
+        definition: const AgentDefinitionDto(
+          version: 5,
+          id: agentId,
+          name: 'Lua Code Null Agent',
+          description: '',
+          mode: AgentMode.primary,
+          model: AgentModelSelectionDto(source: AgentModelSource.session),
+          driverId: 'tinest.lua-code/driver',
+          extensionIds: <String>[],
+          toolIds: <String>['tinest.lua-code/exec', 'tinest.lua-code/wait'],
+          pluginSettings: <String, Map<String, dynamic>>{},
+          callableAgentIds: <String>[],
+          prompt: '',
+          contentHash: 'lua-code-null-agent-hash',
+          sourcePath: 'lua-code-null-agent.md',
+        ),
+        sessionId: 'lua-code-null-session',
+        turnId: 'lua-code-null-turn',
+        workspaceRoot: Directory.current.path,
+        prompt: 'wait',
+        modelId: 'lua-code-null-model',
+        model: model,
+        modelCapabilities: const AgentModelCapabilities(
+          streaming: AgentCapabilitySupport.supported,
+          toolCalling: AgentCapabilitySupport.supported,
+          functionTools: AgentCapabilitySupport.supported,
+        ),
+        history: const <ConversationItem>[],
+        allowedCapabilitiesByPlugin: <String, Set<String>>{
+          luaCode.descriptor.id: capabilities,
+        },
+        primitives: primitives,
+        policyFactory: (_) => const _AllowPolicy(),
+      ),
+      callbacks: LuaAgentHarnessCallbacks(
+        onEvent: (_, _) {},
+        onStatus: (_, {error}) {},
+        onProviderItems: persisted.addAll,
+      ),
+      cancellation: CancellationToken(),
+    );
+
+    expect(result.toolRounds, 1);
+    expect(reads, <Map<String, Object?>>[
+      <String, Object?>{'handle': 'cell-1'},
+    ]);
+    final stored = persisted.whereType<ToolResultConversationItem>().single;
+    expect(stored.isError, isFalse);
+  });
 
   test(
     'text driver parses XML and reuses the brokered tool result loop',
@@ -1473,9 +1440,7 @@ void main() {
         name: agentId,
         description: '',
         mode: AgentMode.primary,
-        model: const AgentModelSelectionDto(
-          source: AgentModelSource.session,
-        ),
+        model: const AgentModelSelectionDto(source: AgentModelSource.session),
         driverId: 'acme.settings/driver',
         extensionIds: const <String>[],
         toolIds: const <String>[
@@ -1589,42 +1554,39 @@ void main() {
         String prompt,
         ModelGateway model,
         CancellationToken cancellation,
-      ) =>
-          LuaAgentHarness(
-            runtime: runtime,
-          ).startTurn(
-            request: LuaAgentHarnessRequest(
-              definition: _terminalLifecycleDefinition,
-              sessionId: 'session-1',
-              turnId: 'turn-$prompt',
-              workspaceRoot: Directory.current.path,
-              prompt: prompt,
-              modelId: 'model',
-              model: model,
-              modelCapabilities: const AgentModelCapabilities(
-                streaming: AgentCapabilitySupport.supported,
-              ),
-              history: const <ConversationItem>[],
-              allowedCapabilitiesByPlugin: <String, Set<String>>{
-                bundle.descriptor.id: bundle.descriptor.requestedCapabilities
-                    .toSet(),
-              },
-              state: state,
-            ),
-            callbacks: LuaAgentHarnessCallbacks(
-              onEvent: (type, data) {
-                if (type == 'plugin.lifecycle.failed') {
-                  lifecycleFailures.add(data);
-                }
-                if (type == 'plugin.lifecycle.completed') {
-                  lifecycleCompletions.add(data);
-                }
-              },
-              onStatus: (status, {error}) => statuses.add(status),
-              onProviderItems: (_) {},
-            ),
-            cancellation: cancellation,
-          );
+      ) => LuaAgentHarness(runtime: runtime).startTurn(
+        request: LuaAgentHarnessRequest(
+          definition: _terminalLifecycleDefinition,
+          sessionId: 'session-1',
+          turnId: 'turn-$prompt',
+          workspaceRoot: Directory.current.path,
+          prompt: prompt,
+          modelId: 'model',
+          model: model,
+          modelCapabilities: const AgentModelCapabilities(
+            streaming: AgentCapabilitySupport.supported,
+          ),
+          history: const <ConversationItem>[],
+          allowedCapabilitiesByPlugin: <String, Set<String>>{
+            bundle.descriptor.id: bundle.descriptor.requestedCapabilities
+                .toSet(),
+          },
+          state: state,
+        ),
+        callbacks: LuaAgentHarnessCallbacks(
+          onEvent: (type, data) {
+            if (type == 'plugin.lifecycle.failed') {
+              lifecycleFailures.add(data);
+            }
+            if (type == 'plugin.lifecycle.completed') {
+              lifecycleCompletions.add(data);
+            }
+          },
+          onStatus: (status, {error}) => statuses.add(status),
+          onProviderItems: (_) {},
+        ),
+        cancellation: cancellation,
+      );
 
       Object? driverFailure;
       try {
@@ -1656,10 +1618,10 @@ void main() {
         sessionId: 'session-1',
       );
       expect(lifecycleFailures, isEmpty);
-      expect(
-        lifecycleCompletions.map((event) => event['lifecycle']),
-        <String>['error', 'cancel'],
-      );
+      expect(lifecycleCompletions.map((event) => event['lifecycle']), <String>[
+        'error',
+        'cancel',
+      ]);
       expect((await state.read(scope, 'error'))?.value, 'error');
       expect((await state.read(scope, 'cancel'))?.value, 'cancel');
       expect(
@@ -1923,79 +1885,73 @@ void main() {
     },
   );
 
-  test(
-    'durable scheduled payloads and nested enqueue fail closed',
-    () async {
-      final bundle = _scheduledPayloadSchemaBundle();
-      final revisions = PluginRevisionCatalog(
-        loader: _BundleLoader(bundle),
-        cache: _MemoryRevisionCache(),
-      );
-      await revisions.reload(
-        bundle.descriptor.id,
+  test('durable scheduled payloads and nested enqueue fail closed', () async {
+    final bundle = _scheduledPayloadSchemaBundle();
+    final revisions = PluginRevisionCatalog(
+      loader: _BundleLoader(bundle),
+      cache: _MemoryRevisionCache(),
+    );
+    await revisions.reload(
+      bundle.descriptor.id,
+      agentId: 'agent-1',
+      approvedCapabilities: const <String>{'scheduler.manage'},
+    );
+    final runtime = _pluginRuntime(stagedHost, revisions);
+    addTearDown(runtime.close);
+    final grants = MemoryAgentPluginGrantStore();
+    await grants.grant(
+      const AgentPluginGrantDto(
         agentId: 'agent-1',
-        approvedCapabilities: const <String>{'scheduler.manage'},
-      );
-      final runtime = _pluginRuntime(stagedHost, revisions);
-      addTearDown(runtime.close);
-      final grants = MemoryAgentPluginGrantStore();
-      await grants.grant(
-        const AgentPluginGrantDto(
-          agentId: 'agent-1',
-          pluginId: 'acme.scheduledschema',
-          capability: 'scheduler.manage',
-        ),
-      );
-      final jobs = MemoryPluginJobStore();
-      final executor = LuaPluginScheduledJobExecutor(
-        runtime: runtime,
-        state: MemoryPluginStateStore(),
-        grants: grants,
-        jobs: () => jobs,
-        clock: _GoalClock(DateTime.utc(2026, 8, 12)),
-        ids: _HostIds('nested'),
-        resolveContext: (_) async => const PluginScheduledExecutionContext(
-          agentId: 'agent-1',
-          sessionId: 'session-1',
-          workingDirectory: '.',
-        ),
-      );
-
-      PluginJob job(
-        String id,
-        String bindingId,
-        Map<String, dynamic> payload,
-      ) => PluginJob(
-        id: id,
-        pluginId: bundle.descriptor.id,
-        executionRevisionHash: bundle.revision.executionRevisionHash,
-        bindingId: bindingId,
-        payload: payload,
-        dueAt: DateTime.utc(2026, 8, 12),
+        pluginId: 'acme.scheduledschema',
+        capability: 'scheduler.manage',
+      ),
+    );
+    final jobs = MemoryPluginJobStore();
+    final executor = LuaPluginScheduledJobExecutor(
+      runtime: runtime,
+      state: MemoryPluginStateStore(),
+      grants: grants,
+      jobs: () => jobs,
+      clock: _GoalClock(DateTime.utc(2026, 8, 12)),
+      ids: _HostIds('nested'),
+      resolveContext: (_) async => const PluginScheduledExecutionContext(
         agentId: 'agent-1',
         sessionId: 'session-1',
-      );
+        workingDirectory: '.',
+      ),
+    );
 
-      final valid = await executor.execute(
-        job('valid', 'scheduled', <String, dynamic>{'count': 1}),
-        const _NeverCancelled(),
-      );
-      expect(valid.prompt, '1');
-
-      for (final invalid in <PluginJob>[
-        job('malformed', 'scheduled', <String, dynamic>{'count': 'bad'}),
-        job('foreign', 'other', <String, dynamic>{'count': 1}),
-        job('nested', 'scheduled', <String, dynamic>{'nested': true}),
-      ]) {
-        await expectLater(
-          executor.execute(invalid, const _NeverCancelled()),
-          throwsA(isA<StateError>()),
-          reason: invalid.id,
+    PluginJob job(String id, String bindingId, Map<String, dynamic> payload) =>
+        PluginJob(
+          id: id,
+          pluginId: bundle.descriptor.id,
+          executionRevisionHash: bundle.revision.executionRevisionHash,
+          bindingId: bindingId,
+          payload: payload,
+          dueAt: DateTime.utc(2026, 8, 12),
+          agentId: 'agent-1',
+          sessionId: 'session-1',
         );
-      }
-      expect(await jobs.get('nested-1'), isNull);
-    },
-  );
+
+    final valid = await executor.execute(
+      job('valid', 'scheduled', <String, dynamic>{'count': 1}),
+      const _NeverCancelled(),
+    );
+    expect(valid.prompt, '1');
+
+    for (final invalid in <PluginJob>[
+      job('malformed', 'scheduled', <String, dynamic>{'count': 'bad'}),
+      job('foreign', 'other', <String, dynamic>{'count': 1}),
+      job('nested', 'scheduled', <String, dynamic>{'nested': true}),
+    ]) {
+      await expectLater(
+        executor.execute(invalid, const _NeverCancelled()),
+        throwsA(isA<StateError>()),
+        reason: invalid.id,
+      );
+    }
+    expect(await jobs.get('nested-1'), isNull);
+  });
 
   test(
     'durable execution stays pinned to its exact revision after reload',
@@ -2244,10 +2200,7 @@ void main() {
         ))?.value,
         'workspace',
       );
-      expect(
-        (await jobs.get('callback-1'))?.status,
-        PluginJobStatus.cancelled,
-      );
+      expect((await jobs.get('callback-1'))?.status, PluginJobStatus.cancelled);
       expect((await jobs.get('callback-2'))?.status, PluginJobStatus.pending);
 
       await expectLater(
@@ -2363,108 +2316,102 @@ void main() {
     );
   });
 
-  test(
-    'collaboration extension owns root and subagent prompt text',
-    () async {
-      const catalog = BuiltInPluginCatalog();
-      final revisions = PluginRevisionCatalog(
-        loader: catalog,
-        cache: _MemoryRevisionCache(),
+  test('collaboration extension owns root and subagent prompt text', () async {
+    const catalog = BuiltInPluginCatalog();
+    final revisions = PluginRevisionCatalog(
+      loader: catalog,
+      cache: _MemoryRevisionCache(),
+    );
+    final runtime = _pluginRuntime(stagedHost, revisions);
+    addTearDown(runtime.close);
+    final grants = <String, Set<String>>{};
+    for (final pluginId in const <String>[
+      'tinest.standard',
+      'tinest.collaboration',
+    ]) {
+      final bundle = await catalog.load(pluginId);
+      final capabilities = bundle.descriptor.requestedCapabilities.toSet();
+      grants[pluginId] = capabilities;
+      await revisions.reload(
+        pluginId,
+        agentId: 'collaboration-agent',
+        approvedCapabilities: capabilities,
+        inspector: runtime,
       );
-      final runtime = _pluginRuntime(stagedHost, revisions);
-      addTearDown(runtime.close);
-      final grants = <String, Set<String>>{};
-      for (final pluginId in const <String>[
-        'tinest.standard',
-        'tinest.collaboration',
-      ]) {
-        final bundle = await catalog.load(pluginId);
-        final capabilities = bundle.descriptor.requestedCapabilities.toSet();
-        grants[pluginId] = capabilities;
-        await revisions.reload(
-          pluginId,
-          agentId: 'collaboration-agent',
-          approvedCapabilities: capabilities,
-          inspector: runtime,
-        );
-      }
-      const definition = AgentDefinitionDto(
-        version: 5,
-        id: 'collaboration-agent',
-        name: 'Collaboration Agent',
-        description: '',
-        mode: AgentMode.primary,
-        model: AgentModelSelectionDto(source: AgentModelSource.session),
-        driverId: 'tinest.standard/driver',
-        extensionIds: <String>['tinest.collaboration'],
-        toolIds: <String>[],
-        pluginSettings: <String, Map<String, dynamic>>{},
-        callableAgentIds: <String>[],
-        prompt: 'AGENT BODY',
-        contentHash: 'collaboration-agent-hash',
-        sourcePath: 'agent.md',
-      );
-      final driverState = MemoryPluginStateStore();
+    }
+    const definition = AgentDefinitionDto(
+      version: 5,
+      id: 'collaboration-agent',
+      name: 'Collaboration Agent',
+      description: '',
+      mode: AgentMode.primary,
+      model: AgentModelSelectionDto(source: AgentModelSource.session),
+      driverId: 'tinest.standard/driver',
+      extensionIds: <String>['tinest.collaboration'],
+      toolIds: <String>[],
+      pluginSettings: <String, Map<String, dynamic>>{},
+      callableAgentIds: <String>[],
+      prompt: 'AGENT BODY',
+      contentHash: 'collaboration-agent-hash',
+      sourcePath: 'agent.md',
+    );
+    final driverState = MemoryPluginStateStore();
 
-      Future<String> instructionsFor({
-        required String path,
-        required bool isRoot,
-      }) async {
-        final model = _RecordingModelGateway();
-        await LuaAgentHarness(runtime: runtime).startTurn(
-          request: LuaAgentHarnessRequest(
-            definition: definition,
-            sessionId: isRoot ? 'root-session' : 'child-session',
-            turnId: isRoot ? 'root-turn' : 'child-turn',
-            workspaceRoot: Directory.current.path,
-            prompt: 'work',
-            modelId: 'model',
-            model: model,
-            modelCapabilities: const AgentModelCapabilities(
-              streaming: AgentCapabilitySupport.supported,
-            ),
-            history: const <ConversationItem>[],
-            allowedCapabilitiesByPlugin: grants,
-            state: driverState,
-            extensionData: <String, Object?>{
-              'host_policy': <String, Object?>{
-                'permission_mode': 'workspaceWrite',
-                'workspace_root': Directory.current.path,
-              },
-              'collaboration': <String, Object?>{
-                'path': path,
-                'is_root': isRoot,
-                'max_concurrent_turns': 4,
-              },
+    Future<String> instructionsFor({
+      required String path,
+      required bool isRoot,
+    }) async {
+      final model = _RecordingModelGateway();
+      await LuaAgentHarness(runtime: runtime).startTurn(
+        request: LuaAgentHarnessRequest(
+          definition: definition,
+          sessionId: isRoot ? 'root-session' : 'child-session',
+          turnId: isRoot ? 'root-turn' : 'child-turn',
+          workspaceRoot: Directory.current.path,
+          prompt: 'work',
+          modelId: 'model',
+          model: model,
+          modelCapabilities: const AgentModelCapabilities(
+            streaming: AgentCapabilitySupport.supported,
+          ),
+          history: const <ConversationItem>[],
+          allowedCapabilitiesByPlugin: grants,
+          state: driverState,
+          extensionData: <String, Object?>{
+            'host_policy': <String, Object?>{
+              'permission_mode': 'workspaceWrite',
+              'workspace_root': Directory.current.path,
             },
-          ),
-          callbacks: LuaAgentHarnessCallbacks(
-            onEvent: (_, _) {},
-            onStatus: (_, {error}) {},
-            onProviderItems: (_) {},
-          ),
-          cancellation: CancellationToken(),
-        );
-        return model.requests.single.blocks
-            .map((block) => block.content)
-            .join('\n\n');
-      }
-
-      final root = await instructionsFor(path: '/root', isRoot: true);
-      final child = await instructionsFor(
-        path: '/root/reviewer',
-        isRoot: false,
+            'collaboration': <String, Object?>{
+              'path': path,
+              'is_root': isRoot,
+              'max_concurrent_turns': 4,
+            },
+          },
+        ),
+        callbacks: LuaAgentHarnessCallbacks(
+          onEvent: (_, _) {},
+          onStatus: (_, {error}) {},
+          onProviderItems: (_) {},
+        ),
+        cancellation: CancellationToken(),
       );
-      expect(root, contains('root agent at path `/root`'));
-      expect(root, contains('Permission mode: workspaceWrite'));
-      expect(root, contains(Directory.current.path));
-      expect(root, contains('### Coordinating subagents'));
-      expect(root, isNot(contains('### Working as a subagent')));
-      expect(child, contains('subagent `/root/reviewer`'));
-      expect(child, contains('### Working as a subagent'));
-      expect(child, isNot(contains('### Coordinating subagents')));
-    },
-  );
+      return model.requests.single.blocks
+          .map((block) => block.content)
+          .join('\n\n');
+    }
+
+    final root = await instructionsFor(path: '/root', isRoot: true);
+    final child = await instructionsFor(path: '/root/reviewer', isRoot: false);
+    expect(root, contains('root agent at path `/root`'));
+    expect(root, contains('Permission mode: workspaceWrite'));
+    expect(root, contains(Directory.current.path));
+    expect(root, contains('### Coordinating subagents'));
+    expect(root, isNot(contains('### Working as a subagent')));
+    expect(child, contains('subagent `/root/reviewer`'));
+    expect(child, contains('### Working as a subagent'));
+    expect(child, isNot(contains('### Coordinating subagents')));
+  });
 
   test(
     'before_turn capability limit blocks write and process but allows read',
@@ -2545,14 +2492,9 @@ void main() {
       final host = _CountingPrimitiveHost();
       final errors = await _runRestrictedTurn(
         stagedHost: stagedHost,
-        bundles: <PluginBundle>[
-          _unrestrictedDriverBundle(),
-          plan,
-        ],
+        bundles: <PluginBundle>[_unrestrictedDriverBundle(), plan],
         extensionIds: const <String>['tinest.plan'],
-        sessionControlValues: const <String, Object?>{
-          'tinest.plan/mode': true,
-        },
+        sessionControlValues: const <String, Object?>{'tinest.plan/mode': true},
         primitives: host.registry,
       );
 
@@ -2758,10 +2700,7 @@ void main() {
         approvals.invocations.map((invocation) => invocation.risk),
         everyElement(AgentToolRisk.command),
       );
-      expect(
-        persisted.whereType<ToolResultConversationItem>(),
-        hasLength(2),
-      );
+      expect(persisted.whereType<ToolResultConversationItem>(), hasLength(2));
     },
     tags: const <String>['feature_test__tool_exec_session__unit'],
   );
@@ -2916,9 +2855,7 @@ void main() {
         request: LuaAgentHarnessRequest(
           definition: _contextAgent(
             agentId: agentId,
-            toolIds: const <String>[
-              'tinest.context/get_context_remaining',
-            ],
+            toolIds: const <String>['tinest.context/get_context_remaining'],
           ),
           sessionId: 'context-budget-session',
           turnId: 'context-budget-turn',
@@ -3429,10 +3366,7 @@ void main() {
       final firstRuntime = _pluginRuntime(stagedHost, firstRevisions);
       addTearDown(firstRuntime.close);
       final capabilities = <String, Set<String>>{};
-      for (final pluginId in const <String>[
-        'tinest.standard',
-        'tinest.goal',
-      ]) {
+      for (final pluginId in const <String>['tinest.standard', 'tinest.goal']) {
         final bundle = await catalog.load(pluginId);
         final granted = bundle.descriptor.requestedCapabilities.toSet();
         capabilities[pluginId] = granted;
@@ -3545,11 +3479,7 @@ void main() {
         hasActiveTurn: (_) => false,
         hasPendingInput: (_) => false,
         startContinuation:
-            ({
-              required sessionId,
-              required turnId,
-              required prompt,
-            }) async {
+            ({required sessionId, required turnId, required prompt}) async {
               continuationCount += 1;
               await LuaAgentHarness(runtime: restartedRuntime).startTurn(
                 request: LuaAgentHarnessRequest(
@@ -3669,10 +3599,7 @@ void main() {
           agentId: 'agent-network',
           sessionId: 'session-denied',
           prompt: 'https://example.test/denied',
-          grantedCapabilities: const <String>{
-            'network.access',
-            'state.write',
-          },
+          grantedCapabilities: const <String>{'network.access', 'state.write'},
           network: network,
           state: state,
           policy: const _AskPolicy(),
@@ -3682,24 +3609,16 @@ void main() {
       );
       expect(network.requests, isEmpty);
       expect(deniedApproval.invocations, hasLength(1));
-      expect(
-        deniedApproval.invocations.single.risk,
-        AgentToolRisk.dangerous,
-      );
+      expect(deniedApproval.invocations.single.risk, AgentToolRisk.dangerous);
 
-      final approved = _RecordingApprovalCoordinator(
-        ApprovalDecision.approved,
-      );
+      final approved = _RecordingApprovalCoordinator(ApprovalDecision.approved);
       await _runHostPrimitiveTurn(
         stagedHost: stagedHost,
         bundle: bundle,
         agentId: 'agent-network',
         sessionId: 'session-approved',
         prompt: 'https://example.test/approved',
-        grantedCapabilities: const <String>{
-          'network.access',
-          'state.write',
-        },
+        grantedCapabilities: const <String>{'network.access', 'state.write'},
         network: network,
         state: state,
         policy: const _AskPolicy(),
@@ -3724,10 +3643,7 @@ void main() {
     () async {
       final secrets = _MemoryPluginSecretStore();
       await secrets.set(
-        const PluginSecretScope(
-          agentId: 'agent-a',
-          pluginId: 'acme.secret',
-        ),
+        const PluginSecretScope(agentId: 'agent-a', pluginId: 'acme.secret'),
         'API_TOKEN',
         'agent-a-token',
       );
@@ -3745,19 +3661,13 @@ void main() {
           agentId: agentId,
           sessionId: sessionId,
           prompt: 'API_TOKEN',
-          grantedCapabilities: const <String>{
-            'secret.access',
-            'state.write',
-          },
+          grantedCapabilities: const <String>{'secret.access', 'state.write'},
           secrets: secrets,
           state: state,
           policy: const _AllowPolicy(),
         );
         return (await state.read(
-          PluginStateScope.session(
-            pluginId: pluginId,
-            sessionId: sessionId,
-          ),
+          PluginStateScope.session(pluginId: pluginId, sessionId: sessionId),
           'result',
         ))?.value;
       }
@@ -3807,10 +3717,7 @@ void main() {
       agentId: 'agent-network',
       sessionId: 'session-cancel',
       prompt: 'https://example.test/slow',
-      grantedCapabilities: const <String>{
-        'network.access',
-        'state.write',
-      },
+      grantedCapabilities: const <String>{'network.access', 'state.write'},
       network: network,
       state: MemoryPluginStateStore(),
       policy: const _AllowPolicy(),
@@ -3831,10 +3738,7 @@ void main() {
       agentId: 'agent-network',
       sessionId: 'session-network-failure',
       prompt: 'https://example.test/unavailable',
-      grantedCapabilities: const <String>{
-        'network.access',
-        'state.write',
-      },
+      grantedCapabilities: const <String>{'network.access', 'state.write'},
       network: const _FailingPluginNetworkGateway('connectionError'),
       state: state,
       policy: const _AllowPolicy(),
@@ -3883,15 +3787,12 @@ void main() {
         ),
         'result',
       );
-      expect(
-        result?.value,
-        <String, Object?>{
-          'missing_found': false,
-          'present_found': true,
-          'present_revision': 1,
-          'present_value': 'stored',
-        },
-      );
+      expect(result?.value, <String, Object?>{
+        'missing_found': false,
+        'present_found': true,
+        'present_revision': 1,
+        'present_value': 'stored',
+      });
     },
   );
 
@@ -3917,10 +3818,7 @@ void main() {
           agentId: 'agent-state-schema',
           sessionId: 'session-state-schema-read',
           prompt: 'unused',
-          grantedCapabilities: const <String>{
-            'state.read',
-            'state.write',
-          },
+          grantedCapabilities: const <String>{'state.read', 'state.write'},
           state: malformedReadState,
           policy: const _AllowPolicy(),
         ),
@@ -3936,10 +3834,7 @@ void main() {
             agentId: 'agent-state-schema',
             sessionId: 'session-state-schema-$operation',
             prompt: 'unused',
-            grantedCapabilities: const <String>{
-              'state.read',
-              'state.write',
-            },
+            grantedCapabilities: const <String>{'state.read', 'state.write'},
             state: state,
             policy: const _AllowPolicy(),
           ),
@@ -3972,10 +3867,7 @@ void main() {
           agentId: 'agent-network',
           sessionId: 'session-large-request',
           prompt: 'https://example.test/upload',
-          grantedCapabilities: const <String>{
-            'network.access',
-            'state.write',
-          },
+          grantedCapabilities: const <String>{'network.access', 'state.write'},
           network: network,
           state: MemoryPluginStateStore(),
           policy: const _AllowPolicy(),
@@ -3999,10 +3891,7 @@ void main() {
           agentId: 'agent-network',
           sessionId: 'session-large-response',
           prompt: 'https://example.test/download',
-          grantedCapabilities: const <String>{
-            'network.access',
-            'state.write',
-          },
+          grantedCapabilities: const <String>{'network.access', 'state.write'},
           network: network,
           state: MemoryPluginStateStore(),
           policy: const _AllowPolicy(),
@@ -4041,9 +3930,7 @@ Future<void> _runModelToolSurfaceTurn({
           name: 'Surface Agent',
           description: '',
           mode: AgentMode.primary,
-          model: const AgentModelSelectionDto(
-            source: AgentModelSource.session,
-          ),
+          model: const AgentModelSelectionDto(source: AgentModelSource.session),
           driverId: 'acme.surface/driver',
           extensionIds: const <String>[],
           toolIds: toolIds,
@@ -4117,9 +4004,7 @@ Future<void> _runHostPrimitiveTurn({
           name: 'Host primitive Agent',
           description: '',
           mode: AgentMode.primary,
-          model: const AgentModelSelectionDto(
-            source: AgentModelSource.session,
-          ),
+          model: const AgentModelSelectionDto(source: AgentModelSource.session),
           driverId: '${bundle.descriptor.id}/driver',
           extensionIds: const <String>[],
           toolIds: toolIds,
@@ -4302,9 +4187,7 @@ Future<List<bool>> _runRestrictedTurn({
           name: 'Restricted Agent',
           description: '',
           mode: AgentMode.primary,
-          model: const AgentModelSelectionDto(
-            source: AgentModelSource.session,
-          ),
+          model: const AgentModelSelectionDto(source: AgentModelSource.session),
           driverId: 'acme.harness/driver',
           extensionIds: extensionIds,
           toolIds: const <String>[
@@ -4421,9 +4304,7 @@ Future<_RecordingModelGateway> _runPlanPromptTurn({
   return model;
 }
 
-PluginBundle _restrictedDriverBundle({
-  required List<String> capabilityLimit,
-}) {
+PluginBundle _restrictedDriverBundle({required List<String> capabilityLimit}) {
   const id = 'acme.harness';
   const capabilities = <String>[
     'tools.invoke',
@@ -4973,11 +4854,7 @@ return tinest.plugin.define({
 
 PluginBundle _uiPublicationBundle() => _bundle(
   id: 'acme.ui',
-  capabilities: const <String>[
-    'tools.list',
-    'tools.invoke',
-    'ui.publish',
-  ],
+  capabilities: const <String>['tools.list', 'tools.invoke', 'ui.publish'],
   source: '''
 local tinest = require("tinest")
 local S = tinest.schema
@@ -5620,11 +5497,7 @@ return tinest.plugin.define({tools = {normalize}})
 
 PluginBundle _exactPrimitiveUsesBundle() => _bundle(
   id: 'acme.exact-uses',
-  capabilities: const <String>[
-    'tools.list',
-    'tools.invoke',
-    'workspace.read',
-  ],
+  capabilities: const <String>['tools.list', 'tools.invoke', 'workspace.read'],
   source: '''
 local tinest = require("tinest")
 local S = tinest.schema
@@ -6003,9 +5876,7 @@ final class _RecordingModelGateway implements ModelGateway {
 }
 
 final class _DynamicToolModelGateway implements ModelGateway {
-  _DynamicToolModelGateway({
-    this.arguments = const <String, dynamic>{'path': 'README.md'},
-  });
+  new({this.arguments = const <String, dynamic>{'path': 'README.md'}});
 
   final Map<String, dynamic> arguments;
   final List<ModelRequest> requests = <ModelRequest>[];
@@ -6112,9 +5983,9 @@ final class _GatedCompletionModelGateway implements ModelGateway {
 }
 
 final class _ModelStep {
-  const _ModelStep(this.events);
+  const new(this.events);
 
-  factory _ModelStep.completion(String text) => _ModelStep(<ModelEvent>[
+  factory completion(String text) => _ModelStep(<ModelEvent>[
     ModelTextDelta(text),
     ModelResponseCompleted(
       assistant: AssistantConversationItem(text: text),
@@ -6122,13 +5993,13 @@ final class _ModelStep {
     ),
   ]);
 
-  factory _ModelStep.events(List<ModelEvent> events) => _ModelStep(events);
+  factory events(List<ModelEvent> events) => _ModelStep(events);
 
   final List<ModelEvent> events;
 }
 
 final class _ScriptedModelGateway implements ModelGateway {
-  _ScriptedModelGateway(this.steps);
+  new(this.steps);
 
   final List<_ModelStep> steps;
   final List<ModelRequest> requests = <ModelRequest>[];
@@ -6350,11 +6221,7 @@ final class _AutomaticCompactionModelGateway implements ModelGateway {
       yield const ModelTextDelta('large answer');
       yield const ModelResponseCompleted(
         assistant: AssistantConversationItem(text: 'large answer'),
-        usage: ModelUsage(
-          inputTokens: 85,
-          outputTokens: 10,
-          totalTokens: 95,
-        ),
+        usage: ModelUsage(inputTokens: 85, outputTokens: 10, totalTokens: 95),
       );
       return;
     }
@@ -6395,7 +6262,7 @@ final class _OverflowRecoveryModelGateway implements ModelGateway {
 enum _GoalModelPhase { create, complete }
 
 final class _GoalModelGateway implements ModelGateway {
-  _GoalModelGateway({required this.phase, required this.clock});
+  new({required this.phase, required this.clock});
 
   final _GoalModelPhase phase;
   final _GoalClock clock;
@@ -6431,11 +6298,7 @@ final class _GoalModelGateway implements ModelGateway {
               'token_budget': 100,
             }
           : <String, dynamic>{'status': 'complete'};
-      yield ModelFunctionCall(
-        callId: callId,
-        name: name,
-        arguments: arguments,
-      );
+      yield ModelFunctionCall(callId: callId, name: name, arguments: arguments);
       yield ModelResponseCompleted(
         assistant: AssistantConversationItem(
           text: '',
@@ -6472,7 +6335,7 @@ final class _GoalModelGateway implements ModelGateway {
 }
 
 final class _GoalClock implements Clock {
-  _GoalClock(this._value);
+  new(this._value);
 
   DateTime _value;
 
@@ -6483,7 +6346,7 @@ final class _GoalClock implements Clock {
 }
 
 final class _HostIds implements IdGenerator {
-  _HostIds(this.prefix);
+  new(this.prefix);
 
   final String prefix;
   int _next = 0;
@@ -6493,7 +6356,7 @@ final class _HostIds implements IdGenerator {
 }
 
 final class _NeverCancelled implements PluginCancellationSignal {
-  const _NeverCancelled();
+  const new();
 
   @override
   void onCancel(void Function() callback) {}
@@ -6599,7 +6462,7 @@ Map<String, Object?> _primitiveArguments(Object? value) =>
     Map<String, Object?>.from(value! as Map);
 
 final class _BundleLoader implements PluginBundleLoader {
-  const _BundleLoader(this.bundle);
+  const new(this.bundle);
 
   final PluginBundle bundle;
 
@@ -6608,7 +6471,7 @@ final class _BundleLoader implements PluginBundleLoader {
 }
 
 final class _BundleMapLoader implements PluginBundleLoader {
-  const _BundleMapLoader(this.bundles);
+  const new(this.bundles);
 
   final Map<String, PluginBundle> bundles;
 
@@ -6692,7 +6555,7 @@ final class _BlockingPluginNetworkGateway implements PluginNetworkGateway {
 }
 
 final class _FailingPluginNetworkGateway implements PluginNetworkGateway {
-  const _FailingPluginNetworkGateway(this.kind);
+  const new(this.kind);
 
   final String kind;
 
@@ -6709,11 +6572,7 @@ final class _MemoryPluginSecretStore implements PluginSecretStore {
   final Map<String, String> _values = <String, String>{};
   final List<PluginSecretScope> reads = <PluginSecretScope>[];
 
-  Future<void> set(
-    PluginSecretScope scope,
-    String name,
-    String value,
-  ) async {
+  Future<void> set(PluginSecretScope scope, String name, String value) async {
     _values[_key(scope, name)] = value;
   }
 
@@ -6728,7 +6587,7 @@ final class _MemoryPluginSecretStore implements PluginSecretStore {
 }
 
 final class _RecordingApprovalCoordinator implements ApprovalCoordinator {
-  _RecordingApprovalCoordinator(this.decision);
+  new(this.decision);
 
   final ApprovalDecision decision;
   final List<ToolInvocation> invocations = <ToolInvocation>[];
@@ -6744,7 +6603,7 @@ final class _RecordingApprovalCoordinator implements ApprovalCoordinator {
 }
 
 final class _AskPolicy implements ApprovalPolicy {
-  const _AskPolicy();
+  const new();
 
   @override
   ApprovalEvaluation evaluate(ToolInvocation invocation) =>
@@ -6752,7 +6611,7 @@ final class _AskPolicy implements ApprovalPolicy {
 }
 
 final class _AllowPolicy implements ApprovalPolicy {
-  const _AllowPolicy();
+  const new();
 
   @override
   ApprovalEvaluation evaluate(ToolInvocation invocation) =>

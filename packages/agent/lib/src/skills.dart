@@ -3,11 +3,12 @@ import 'dart:io' show FileSystemException;
 import 'package:file/file.dart' as file_api;
 import 'package:file/local.dart';
 import 'package:platform/platform.dart';
+import 'package:platform/testing.dart';
 
 /// One entry in a host-owned skill catalog.
 final class SkillSummary {
   /// Creates a summary.
-  const SkillSummary({required this.name, required this.description});
+  const new({required this.name, required this.description});
 
   /// Stable catalog name.
   final String name;
@@ -19,7 +20,7 @@ final class SkillSummary {
 /// One file bundled beside a skill document.
 final class SkillResourceRef {
   /// Creates a resource reference.
-  const SkillResourceRef({required this.path, required this.sizeBytes});
+  const new({required this.path, required this.sizeBytes});
 
   /// Path relative to the skill directory.
   final String path;
@@ -31,7 +32,7 @@ final class SkillResourceRef {
 /// Full host-owned skill content.
 final class SkillContent {
   /// Creates skill content.
-  const SkillContent({
+  const new({
     required this.name,
     required this.description,
     required this.instructions,
@@ -58,7 +59,7 @@ final class SkillContent {
 /// An unknown or unavailable skill was requested.
 final class SkillLookupException implements Exception {
   /// Creates a lookup error.
-  const SkillLookupException(this.message);
+  const new(this.message);
 
   /// Safe diagnostic text.
   final String message;
@@ -82,10 +83,10 @@ abstract interface class SkillCatalog {
 /// Confines resource access to one skill directory.
 final class SkillPathGuard {
   /// Creates a guard rooted at [skillRoot].
-  SkillPathGuard(
+  new(
     String skillRoot, {
     file_api.FileSystem fileSystem = const LocalFileSystem(),
-    this._platform = const LocalPlatform(),
+    this._platform = const Platform(),
   }) : _fileSystem = fileSystem,
        _skillRoot = fileSystem.directory(skillRoot).resolveSymbolicLinksSync();
 

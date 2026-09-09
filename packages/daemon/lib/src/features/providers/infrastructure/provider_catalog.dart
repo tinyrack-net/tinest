@@ -7,7 +7,7 @@ import 'package:protocol/protocol.dart';
 /// Safe model metadata returned by an external catalog.
 final class ProviderCatalogMetadata {
   /// Creates safe model metadata without provider runtime configuration.
-  const ProviderCatalogMetadata({
+  const new({
     required this.id,
     required this.label,
     required this.capabilities,
@@ -53,7 +53,7 @@ abstract interface class ProviderCatalogMetadataSource {
 final class ModelsDevCatalogMetadataSource
     implements ProviderCatalogMetadataSource {
   /// Creates the production Models.dev adapter.
-  ModelsDevCatalogMetadataSource({Dio? dio})
+  new({Dio? dio})
     : _dio =
           dio ??
           Dio(
@@ -214,7 +214,7 @@ final class ModelsDevCatalogMetadataSource
 /// Read-only catalog of provider definitions trusted by the daemon.
 final class BuiltInProviderCatalog {
   /// Creates a catalog over the registered vendors and a refresh port.
-  factory BuiltInProviderCatalog({
+  factory({
     required Clock clock,
     required ProviderRegistry registry,
     ProviderCatalogMetadataSource? metadataSource,
@@ -224,7 +224,7 @@ final class BuiltInProviderCatalog {
     metadataSource ?? ModelsDevCatalogMetadataSource(),
   );
 
-  BuiltInProviderCatalog._(this._clock, this._registry, this._metadataSource)
+  new _(this._clock, this._registry, this._metadataSource)
     : _bundledAdvisory = bundledModelsDevMetadata();
 
   final Clock _clock;

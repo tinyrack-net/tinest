@@ -12,7 +12,7 @@ export 'package:app/src/features/conversation/application/attachment_ports.dart'
 /// only way this differs from the native adapter.
 final class WebAttachmentInput implements AttachmentInputPort {
   /// Creates the web adapter.
-  const WebAttachmentInput();
+  const new();
 
   @override
   bool get supportsDrop => DropwellPlatform.instance.supportsDrop;
@@ -20,7 +20,7 @@ final class WebAttachmentInput implements AttachmentInputPort {
   @override
   Future<List<PendingAttachment>> pickFiles() async {
     final files = await openFiles();
-    return Future.wait(files.map(_fromXFile));
+    return await Future.wait(files.map(_fromXFile));
   }
 
   @override
@@ -71,7 +71,7 @@ final class WebAttachmentInput implements AttachmentInputPort {
 /// Download adapter for a browser.
 final class WebAttachmentExport implements AttachmentExportPort {
   /// Creates the web export adapter.
-  const WebAttachmentExport();
+  const new();
 
   @override
   Future<void> export({

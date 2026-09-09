@@ -44,7 +44,7 @@ String _pluginId(String contributionId) {
 /// Coordinates model-turn execution and lifecycle for tinest sessions.
 class SessionTurnCoordinator implements SessionTurnPort {
   /// Creates a session turn coordinator.
-  SessionTurnCoordinator({
+  new({
     required this._sessions,
     required this._definitions,
     required this._worktrees,
@@ -272,14 +272,8 @@ class SessionTurnCoordinator implements SessionTurnPort {
       // Skills resolve against the worktree, so a branch carries the project
       // skills that were committed to it.
       final skills = await _skills.viewFor(worktree.path);
-      final attachmentPublisher = TurnAttachmentPublisher(
-        _attachments,
-        turnId,
-      );
-      final attachmentReader = SessionAttachmentReader(
-        _attachments,
-        sessionId,
-      );
+      final attachmentPublisher = TurnAttachmentPublisher(_attachments, turnId);
+      final attachmentReader = SessionAttachmentReader(_attachments, sessionId);
       final questions = _interactions.questionsFor(
         sessionId: sessionId,
         turnId: turnId,
@@ -538,7 +532,7 @@ class SessionTurnCoordinator implements SessionTurnPort {
 
   Future<List<ConversationItem>> _hydrateHistory(
     List<ConversationItem> history,
-  ) async => Future.wait(
+  ) async => await Future.wait(
     history.map((item) async {
       if (item is! UserConversationItem || item.attachments.isEmpty) {
         return item;
@@ -658,16 +652,12 @@ class SessionTurnCoordinator implements SessionTurnPort {
       type: type,
       data: data,
     );
-    _events(
-      OutboundNotification(sessionsTimelineEventNotification, event),
-    );
+    _events(OutboundNotification(sessionsTimelineEventNotification, event));
   }
 
   void _emitSession(SessionDto? session) {
     if (session != null) {
-      _events(
-        OutboundNotification(sessionsUpdatedNotification, session),
-      );
+      _events(OutboundNotification(sessionsUpdatedNotification, session));
     }
   }
 
@@ -716,7 +706,7 @@ PermissionMode _moreRestrictive(PermissionMode left, PermissionMode right) {
 }
 
 final class _LivePermissionModeSource implements PermissionModeSource {
-  const _LivePermissionModeSource(this._read);
+  const new(this._read);
 
   final Future<PermissionMode> Function() _read;
 

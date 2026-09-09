@@ -33,13 +33,7 @@ abstract final class PluginTypeEnvironmentGenerator {
         diagnostics: diagnostics,
       );
       for (final parsed in parser.parse()) {
-        _registerTokens(
-          parsed,
-          entry.key,
-          declarations,
-          origins,
-          diagnostics,
-        );
+        _registerTokens(parsed, entry.key, declarations, origins, diagnostics);
       }
     }
     final referenced = referencedTokenNames(sources);
@@ -74,9 +68,10 @@ abstract final class PluginTypeEnvironmentGenerator {
   static List<String> referencedTokenNames(Map<String, String> sources) {
     final names = <String>{};
     for (final entry in sources.entries) {
-      final tokens = _LuaLexer(entry.value, entry.key).scan(
-        <PluginTypeAuthoringDiagnostic>[],
-      );
+      final tokens = _LuaLexer(
+        entry.value,
+        entry.key,
+      ).scan(<PluginTypeAuthoringDiagnostic>[]);
       final aliases = <String>{};
       for (var index = 0; index < tokens.length - 5; index += 1) {
         if (tokens[index].lexeme != 'local' ||
@@ -153,7 +148,7 @@ String? _requiredModuleAt(List<_Token> tokens, int index) {
 /// One source-positioned, editor-only schema projection problem.
 final class PluginTypeAuthoringDiagnostic {
   /// Creates an immutable diagnostic from the non-executing source analyzer.
-  const PluginTypeAuthoringDiagnostic({
+  const new({
     required this.code,
     required this.message,
     required this.path,
@@ -179,7 +174,7 @@ final class PluginTypeAuthoringDiagnostic {
 
 /// Generated runtime token inventory and matching LuaCATS sidecar.
 final class PluginTypeEnvironment {
-  PluginTypeEnvironment._({
+  new _({
     required this.pluginId,
     required this._declarations,
     required this.diagnostics,
@@ -200,10 +195,7 @@ final class PluginTypeEnvironment {
   /// Non-executable LuaLS definition for `require("tinest.types")`.
   String get authoringDefinition {
     final namespace =
-        'tinest_plugin_${pluginId.replaceAll(
-          RegExp('[^A-Za-z0-9_]'),
-          '_',
-        )}';
+        'tinest_plugin_${pluginId.replaceAll(RegExp('[^A-Za-z0-9_]'), '_')}';
     final output = StringBuffer('---@meta tinest.types\n\n');
     final rendered = <String>{};
     for (final name in tokenNames) {
@@ -408,7 +400,7 @@ String _fieldName(String value) =>
 enum _Container { optional, array, map }
 
 sealed class _SchemaNode {
-  const _SchemaNode({
+  const new({
     required this.offset,
     required this.line,
     required this.column,
@@ -422,7 +414,7 @@ sealed class _SchemaNode {
 }
 
 final class _PrimitiveSchema extends _SchemaNode {
-  const _PrimitiveSchema({
+  const new({
     required super.offset,
     required super.line,
     required super.column,
@@ -433,7 +425,7 @@ final class _PrimitiveSchema extends _SchemaNode {
 }
 
 final class _ContainerSchema extends _SchemaNode {
-  const _ContainerSchema({
+  const new({
     required super.offset,
     required super.line,
     required super.column,
@@ -446,7 +438,7 @@ final class _ContainerSchema extends _SchemaNode {
 }
 
 final class _ObjectSchema extends _SchemaNode {
-  const _ObjectSchema({
+  const new({
     required super.offset,
     required super.line,
     required super.column,
@@ -458,7 +450,7 @@ final class _ObjectSchema extends _SchemaNode {
 }
 
 final class _EnumSchema extends _SchemaNode {
-  const _EnumSchema({
+  const new({
     required super.offset,
     required super.line,
     required super.column,
@@ -470,7 +462,7 @@ final class _EnumSchema extends _SchemaNode {
 }
 
 final class _ReferenceSchema extends _SchemaNode {
-  const _ReferenceSchema({
+  const new({
     required super.offset,
     required super.line,
     required super.column,
@@ -481,7 +473,7 @@ final class _ReferenceSchema extends _SchemaNode {
 }
 
 final class _UnknownSchema extends _SchemaNode {
-  const _UnknownSchema({
+  const new({
     required super.offset,
     required super.line,
     required super.column,
@@ -492,7 +484,7 @@ final class _UnknownSchema extends _SchemaNode {
 enum _TokenKind { identifier, string, number, symbol, eof }
 
 final class _Token {
-  const _Token({
+  const new({
     required this.kind,
     required this.lexeme,
     required this.offset,
@@ -510,7 +502,7 @@ final class _Token {
 }
 
 final class _LuaLexer {
-  _LuaLexer(this.source, this.path);
+  new(this.source, this.path);
 
   final String source;
   final String path;
@@ -651,11 +643,8 @@ final class _LuaLexer {
     return _tokenFrom(start, _TokenKind.symbol);
   }
 
-  ({int offset, int line, int column}) _mark() => (
-    offset: _index,
-    line: _line,
-    column: _column,
-  );
+  ({int offset, int line, int column}) _mark() =>
+      (offset: _index, line: _line, column: _column);
 
   _Token _tokenFrom(
     ({int offset, int line, int column}) start,
@@ -722,7 +711,7 @@ final class _LuaLexer {
 }
 
 final class _LuaSchemaParser {
-  _LuaSchemaParser({
+  new({
     required this.tokens,
     required this.path,
     required this.symbols,
@@ -856,11 +845,7 @@ final class _LuaSchemaParser {
       'number' => _simple(start, cursor, 'number'),
       'boolean' => _simple(start, cursor, 'boolean'),
       'any' => _simple(start, cursor, 'any'),
-      'optional' || 'array' || 'map' => _container(
-        start,
-        builder.name,
-        cursor,
-      ),
+      'optional' || 'array' || 'map' => _container(start, builder.name, cursor),
       'object' => _object(start, tokenName, cursor),
       'enum' => _enum(start, tokenName, cursor, literal: false),
       'literal_enum' => _enum(start, tokenName, cursor, literal: true),
@@ -1077,19 +1062,19 @@ final class _LuaSchemaParser {
 }
 
 final class _Builder {
-  const _Builder(this.name, this.argumentsIndex);
+  const new(this.name, this.argumentsIndex);
   final String name;
   final int argumentsIndex;
 }
 
 final class _ParseResult {
-  const _ParseResult(this.node, this.next);
+  const new(this.node, this.next);
   final _SchemaNode node;
   final int next;
 }
 
 final class _SchemaParseFailure implements Exception {
-  const _SchemaParseFailure(this.token, this.index, this.message);
+  const new(this.token, this.index, this.message);
   final _Token token;
   final int index;
   final String message;

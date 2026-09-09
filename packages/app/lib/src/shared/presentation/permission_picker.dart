@@ -20,7 +20,7 @@ const List<PermissionMode> permissionModeOrder = <PermissionMode>[
 /// A descriptive permission Select shared by composer and settings surfaces.
 class PermissionSelect extends StatelessWidget {
   /// Creates a permission Select over the four concrete modes.
-  const PermissionSelect({
+  const new({
     required this.currentMode,
     required this.onValueChange,
     this.enabled = true,
@@ -102,12 +102,10 @@ String permissionModeLabel(AppLocalizations l10n, PermissionMode mode) =>
     };
 
 /// Localized explanation of the effective behavior of one mode.
-String permissionModeDescription(
-  AppLocalizations l10n,
-  PermissionMode mode,
-) => switch (mode) {
-  PermissionMode.readOnly => l10n.permissionDescriptionReadOnly,
-  PermissionMode.ask => l10n.permissionDescriptionAsk,
-  PermissionMode.workspaceWrite => l10n.permissionDescriptionWorkspaceWrite,
-  PermissionMode.fullAccess => l10n.permissionDescriptionFullAccess,
-};
+String permissionModeDescription(AppLocalizations l10n, PermissionMode mode) =>
+    switch (mode) {
+      PermissionMode.readOnly => l10n.permissionDescriptionReadOnly,
+      PermissionMode.ask => l10n.permissionDescriptionAsk,
+      PermissionMode.workspaceWrite => l10n.permissionDescriptionWorkspaceWrite,
+      PermissionMode.fullAccess => l10n.permissionDescriptionFullAccess,
+    };

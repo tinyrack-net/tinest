@@ -11,7 +11,7 @@ export 'package:app/src/features/conversation/application/attachment_ports.dart'
 /// Production native attachment input adapter.
 final class NativeAttachmentInput implements AttachmentInputPort {
   /// Creates the native adapter.
-  const NativeAttachmentInput();
+  const new();
 
   @override
   bool get supportsDrop => DropwellPlatform.instance.supportsDrop;
@@ -19,7 +19,7 @@ final class NativeAttachmentInput implements AttachmentInputPort {
   @override
   Future<List<PendingAttachment>> pickFiles() async {
     final files = await openFiles();
-    return Future.wait(files.map(_fromXFile));
+    return await Future.wait(files.map(_fromXFile));
   }
 
   @override
@@ -86,7 +86,7 @@ final class NativeAttachmentInput implements AttachmentInputPort {
 /// Production save/share adapter.
 final class NativeAttachmentExport implements AttachmentExportPort {
   /// Creates the native export adapter.
-  const NativeAttachmentExport();
+  const new();
 
   @override
   Future<void> export({

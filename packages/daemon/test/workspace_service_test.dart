@@ -75,10 +75,10 @@ branch refs/heads/feature/settings
         ),
       );
       expect(registered.workspace.kind, WorkspaceKind.git);
-      expect(
-        registered.worktrees.map((item) => item.kind),
-        <WorktreeKind>[WorktreeKind.checkout, WorktreeKind.linked],
-      );
+      expect(registered.worktrees.map((item) => item.kind), <WorktreeKind>[
+        WorktreeKind.checkout,
+        WorktreeKind.linked,
+      ]);
       // A checkout Git already had is linked like any other, and says it is
       // not Tinest's to remove through the field rather than a second kind.
       expect(registered.worktrees.last.isTinestOwned, isFalse);
@@ -334,31 +334,27 @@ branch refs/heads/feature/settings
     ],
   );
 
-  test(
-    'catalog does not archive unavailable directory workspaces',
-    () async {
-      final database = TinestDatabase.forTesting(
-        NativeDatabase.memory(),
-        clock: _FixedClock(),
-      );
-      addTearDown(database.close);
-      final git = _FakeGitGateway()..root = null;
-      final service = _service(database, git: git);
-      final registered = await service.register(
-        const WorkspaceRegisterParamsDto(
-          workspaceId: 'directory-1',
-          checkoutId: 'directory-checkout',
-          rootPath: '/plain',
-          name: 'Plain folder',
-        ),
-      );
+  test('catalog does not archive unavailable directory workspaces', () async {
+    final database = TinestDatabase.forTesting(
+      NativeDatabase.memory(),
+      clock: _FixedClock(),
+    );
+    addTearDown(database.close);
+    final git = _FakeGitGateway()..root = null;
+    final service = _service(database, git: git);
+    final registered = await service.register(
+      const WorkspaceRegisterParamsDto(
+        workspaceId: 'directory-1',
+        checkoutId: 'directory-checkout',
+        rootPath: '/plain',
+        name: 'Plain folder',
+      ),
+    );
 
-      final catalog = await service.catalog();
+    final catalog = await service.catalog();
 
-      expect(catalog.worktrees, <WorktreeDto>[registered.worktrees.single]);
-    },
-    tags: const <String>['feature_test__workspace_catalog__unit'],
-  );
+    expect(catalog.worktrees, <WorktreeDto>[registered.worktrees.single]);
+  }, tags: const <String>['feature_test__workspace_catalog__unit']);
 
   test(
     'archive requires confirmation and only removes managed paths',
@@ -598,21 +594,17 @@ branch refs/heads/feature/settings
     tags: const <String>['feature_test__session_home__unit'],
   );
 
-  test(
-    'a daemon without a user home provisions no home workspace',
-    () async {
-      final database = TinestDatabase.forTesting(
-        NativeDatabase.memory(),
-        clock: _FixedClock(),
-      );
-      addTearDown(database.close);
-      final service = _service(database, git: _FakeGitGateway()..root = null);
+  test('a daemon without a user home provisions no home workspace', () async {
+    final database = TinestDatabase.forTesting(
+      NativeDatabase.memory(),
+      clock: _FixedClock(),
+    );
+    addTearDown(database.close);
+    final service = _service(database, git: _FakeGitGateway()..root = null);
 
-      expect(await service.provisionHome(null), isNull);
-      expect((await service.catalog()).workspaces, isEmpty);
-    },
-    tags: const <String>['feature_test__session_home__unit'],
-  );
+    expect(await service.provisionHome(null), isNull);
+    expect((await service.catalog()).workspaces, isEmpty);
+  }, tags: const <String>['feature_test__session_home__unit']);
 
   test(
     'a workspace already registered at the home path becomes the home one',
@@ -861,11 +853,11 @@ branch refs/heads/feature/settings
           ),
         ),
         throwsA(
-          _failsWith(
-            WorktreeFailureReason.branchAlreadyExists,
-          ).having((error) => error.details, 'details', <String, dynamic>{
-            'branchName': 'flutter',
-          }),
+          _failsWith(WorktreeFailureReason.branchAlreadyExists).having(
+            (error) => error.details,
+            'details',
+            <String, dynamic>{'branchName': 'flutter'},
+          ),
         ),
       );
     },
@@ -914,10 +906,10 @@ branch refs/heads/feature/settings
         service.createWorktree(request.copyWith(id: 'managed-2')),
       ]);
 
-      expect(
-        results.map((result) => result.worktree.branch).toSet(),
-        <String>{'flutter', 'flutter-2'},
-      );
+      expect(results.map((result) => result.worktree.branch).toSet(), <String>{
+        'flutter',
+        'flutter-2',
+      });
       expect(
         results.map((result) => result.worktree.path).toSet(),
         hasLength(2),
@@ -963,9 +955,7 @@ branch refs/heads/feature/settings
 
   group(
     'searchFiles',
-    tags: const <String>[
-      'feature_test__composer_file_mention__unit',
-    ],
+    tags: const <String>['feature_test__composer_file_mention__unit'],
     () {
       late TinestDatabase database;
       late FakeFileIndexGateway fileIndex;
@@ -1033,10 +1023,10 @@ branch refs/heads/feature/settings
           ),
         );
 
-        expect(
-          fileIndex.requests.map((request) => request.limit),
-          <int>[100, 1],
-        );
+        expect(fileIndex.requests.map((request) => request.limit), <int>[
+          100,
+          1,
+        ]);
       });
 
       test('rejects a worktree the daemon does not know', () async {
@@ -1191,20 +1181,17 @@ branch refs/heads/feature/settings
 
         final created = await createManaged();
 
-        expect(
-          created.hookRuns.map((run) => run.command),
-          <String>['npm ci', 'npm run build'],
-        );
+        expect(created.hookRuns.map((run) => run.command), <String>[
+          'npm ci',
+          'npm run build',
+        ]);
         expect(
           created.hookRuns.every(
             (run) => run.phase == WorktreeHookPhase.setup && run.exitCode == 0,
           ),
           isTrue,
         );
-        expect(
-          hooks.invocations.first.workingDirectory,
-          created.worktree.path,
-        );
+        expect(hooks.invocations.first.workingDirectory, created.worktree.path);
         expect(hooks.invocations.first.environment, <String, String>{
           'CODER_PROJECT_PATH': '/repo',
           'CODER_WORKTREE_PATH': created.worktree.path,
@@ -1267,33 +1254,20 @@ branch refs/heads/feature/settings
       expect(repeated.hookRuns, isEmpty);
     });
 
-    test(
-      'runs teardown hooks before the checkout is removed',
-      () async {
-        projectSettings.settings = const ProjectSettingsDto(
-          teardown: <String>['docker compose down'],
-        );
-        final created = await createManaged();
-        log.clear();
+    test('runs teardown hooks before the checkout is removed', () async {
+      projectSettings.settings = const ProjectSettingsDto(
+        teardown: <String>['docker compose down'],
+      );
+      final created = await createManaged();
+      log.clear();
 
-        final archived = await service.archive('managed-1', force: true);
+      final archived = await service.archive('managed-1', force: true);
 
-        expect(log, <String>[
-          'hook:docker compose down',
-          'git:remove:force',
-        ]);
-        expect(
-          archived.hookRuns.single.phase,
-          WorktreeHookPhase.teardown,
-        );
-        expect(archived.worktree.archivedAt?.toUtc(), _FixedClock.now);
-        expect(
-          hooks.invocations.single.workingDirectory,
-          created.worktree.path,
-        );
-      },
-      tags: const <String>['feature_test__worktree_lifecycle__unit'],
-    );
+      expect(log, <String>['hook:docker compose down', 'git:remove:force']);
+      expect(archived.hookRuns.single.phase, WorktreeHookPhase.teardown);
+      expect(archived.worktree.archivedAt?.toUtc(), _FixedClock.now);
+      expect(hooks.invocations.single.workingDirectory, created.worktree.path);
+    }, tags: const <String>['feature_test__worktree_lifecycle__unit']);
 
     test('archives even when a teardown hook fails', () async {
       projectSettings.settings = const ProjectSettingsDto(
@@ -1351,28 +1325,17 @@ branch refs/heads/feature/settings
         final worktrees = await gateway.listWorktrees('/repo');
         expect(worktrees, hasLength(2));
         final branches = await gateway.listBranches('/repo');
-        expect(
-          branches,
-          <GitBranchDto>[
-            const GitBranchDto(
-              name: 'main',
-              current: true,
-              checkedOut: true,
-            ),
-            const GitBranchDto(
-              name: 'topic',
-              current: false,
-              checkedOut: false,
-            ),
-            const GitBranchDto(
-              name: 'origin/main',
-              current: false,
-              checkedOut: false,
-              isRemote: true,
-              isDefault: true,
-            ),
-          ],
-        );
+        expect(branches, <GitBranchDto>[
+          const GitBranchDto(name: 'main', current: true, checkedOut: true),
+          const GitBranchDto(name: 'topic', current: false, checkedOut: false),
+          const GitBranchDto(
+            name: 'origin/main',
+            current: false,
+            checkedOut: false,
+            isRemote: true,
+            isDefault: true,
+          ),
+        ]);
         expect(
           commands.invocations[2].arguments,
           containsAll(<String>['refs/heads', 'refs/remotes']),
@@ -1434,21 +1397,20 @@ branch refs/heads/feature/settings
         ),
       );
 
-      expect(
-        commands.invocations.first.arguments,
-        <String>[
-          'worktree',
-          'add',
-          '-b',
-          'feature',
-          '/managed/new',
-          'develop',
-        ],
-      );
-      expect(
-        commands.invocations.last.arguments,
-        <String>['worktree', 'add', '/managed/existing', 'topic'],
-      );
+      expect(commands.invocations.first.arguments, <String>[
+        'worktree',
+        'add',
+        '-b',
+        'feature',
+        '/managed/new',
+        'develop',
+      ]);
+      expect(commands.invocations.last.arguments, <String>[
+        'worktree',
+        'add',
+        '/managed/existing',
+        'topic',
+      ]);
     });
 
     test(
@@ -1495,15 +1457,18 @@ branch refs/heads/feature/settings
         final gateway = ProcessGitWorkspaceGateway(commands);
 
         await gateway.removeWorktree('/repo', '/managed/topic');
-        expect(
-          commands.invocations.first.arguments,
-          <String>['worktree', 'remove', '/managed/topic'],
-        );
+        expect(commands.invocations.first.arguments, <String>[
+          'worktree',
+          'remove',
+          '/managed/topic',
+        ]);
         await gateway.removeWorktree('/repo', '/managed/topic', force: true);
-        expect(
-          commands.invocations[1].arguments,
-          <String>['worktree', 'remove', '--force', '/managed/topic'],
-        );
+        expect(commands.invocations[1].arguments, <String>[
+          'worktree',
+          'remove',
+          '--force',
+          '/managed/topic',
+        ]);
         await expectLater(
           gateway.inspectWorktree('/repo'),
           throwsA(isA<GitCommandException>()),
@@ -1538,7 +1503,7 @@ String _rewritePrefix(String path, String from, String to) {
 }
 
 final class _CommandInvocation {
-  const _CommandInvocation({
+  const new({
     required this.executable,
     required this.arguments,
     required this.workingDirectory,
@@ -1550,7 +1515,7 @@ final class _CommandInvocation {
 }
 
 final class _FakeCommandRunner implements CommandRunner {
-  _FakeCommandRunner(this._results);
+  new(this._results);
 
   final List<CommandResult> _results;
   final List<_CommandInvocation> invocations = <_CommandInvocation>[];
@@ -1644,7 +1609,7 @@ final class _FakeProjectSettings implements ProjectSettingsStore {
 }
 
 final class _HookInvocation {
-  const _HookInvocation(this.command, this.workingDirectory, this.environment);
+  const new(this.command, this.workingDirectory, this.environment);
 
   final String command;
   final String workingDirectory;
@@ -1652,7 +1617,7 @@ final class _HookInvocation {
 }
 
 final class _FakeHookRunner implements WorktreeHookRunner {
-  _FakeHookRunner(this.log);
+  new(this.log);
 
   final List<String> log;
   final List<_HookInvocation> invocations = <_HookInvocation>[];
@@ -1672,7 +1637,7 @@ final class _FakeHookRunner implements WorktreeHookRunner {
 }
 
 final class _FakeGitGateway implements GitWorkspaceGateway {
-  _FakeGitGateway([List<String>? log]) : log = log ?? <String>[];
+  new([List<String>? log]) : log = log ?? <String>[];
 
   /// Shared call log used to assert hook ordering against Git operations.
   final List<String> log;

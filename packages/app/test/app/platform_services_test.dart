@@ -122,7 +122,7 @@ void main() {
 }
 
 final class _UnusedClients implements HostClientFactory {
-  const _UnusedClients();
+  const new();
 
   @override
   Future<TinestApi> connect({
@@ -134,7 +134,7 @@ final class _UnusedClients implements HostClientFactory {
 }
 
 final class _UnusedLauncher implements EmbeddedDaemonLauncher {
-  const _UnusedLauncher();
+  const new();
 
   @override
   Future<EmbeddedDaemonSession> start({
@@ -144,7 +144,7 @@ final class _UnusedLauncher implements EmbeddedDaemonLauncher {
 }
 
 final class _UnusedDataEraser implements EmbeddedDaemonDataEraser {
-  const _UnusedDataEraser();
+  const new();
 
   @override
   Future<void> eraseAll() =>

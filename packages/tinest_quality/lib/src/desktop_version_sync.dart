@@ -3,7 +3,7 @@ import 'dart:io';
 /// Keeps the desktop Flutter manifest on the mobile app release version.
 final class DesktopVersionSync {
   /// Creates a workspace version synchronizer.
-  const DesktopVersionSync(this.workspaceRoot);
+  const new(this.workspaceRoot);
 
   /// Absolute or relative workspace root.
   final String workspaceRoot;

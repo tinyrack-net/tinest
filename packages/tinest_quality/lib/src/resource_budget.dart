@@ -1,10 +1,7 @@
 /// Resource controls shared by Tinest quality commands.
 final class QualityCommandOptions {
   /// Creates resolved common command options.
-  const QualityCommandOptions({
-    required this.jobs,
-    required this.reportPath,
-  });
+  const new({required this.jobs, required this.reportPath});
 
   /// Effective global process budget.
   final int jobs;
@@ -20,11 +17,7 @@ int resolveQualityJobs({
   required int detectedJobs,
 }) {
   if (detectedJobs <= 0) {
-    throw ArgumentError.value(
-      detectedJobs,
-      'detectedJobs',
-      'must be positive',
-    );
+    throw ArgumentError.value(detectedJobs, 'detectedJobs', 'must be positive');
   }
   final environmentValue = environment['TINEST_JOBS'];
   final environmentJobs = environmentValue == null

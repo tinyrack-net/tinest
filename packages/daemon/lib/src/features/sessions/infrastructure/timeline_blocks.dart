@@ -32,7 +32,7 @@ const String blockIdKey = 'blockId';
 /// always ends on an event that is not a delta, so no turn stays open.
 class TimelineBlockStamper {
   /// Creates a [TimelineBlockStamper].
-  TimelineBlockStamper({required this._ids});
+  new({required this._ids});
 
   final IdGenerator _ids;
   final Map<String, String> _openProse = <String, String>{};
@@ -73,10 +73,8 @@ class TimelineBlockStamper {
 /// makes the rule total.
 final class BlockStampingTimelineRepository implements TimelineRepository {
   /// Creates a [BlockStampingTimelineRepository].
-  BlockStampingTimelineRepository({
-    required this._inner,
-    required IdGenerator ids,
-  }) : _blocks = TimelineBlockStamper(ids: ids);
+  new({required this._inner, required IdGenerator ids})
+    : _blocks = TimelineBlockStamper(ids: ids);
 
   final TimelineRepository _inner;
   final TimelineBlockStamper _blocks;

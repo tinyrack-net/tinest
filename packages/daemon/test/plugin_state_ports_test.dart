@@ -25,9 +25,7 @@ void main() {
       addTearDown(subscription.cancel);
       expect(await store.isGranted(grant), isTrue);
       expect(
-        await store.isGranted(
-          grant.copyWith(agentId: 'agent-b'),
-        ),
+        await store.isGranted(grant.copyWith(agentId: 'agent-b')),
         isFalse,
       );
       await store.revoke(grant);
@@ -100,15 +98,9 @@ void main() {
       ),
     );
 
-    final claimed = await store.claimNext(
-      now: dueAt,
-      leaseId: 'lease-a',
-    );
+    final claimed = await store.claimNext(now: dueAt, leaseId: 'lease-a');
     expect(claimed?.status, PluginJobStatus.running);
-    expect(
-      await store.claimNext(now: dueAt, leaseId: 'lease-b'),
-      isNull,
-    );
+    expect(await store.claimNext(now: dueAt, leaseId: 'lease-b'), isNull);
     await expectLater(
       store.complete('job-1', leaseId: 'wrong'),
       throwsA(isA<PluginJobLeaseConflict>()),
@@ -183,10 +175,7 @@ void main() {
       );
       expect(reclaimed?.id, 'continue-goal');
       expect(reclaimed?.leaseId, 'second-process');
-      await restarted.complete(
-        'continue-goal',
-        leaseId: 'second-process',
-      );
+      await restarted.complete('continue-goal', leaseId: 'second-process');
 
       final twiceRestarted = NativePluginStateRepository(root.path);
       expect(
@@ -217,77 +206,71 @@ void main() {
     ],
   );
 
-  test(
-    'native scheduler cancellation is durable and owner isolated',
-    () async {
-      final root = await Directory.systemTemp.createTemp(
-        'tinest-plugin-cancel-',
-      );
-      addTearDown(() => root.delete(recursive: true));
-      final repository = NativePluginStateRepository(root.path);
-      final dueAt = DateTime.utc(2026, 8, 12);
-      for (final job in <PluginJob>[
-        PluginJob(
-          id: 'owned',
-          pluginId: 'acme.goal',
-          executionRevisionHash: 'goal-execution-revision',
-          bindingId: 'scheduled',
-          payload: const <String, dynamic>{},
-          dueAt: dueAt,
-          agentId: 'agent-a',
-          sessionId: 'session-a',
-        ),
-        PluginJob(
-          id: 'foreign',
-          pluginId: 'other.goal',
-          executionRevisionHash: 'other-execution-revision',
-          bindingId: 'scheduled',
-          payload: const <String, dynamic>{},
-          dueAt: dueAt,
-          agentId: 'agent-a',
-          sessionId: 'session-a',
-        ),
-      ]) {
-        await repository.enqueue(job);
-      }
+  test('native scheduler cancellation is durable and owner isolated', () async {
+    final root = await Directory.systemTemp.createTemp('tinest-plugin-cancel-');
+    addTearDown(() => root.delete(recursive: true));
+    final repository = NativePluginStateRepository(root.path);
+    final dueAt = DateTime.utc(2026, 8, 12);
+    for (final job in <PluginJob>[
+      PluginJob(
+        id: 'owned',
+        pluginId: 'acme.goal',
+        executionRevisionHash: 'goal-execution-revision',
+        bindingId: 'scheduled',
+        payload: const <String, dynamic>{},
+        dueAt: dueAt,
+        agentId: 'agent-a',
+        sessionId: 'session-a',
+      ),
+      PluginJob(
+        id: 'foreign',
+        pluginId: 'other.goal',
+        executionRevisionHash: 'other-execution-revision',
+        bindingId: 'scheduled',
+        payload: const <String, dynamic>{},
+        dueAt: dueAt,
+        agentId: 'agent-a',
+        sessionId: 'session-a',
+      ),
+    ]) {
+      await repository.enqueue(job);
+    }
 
-      expect(
-        await repository.cancel(
-          'foreign',
-          pluginId: 'acme.goal',
-          agentId: 'agent-a',
-          sessionId: 'session-a',
-        ),
-        isFalse,
-      );
-      expect(
-        await repository.cancel(
-          'owned',
-          pluginId: 'acme.goal',
-          agentId: 'agent-a',
-          sessionId: 'session-a',
-        ),
-        isTrue,
-      );
-      expect(
-        await repository.cancel(
-          'owned',
-          pluginId: 'acme.goal',
-          agentId: 'agent-a',
-          sessionId: 'session-a',
-        ),
-        isFalse,
-      );
-
-      final restarted = NativePluginStateRepository(root.path);
-      expect((await restarted.get('owned'))!.status, PluginJobStatus.cancelled);
-      expect(
-        (await restarted.claimNext(now: dueAt, leaseId: 'lease'))!.id,
+    expect(
+      await repository.cancel(
         'foreign',
-      );
-    },
-    tags: const <String>['feature_test__plugin_runtime__unit'],
-  );
+        pluginId: 'acme.goal',
+        agentId: 'agent-a',
+        sessionId: 'session-a',
+      ),
+      isFalse,
+    );
+    expect(
+      await repository.cancel(
+        'owned',
+        pluginId: 'acme.goal',
+        agentId: 'agent-a',
+        sessionId: 'session-a',
+      ),
+      isTrue,
+    );
+    expect(
+      await repository.cancel(
+        'owned',
+        pluginId: 'acme.goal',
+        agentId: 'agent-a',
+        sessionId: 'session-a',
+      ),
+      isFalse,
+    );
+
+    final restarted = NativePluginStateRepository(root.path);
+    expect((await restarted.get('owned'))!.status, PluginJobStatus.cancelled);
+    expect(
+      (await restarted.claimNext(now: dueAt, leaseId: 'lease'))!.id,
+      'foreign',
+    );
+  }, tags: const <String>['feature_test__plugin_runtime__unit']);
 
   test('native repository never overwrites malformed state', () async {
     final root = await Directory.systemTemp.createTemp('tinest-plugin-state-');
@@ -368,44 +351,42 @@ void main() {
       expect(values['created']!.revision, 1);
 
       final invalid = <Future<void> Function()>[
-        () async => repository.grant(
+        () async => await repository.grant(
           const AgentPluginGrantDto(
             agentId: '',
             pluginId: 'acme.state',
             capability: 'state.read',
           ),
         ),
-        () async => repository.grant(
+        () async => await repository.grant(
           const AgentPluginGrantDto(
             agentId: 'agent-a',
             pluginId: 'invalid',
             capability: 'state.read',
           ),
         ),
-        () async => repository.grant(
+        () async => await repository.grant(
           const AgentPluginGrantDto(
             agentId: 'agent-a',
             pluginId: 'acme.state',
             capability: 'invalid',
           ),
         ),
-        () async => repository.read(
-          scope,
-          List<String>.filled(257, 'x').join(),
-        ),
-        () async => repository.compareAndSet(
+        () async =>
+            await repository.read(scope, List<String>.filled(257, 'x').join()),
+        () async => await repository.compareAndSet(
           scope,
           'value',
           expectedRevision: -1,
           value: null,
         ),
-        () async => repository.compareAndSet(
+        () async => await repository.compareAndSet(
           scope,
           'value',
           expectedRevision: 0,
           value: double.nan,
         ),
-        () async => repository.compareAndSet(
+        () async => await repository.compareAndSet(
           scope,
           'value',
           expectedRevision: 0,

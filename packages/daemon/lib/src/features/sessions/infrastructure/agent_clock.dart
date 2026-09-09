@@ -15,7 +15,7 @@ typedef PendingInputSignal = Future<void> Function(String sessionId);
 /// signal, because `agent` cannot depend on `daemon`.
 final class SessionAgentClock implements AgentClock {
   /// Creates a [SessionAgentClock] for one session.
-  const SessionAgentClock({
+  const new({
     required this.clock,
     required this.sessionId,
     required this.pendingInput,

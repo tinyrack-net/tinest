@@ -71,10 +71,7 @@ Future<void> main(List<String> arguments) async {
       distribution: distribution,
       executable: executable,
     );
-    await _runPackageTypechecks(
-      root: root,
-      executable: executable,
-    );
+    await _runPackageTypechecks(root: root, executable: executable);
     stdout.writeln(
       'LuaLS $_version conformance passed '
       '(${asset.fileName}, ${asset.sha256}).',
@@ -160,11 +157,12 @@ Future<Directory> _installLuaLs({
   if (temporary.existsSync()) await temporary.delete(recursive: true);
   await temporary.create(recursive: true);
   try {
-    final extraction = await Process.run(
-      'tar',
-      <String>['-xf', archive.path, '-C', temporary.path],
-      runInShell: Platform.isWindows,
-    );
+    final extraction = await Process.run('tar', <String>[
+      '-xf',
+      archive.path,
+      '-C',
+      temporary.path,
+    ], runInShell: Platform.isWindows);
     if (extraction.exitCode != 0) {
       throw StateError(
         'Failed to extract ${asset.fileName}: ${extraction.stderr as String}',
@@ -189,10 +187,8 @@ Future<Directory> _installLuaLs({
         throw StateError('Could not make LuaLS executable.');
       }
     }
-    await File(p.join(temporary.path, '.asset-sha256')).writeAsString(
-      '${asset.sha256}\n',
-      flush: true,
-    );
+    await File(p.join(temporary.path, '.asset-sha256'))
+        .writeAsString('${asset.sha256}\n', flush: true);
     await distribution.parent.create(recursive: true);
     if (distribution.existsSync()) await distribution.delete(recursive: true);
     await temporary.rename(distribution.path);
@@ -232,13 +228,12 @@ Future<void> _download(Uri uri, File destination) async {
 }
 
 Future<String> _digest(File file) async =>
-    sha256.bind(file.openRead()).first.then((value) => value.toString());
+    await sha256.bind(file.openRead()).first.then((value) => value.toString());
 
 Future<void> _verifyVersion(File executable) async {
-  final result = await Process.run(
-    executable.path,
-    const <String>['--version'],
-  );
+  final result = await Process.run(executable.path, const <String>[
+    '--version',
+  ]);
   final output = (result.stdout as String).trim();
   if (result.exitCode != 0 ||
       !RegExp(r'^3\.18\.2(?:-dev)?$').hasMatch(output)) {
@@ -295,9 +290,8 @@ Future<void> _runConformance({
     await File(
       p.join(authoring.path, PluginTypeEnvironmentGenerator.sidecarFileName),
     ).writeAsString(generatedTypes.authoringDefinition);
-    await File(
-      p.join(workspace.path, '.luarc.json'),
-    ).writeAsString(_luaLanguageServerConfiguration(library, authoring));
+    await File(p.join(workspace.path, '.luarc.json'))
+        .writeAsString(_luaLanguageServerConfiguration(library, authoring));
 
     final client = await _LspClient.start(
       executable: executable,
@@ -463,11 +457,7 @@ Future<void> _runConformance({
       await _expectHoverContains(
         client,
         uri,
-        _inside(
-          fixtureSource,
-          'local json_value = tinest.json.null',
-          'null',
-        ),
+        _inside(fixtureSource, 'local json_value = tinest.json.null', 'null'),
         'tinest.JsonNull',
       );
       await _expectHoverContains(
@@ -908,11 +898,7 @@ Future<void> _runConformance({
       await _expectHoverContains(
         client,
         uri,
-        _inside(
-          fixtureSource,
-          'tinest.host.workspace.read_text(',
-          'read_text',
-        ),
+        _inside(fixtureSource, 'tinest.host.workspace.read_text(', 'read_text'),
         'WorkspaceReadTextInput',
       );
       await _expectSignatureContains(
@@ -1026,11 +1012,7 @@ Future<void> _runConformance({
         diagnostics,
         'process.read({handle = "wrong"',
       );
-      _expectDiagnosticAt(
-        fixtureSource,
-        diagnostics,
-        'current_time("+09:00")',
-      );
+      _expectDiagnosticAt(fixtureSource, diagnostics, 'current_time("+09:00")');
       _expectDiagnosticAt(fixtureSource, diagnostics, 'ui.text({text = 42');
       _expectDiagnosticAt(
         fixtureSource,
@@ -1168,43 +1150,43 @@ Future<void> _runConformance({
   }
 }
 
-String _luaLanguageServerConfiguration(
-  Directory library,
-  Directory authoring,
-) =>
-    '${const JsonEncoder.withIndent('  ').convert(<String, Object?>{
-      'runtime': <String, Object?>{
-        'version': 'Lua 5.5',
-        'path': <String>['?.lua', '?/init.lua'],
-        'pathStrict': true,
-        'builtin': <String, String>{
-          'basic': 'disable',
-          'bit': 'disable',
-          'bit32': 'disable',
-          'coroutine': 'disable',
-          'debug': 'disable',
-          'ffi': 'disable',
-          'io': 'disable',
-          'jit': 'disable',
-          'os': 'disable',
-          'package': 'disable',
-          'string.buffer': 'disable',
-          'table.clear': 'disable',
-          'table.new': 'disable',
-        },
-      },
-      'workspace': <String, Object?>{
-        'library': <String>[library.path, authoring.path],
-        'checkThirdParty': 'Disable',
-      },
-      'diagnostics': <String, Object?>{
-        'enable': true,
-        'workspaceDelay': 0,
-        'workspaceRate': 100,
-        'globals': <String>[],
-      },
-      'type': <String, Object?>{'checkTableShape': true},
-    })}\n';
+String _luaLanguageServerConfiguration(Directory library, Directory authoring) {
+  const disabledBuiltins = <String, String>{
+    'basic': 'disable',
+    'bit': 'disable',
+    'bit32': 'disable',
+    'coroutine': 'disable',
+    'debug': 'disable',
+    'ffi': 'disable',
+    'io': 'disable',
+    'jit': 'disable',
+    'os': 'disable',
+    'package': 'disable',
+    'string.buffer': 'disable',
+    'table.clear': 'disable',
+    'table.new': 'disable',
+  };
+  final configuration = <String, Object?>{
+    'runtime': <String, Object?>{
+      'version': 'Lua 5.5',
+      'path': <String>['?.lua', '?/init.lua'],
+      'pathStrict': true,
+      'builtin': disabledBuiltins,
+    },
+    'workspace': <String, Object?>{
+      'library': <String>[library.path, authoring.path],
+      'checkThirdParty': 'Disable',
+    },
+    'diagnostics': <String, Object?>{
+      'enable': true,
+      'workspaceDelay': 0,
+      'workspaceRate': 100,
+      'globals': <String>[],
+    },
+    'type': <String, Object?>{'checkTableShape': true},
+  };
+  return '${const JsonEncoder.withIndent('  ').convert(configuration)}\n';
+}
 
 Future<void> _runPackageTypechecks({
   required Directory root,
@@ -1225,10 +1207,7 @@ Future<void> _runPackageTypechecks({
       await target.writeAsString(asset.value);
     }
 
-    await catalog.scaffold(
-      'conformance.scaffold',
-      'Conformance scaffold',
-    );
+    await catalog.scaffold('conformance.scaffold', 'Conformance scaffold');
     final packages = <({String id, Directory source})>[
       for (final source
           in (Directory(
@@ -1239,12 +1218,7 @@ Future<void> _runPackageTypechecks({
       (
         id: 'conformance.scaffold',
         source: Directory(
-          p.join(
-            workspace.path,
-            'v5',
-            'plugins',
-            'conformance.scaffold',
-          ),
+          p.join(workspace.path, 'v5', 'plugins', 'conformance.scaffold'),
         ),
       ),
     ];
@@ -1296,19 +1270,14 @@ Future<void> _runPackageTypechecks({
       await File(
         p.join(authoring.path, PluginTypeEnvironmentGenerator.sidecarFileName),
       ).writeAsString(generatedTypes.authoringDefinition);
-      await File(p.join(plugin.path, '.luarc.json')).writeAsString(
-        _luaLanguageServerConfiguration(library, authoring),
-      );
+      await File(p.join(plugin.path, '.luarc.json'))
+          .writeAsString(_luaLanguageServerConfiguration(library, authoring));
 
-      final result = await Process.run(
-        executable.path,
-        <String>[
-          '--check=${plugin.path}',
-          '--checklevel=Information',
-          '--check_format=pretty',
-        ],
-        workingDirectory: plugin.path,
-      );
+      final result = await Process.run(executable.path, <String>[
+        '--check=${plugin.path}',
+        '--checklevel=Information',
+        '--check_format=pretty',
+      ], workingDirectory: plugin.path);
       if (result.exitCode != 0) {
         throw StateError(
           'LuaLS rejected ${package.id}:\n${result.stdout}${result.stderr}',
@@ -1387,10 +1356,7 @@ Future<void> _expectSignatureContains(
     <String, Object?>{
       'textDocument': <String, Object?>{'uri': uri},
       'position': position.toJson(),
-      'context': <String, Object?>{
-        'triggerKind': 1,
-        'isRetrigger': false,
-      },
+      'context': <String, Object?>{'triggerKind': 1, 'isRetrigger': false},
     },
   );
   final rendered = jsonEncode(result);
@@ -1493,7 +1459,7 @@ Map<String, Object?> _jsonMap(Map<Object?, Object?> value) => <String, Object?>{
 };
 
 final class _LspClient {
-  _LspClient._(this._process) {
+  new _(this._process) {
     _process.stdout.listen(_receive, onDone: _stdoutDone.complete);
     _process.stderr.transform(utf8.decoder).listen((value) {
       if (_stderr.length < 8192) _stderr.write(value);
@@ -1505,14 +1471,10 @@ final class _LspClient {
     required Directory distribution,
     required Directory workspace,
   }) async {
-    final process = await Process.start(
-      executable.path,
-      <String>[
-        '--logpath=${p.join(workspace.path, 'log')}',
-        '--metapath=${p.join(distribution.path, 'meta')}',
-      ],
-      workingDirectory: distribution.path,
-    );
+    final process = await Process.start(executable.path, <String>[
+      '--logpath=${p.join(workspace.path, 'log')}',
+      '--metapath=${p.join(distribution.path, 'meta')}',
+    ], workingDirectory: distribution.path);
     return _LspClient._(process);
   }
 
@@ -1584,9 +1546,8 @@ final class _LspClient {
     });
     return completer.future.timeout(
       const Duration(seconds: 30),
-      onTimeout: () => throw TimeoutException(
-        'LuaLS request timed out: $method. $_stderr',
-      ),
+      onTimeout: () =>
+          throw TimeoutException('LuaLS request timed out: $method. $_stderr'),
     );
   }
 
@@ -1638,7 +1599,7 @@ final class _LspClient {
       } on _LspRequestException {
         // LuaLS may use push diagnostics only; the waiter below covers it.
       }
-      if (completer.isCompleted) return completer.future;
+      if (completer.isCompleted) return await completer.future;
       final pushed = await completer.future
           .timeout(
             const Duration(seconds: 2),
@@ -1655,12 +1616,10 @@ final class _LspClient {
 
   void _send(Map<String, Object?> message) {
     final payload = utf8.encode(jsonEncode(message));
-    _process.stdin.add(
-      <int>[
-        ...ascii.encode('Content-Length: ${payload.length}\r\n\r\n'),
-        ...payload,
-      ],
-    );
+    _process.stdin.add(<int>[
+      ...ascii.encode('Content-Length: ${payload.length}\r\n\r\n'),
+      ...payload,
+    ]);
   }
 
   void _receive(List<int> bytes) {
@@ -1745,9 +1704,10 @@ final class _LspClient {
 
   Future<void> close() async {
     try {
-      await request('shutdown', const <String, Object?>{}).timeout(
-        const Duration(seconds: 5),
-      );
+      await request(
+        'shutdown',
+        const <String, Object?>{},
+      ).timeout(const Duration(seconds: 5));
       notify('exit', const <String, Object?>{});
       await _process.exitCode.timeout(const Duration(seconds: 5));
     } on Object {
@@ -1786,7 +1746,7 @@ int _indexOf(List<int> haystack, List<int> needle) {
 }
 
 final class _LuaLsAsset {
-  const _LuaLsAsset({required this.fileName, required this.sha256});
+  const new({required this.fileName, required this.sha256});
 
   final String fileName;
   final String sha256;
@@ -1798,7 +1758,7 @@ final class _LuaLsAsset {
 }
 
 final class _LspRequestException implements Exception {
-  const _LspRequestException(this.error);
+  const new(this.error);
 
   final Object error;
 
@@ -1807,7 +1767,7 @@ final class _LspRequestException implements Exception {
 }
 
 final class _Position {
-  const _Position(this.line, this.character);
+  const new(this.line, this.character);
 
   final int line;
   final int character;

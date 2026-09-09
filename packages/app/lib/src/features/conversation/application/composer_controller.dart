@@ -63,7 +63,7 @@ Future<void> _debounce(Ref ref, Duration delay) {
 /// Agent and model chosen in the composer before a session exists.
 final class SessionComposerDraft {
   /// Creates a composer draft.
-  const SessionComposerDraft({
+  const new({
     this.agentDefinitionId,
     this.model,
     this.modelControls = const <String, ModelControlValueDto>{},

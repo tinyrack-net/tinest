@@ -1,10 +1,10 @@
 /// Explicit empty parameter object for relay procedures.
 final class RelayEmptyParamsDto {
   /// Creates empty relay parameters.
-  const RelayEmptyParamsDto();
+  const new();
 
   /// Decodes empty relay parameters.
-  factory RelayEmptyParamsDto.fromJson(Map<String, dynamic> json) {
+  factory fromJson(Map<String, dynamic> json) {
     if (json.isNotEmpty) {
       throw const FormatException('Expected empty relay parameters.');
     }
@@ -18,7 +18,7 @@ final class RelayEmptyParamsDto {
 /// Current outbound relay state reported by a daemon.
 final class RelayStatusDto {
   /// Creates relay state.
-  const RelayStatusDto({
+  const new({
     required this.enabled,
     required this.connected,
     required this.endpoint,
@@ -26,7 +26,7 @@ final class RelayStatusDto {
   });
 
   /// Decodes relay state.
-  factory RelayStatusDto.fromJson(Map<String, dynamic> json) => RelayStatusDto(
+  factory fromJson(Map<String, dynamic> json) => RelayStatusDto(
     enabled: json['enabled']! as bool,
     connected: json['connected']! as bool,
     endpoint: json['endpoint']! as String,
@@ -57,14 +57,13 @@ final class RelayStatusDto {
 /// Short-lived pairing link returned by the daemon.
 final class RelayPairingOfferDto {
   /// Creates a pairing offer result.
-  const RelayPairingOfferDto({required this.url, required this.expiresAt});
+  const new({required this.url, required this.expiresAt});
 
   /// Decodes a pairing offer result.
-  factory RelayPairingOfferDto.fromJson(Map<String, dynamic> json) =>
-      RelayPairingOfferDto(
-        url: json['url']! as String,
-        expiresAt: DateTime.parse(json['expiresAt']! as String).toUtc(),
-      );
+  factory fromJson(Map<String, dynamic> json) => RelayPairingOfferDto(
+    url: json['url']! as String,
+    expiresAt: DateTime.parse(json['expiresAt']! as String).toUtc(),
+  );
 
   /// Fragment-only pairing URL.
   final String url;
@@ -82,7 +81,7 @@ final class RelayPairingOfferDto {
 /// Public metadata for one daemon-approved device.
 final class RelayDeviceDto {
   /// Creates approved device metadata.
-  const RelayDeviceDto({
+  const new({
     required this.id,
     required this.name,
     required this.registeredAt,
@@ -90,7 +89,7 @@ final class RelayDeviceDto {
   });
 
   /// Decodes approved device metadata.
-  factory RelayDeviceDto.fromJson(Map<String, dynamic> json) => RelayDeviceDto(
+  factory fromJson(Map<String, dynamic> json) => RelayDeviceDto(
     id: json['id']! as String,
     name: json['name']! as String,
     registeredAt: DateTime.parse(json['registeredAt']! as String).toUtc(),
@@ -123,19 +122,17 @@ final class RelayDeviceDto {
 /// Result of listing approved relay devices.
 final class RelayDeviceListDto {
   /// Creates a device-list result.
-  const RelayDeviceListDto({required this.devices});
+  const new({required this.devices});
 
   /// Decodes a device-list result.
-  factory RelayDeviceListDto.fromJson(Map<String, dynamic> json) =>
-      RelayDeviceListDto(
-        devices: (json['devices']! as List<dynamic>)
-            .map(
-              (value) => RelayDeviceDto.fromJson(
-                Map<String, dynamic>.from(value! as Map),
-              ),
-            )
-            .toList(growable: false),
-      );
+  factory fromJson(Map<String, dynamic> json) => RelayDeviceListDto(
+    devices: (json['devices']! as List<dynamic>)
+        .map(
+          (value) =>
+              RelayDeviceDto.fromJson(Map<String, dynamic>.from(value! as Map)),
+        )
+        .toList(growable: false),
+  );
 
   /// Approved devices in stable repository order.
   final List<RelayDeviceDto> devices;
@@ -149,10 +146,10 @@ final class RelayDeviceListDto {
 /// Parameters for changing relay activation.
 final class RelaySetEnabledParamsDto {
   /// Creates relay activation parameters.
-  const RelaySetEnabledParamsDto({required this.enabled});
+  const new({required this.enabled});
 
   /// Decodes relay activation parameters.
-  factory RelaySetEnabledParamsDto.fromJson(Map<String, dynamic> json) =>
+  factory fromJson(Map<String, dynamic> json) =>
       RelaySetEnabledParamsDto(enabled: json['enabled']! as bool);
 
   /// Desired relay activation.
@@ -165,10 +162,10 @@ final class RelaySetEnabledParamsDto {
 /// Parameters for changing the daemon's relay endpoint.
 final class RelaySetEndpointParamsDto {
   /// Creates relay endpoint parameters.
-  const RelaySetEndpointParamsDto({required this.endpoint});
+  const new({required this.endpoint});
 
   /// Decodes relay endpoint parameters.
-  factory RelaySetEndpointParamsDto.fromJson(Map<String, dynamic> json) =>
+  factory fromJson(Map<String, dynamic> json) =>
       RelaySetEndpointParamsDto(endpoint: json['endpoint']! as String);
 
   /// Desired relay WebSocket endpoint.
@@ -181,10 +178,10 @@ final class RelaySetEndpointParamsDto {
 /// Parameters for revoking one approved device.
 final class RelayRevokeDeviceParamsDto {
   /// Creates device revocation parameters.
-  const RelayRevokeDeviceParamsDto({required this.deviceId});
+  const new({required this.deviceId});
 
   /// Decodes device revocation parameters.
-  factory RelayRevokeDeviceParamsDto.fromJson(Map<String, dynamic> json) =>
+  factory fromJson(Map<String, dynamic> json) =>
       RelayRevokeDeviceParamsDto(deviceId: json['deviceId']! as String);
 
   /// Device identifier to revoke.

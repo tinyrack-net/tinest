@@ -7,13 +7,13 @@ import 'package:agent/src/model.dart';
 /// Never serialized to clients: the protocol package carries origins and
 /// statuses, never the material itself.
 sealed class ProviderCredential {
-  const ProviderCredential();
+  const new();
 }
 
 /// API key credential material.
 final class ApiKeyCredential extends ProviderCredential {
   /// Creates API key credential material.
-  const ApiKeyCredential(this.key);
+  const new(this.key);
 
   /// Secret provider API key.
   final String key;
@@ -22,7 +22,7 @@ final class ApiKeyCredential extends ProviderCredential {
 /// OAuth credential material for a subscription-backed provider.
 final class OAuthCredential extends ProviderCredential {
   /// Creates OAuth credential material.
-  const OAuthCredential({
+  const new({
     required this.accessToken,
     required this.refreshToken,
     required this.expiresAt,
@@ -90,7 +90,7 @@ final class ProviderEndpoint {
   ///
   /// [extensions] defaults to empty so an endpoint receives an optional field
   /// only once someone has stated that it accepts one.
-  const ProviderEndpoint({
+  const new({
     required this.baseUrl,
     this.extensions = const <ProviderEndpointExtension>{},
   });
@@ -109,7 +109,7 @@ final class ProviderEndpoint {
 /// Everything needed to build one executable adapter.
 final class ModelGatewayRequest {
   /// Creates the inputs of one adapter.
-  const ModelGatewayRequest({
+  const new({
     required this.connectionId,
     required this.endpoint,
     required this.credential,
@@ -144,7 +144,7 @@ enum ProviderDiscoveryFailureKind {
 /// Typed failure returned by provider model discovery.
 final class ProviderDiscoveryFailure implements Exception {
   /// Creates a discovery failure.
-  const ProviderDiscoveryFailure(this.kind, this.message);
+  const new(this.kind, this.message);
 
   /// Stable failure classification.
   final ProviderDiscoveryFailureKind kind;
@@ -191,7 +191,7 @@ abstract interface class ProviderWireProtocol {
 /// Immutable metadata for a coding-capable provider model.
 final class ProviderCatalogModel {
   /// Creates bundled model metadata.
-  const ProviderCatalogModel({
+  const new({
     required this.id,
     required this.label,
     required this.capabilities,
@@ -248,7 +248,7 @@ abstract interface class ProviderOAuthGateway {
 /// Typed OAuth refresh failure with an explicit reauthentication decision.
 final class OAuthRefreshFailure implements Exception {
   /// Creates a refresh failure safe to persist as connection status metadata.
-  const OAuthRefreshFailure(this.message, {required this.reauthRequired});
+  const new(this.message, {required this.reauthRequired});
 
   /// Human-readable failure without credential material.
   final String message;
@@ -263,7 +263,7 @@ final class OAuthRefreshFailure implements Exception {
 /// Typed failure raised while authorizing, before any credential exists.
 final class OAuthAuthorizationFailure implements Exception {
   /// Creates an authorization failure safe to show as attempt metadata.
-  const OAuthAuthorizationFailure(this.message);
+  const new(this.message);
 
   /// Human-readable failure without credential material.
   final String message;
@@ -282,7 +282,7 @@ final class OAuthAuthorizationFailure implements Exception {
 /// registering it in the composition root.
 abstract base class ProviderAdapter {
   /// Allows subclasses to be const.
-  const ProviderAdapter();
+  const new();
 
   /// Catalog definition identifier.
   String get id;
@@ -342,7 +342,7 @@ abstract base class ProviderAdapter {
 /// The vendors and wire protocols compiled into the daemon.
 final class ProviderRegistry {
   /// Creates a registry, rejecting duplicate identifiers.
-  factory ProviderRegistry({
+  factory({
     required List<ProviderAdapter> adapters,
     required List<ProviderWireProtocol> wireProtocols,
   }) {
@@ -369,7 +369,7 @@ final class ProviderRegistry {
     );
   }
 
-  const ProviderRegistry._(this.adapters, this.wireProtocols);
+  const new _(this.adapters, this.wireProtocols);
 
   /// Every vendor, in advertised order.
   final List<ProviderAdapter> adapters;

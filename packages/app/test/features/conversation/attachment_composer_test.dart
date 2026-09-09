@@ -85,10 +85,10 @@ void main() {
         await tester.tap(find.byKey(const ValueKey('session-composer-send')));
         await tester.pumpAndSettle();
         expect(submitted!.text, isEmpty);
-        expect(
-          submitted!.attachments.map((item) => item.fileName),
-          <String>['fixture.png', 'notes.txt'],
-        );
+        expect(submitted!.attachments.map((item) => item.fileName), <String>[
+          'fixture.png',
+          'notes.txt',
+        ]);
         expect(find.textContaining('fixture.png'), findsNothing);
 
         final region = tester.widget<DropwellRegion>(
@@ -328,9 +328,7 @@ void main() {
               appServicesProvider.overrideWithValue(
                 fakeAppServices(fixture.api),
               ),
-              attachmentInputProvider.overrideWithValue(
-                _FakeAttachmentInput(),
-              ),
+              attachmentInputProvider.overrideWithValue(_FakeAttachmentInput()),
             ],
             child: MaterialApp.router(
               theme: testLightTheme,
@@ -374,7 +372,7 @@ SessionComposerBar _bar() => SessionComposerBar(
 );
 
 final class _FakeAttachmentInput implements AttachmentInputPort {
-  _FakeAttachmentInput({this.supportsDrop = true});
+  new({this.supportsDrop = true});
 
   @override
   final bool supportsDrop;
