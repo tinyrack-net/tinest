@@ -2,7 +2,7 @@ part of '../../app/application_controllers_test.dart';
 
 /// Stands in for a host that cannot be reached while a page is requested.
 final class _OfflineFailure implements Exception {
-  const _OfflineFailure();
+  const new();
 
   @override
   String toString() => 'offline';
@@ -133,87 +133,76 @@ void _registerConversationControllerTests() {
     tags: const <String>['feature_test__turn_execution__unit'],
   );
 
-  test(
-    'pending first prompts follow terminal timeline events',
-    () async {
-      final api = FakeTinestApi(agents: <SessionDto>[agent]);
-      final container = _container(api);
-      addTearDown(container.dispose);
-      await container.read(hostRegistryControllerProvider.future);
-      await Future<void>.delayed(Duration.zero);
-      final provider = conversationControllerProvider('server', agent.id);
-      final listener = container.listen(provider, (_, _) {});
-      addTearDown(listener.close);
-      await container.read(provider.future);
-      container
-          .read(pendingFirstTurnsProvider.notifier)
-          .put(agent.id, 'first prompt');
+  test('pending first prompts follow terminal timeline events', () async {
+    final api = FakeTinestApi(agents: <SessionDto>[agent]);
+    final container = _container(api);
+    addTearDown(container.dispose);
+    await container.read(hostRegistryControllerProvider.future);
+    await Future<void>.delayed(Duration.zero);
+    final provider = conversationControllerProvider('server', agent.id);
+    final listener = container.listen(provider, (_, _) {});
+    addTearDown(listener.close);
+    await container.read(provider.future);
+    container
+        .read(pendingFirstTurnsProvider.notifier)
+        .put(agent.id, 'first prompt');
 
-      api.emit(
-        TimelineClientEvent(
-          TimelineEventDto(
-            sessionId: agent.id,
-            sequence: 1,
-            turnId: 'first-turn',
-            type: 'turn.failed',
-            data: const <String, dynamic>{'error': 'runner setup failed'},
-            createdAt: now,
-          ),
+    api.emit(
+      TimelineClientEvent(
+        TimelineEventDto(
+          sessionId: agent.id,
+          sequence: 1,
+          turnId: 'first-turn',
+          type: 'turn.failed',
+          data: const <String, dynamic>{'error': 'runner setup failed'},
+          createdAt: now,
         ),
-      );
-      await Future<void>.delayed(Duration.zero);
-      expect(
-        container.read(pendingFirstTurnsProvider)[agent.id]!.failed,
-        isTrue,
-      );
+      ),
+    );
+    await Future<void>.delayed(Duration.zero);
+    expect(container.read(pendingFirstTurnsProvider)[agent.id]!.failed, isTrue);
 
-      api.emit(
-        TimelineClientEvent(
-          TimelineEventDto(
-            sessionId: agent.id,
-            sequence: 2,
-            turnId: 'retry-turn',
-            type: 'user.message',
-            data: const <String, dynamic>{'text': 'first prompt'},
-            createdAt: now,
-          ),
+    api.emit(
+      TimelineClientEvent(
+        TimelineEventDto(
+          sessionId: agent.id,
+          sequence: 2,
+          turnId: 'retry-turn',
+          type: 'user.message',
+          data: const <String, dynamic>{'text': 'first prompt'},
+          createdAt: now,
         ),
-      );
-      await Future<void>.delayed(Duration.zero);
-      expect(container.read(pendingFirstTurnsProvider), isEmpty);
-    },
-    tags: const <String>['feature_test__turn_execution__unit'],
-  );
+      ),
+    );
+    await Future<void>.delayed(Duration.zero);
+    expect(container.read(pendingFirstTurnsProvider), isEmpty);
+  }, tags: const <String>['feature_test__turn_execution__unit']);
 
-  test(
-    'a started turn is visible before the daemon echoes it',
-    () async {
-      final api = FakeTinestApi(agents: <SessionDto>[agent])
-        ..emitUserMessageEcho = false
-        ..startTurnGate = Completer<void>();
-      final container = _queueContainer(api);
-      addTearDown(container.dispose);
-      final provider = await _readyQueueProvider(container, agent);
+  test('a started turn is visible before the daemon echoes it', () async {
+    final api = FakeTinestApi(agents: <SessionDto>[agent])
+      ..emitUserMessageEcho = false
+      ..startTurnGate = Completer<void>();
+    final container = _queueContainer(api);
+    addTearDown(container.dispose);
+    final provider = await _readyQueueProvider(container, agent);
 
-      final send = container.read(provider.notifier).startTurn('follow up');
-      await Future<void>.delayed(Duration.zero);
+    final send = container.read(provider.notifier).startTurn('follow up');
+    await Future<void>.delayed(Duration.zero);
 
-      // The bubble is recorded ahead of the RPC, not after it: the daemon acks
-      // a turn long before it writes the durable user message.
-      final pending = container.read(provider).value!.pending;
-      expect(pending.map((turn) => turn.prompt), <String>['follow up']);
+    // The bubble is recorded ahead of the RPC, not after it: the daemon acks
+    // a turn long before it writes the durable user message.
+    final pending = container.read(provider).value!.pending;
+    expect(pending.map((turn) => turn.prompt), <String>['follow up']);
 
-      api.startTurnGate!.complete();
-      await send;
-      await Future<void>.delayed(Duration.zero);
-      expect(
-        container.read(provider).value!.pending.single.turnId,
-        api.startedTurnIds.single,
-        reason: 'the entry carries the turn id the daemon was given',
-      );
-    },
-    tags: const <String>['feature_test__turn_execution__unit'],
-  );
+    api.startTurnGate!.complete();
+    await send;
+    await Future<void>.delayed(Duration.zero);
+    expect(
+      container.read(provider).value!.pending.single.turnId,
+      api.startedTurnIds.single,
+      reason: 'the entry carries the turn id the daemon was given',
+    );
+  }, tags: const <String>['feature_test__turn_execution__unit']);
 
   test(
     'the echo replaces the optimistic prompt in a single state write',
@@ -319,82 +308,74 @@ void _registerConversationControllerTests() {
     tags: const <String>['feature_test__turn_execution__unit'],
   );
 
-  test(
-    'queued prompts start one per turn and survive a failed send',
-    () async {
-      final api = FakeTinestApi(agents: <SessionDto>[agent]);
-      final container = ProviderContainer(
-        overrides: [
-          appServicesProvider.overrideWithValue(fakeAppServices(api)),
-          appIdGeneratorProvider.overrideWithValue(_SequentialIdGenerator()),
-        ],
-      );
-      addTearDown(container.dispose);
-      await container.read(hostRegistryControllerProvider.future);
-      await Future<void>.delayed(Duration.zero);
-      final provider = conversationControllerProvider('server', agent.id);
-      final listener = container.listen(provider, (_, _) {});
-      addTearDown(listener.close);
-      await container.read(provider.future);
-      // A prompt only queues because a turn is running.
-      api.emit(
-        SessionUpdatedClientEvent(
-          agent.copyWith(status: SessionStatus.running),
-        ),
-      );
-      await Future<void>.delayed(Duration.zero);
-      container.read(provider.notifier)
-        ..enqueueTurn('  first  ')
-        ..enqueueTurn('second')
-        // Neither empty text nor empty attachments is worth a turn.
-        ..enqueueTurn('   ');
-      await Future<void>.delayed(Duration.zero);
-      expect(
-        container.read(provider).value!.queued.map((item) => item.text),
-        <String>['first', 'second'],
-      );
+  test('queued prompts start one per turn and survive a failed send', () async {
+    final api = FakeTinestApi(agents: <SessionDto>[agent]);
+    final container = ProviderContainer(
+      overrides: [
+        appServicesProvider.overrideWithValue(fakeAppServices(api)),
+        appIdGeneratorProvider.overrideWithValue(_SequentialIdGenerator()),
+      ],
+    );
+    addTearDown(container.dispose);
+    await container.read(hostRegistryControllerProvider.future);
+    await Future<void>.delayed(Duration.zero);
+    final provider = conversationControllerProvider('server', agent.id);
+    final listener = container.listen(provider, (_, _) {});
+    addTearDown(listener.close);
+    await container.read(provider.future);
+    // A prompt only queues because a turn is running.
+    api.emit(
+      SessionUpdatedClientEvent(agent.copyWith(status: SessionStatus.running)),
+    );
+    await Future<void>.delayed(Duration.zero);
+    container.read(provider.notifier)
+      ..enqueueTurn('  first  ')
+      ..enqueueTurn('second')
+      // Neither empty text nor empty attachments is worth a turn.
+      ..enqueueTurn('   ');
+    await Future<void>.delayed(Duration.zero);
+    expect(
+      container.read(provider).value!.queued.map((item) => item.text),
+      <String>['first', 'second'],
+    );
 
-      // A settled session releases exactly one prompt, so each queued
-      // follow-up gets a turn of its own.
-      api.emit(
+    // A settled session releases exactly one prompt, so each queued
+    // follow-up gets a turn of its own.
+    api.emit(
+      SessionUpdatedClientEvent(agent.copyWith(status: SessionStatus.idle)),
+    );
+    await Future<void>.delayed(Duration.zero);
+    expect(api.startedPrompts, <String>['first']);
+    expect(
+      container.read(provider).value!.queued.map((item) => item.text),
+      <String>['second'],
+    );
+
+    // A send that fails puts its prompt back at the head rather than
+    // dropping it. The failure also arms a retry, so this observes the state
+    // one event-loop turn later, well inside conversationDrainRetryDelay:
+    // the point here is the restore, and the retry has its own test.
+    api
+      ..startTurnError = Exception('offline')
+      ..emit(
         SessionUpdatedClientEvent(agent.copyWith(status: SessionStatus.idle)),
       );
-      await Future<void>.delayed(Duration.zero);
-      expect(api.startedPrompts, <String>['first']);
-      expect(
-        container.read(provider).value!.queued.map((item) => item.text),
-        <String>['second'],
-      );
+    await Future<void>.delayed(Duration.zero);
+    expect(api.startedPrompts, <String>['first']);
+    expect(
+      container.read(provider).value!.queued.map((item) => item.text),
+      <String>['second'],
+    );
 
-      // A send that fails puts its prompt back at the head rather than
-      // dropping it. The failure also arms a retry, so this observes the state
-      // one event-loop turn later, well inside conversationDrainRetryDelay:
-      // the point here is the restore, and the retry has its own test.
-      api
-        ..startTurnError = Exception('offline')
-        ..emit(
-          SessionUpdatedClientEvent(agent.copyWith(status: SessionStatus.idle)),
-        );
-      await Future<void>.delayed(Duration.zero);
-      expect(api.startedPrompts, <String>['first']);
-      expect(
-        container.read(provider).value!.queued.map((item) => item.text),
-        <String>['second'],
+    api
+      ..startTurnError = null
+      ..emit(
+        SessionUpdatedClientEvent(agent.copyWith(status: SessionStatus.failed)),
       );
-
-      api
-        ..startTurnError = null
-        ..emit(
-          SessionUpdatedClientEvent(
-            agent.copyWith(status: SessionStatus.failed),
-          ),
-        );
-      await Future<void>.delayed(Duration.zero);
-      expect(api.startedPrompts, <String>['first', 'second']);
-      expect(container.read(provider).value!.queued, isEmpty);
-    },
-    tags: const <String>['feature_test__conversation_turn_queue__unit'],
-  );
+    await Future<void>.delayed(Duration.zero);
+    expect(api.startedPrompts, <String>['first', 'second']);
+    expect(container.read(provider).value!.queued, isEmpty);
+  }, tags: const <String>['feature_test__conversation_turn_queue__unit']);
 
   test(
     'a queued prompt whose send fails is retried without a new session event',
@@ -449,23 +430,19 @@ void _registerConversationControllerTests() {
     tags: const <String>['feature_test__conversation_turn_queue__unit'],
   );
 
-  test(
-    'a queued prompt still starts when the settled check fails',
-    () async {
-      final api = FakeTinestApi(agents: <SessionDto>[agent])
-        ..listSessionsFailures = 1;
-      final container = _queueContainer(api);
-      addTearDown(container.dispose);
-      final provider = await _readyQueueProvider(container, agent);
+  test('a queued prompt still starts when the settled check fails', () async {
+    final api = FakeTinestApi(agents: <SessionDto>[agent])
+      ..listSessionsFailures = 1;
+    final container = _queueContainer(api);
+    addTearDown(container.dispose);
+    final provider = await _readyQueueProvider(container, agent);
 
-      container.read(provider.notifier).enqueueTurn('late');
-      await _settleDrainRetries();
+    container.read(provider.notifier).enqueueTurn('late');
+    await _settleDrainRetries();
 
-      expect(api.startedPrompts, <String>['late']);
-      expect(container.read(provider).value!.queued, isEmpty);
-    },
-    tags: const <String>['feature_test__conversation_turn_queue__unit'],
-  );
+    expect(api.startedPrompts, <String>['late']);
+    expect(container.read(provider).value!.queued, isEmpty);
+  }, tags: const <String>['feature_test__conversation_turn_queue__unit']);
 
   test(
     'a queued prompt that never sends stops retrying and reports the failure',
@@ -487,9 +464,7 @@ void _registerConversationControllerTests() {
       api.emit(
         SessionUpdatedClientEvent(agent.copyWith(status: SessionStatus.idle)),
       );
-      await _settleDrainRetries(
-        rounds: conversationDrainMaxAttempts + 3,
-      );
+      await _settleDrainRetries(rounds: conversationDrainMaxAttempts + 3);
 
       // An equality, not a bound: a greater count is the runaway retry this
       // budget exists to rule out, and `lessThan` would not catch it.
@@ -506,43 +481,37 @@ void _registerConversationControllerTests() {
     tags: const <String>['feature_test__conversation_turn_queue__unit'],
   );
 
-  test(
-    'a drain requested while one is in flight is not dropped',
-    () async {
-      final gate = Completer<void>();
-      final api = FakeTinestApi(agents: <SessionDto>[agent])
-        ..startTurnGate = gate;
-      final container = _queueContainer(api);
-      addTearDown(container.dispose);
-      final provider = await _readyQueueProvider(container, agent);
+  test('a drain requested while one is in flight is not dropped', () async {
+    final gate = Completer<void>();
+    final api = FakeTinestApi(agents: <SessionDto>[agent])
+      ..startTurnGate = gate;
+    final container = _queueContainer(api);
+    addTearDown(container.dispose);
+    final provider = await _readyQueueProvider(container, agent);
 
-      api.emit(
-        SessionUpdatedClientEvent(
-          agent.copyWith(status: SessionStatus.running),
-        ),
-      );
-      await Future<void>.delayed(Duration.zero);
-      container.read(provider.notifier).enqueueTurn('first');
-      await Future<void>.delayed(Duration.zero);
-      api.emit(
-        SessionUpdatedClientEvent(agent.copyWith(status: SessionStatus.idle)),
-      );
-      await Future<void>.delayed(Duration.zero);
+    api.emit(
+      SessionUpdatedClientEvent(agent.copyWith(status: SessionStatus.running)),
+    );
+    await Future<void>.delayed(Duration.zero);
+    container.read(provider.notifier).enqueueTurn('first');
+    await Future<void>.delayed(Duration.zero);
+    api.emit(
+      SessionUpdatedClientEvent(agent.copyWith(status: SessionStatus.idle)),
+    );
+    await Future<void>.delayed(Duration.zero);
 
-      // The drain is now parked inside startTurn. A prompt queued against the
-      // idle session drains immediately, hits the in-flight guard, and that
-      // rejected request is the only signal it had.
-      container.read(provider.notifier).enqueueTurn('second');
-      await Future<void>.delayed(Duration.zero);
-      api.startTurnGate = null;
-      gate.complete();
-      await _settleDrainRetries();
+    // The drain is now parked inside startTurn. A prompt queued against the
+    // idle session drains immediately, hits the in-flight guard, and that
+    // rejected request is the only signal it had.
+    container.read(provider.notifier).enqueueTurn('second');
+    await Future<void>.delayed(Duration.zero);
+    api.startTurnGate = null;
+    gate.complete();
+    await _settleDrainRetries();
 
-      expect(api.startedPrompts, <String>['first', 'second']);
-      expect(container.read(provider).value!.queued, isEmpty);
-    },
-    tags: const <String>['feature_test__conversation_turn_queue__unit'],
-  );
+    expect(api.startedPrompts, <String>['first', 'second']);
+    expect(container.read(provider).value!.queued, isEmpty);
+  }, tags: const <String>['feature_test__conversation_turn_queue__unit']);
 
   test(
     'a queue release that fails after disposal is dropped, not retried',
@@ -585,35 +554,31 @@ void _registerConversationControllerTests() {
     tags: const <String>['feature_test__conversation_turn_queue__unit'],
   );
 
-  test(
-    'a prompt queued after the turn already settled still starts',
-    () async {
-      final api = FakeTinestApi(agents: <SessionDto>[agent]);
-      final container = ProviderContainer(
-        overrides: [
-          appServicesProvider.overrideWithValue(fakeAppServices(api)),
-          appIdGeneratorProvider.overrideWithValue(_SequentialIdGenerator()),
-        ],
-      );
-      addTearDown(container.dispose);
-      await container.read(hostRegistryControllerProvider.future);
-      await Future<void>.delayed(Duration.zero);
-      final provider = conversationControllerProvider('server', agent.id);
-      final listener = container.listen(provider, (_, _) {});
-      addTearDown(listener.close);
-      await container.read(provider.future);
+  test('a prompt queued after the turn already settled still starts', () async {
+    final api = FakeTinestApi(agents: <SessionDto>[agent]);
+    final container = ProviderContainer(
+      overrides: [
+        appServicesProvider.overrideWithValue(fakeAppServices(api)),
+        appIdGeneratorProvider.overrideWithValue(_SequentialIdGenerator()),
+      ],
+    );
+    addTearDown(container.dispose);
+    await container.read(hostRegistryControllerProvider.future);
+    await Future<void>.delayed(Duration.zero);
+    final provider = conversationControllerProvider('server', agent.id);
+    final listener = container.listen(provider, (_, _) {});
+    addTearDown(listener.close);
+    await container.read(provider.future);
 
-      // The composer reads a rendered flag that trails the daemon, so it can
-      // queue one frame after the session went idle. No further session update
-      // is coming, so nothing but the enqueue itself can release the prompt.
-      container.read(provider.notifier).enqueueTurn('late');
-      await Future<void>.delayed(Duration.zero);
+    // The composer reads a rendered flag that trails the daemon, so it can
+    // queue one frame after the session went idle. No further session update
+    // is coming, so nothing but the enqueue itself can release the prompt.
+    container.read(provider.notifier).enqueueTurn('late');
+    await Future<void>.delayed(Duration.zero);
 
-      expect(api.startedPrompts, <String>['late']);
-      expect(container.read(provider).value!.queued, isEmpty);
-    },
-    tags: const <String>['feature_test__conversation_turn_queue__unit'],
-  );
+    expect(api.startedPrompts, <String>['late']);
+    expect(container.read(provider).value!.queued, isEmpty);
+  }, tags: const <String>['feature_test__conversation_turn_queue__unit']);
 
   test(
     'a prompt the daemon rejects as busy is queued, not handed back',
@@ -665,34 +630,30 @@ void _registerConversationControllerTests() {
     tags: const <String>['feature_test__conversation_turn_queue__unit'],
   );
 
-  test(
-    'a start failure that is not a running turn still surfaces',
-    () async {
-      final api = FakeTinestApi(agents: <SessionDto>[agent])
-        ..startTurnError = Exception('offline');
-      final container = ProviderContainer(
-        overrides: [
-          appServicesProvider.overrideWithValue(fakeAppServices(api)),
-          appIdGeneratorProvider.overrideWithValue(_SequentialIdGenerator()),
-        ],
-      );
-      addTearDown(container.dispose);
-      await container.read(hostRegistryControllerProvider.future);
-      await Future<void>.delayed(Duration.zero);
-      final provider = conversationControllerProvider('server', agent.id);
-      final listener = container.listen(provider, (_, _) {});
-      addTearDown(listener.close);
-      await container.read(provider.future);
+  test('a start failure that is not a running turn still surfaces', () async {
+    final api = FakeTinestApi(agents: <SessionDto>[agent])
+      ..startTurnError = Exception('offline');
+    final container = ProviderContainer(
+      overrides: [
+        appServicesProvider.overrideWithValue(fakeAppServices(api)),
+        appIdGeneratorProvider.overrideWithValue(_SequentialIdGenerator()),
+      ],
+    );
+    addTearDown(container.dispose);
+    await container.read(hostRegistryControllerProvider.future);
+    await Future<void>.delayed(Duration.zero);
+    final provider = conversationControllerProvider('server', agent.id);
+    final listener = container.listen(provider, (_, _) {});
+    addTearDown(listener.close);
+    await container.read(provider.future);
 
-      // The session is idle, so the composer keeps owning the error.
-      await expectLater(
-        container.read(provider.notifier).startTurn('while offline'),
-        throwsA(isA<Exception>()),
-      );
-      expect(container.read(provider).value!.queued, isEmpty);
-    },
-    tags: const <String>['feature_test__conversation_turn_queue__unit'],
-  );
+    // The session is idle, so the composer keeps owning the error.
+    await expectLater(
+      container.read(provider.notifier).startTurn('while offline'),
+      throwsA(isA<Exception>()),
+    );
+    expect(container.read(provider).value!.queued, isEmpty);
+  }, tags: const <String>['feature_test__conversation_turn_queue__unit']);
 
   test(
     'a queued prompt can be taken back or promoted past the active turn',
@@ -731,10 +692,7 @@ void _registerConversationControllerTests() {
       notifier.enqueueTurn('doomed');
       final doomed = container.read(provider).value!.queued.single;
       api.startTurnError = Exception('offline');
-      await expectLater(
-        notifier.sendQueuedTurnNow(doomed.id),
-        throwsException,
-      );
+      await expectLater(notifier.sendQueuedTurnNow(doomed.id), throwsException);
       expect(
         container.read(provider).value!.queued.map((item) => item.text),
         <String>['doomed'],
@@ -803,10 +761,10 @@ void _registerConversationControllerTests() {
       api.emit(const CommandsChangedClientEvent());
       await Future<void>.delayed(Duration.zero);
 
-      expect(
-        container.read(provider).value!.map((item) => item.name),
-        <String>['review', 'ship'],
-      );
+      expect(container.read(provider).value!.map((item) => item.name), <String>[
+        'review',
+        'ship',
+      ]);
       unawaited(api.close());
     },
     tags: const <String>['feature_test__composer_slash_command__unit'],
@@ -1068,9 +1026,7 @@ void _registerConversationControllerTests() {
       expect(healed.olderFailed, isFalse);
       unawaited(api.close());
     },
-    tags: const <String>[
-      'feature_test__conversation_history_pagination__unit',
-    ],
+    tags: const <String>['feature_test__conversation_history_pagination__unit'],
   );
 
   test(
@@ -1114,11 +1070,9 @@ void _registerConversationControllerTests() {
           .timeline
           .map((event) => event.sequence)
           .toList(growable: false);
-      expect(
-        sequences.take(10),
-        <int>[for (var sequence = 1; sequence <= 10; sequence += 1) sequence],
-        reason: 'what the reader was holding is untouched',
-      );
+      expect(sequences.take(10), <int>[
+        for (var sequence = 1; sequence <= 10; sequence += 1) sequence,
+      ], reason: 'what the reader was holding is untouched');
       expect(sequences.last, newest);
       expect(
         sequences,
@@ -1132,9 +1086,7 @@ void _registerConversationControllerTests() {
       );
       unawaited(api.close());
     },
-    tags: const <String>[
-      'feature_test__conversation_history_pagination__unit',
-    ],
+    tags: const <String>['feature_test__conversation_history_pagination__unit'],
   );
 
   test(
@@ -1169,10 +1121,19 @@ void _registerConversationControllerTests() {
       }
 
       final unhealed = container.read(provider).requireValue;
-      expect(
-        unhealed.timeline.map((event) => event.sequence),
-        <int>[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 13],
-      );
+      expect(unhealed.timeline.map((event) => event.sequence), <int>[
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        13,
+      ]);
       expect(
         unhealed.olderFailed,
         isFalse,
@@ -1182,9 +1143,7 @@ void _registerConversationControllerTests() {
       );
       unawaited(api.close());
     },
-    tags: const <String>[
-      'feature_test__conversation_history_pagination__unit',
-    ],
+    tags: const <String>['feature_test__conversation_history_pagination__unit'],
   );
 
   test(
@@ -1279,9 +1238,7 @@ void _registerConversationControllerTests() {
       expect(api.readTimelineHistoryCount, calls);
       unawaited(api.close());
     },
-    tags: const <String>[
-      'feature_test__conversation_history_pagination__unit',
-    ],
+    tags: const <String>['feature_test__conversation_history_pagination__unit'],
   );
 
   test(
@@ -1306,9 +1263,7 @@ void _registerConversationControllerTests() {
       expect(container.read(provider).requireValue.timeline, hasLength(2));
       unawaited(api.close());
     },
-    tags: const <String>[
-      'feature_test__conversation_history_pagination__unit',
-    ],
+    tags: const <String>['feature_test__conversation_history_pagination__unit'],
   );
 
   test(
@@ -1352,8 +1307,6 @@ void _registerConversationControllerTests() {
       );
       unawaited(api.close());
     },
-    tags: const <String>[
-      'feature_test__conversation_history_pagination__unit',
-    ],
+    tags: const <String>['feature_test__conversation_history_pagination__unit'],
   );
 }

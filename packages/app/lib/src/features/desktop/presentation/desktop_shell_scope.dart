@@ -30,11 +30,7 @@ const Duration quitBudget = Duration(seconds: 5);
 /// that logic having to reach outside the widget tree.
 class DesktopShellScope extends ConsumerStatefulWidget {
   /// Creates the desktop residency scope.
-  const DesktopShellScope({
-    required this.child,
-    required this.router,
-    super.key,
-  });
+  const new({required this.child, required this.router, super.key});
 
   /// The application below the shell.
   final Widget child;
@@ -162,10 +158,8 @@ class _DesktopShellScopeState extends ConsumerState<DesktopShellScope> {
                 control: true,
                 shift: true,
               ): newWorkspace,
-              const SingleActivator(
-                LogicalKeyboardKey.comma,
-                control: true,
-              ): openSettings,
+              const SingleActivator(LogicalKeyboardKey.comma, control: true):
+                  openSettings,
               const SingleActivator(
                 LogicalKeyboardKey.keyB,
                 control: true,

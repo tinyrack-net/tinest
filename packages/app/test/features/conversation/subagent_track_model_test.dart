@@ -80,11 +80,7 @@ void main() {
   test('running counts include pending, exclude finished states', () {
     final rows = buildSubagentTrackRows(<SessionDto>[
       session('root'),
-      session(
-        'a',
-        parentSessionId: 'root',
-        lifecycle: AgentLifecycle.running,
-      ),
+      session('a', parentSessionId: 'root', lifecycle: AgentLifecycle.running),
       session(
         'b',
         parentSessionId: 'root',

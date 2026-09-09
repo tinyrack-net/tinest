@@ -10,10 +10,7 @@ part 'agent_definitions_controller.g.dart';
 /// Agent definition editor data owned by one daemon.
 final class AgentDefinitionsState {
   /// Creates an immutable Markdown agent catalog snapshot.
-  const AgentDefinitionsState({
-    required this.definitions,
-    required this.tools,
-  });
+  const new({required this.definitions, required this.tools});
 
   /// Visible primary and subagent definitions.
   final List<AgentDefinitionDto> definitions;
@@ -69,10 +66,7 @@ class AgentDefinitionsController extends _$AgentDefinitionsController {
     final tools = await api.agents.listAgentTools();
     if (!ref.mounted) return;
     state = AsyncData<AgentDefinitionsState>(
-      AgentDefinitionsState(
-        definitions: definitions,
-        tools: tools,
-      ),
+      AgentDefinitionsState(definitions: definitions, tools: tools),
     );
   }
 

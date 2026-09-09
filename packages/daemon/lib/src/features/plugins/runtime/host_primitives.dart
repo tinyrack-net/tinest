@@ -27,7 +27,7 @@ enum HostPrimitiveEffect {
 /// presentation. Those belong to the Lua contribution that composes it.
 final class HostPrimitiveDescriptor {
   /// Creates primitive safety metadata.
-  const HostPrimitiveDescriptor({
+  const new({
     required this.operation,
     required this.capability,
     required this.effect,
@@ -71,7 +71,7 @@ final class HostPrimitiveDescriptor {
 /// Invocation-local identity and effective grant set.
 final class HostPrimitiveContext {
   /// Creates a host primitive invocation context.
-  const HostPrimitiveContext({
+  const new({
     required this.pluginId,
     required this.agentId,
     required this.sessionId,
@@ -129,7 +129,7 @@ abstract interface class HostPrimitiveCancellation
 /// Stable structured failure returned across the Lua boundary.
 final class HostPrimitiveError {
   /// Creates a primitive failure.
-  const HostPrimitiveError({
+  const new({
     required this.code,
     required this.message,
     required this.retryable,
@@ -160,7 +160,7 @@ final class HostPrimitiveError {
 /// Opaque host-owned value emitted alongside a JSON primitive result.
 final class HostPrimitiveResource {
   /// Creates an opaque resource descriptor.
-  const HostPrimitiveResource({
+  const new({
     required this.value,
     required this.fileName,
     required this.mimeType,
@@ -183,7 +183,7 @@ final class HostPrimitiveResource {
 /// Complete output of a primitive implementation before wire encoding.
 final class HostPrimitiveOutput<T> {
   /// Creates an output with optional opaque resources and notifications.
-  const HostPrimitiveOutput({
+  const new({
     required this.value,
     this.resources = const <HostPrimitiveResource>[],
     this.notifications = const <Object?>[],
@@ -201,7 +201,7 @@ final class HostPrimitiveOutput<T> {
 
 /// Result of invoking one capability-brokered host primitive.
 final class HostPrimitiveResult<T> {
-  const HostPrimitiveResult._({
+  const new _({
     this.value,
     this.error,
     this.resources = const <HostPrimitiveResource>[],
@@ -209,19 +209,14 @@ final class HostPrimitiveResult<T> {
   });
 
   /// Creates a successful result.
-  const HostPrimitiveResult.success(
+  const new success(
     T value, {
     List<HostPrimitiveResource> resources = const <HostPrimitiveResource>[],
     List<Object?> notifications = const <Object?>[],
-  }) : this._(
-         value: value,
-         resources: resources,
-         notifications: notifications,
-       );
+  }) : this._(value: value, resources: resources, notifications: notifications);
 
   /// Creates a failed result.
-  const HostPrimitiveResult.failure(HostPrimitiveError error)
-    : this._(error: error);
+  const new failure(HostPrimitiveError error) : this._(error: error);
 
   /// Successful decoded value.
   final T? value;
@@ -247,7 +242,7 @@ final class HostPrimitiveResult<T> {
 /// Expected primitive failure raised by an implementation.
 final class HostPrimitiveException implements Exception {
   /// Creates an expected structured failure.
-  const HostPrimitiveException(this.error);
+  const new(this.error);
 
   /// Failure returned to Lua.
   final HostPrimitiveError error;
@@ -286,7 +281,7 @@ typedef HostPrimitiveOutputInvoker<I, O> =
 /// remain owned by Lua contributions.
 final class HostPrimitiveContract<I, O> {
   /// Creates one public host primitive contract.
-  const HostPrimitiveContract({
+  const new({
     required this.operation,
     required this.capability,
     required this.effect,
@@ -323,32 +318,22 @@ final class HostPrimitiveContract<I, O> {
     required HostPrimitiveDecoder<I> decode,
     required HostPrimitiveInvoker<I, O> invoke,
     HostPrimitiveApprovalPreview<I>? approvalPreview,
-  }) => HostPrimitive<I, O>._(
-    descriptor,
-    decode,
-    invoke,
-    null,
-    approvalPreview,
-  );
+  }) =>
+      HostPrimitive<I, O>._(descriptor, decode, invoke, null, approvalPreview);
 
   /// Binds an implementation that emits opaque resources or notifications.
   HostPrimitive<I, O> bindOutput({
     required HostPrimitiveDecoder<I> decode,
     required HostPrimitiveOutputInvoker<I, O> invoke,
     HostPrimitiveApprovalPreview<I>? approvalPreview,
-  }) => HostPrimitive<I, O>._(
-    descriptor,
-    decode,
-    null,
-    invoke,
-    approvalPreview,
-  );
+  }) =>
+      HostPrimitive<I, O>._(descriptor, decode, null, invoke, approvalPreview);
 }
 
 /// One typed, model-agnostic host operation.
 final class HostPrimitive<I, O> {
   /// Creates a primitive whose decoder runs only after capability approval.
-  factory HostPrimitive({
+  factory({
     required String operation,
     required String capability,
     required HostPrimitiveEffect effect,
@@ -372,7 +357,7 @@ final class HostPrimitive<I, O> {
   );
 
   /// Creates a primitive that emits opaque resources or notifications.
-  factory HostPrimitive.output({
+  factory output({
     required String operation,
     required String capability,
     required HostPrimitiveEffect effect,
@@ -395,7 +380,7 @@ final class HostPrimitive<I, O> {
     approvalPreview,
   );
 
-  HostPrimitive._(
+  new _(
     this.descriptor,
     this._decode,
     this._invoke,
@@ -507,9 +492,7 @@ final class HostPrimitive<I, O> {
 /// Registry and capability gate for every Lua-accessible host primitive.
 final class HostPrimitiveRegistry {
   /// Creates a registry, rejecting ambiguous operation identifiers.
-  factory HostPrimitiveRegistry(
-    List<HostPrimitive<Object?, Object?>> primitives,
-  ) {
+  factory(List<HostPrimitive<Object?, Object?>> primitives) {
     final byOperation = <String, HostPrimitive<Object?, Object?>>{};
     for (final primitive in primitives) {
       final operation = primitive.descriptor.operation;
@@ -522,11 +505,10 @@ final class HostPrimitiveRegistry {
   }
 
   /// Creates a registry with no host operations.
-  factory HostPrimitiveRegistry.empty() => HostPrimitiveRegistry(
-    const <HostPrimitive<Object?, Object?>>[],
-  );
+  factory empty() =>
+      HostPrimitiveRegistry(const <HostPrimitive<Object?, Object?>>[]);
 
-  const HostPrimitiveRegistry._(this._byOperation);
+  const new _(this._byOperation);
 
   final Map<String, HostPrimitive<Object?, Object?>> _byOperation;
 
@@ -586,6 +568,6 @@ final class HostPrimitiveRegistry {
         ),
       );
     }
-    return primitive._execute(arguments, context);
+    return await primitive._execute(arguments, context);
   }
 }

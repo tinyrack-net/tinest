@@ -55,9 +55,7 @@ List<RpcBindingDescriptor> agentRpcBindings({
     );
   }),
   RpcBinding(agentsListToolsProcedure, (_, _) async {
-    return AgentToolCatalogResultDto(
-      tools: await definitions.toolCatalog(),
-    );
+    return AgentToolCatalogResultDto(tools: await definitions.toolCatalog());
   }),
   RpcBinding(agentsGetDefaultPermissionModeProcedure, (_, _) async {
     return PermissionSettingsDto(defaultMode: await permissions.read());

@@ -110,9 +110,7 @@ void main() {
     await transport.start();
 
     // A null environment is what makes the child inherit the daemon's.
-    verify(
-      () => harness.manager.start(<String>['server']),
-    ).called(1);
+    verify(() => harness.manager.start(<String>['server'])).called(1);
   });
 
   test('the stderr ring buffer stays bounded', () async {
@@ -196,35 +194,31 @@ void main() {
     verify(() => harness.process.kill(ProcessSignal.sigkill)).called(1);
   });
 
-  test(
-    'a real child process is framed correctly end to end',
-    () async {
-      final transport = StdioMcpTransport(
-        McpStdioSpec(
-          command: Platform.resolvedExecutable,
-          // Directly, not through `dart run`: the script imports nothing but
-          // dart:*, so it needs no package resolution.
-          args: <String>['test/features/mcp/support/echo_mcp_server.dart'],
-        ),
-      );
-      final client = McpClient(transport: transport);
-      addTearDown(client.close);
+  test('a real child process is framed correctly end to end', () async {
+    final transport = StdioMcpTransport(
+      McpStdioSpec(
+        command: Platform.resolvedExecutable,
+        // Directly, not through `dart run`: the script imports nothing but
+        // dart:*, so it needs no package resolution.
+        args: <String>['test/features/mcp/support/echo_mcp_server.dart'],
+      ),
+    );
+    final client = McpClient(transport: transport);
+    addTearDown(client.close);
 
-      final identity = await client.connect();
-      expect(identity.name, 'echo');
-      expect(client.tools.single.name, 'echo');
+    final identity = await client.connect();
+    expect(identity.name, 'echo');
+    expect(client.tools.single.name, 'echo');
 
-      final result = await client.callTool('echo', <String, dynamic>{
-        'value': 'round trip',
-      });
-      expect((result.content.single as McpTextContent).text, 'round trip');
-    },
-    timeout: const Timeout(Duration(minutes: 2)),
-  );
+    final result = await client.callTool('echo', <String, dynamic>{
+      'value': 'round trip',
+    });
+    expect((result.content.single as McpTextContent).text, 'round trip');
+  }, timeout: const Timeout(Duration(minutes: 2)));
 }
 
 final class _Harness {
-  _Harness({
+  new({
     McpStdioSpec spec = const McpStdioSpec(
       command: 'server',
       args: <String>['--flag'],
@@ -244,9 +238,8 @@ final class _Harness {
     when(() => process.stdout).thenAnswer((_) => _stdout.stream);
     when(() => process.stderr).thenAnswer((_) => _stderr.stream);
     when(() => process.stdin).thenReturn(stdin);
-    when(() => process.exitCode).thenAnswer(
-      (_) => exitCode ?? Completer<int>().future,
-    );
+    when(() => process.exitCode)
+        .thenAnswer((_) => exitCode ?? Completer<int>().future);
     when(() => process.kill(any())).thenReturn(true);
     when(stdin.flush).thenAnswer((_) async {});
     when(() => stdin.write(any<Object?>())).thenAnswer((invocation) {
@@ -277,8 +270,8 @@ final class _Harness {
   Future<void> closeStdout() => _stdout.close();
 }
 
-final class _MockProcessManager extends Mock implements ProcessManager {}
+final class _MockProcessManager extends Mock implements ProcessManager;
 
-final class _MockProcess extends Mock implements Process {}
+final class _MockProcess extends Mock implements Process;
 
-final class _MockIOSink extends Mock implements IOSink {}
+final class _MockIOSink extends Mock implements IOSink;

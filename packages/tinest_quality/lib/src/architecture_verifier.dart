@@ -6,7 +6,7 @@ import 'package:tinest_quality/src/lifecycle_phase_rules.dart';
 /// A dependency or source-level architecture rule violation.
 final class ArchitectureViolation {
   /// Creates an [ArchitectureViolation].
-  const ArchitectureViolation({
+  const new({
     required this.path,
     required this.line,
     required this.rule,
@@ -32,7 +32,7 @@ final class ArchitectureViolation {
 /// Verifies package boundaries and application-layer dependency rules.
 final class ArchitectureVerifier {
   /// Creates a verifier rooted at [workspaceRoot].
-  const ArchitectureVerifier(this.workspaceRoot);
+  const new(this.workspaceRoot);
 
   /// The Pub workspace root to inspect.
   final String workspaceRoot;
@@ -84,38 +84,25 @@ final class ArchitectureVerifier {
         'one loses typed input.',
   };
 
-  static const Map<String, Set<String>> _allowedInternalDependencies =
-      <String, Set<String>>{
-        'protocol': <String>{},
-        'relay_protocol': <String>{},
-        'relay': <String>{'relay_protocol'},
-        'tinest_quality': <String>{},
-        'agent': <String>{},
-        'client': <String>{'protocol', 'relay_protocol'},
-        // The CLI hosts the daemon through `tinest-cli daemon start`, so it
-        // reaches the daemon's composition root and everything the daemon
-        // itself is allowed to use.
-        'cli': <String>{
-          'agent',
-          'client',
-          'daemon',
-          'protocol',
-          'relay_protocol',
-        },
-        'daemon': <String>{
-          'agent',
-          'protocol',
-          'relay_protocol',
-        },
-        'app': <String>{
-          'client',
-          'protocol',
-        },
-        // The desktop composition root is the only application package that
-        // may host the daemon. Mobile and web remain behind `app`'s client
-        // boundary.
-        'desktop_app': <String>{'app', 'daemon'},
-      };
+  static const Map<String, Set<String>>
+  _allowedInternalDependencies = <String, Set<String>>{
+    'protocol': <String>{},
+    'relay_protocol': <String>{},
+    'relay': <String>{'relay_protocol'},
+    'tinest_quality': <String>{},
+    'agent': <String>{},
+    'client': <String>{'protocol', 'relay_protocol'},
+    // The CLI hosts the daemon through `tinest-cli daemon start`, so it
+    // reaches the daemon's composition root and everything the daemon
+    // itself is allowed to use.
+    'cli': <String>{'agent', 'client', 'daemon', 'protocol', 'relay_protocol'},
+    'daemon': <String>{'agent', 'protocol', 'relay_protocol'},
+    'app': <String>{'client', 'protocol'},
+    // The desktop composition root is the only application package that
+    // may host the daemon. Mobile and web remain behind `app`'s client
+    // boundary.
+    'desktop_app': <String>{'app', 'daemon'},
+  };
 
   // Vendor identifiers that must never appear outside an adapter package.
   //
@@ -234,10 +221,7 @@ final class ArchitectureVerifier {
     ];
   }
 
-  List<ArchitectureViolation> _verifyPubspec(
-    String package,
-    String directory,
-  ) {
+  List<ArchitectureViolation> _verifyPubspec(String package, String directory) {
     final path = p.join(directory, 'pubspec.yaml');
     final dependencies = _productionDependencies(File(path).readAsLinesSync());
     return <ArchitectureViolation>[
@@ -268,10 +252,7 @@ final class ArchitectureVerifier {
     return dependencies;
   }
 
-  List<ArchitectureViolation> _verifySources(
-    String package,
-    String directory,
-  ) {
+  List<ArchitectureViolation> _verifySources(String package, String directory) {
     final lib = Directory(p.join(directory, 'lib'));
     if (!lib.existsSync()) return const <ArchitectureViolation>[];
     final violations = <ArchitectureViolation>[];
@@ -320,9 +301,9 @@ final class ArchitectureVerifier {
     );
     for (var index = 0; index < lines.length; index += 1) {
       final line = lines[index];
-      final importedPackage = RegExp(
-        r"^\s*import 'package:([a-zA-Z0-9_]+)/",
-      ).firstMatch(line)?.group(1);
+      final importedPackage = RegExp(r"^\s*import 'package:([a-zA-Z0-9_]+)/")
+          .firstMatch(line)
+          ?.group(1);
       if (package == 'app') {
         violations.addAll(
           _verifyTinestAppLayerImport(
@@ -646,9 +627,8 @@ final class ArchitectureVerifier {
     required int line,
     required String source,
   }) sync* {
-    final import = RegExp(
-      "import 'package:app/src/([^']+)';",
-    ).firstMatch(source);
+    final import = RegExp("import 'package:app/src/([^']+)';")
+        .firstMatch(source);
     final importedPath = import?.group(1);
 
     if (path.contains('/src/shared/') &&
@@ -661,17 +641,16 @@ final class ArchitectureVerifier {
       );
     }
 
-    final sourceFeature = RegExp(
-      '/src/features/([^/]+)/',
-    ).firstMatch(path)?.group(1);
+    final sourceFeature = RegExp('/src/features/([^/]+)/')
+        .firstMatch(path)
+        ?.group(1);
     final importedFeature = importedPath == null
         ? null
         : RegExp('^features/([^/]+)/').firstMatch(importedPath)?.group(1);
     final importsFeatureView =
         importedPath != null &&
-        RegExp(
-          '^features/[^/]+/presentation/(pages|widgets)/',
-        ).hasMatch(importedPath);
+        RegExp('^features/[^/]+/presentation/(pages|widgets)/')
+            .hasMatch(importedPath);
     if (sourceFeature != null &&
         importedFeature != null &&
         sourceFeature != importedFeature &&

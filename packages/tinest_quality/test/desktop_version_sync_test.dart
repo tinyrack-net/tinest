@@ -15,9 +15,8 @@ void main() {
   tearDown(() => root.deleteSync(recursive: true));
 
   test('copies the complete Flutter version into the desktop manifest', () {
-    File('${root.path}/packages/app/pubspec.yaml').writeAsStringSync(
-      'name: app\nversion: 0.8.1+10\n',
-    );
+    File('${root.path}/packages/app/pubspec.yaml')
+        .writeAsStringSync('name: app\nversion: 0.8.1+10\n');
     final desktop = File('${root.path}/packages/desktop_app/pubspec.yaml')
       ..writeAsStringSync('name: desktop_app\nversion: 0.8.0+9\n');
 
@@ -27,12 +26,10 @@ void main() {
   });
 
   test('rejects a manifest without a version', () {
-    File('${root.path}/packages/app/pubspec.yaml').writeAsStringSync(
-      'name: app\n',
-    );
-    File('${root.path}/packages/desktop_app/pubspec.yaml').writeAsStringSync(
-      'name: desktop_app\nversion: 0.8.0+9\n',
-    );
+    File('${root.path}/packages/app/pubspec.yaml')
+        .writeAsStringSync('name: app\n');
+    File('${root.path}/packages/desktop_app/pubspec.yaml')
+        .writeAsStringSync('name: desktop_app\nversion: 0.8.0+9\n');
 
     expect(
       () => DesktopVersionSync(root.path).synchronize(),

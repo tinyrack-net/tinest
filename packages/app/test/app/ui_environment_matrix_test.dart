@@ -67,9 +67,7 @@ void main() {
     'desktop light Korean large-text shell remains pointer reachable offline',
     (tester) async {
       tester.platformDispatcher.textScaleFactorTestValue = 1.6;
-      addTearDown(
-        tester.platformDispatcher.clearTextScaleFactorTestValue,
-      );
+      addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
       final store = await _pumpOfflineShell(
         tester,
         size: const Size(1200, 900),

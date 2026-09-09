@@ -64,10 +64,7 @@ void main() {
       );
 
       await expectLater(
-        launcher.start(
-          exposure: EmbeddedDaemonExposure.loopback,
-          port: 7337,
-        ),
+        launcher.start(exposure: EmbeddedDaemonExposure.loopback, port: 7337),
         throwsA(
           isA<HostConnectionFailure>()
               .having((error) => error.reason, 'reason', failure.$2)
@@ -83,10 +80,7 @@ void main() {
     );
 
     await expectLater(
-      launcher.start(
-        exposure: EmbeddedDaemonExposure.loopback,
-        port: 7337,
-      ),
+      launcher.start(exposure: EmbeddedDaemonExposure.loopback, port: 7337),
       throwsA(
         isA<HostConnectionFailure>().having(
           (error) => error.message,

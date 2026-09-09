@@ -8,7 +8,7 @@ import 'package:tinyrack_ui/tinyrack_ui.dart';
 /// focus, keyboard, pointer, and semantics behavior for the locked state.
 class BlockedControl extends StatefulWidget {
   /// Creates an interactive explanation around a disabled [child].
-  const BlockedControl({
+  const new({
     required this.label,
     required this.hint,
     required this.onTap,

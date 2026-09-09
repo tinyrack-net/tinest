@@ -13,7 +13,7 @@ import 'package:tinyrack_ui/tinyrack_ui.dart';
 /// Daemon-global default permission settings.
 class PermissionSettingsPage extends ConsumerStatefulWidget {
   /// Creates permission settings for [hostId].
-  const PermissionSettingsPage({required this.hostId, super.key});
+  const new({required this.hostId, super.key});
 
   /// Selected daemon host.
   final String hostId;
@@ -53,9 +53,7 @@ class _PermissionSettingsPageState
                   title: TRText.inherit(l10n.permissionSettingsSection),
                   controlOwnsFocus: true,
                   control: PermissionSelect(
-                    key: const ValueKey<String>(
-                      'permission-settings-change',
-                    ),
+                    key: const ValueKey<String>('permission-settings-change'),
                     currentMode: settings.defaultMode,
                     appearance: TRFieldAppearance.ghost,
                     onValueChange: (mode) => unawaited(_set(context, mode)),
@@ -69,10 +67,7 @@ class _PermissionSettingsPageState
     );
   }
 
-  Future<void> _set(
-    BuildContext context,
-    PermissionMode mode,
-  ) async {
+  Future<void> _set(BuildContext context, PermissionMode mode) async {
     if (!context.mounted) return;
     // Resolved before the write: the messenger keeps no context of its own,
     // which is what lets its report outlive this screen.

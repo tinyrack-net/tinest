@@ -8,12 +8,10 @@ void main() {
     () {
       final router = File('lib/src/app/router/app_router.dart')
           .readAsStringSync();
-      final settings = File(
-        'lib/src/app/presentation/settings_page.dart',
-      ).readAsStringSync();
-      final workspace = File(
-        'lib/src/app/presentation/workspace_page.dart',
-      ).readAsStringSync();
+      final settings = File('lib/src/app/presentation/settings_page.dart')
+          .readAsStringSync();
+      final workspace = File('lib/src/app/presentation/workspace_page.dart')
+          .readAsStringSync();
       final provider = File(
         'lib/src/features/providers/presentation/pages/provider_settings_page.dart',
       ).readAsStringSync();

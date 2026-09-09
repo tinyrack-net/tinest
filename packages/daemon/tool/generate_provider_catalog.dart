@@ -43,9 +43,7 @@ Future<void> _generateProviderCatalog({required bool update}) async {
     );
   }
   if (!_normalizedFile.existsSync()) {
-    stderr.writeln(
-      'Missing ${_normalizedFile.path}; run with --update once.',
-    );
+    stderr.writeln('Missing ${_normalizedFile.path}; run with --update once.');
     exitCode = 1;
     return;
   }
@@ -75,9 +73,7 @@ Future<void> _generateProviderCatalog({required bool update}) async {
 }
 
 Future<void> _updateNormalized(Map<String, dynamic> lock) async {
-  final temporary = await Directory.systemTemp.createTemp(
-    'tinest-models-dev-',
-  );
+  final temporary = await Directory.systemTemp.createTemp('tinest-models-dev-');
   try {
     await _run('git', <String>[
       'clone',
@@ -128,15 +124,12 @@ Future<void> _updateNormalized(Map<String, dynamic> lock) async {
       if (!resolved.toolCalling || _excluded(resolved.id)) continue;
       result
           .putIfAbsent(resolved.providerId, () => <Map<String, Object?>>[])
-          .add(
-            resolved.toJson(),
-          );
+          .add(resolved.toJson());
     }
     for (final models in result.values) {
       models.sort(
-        (left, right) => (left['id']! as String).compareTo(
-          right['id']! as String,
-        ),
+        (left, right) =>
+            (left['id']! as String).compareTo(right['id']! as String),
       );
     }
     final ordered = <String, Object?>{
@@ -246,7 +239,7 @@ Future<void> _run(String executable, List<String> arguments) async {
 }
 
 final class _RawModel {
-  const _RawModel({
+  const new({
     required this.providerId,
     required this.id,
     required this.name,

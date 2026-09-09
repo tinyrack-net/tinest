@@ -77,9 +77,7 @@ void main() {
       'callId': 'call-1',
       'name': 'apply_patch',
       'kind': 'function',
-      'arguments': <String, dynamic>{
-        'patch': '*** Begin Patch\n*** End Patch',
-      },
+      'arguments': <String, dynamic>{'patch': '*** Begin Patch\n*** End Patch'},
     });
   });
 
@@ -168,9 +166,7 @@ void main() {
     final request = ModelRequest(
       model: 'test-model',
       blocks: <ModelRoleBlock>[block],
-      history: <ConversationItem>[
-        AssistantConversationItem(text: marker),
-      ],
+      history: <ConversationItem>[AssistantConversationItem(text: marker)],
       tools: const <ModelToolDefinition>[],
       forceToolName: 'clock',
     );
@@ -247,10 +243,7 @@ void main() {
         ConversationItem.fromJson(item.toJson()) as ToolResultConversationItem;
     expect(restored.content[0], isA<ToolImageContent>());
     expect(restored.content[1], isA<ToolAudioContent>());
-    expect(
-      (restored.content[2] as ToolEmbeddedResourceContent).blob,
-      'AA==',
-    );
+    expect((restored.content[2] as ToolEmbeddedResourceContent).blob, 'AA==');
     expect(restored.structuredContent, <String, dynamic>{'ok': true});
     expect(restored.meta, <String, dynamic>{'trace': 'one'});
   });

@@ -103,7 +103,7 @@ void main() {
 }
 
 final class _UnusedClients implements HostClientFactory {
-  const _UnusedClients();
+  const new();
 
   @override
   Future<TinestApi> connect({

@@ -157,10 +157,7 @@ void main() {
       const ProjectSettingsDto(),
     );
 
-    expect(
-      await settingsFile().readAsString(),
-      '{\n  "schemaVersion": 5\n}\n',
-    );
+    expect(await settingsFile().readAsString(), '{\n  "schemaVersion": 5\n}\n');
   });
 
   test('writes nothing when clearing hooks without a file', () async {
@@ -192,10 +189,7 @@ void main() {
     await expectLater(store.load(root.path), throwsA(isA<FormatException>()));
 
     await settingsFile().writeAsString(
-      jsonEncode(<String, dynamic>{
-        'schemaVersion': 5,
-        'worktree': 'nope',
-      }),
+      jsonEncode(<String, dynamic>{'schemaVersion': 5, 'worktree': 'nope'}),
     );
     await expectLater(store.load(root.path), throwsA(isA<FormatException>()));
 
@@ -226,10 +220,7 @@ void main() {
     });
     await settingsFile().writeAsString(legacy);
 
-    await expectLater(
-      store.load(root.path),
-      throwsA(isA<FormatException>()),
-    );
+    await expectLater(store.load(root.path), throwsA(isA<FormatException>()));
 
     expect(await settingsFile().readAsString(), legacy);
   });

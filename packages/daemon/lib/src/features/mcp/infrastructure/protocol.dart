@@ -51,7 +51,7 @@ abstract final class McpMethod {
 /// A malformed or unusable MCP payload.
 class McpProtocolException implements Exception {
   /// Creates a [McpProtocolException].
-  const McpProtocolException(this.message);
+  const new(this.message);
 
   /// Human-readable description of what could not be decoded.
   final String message;
@@ -63,7 +63,7 @@ class McpProtocolException implements Exception {
 /// A server that answered `initialize` with an unsupported revision.
 class McpUnsupportedProtocolVersion implements Exception {
   /// Creates a [McpUnsupportedProtocolVersion].
-  const McpUnsupportedProtocolVersion(this.version);
+  const new(this.version);
 
   /// The revision the server insisted on.
   final String version;
@@ -77,7 +77,7 @@ class McpUnsupportedProtocolVersion implements Exception {
 /// A JSON-RPC error returned by an MCP server.
 class McpServerException implements Exception {
   /// Creates a [McpServerException].
-  const McpServerException({required this.code, required this.message});
+  const new({required this.code, required this.message});
 
   /// The JSON-RPC error code.
   final int code;
@@ -92,7 +92,7 @@ class McpServerException implements Exception {
 /// One correlated JSON-RPC request was cancelled without closing its client.
 final class McpRequestCancelled implements Exception {
   /// Creates a cancellation carrying the reason sent to the MCP server.
-  const McpRequestCancelled(this.reason);
+  const new(this.reason);
 
   /// Human-readable reason included in `notifications/cancelled`.
   final String reason;
@@ -104,7 +104,7 @@ final class McpRequestCancelled implements Exception {
 /// Identity a server reports during `initialize`.
 class McpServerIdentity {
   /// Creates a [McpServerIdentity].
-  const McpServerIdentity({
+  const new({
     required this.protocolVersion,
     this.name,
     this.version,
@@ -139,7 +139,7 @@ class McpServerIdentity {
 /// One resource a server publishes through `resources/list`.
 class McpResourceDescriptor {
   /// Creates a [McpResourceDescriptor].
-  const McpResourceDescriptor({
+  const new({
     required this.uri,
     this.name,
     this.title,
@@ -151,7 +151,7 @@ class McpResourceDescriptor {
   });
 
   /// Decodes one entry of a `resources/list` result.
-  factory McpResourceDescriptor.fromJson(Map<String, dynamic> json) {
+  factory fromJson(Map<String, dynamic> json) {
     final uri = json['uri'];
     if (uri is! String || uri.isEmpty) {
       throw const McpProtocolException('A resource descriptor needs a uri.');
@@ -196,7 +196,7 @@ class McpResourceDescriptor {
 /// One parameterized resource template a server publishes.
 class McpResourceTemplateDescriptor {
   /// Creates a [McpResourceTemplateDescriptor].
-  const McpResourceTemplateDescriptor({
+  const new({
     required this.uriTemplate,
     this.name,
     this.title,
@@ -207,7 +207,7 @@ class McpResourceTemplateDescriptor {
   });
 
   /// Decodes one entry of a `resources/templates/list` result.
-  factory McpResourceTemplateDescriptor.fromJson(Map<String, dynamic> json) {
+  factory fromJson(Map<String, dynamic> json) {
     final uriTemplate = json['uriTemplate'];
     if (uriTemplate is! String || uriTemplate.isEmpty) {
       throw const McpProtocolException(
@@ -249,7 +249,7 @@ class McpResourceTemplateDescriptor {
 
 /// One entry of a `resources/read` result.
 sealed class McpResourceContents {
-  const McpResourceContents({this.meta = const <String, dynamic>{}});
+  const new({this.meta = const <String, dynamic>{}});
 
   /// Provider metadata returned with this resource body.
   final Map<String, dynamic> meta;
@@ -264,7 +264,7 @@ sealed class McpResourceContents {
 /// Textual resource content returned inline.
 final class McpTextResourceContents extends McpResourceContents {
   /// Creates a [McpTextResourceContents].
-  const McpTextResourceContents({
+  const new({
     required this.uri,
     required this.mimeType,
     required this.text,
@@ -284,7 +284,7 @@ final class McpTextResourceContents extends McpResourceContents {
 /// Binary resource content returned inline as base64.
 final class McpBlobResourceContents extends McpResourceContents {
   /// Creates a [McpBlobResourceContents].
-  const McpBlobResourceContents({
+  const new({
     required this.uri,
     required this.mimeType,
     required this.blob,
@@ -304,18 +304,16 @@ final class McpBlobResourceContents extends McpResourceContents {
 /// The decoded result of one `resources/read` call.
 class McpReadResourceResult {
   /// Creates a [McpReadResourceResult].
-  const McpReadResourceResult({required this.contents});
+  const new({required this.contents});
 
   /// Decodes a `resources/read` result, dropping entries it cannot use.
   ///
   /// A server that returns an entry with neither `text` nor `blob` has told us
   /// nothing, so it contributes nothing rather than failing the whole read.
-  factory McpReadResourceResult.fromJson(Map<String, dynamic> json) {
+  factory fromJson(Map<String, dynamic> json) {
     final raw = json['contents'];
     if (raw is! List) {
-      return const McpReadResourceResult(
-        contents: <McpResourceContents>[],
-      );
+      return const McpReadResourceResult(contents: <McpResourceContents>[]);
     }
     final contents = <McpResourceContents>[];
     for (final entry in raw.whereType<Map<dynamic, dynamic>>()) {
@@ -360,7 +358,7 @@ String? _optionalString(Object? value) =>
 /// One opaque MCP cursor page.
 final class McpListPage<T> {
   /// Creates a page.
-  const McpListPage({required this.items, this.nextCursor});
+  const new({required this.items, this.nextCursor});
 
   /// Decoded entries in server order.
   final List<T> items;
@@ -372,7 +370,7 @@ final class McpListPage<T> {
 /// One tool a server publishes through `tools/list`.
 class McpToolDescriptor {
   /// Creates a [McpToolDescriptor].
-  const McpToolDescriptor({
+  const new({
     required this.name,
     this.title,
     this.description,
@@ -382,7 +380,7 @@ class McpToolDescriptor {
   });
 
   /// Decodes one entry of a `tools/list` result.
-  factory McpToolDescriptor.fromJson(Map<String, dynamic> json) {
+  factory fromJson(Map<String, dynamic> json) {
     final name = json['name'];
     if (name is! String || name.isEmpty) {
       throw const McpProtocolException('A tool descriptor needs a name.');
@@ -433,7 +431,7 @@ class McpToolDescriptor {
 /// relax an approval prompt, never to grant something a policy withheld.
 class McpToolAnnotations {
   /// Creates [McpToolAnnotations].
-  const McpToolAnnotations({
+  const new({
     this.readOnlyHint = false,
     this.destructiveHint,
     this.idempotentHint,
@@ -441,7 +439,7 @@ class McpToolAnnotations {
   });
 
   /// Decodes the `annotations` object of a tool descriptor.
-  factory McpToolAnnotations.fromJson(Map<String, dynamic> json) {
+  factory fromJson(Map<String, dynamic> json) {
     bool? flag(String key) => json[key] is bool ? json[key] as bool : null;
     return McpToolAnnotations(
       readOnlyHint: flag('readOnlyHint') ?? false,
@@ -470,7 +468,7 @@ class McpToolAnnotations {
 /// One block of a `tools/call` result.
 sealed class McpContentBlock {
   /// Creates a [McpContentBlock].
-  const McpContentBlock({
+  const new({
     this.annotations = const <String, dynamic>{},
     this.meta = const <String, dynamic>{},
   });
@@ -485,7 +483,7 @@ sealed class McpContentBlock {
 /// Plain text output.
 final class McpTextContent extends McpContentBlock {
   /// Creates a [McpTextContent].
-  const McpTextContent(this.text, {super.annotations, super.meta});
+  const new(this.text, {super.annotations, super.meta});
 
   /// The text the server returned.
   final String text;
@@ -494,7 +492,7 @@ final class McpTextContent extends McpContentBlock {
 /// An image with its original base64 payload.
 final class McpImageContent extends McpContentBlock {
   /// Creates a [McpImageContent].
-  const McpImageContent({
+  const new({
     required this.mimeType,
     required this.data,
     super.annotations,
@@ -511,7 +509,7 @@ final class McpImageContent extends McpContentBlock {
 /// Audio with its original base64 payload.
 final class McpAudioContent extends McpContentBlock {
   /// Creates a [McpAudioContent].
-  const McpAudioContent({
+  const new({
     required this.mimeType,
     required this.data,
     super.annotations,
@@ -528,7 +526,7 @@ final class McpAudioContent extends McpContentBlock {
 /// A resource embedded directly in the result.
 final class McpEmbeddedResource extends McpContentBlock {
   /// Creates a [McpEmbeddedResource].
-  const McpEmbeddedResource({
+  const new({
     required this.uri,
     this.mimeType,
     this.text,
@@ -553,7 +551,7 @@ final class McpEmbeddedResource extends McpContentBlock {
 /// A pointer to a resource the client may fetch separately.
 final class McpResourceLink extends McpContentBlock {
   /// Creates a [McpResourceLink].
-  const McpResourceLink({
+  const new({
     required this.uri,
     this.name,
     this.title,
@@ -586,12 +584,7 @@ final class McpResourceLink extends McpContentBlock {
 /// A content block of a type this client does not model.
 final class McpUnknownContent extends McpContentBlock {
   /// Creates a [McpUnknownContent].
-  const McpUnknownContent(
-    this.type,
-    this.raw, {
-    super.annotations,
-    super.meta,
-  });
+  const new(this.type, this.raw, {super.annotations, super.meta});
 
   /// The `type` discriminator the server sent.
   final String type;
@@ -603,7 +596,7 @@ final class McpUnknownContent extends McpContentBlock {
 /// The result of one `tools/call`.
 class McpCallToolResult {
   /// Creates a [McpCallToolResult].
-  const McpCallToolResult({
+  const new({
     required this.content,
     this.structuredContent,
     this.isError = false,
@@ -611,7 +604,7 @@ class McpCallToolResult {
   });
 
   /// Decodes a `tools/call` result, dropping blocks it cannot parse.
-  factory McpCallToolResult.fromJson(Map<String, dynamic> json) {
+  factory fromJson(Map<String, dynamic> json) {
     final raw = json['content'];
     final blocks = <McpContentBlock>[];
     if (raw is List) {

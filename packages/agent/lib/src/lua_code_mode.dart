@@ -3,7 +3,7 @@ import 'package:agent/src/model.dart';
 /// One request to start a fresh Lua orchestration cell.
 final class LuaExecuteRequest {
   /// Creates an execution request.
-  const LuaExecuteRequest({
+  const new({
     required this.source,
     required this.yieldTime,
     required this.maxOutputTokens,
@@ -26,7 +26,7 @@ final class LuaExecuteRequest {
 /// One request for an existing cell.
 final class LuaWaitRequest {
   /// Creates a wait request.
-  const LuaWaitRequest({
+  const new({
     required this.cellId,
     required this.yieldTime,
     required this.maxOutputTokens,
@@ -49,7 +49,7 @@ final class LuaWaitRequest {
 /// Provider-neutral metadata for one nested tool.
 final class LuaNestedToolDefinition {
   /// Creates a nested tool definition.
-  const LuaNestedToolDefinition({
+  const new({
     required this.name,
     required this.description,
     required this.kind,
@@ -84,7 +84,7 @@ final class LuaNestedToolDefinition {
 /// Structured result from a nested Lua tool dispatch.
 final class LuaNestedToolResult {
   /// Creates a nested result.
-  const LuaNestedToolResult({
+  const new({
     required this.value,
     this.isError = false,
     this.content = const <Map<String, Object?>>[],
@@ -128,10 +128,7 @@ abstract interface class LuaNestedToolInvoker {
 /// Host-owned dependencies for one Lua cell call.
 final class LuaCodeModeContext {
   /// Creates an invocation context.
-  const LuaCodeModeContext({
-    required this.cancellation,
-    required this.tools,
-  });
+  const new({required this.cancellation, required this.tools});
 
   /// Turn cancellation signal.
   final CancellationToken cancellation;
@@ -143,7 +140,7 @@ final class LuaCodeModeContext {
 /// Output drained from one Lua cell.
 final class LuaCellChunk {
   /// Creates a cell result.
-  const LuaCellChunk({
+  const new({
     required this.cellId,
     required this.output,
     this.running = false,
@@ -188,8 +185,5 @@ abstract interface class LuaCodeModeHost {
   );
 
   /// Observes or terminates an existing cell.
-  Future<LuaCellChunk> wait(
-    LuaWaitRequest request,
-    LuaCodeModeContext context,
-  );
+  Future<LuaCellChunk> wait(LuaWaitRequest request, LuaCodeModeContext context);
 }

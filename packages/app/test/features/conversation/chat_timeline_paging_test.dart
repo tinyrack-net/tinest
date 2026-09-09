@@ -21,7 +21,7 @@ const _sessionId = 'paging-session';
 final _createdAt = DateTime.utc(2026, 8, 15);
 
 final class _NoopUrlOpener implements ExternalUrlOpener {
-  const _NoopUrlOpener();
+  const new();
 
   @override
   Future<bool> open(Uri uri) => Future<bool>.value(false);
@@ -59,9 +59,7 @@ Future<void> _pumpFrames(WidgetTester tester) async {
 
 /// The label of the single leading status row, or null when there is none.
 String? _statusLabel(WidgetTester tester) {
-  final rows = tester.widgetList<TRChatStatusRow>(
-    find.byType(TRChatStatusRow),
-  );
+  final rows = tester.widgetList<TRChatStatusRow>(find.byType(TRChatStatusRow));
   return rows.isEmpty ? null : rows.single.label;
 }
 
@@ -112,11 +110,7 @@ void main() {
     (tester) async {
       await tester.binding.setSurfaceSize(const Size(800, 600));
       addTearDown(() => tester.binding.setSurfaceSize(null));
-      await _pump(
-        tester,
-        items: _messages(1, 3),
-        onLoadOlder: () {},
-      );
+      await _pump(tester, items: _messages(1, 3), onLoadOlder: () {});
       await tester.pumpAndSettle();
 
       EdgeInsets paddingFor(String key) => tester
@@ -514,7 +508,7 @@ Widget _app(Widget child) => ProviderScope(
 
 /// Mirrors what the conversation controller does with a page of older events.
 class _PagingHarness extends StatefulWidget {
-  const _PagingHarness({required this.history, required this.onRequest});
+  const new({required this.history, required this.onRequest});
 
   final List<TimelineEventDto> history;
   final ValueChanged<int> onRequest;
@@ -562,7 +556,7 @@ class _PagingHarnessState extends State<_PagingHarness> {
 
 /// Mirrors the controller's failed-page state, retry identity included.
 class _FailingPagingHarness extends StatefulWidget {
-  const _FailingPagingHarness({required this.items, required this.onRequest});
+  const new({required this.items, required this.onRequest});
 
   final List<ChatItem> items;
   final VoidCallback onRequest;

@@ -6,7 +6,7 @@ import 'package:protocol/protocol.dart';
 /// Immutable inputs that identify one Agent/session plugin lifecycle.
 final class PluginExecutionLifecycleRequest {
   /// Creates an exact execution lifecycle snapshot.
-  const PluginExecutionLifecycleRequest({
+  const new({
     required this.definition,
     required this.sessionId,
     required this.workingDirectory,
@@ -38,10 +38,7 @@ final class PluginExecutionLifecycleRequest {
 /// lifecycle order when the coordinator shuts down.
 final class PluginExecutionLifecycleRegistry<T extends Object> {
   /// Creates the registry over public runtime and scoped-state ports.
-  PluginExecutionLifecycleRegistry({
-    required this.runtime,
-    required this.state,
-  });
+  new({required this.runtime, required this.state});
 
   /// Shared isolated Lua runtime.
   final PluginRuntime<T> runtime;
@@ -290,7 +287,7 @@ final class PluginExecutionLifecycleRegistry<T extends Object> {
 }
 
 final class _AttachedPluginLifecycle<T extends Object> {
-  const _AttachedPluginLifecycle({
+  const new({
     required this.request,
     required this.pluginIds,
     required this.revisions,
@@ -328,7 +325,7 @@ int _compareEntries(
 
 final class _LifecycleCallbackRouter<T extends Object>
     implements PluginCallbackRouter<T> {
-  const _LifecycleCallbackRouter({required this.state});
+  const new({required this.state});
 
   final PluginStateStore state;
 
@@ -371,9 +368,7 @@ final class _LifecycleCallbackRouter<T extends Object>
           arguments,
           await state.read(scope, _required(arguments, 'key')),
         );
-        return PluginCallbackResult<T>(
-          value: pluginStateReadEnvelope(entry),
-        );
+        return PluginCallbackResult<T>(value: pluginStateReadEnvelope(entry));
       case 'state.compare_and_set':
         final entry = await state.compareAndSet(
           scope,
@@ -428,10 +423,7 @@ final class _LifecycleCallbackRouter<T extends Object>
                   ),
           );
         }
-        final values = await state.transaction(
-          scope,
-          (_) => mutations,
-        );
+        final values = await state.transaction(scope, (_) => mutations);
         return PluginCallbackResult<T>(value: _entries(values));
       default:
         return PluginCallbackResult<T>(
@@ -488,9 +480,7 @@ Map<String, Object?> _entries(Map<String, PluginStateEntry> entries) =>
 Map<String, Object?> _object(Object? value) {
   if (value is Map<String, Object?>) return value;
   if (value is Map<Object?, Object?>) {
-    return value.map(
-      (key, item) => MapEntry(key.toString(), item),
-    );
+    return value.map((key, item) => MapEntry(key.toString(), item));
   }
   throw const FormatException(
     'Plugin lifecycle state mutation must be an object.',

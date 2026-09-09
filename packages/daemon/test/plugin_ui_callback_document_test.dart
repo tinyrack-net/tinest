@@ -15,10 +15,7 @@ void main() {
         'root': <String, Object?>{
           'type': 'section',
           'children': <Object?>[
-            <String, Object?>{
-              'type': 'button',
-              'actionId': refresh,
-            },
+            <String, Object?>{'type': 'button', 'actionId': refresh},
           ],
         },
         'actions': <Object?>[refresh],
@@ -33,10 +30,7 @@ void main() {
       () => document.actionIds.add('acme.ui/forged'),
       throwsUnsupportedError,
     );
-    expect(
-      () => document.root['type'] = 'forged',
-      throwsUnsupportedError,
-    );
+    expect(() => document.root['type'] = 'forged', throwsUnsupportedError);
   });
 
   test('raw documents cannot smuggle action bindings', () {
@@ -44,10 +38,7 @@ void main() {
       () => decodePluginUiCallbackDocument(
         <String, Object?>{
           '__tinest_ui_document': 'raw',
-          'root': <String, Object?>{
-            'type': 'button',
-            'actionId': refresh,
-          },
+          'root': <String, Object?>{'type': 'button', 'actionId': refresh},
         },
         pluginId: pluginId,
         registeredActionIds: const <String>{refresh},
@@ -84,10 +75,7 @@ void main() {
       },
       'duplicate action': <String, Object?>{
         '__tinest_ui_document': 'constructor',
-        'root': <String, Object?>{
-          'type': 'button',
-          'actionId': refresh,
-        },
+        'root': <String, Object?>{'type': 'button', 'actionId': refresh},
         'actions': <Object?>[refresh, refresh],
       },
       'foreign action': <String, Object?>{

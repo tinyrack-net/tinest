@@ -21,7 +21,7 @@ final class RpcConnectionContext {
 /// Stable feature failure safe to expose at the transport boundary.
 final class RpcFailureException implements Exception {
   /// Creates a sanitized failure.
-  const RpcFailureException({
+  const new({
     required this.code,
     required this.message,
     this.retryable = false,
@@ -45,7 +45,7 @@ final class RpcFailureException implements Exception {
 final class RpcBinding<P extends Object, R extends Object>
     implements RpcBindingDescriptor {
   /// Creates a typed binding.
-  const RpcBinding(this.typedProcedure, this.handler);
+  const new(this.typedProcedure, this.handler);
 
   /// Typed procedure implemented by the handler.
   final RpcProcedure<P, R> typedProcedure;
@@ -68,7 +68,7 @@ final class RpcBinding<P extends Object, R extends Object>
 /// Immutable registry assembled from feature-owned bindings.
 final class RpcBindingRegistry {
   /// Creates a registry and rejects duplicate or incomplete catalogs.
-  RpcBindingRegistry(
+  new(
     Iterable<RpcBindingDescriptor> bindings, {
     required Iterable<RpcProcedureDescriptor> procedures,
   }) : _bindings = <String, RpcBindingDescriptor>{
@@ -111,7 +111,7 @@ final class RpcBindingRegistry {
 /// One typed notification ready to cross the JSON-RPC transport boundary.
 final class OutboundNotification {
   /// Creates an outbound notification.
-  const OutboundNotification(this.notification, this.event);
+  const new(this.notification, this.event);
 
   /// Descriptor that owns the notification name and codec.
   final RpcNotificationDescriptor notification;

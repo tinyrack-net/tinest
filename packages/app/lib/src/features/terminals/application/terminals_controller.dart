@@ -13,7 +13,7 @@ class HostShellSettingsController extends _$HostShellSettingsController {
   @override
   Future<ShellSpecDto?> build(String hostId) async {
     final api = await watchHostApi(ref, hostId);
-    return api.terminals.getTerminalShell();
+    return await api.terminals.getTerminalShell();
   }
 
   /// Replaces or clears the daemon-wide terminal shell.
@@ -43,7 +43,7 @@ class TerminalsController extends _$TerminalsController {
       }
     });
     ref.onDispose(() => unawaited(_events?.cancel()));
-    return api.terminals.listTerminals(worktreeId);
+    return await api.terminals.listTerminals(worktreeId);
   }
 
   /// Creates a terminal with a standard initial character grid.

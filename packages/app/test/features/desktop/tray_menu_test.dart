@@ -24,10 +24,7 @@ void main() {
   test(
     'the first row offers to hide a visible window and to show a hidden one',
     () {
-      expect(
-        labelFor(menu(), trayItemToggleWindow),
-        testL10n.trayHideWindow,
-      );
+      expect(labelFor(menu(), trayItemToggleWindow), testL10n.trayHideWindow);
       expect(
         labelFor(menu(windowVisible: false), trayItemToggleWindow),
         testL10n.trayShowWindow,
@@ -41,10 +38,7 @@ void main() {
         TrayMenuAction.openSettings,
       );
       expect(menu().actionFor(trayItemQuit), TrayMenuAction.quit);
-      expect(
-        menu().tooltip,
-        testL10n.trayTooltip(AppIdentity.displayName),
-      );
+      expect(menu().tooltip, testL10n.trayTooltip(AppIdentity.displayName));
     },
     tags: const <String>['feature_test__desktop_residency__unit'],
   );
@@ -84,53 +78,42 @@ void main() {
     tags: const <String>['feature_test__desktop_residency__unit'],
   );
 
-  test(
-    'the embedded daemon row never includes unbounded failure details',
-    () {
-      const schemaFailure =
-          'SQLite schema validation failed: expected a very long list of '
-          'migrations, columns, indexes, and constraints that must remain '
-          'available in settings without expanding the native tray menu.';
-      final label = labelFor(
-        menu(
-          daemon: const HostRuntimeSnapshot(
-            id: embeddedHostId,
-            label: 'Embedded',
-            kind: HostKind.embedded,
-            status: HostRuntimeStatus.error,
-            error: schemaFailure,
-          ),
+  test('the embedded daemon row never includes unbounded failure details', () {
+    const schemaFailure =
+        'SQLite schema validation failed: expected a very long list of '
+        'migrations, columns, indexes, and constraints that must remain '
+        'available in settings without expanding the native tray menu.';
+    final label = labelFor(
+      menu(
+        daemon: const HostRuntimeSnapshot(
+          id: embeddedHostId,
+          label: 'Embedded',
+          kind: HostKind.embedded,
+          status: HostRuntimeStatus.error,
+          error: schemaFailure,
         ),
-        trayItemDaemonStatus,
-      );
+      ),
+      trayItemDaemonStatus,
+    );
 
-      expect(
-        label,
-        '${testL10n.embeddedDaemonName}: ${testL10n.hostStatusError}',
-      );
-      expect(label, isNot(contains(schemaFailure)));
-    },
-    tags: const <String>['feature_test__desktop_residency__unit'],
-  );
+    expect(
+      label,
+      '${testL10n.embeddedDaemonName}: ${testL10n.hostStatusError}',
+    );
+    expect(label, isNot(contains(schemaFailure)));
+  }, tags: const <String>['feature_test__desktop_residency__unit']);
 
-  test(
-    'a build without an embedded daemon omits the status row entirely',
-    () {
-      final model = menu(supportsEmbeddedDaemon: false);
-      expect(
-        model.entries.map((entry) => entry.key),
-        isNot(contains(trayItemDaemonStatus)),
-      );
-      // The separator that introduced the status row goes with it, so two
-      // dividers never end up adjacent.
-      expect(
-        model.entries.where((entry) => entry.isSeparator).length,
-        2,
-      );
-      expect(model.actionFor(trayItemQuit), TrayMenuAction.quit);
-    },
-    tags: const <String>['feature_test__desktop_residency__unit'],
-  );
+  test('a build without an embedded daemon omits the status row entirely', () {
+    final model = menu(supportsEmbeddedDaemon: false);
+    expect(
+      model.entries.map((entry) => entry.key),
+      isNot(contains(trayItemDaemonStatus)),
+    );
+    // The separator that introduced the status row goes with it, so two
+    // dividers never end up adjacent.
+    expect(model.entries.where((entry) => entry.isSeparator).length, 2);
+    expect(model.actionFor(trayItemQuit), TrayMenuAction.quit);
+  }, tags: const <String>['feature_test__desktop_residency__unit']);
 
   test(
     'menu equality ignores rebuilds and notices real presentation changes',

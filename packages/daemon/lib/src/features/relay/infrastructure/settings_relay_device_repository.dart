@@ -6,7 +6,7 @@ import 'package:daemon/src/shared/infrastructure/persistence/repositories.dart';
 /// Stores approved relay devices in the daemon's SQLite settings table.
 final class SettingsRelayDeviceRepository implements RelayDeviceRepository {
   /// Creates a device repository over [settings].
-  const SettingsRelayDeviceRepository(this.settings);
+  const new(this.settings);
 
   static const String _key = 'relay.approvedDevices';
 

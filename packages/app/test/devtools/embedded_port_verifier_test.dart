@@ -24,10 +24,7 @@ void main() {
       '}\n';
 
   test('a fixture that lets the daemon bind every store port passes', () {
-    expect(
-      verifier.verifySource(path: path, source: compliant),
-      isEmpty,
-    );
+    expect(verifier.verifySource(path: path, source: compliant), isEmpty);
   });
 
   test('a store left on the default port is reported', () {
@@ -64,10 +61,7 @@ void main() {
       source: '$compliant  final other = MemoryAppStore();\n',
     );
 
-    expect(
-      violations.single.rule,
-      'unpinned_embedded_daemon_port',
-    );
+    expect(violations.single.rule, 'unpinned_embedded_daemon_port');
     expect(violations.single.message, contains('found 2 stores and 1 pinned'));
   });
 
@@ -127,28 +121,21 @@ void main() {
     final directory = Directory(
       p.join(
         root.path,
-        p.joinAll(
-          p.posix.split(EmbeddedPortVerifier.integrationTestDirectory),
-        ),
+        p.joinAll(p.posix.split(EmbeddedPortVerifier.integrationTestDirectory)),
       ),
     )..createSync(recursive: true);
-    File(p.join(directory.path, 'b_test.dart')).writeAsStringSync(
-      'const port = 7337;',
-    );
-    File(p.join(directory.path, 'a_test.dart')).writeAsStringSync(
-      'const port = 7337;',
-    );
+    File(p.join(directory.path, 'b_test.dart'))
+        .writeAsStringSync('const port = 7337;');
+    File(p.join(directory.path, 'a_test.dart'))
+        .writeAsStringSync('const port = 7337;');
     File(p.join(directory.path, 'notes.md')).writeAsStringSync('7337');
 
     final violations = EmbeddedPortVerifier(root.path).verify();
 
-    expect(
-      violations.map((violation) => violation.path),
-      <String>[
-        '${EmbeddedPortVerifier.integrationTestDirectory}/a_test.dart',
-        '${EmbeddedPortVerifier.integrationTestDirectory}/b_test.dart',
-      ],
-    );
+    expect(violations.map((violation) => violation.path), <String>[
+      '${EmbeddedPortVerifier.integrationTestDirectory}/a_test.dart',
+      '${EmbeddedPortVerifier.integrationTestDirectory}/b_test.dart',
+    ]);
     expect(
       violations.first.toString(),
       startsWith(

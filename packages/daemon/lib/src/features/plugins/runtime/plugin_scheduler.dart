@@ -7,10 +7,7 @@ import 'package:daemon/src/shared/ports/daemon_ports.dart';
 /// Outcome returned by one durable Lua handler.
 final class PluginScheduledHandlerResult {
   /// Creates a scheduled handler outcome.
-  const PluginScheduledHandlerResult({
-    this.continueTurn = false,
-    this.prompt = '',
-  });
+  const new({this.continueTurn = false, this.prompt = ''});
 
   /// Whether the host should start a serialized internal turn.
   final bool continueTurn;
@@ -39,7 +36,7 @@ typedef PluginContinuationStarter = Future<bool> Function({
 /// releases the active lease, so a new daemon may recover the job immediately.
 final class DurablePluginScheduler implements PluginJobStore {
   /// Creates a scheduler over one durable job store.
-  factory DurablePluginScheduler({
+  factory({
     required PluginJobStore store,
     required Clock clock,
     required IdGenerator ids,
@@ -63,7 +60,7 @@ final class DurablePluginScheduler implements PluginJobStore {
     leaseDuration,
   );
 
-  DurablePluginScheduler._(
+  new _(
     this._store,
     this._clock,
     this._ids,

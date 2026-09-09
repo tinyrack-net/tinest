@@ -230,9 +230,8 @@ void main() {
     void write(Object? value) {
       final versionDirectory = Directory(p.join(directory.path, 'v5'))
         ..createSync();
-      File(
-        p.join(versionDirectory.path, 'secrets.json'),
-      ).writeAsStringSync(jsonEncode(value));
+      File(p.join(versionDirectory.path, 'secrets.json'))
+          .writeAsStringSync(jsonEncode(value));
     }
 
     test('returns null when no daemon has ever run here', () async {
@@ -271,10 +270,7 @@ void main() {
     });
 
     test('rejects a malformed daemon section', () async {
-      write(<String, dynamic>{
-        'schemaVersion': 2,
-        'daemon': 'not-an-object',
-      });
+      write(<String, dynamic>{'schemaVersion': 2, 'daemon': 'not-an-object'});
       await expectLater(
         readLocalDaemonBearerToken(directory.path),
         throwsA(isA<FormatException>()),
@@ -292,7 +288,7 @@ void main() {
 }
 
 final class _Environment implements LocalDaemonEnvironment {
-  const _Environment({
+  const new({
     required this.values,
     this.linux = false,
     this.macOS = false,

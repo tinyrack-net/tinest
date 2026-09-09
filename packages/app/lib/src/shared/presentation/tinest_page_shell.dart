@@ -4,7 +4,7 @@ import 'package:tinyrack_ui/tinyrack_ui.dart';
 /// The standard Tinest page shell backed by [TRAppShell].
 class TinestPageShell extends StatelessWidget {
   /// Creates a page with optional top chrome.
-  const TinestPageShell({required this.body, this.appBar, super.key});
+  const new({required this.body, this.appBar, super.key});
 
   /// Page content.
   final Widget body;
@@ -31,7 +31,7 @@ class TinestPageShell extends StatelessWidget {
 /// reads identically wherever it is composed.
 class TinestPageHeaderBar extends StatelessWidget {
   /// Creates a standalone Tinest header bar.
-  const TinestPageHeaderBar({required this.header, super.key});
+  const new({required this.header, super.key});
 
   /// Declarative header content.
   final TinestPageHeader header;
@@ -86,7 +86,7 @@ class TinestPageHeaderBar extends StatelessWidget {
 }
 
 class _TinestPageHeaderTitle extends StatelessWidget {
-  const _TinestPageHeaderTitle({required this.title});
+  const new({required this.title});
 
   final Widget title;
 
@@ -104,7 +104,7 @@ class _TinestPageHeaderTitle extends StatelessWidget {
 /// Declarative content for a [TinestPageShell] header.
 class TinestPageHeader {
   /// Creates a page header.
-  const TinestPageHeader({
+  const new({
     required this.title,
     this.actions = const <TRIconButton>[],
     this.leading,

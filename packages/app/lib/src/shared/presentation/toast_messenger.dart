@@ -35,7 +35,7 @@ final toastMessengerProvider = Provider<ToastMessenger>((ref) {
 /// settings forms already do.
 class ToastMessenger {
   /// Reports through the queue the region is rendering.
-  ToastMessenger(this._controller);
+  new(this._controller);
 
   final TRToastController _controller;
   bool _retired = false;
@@ -152,7 +152,7 @@ class ToastMessenger {
 /// a report lands on the report instead.
 class TinestToastScope extends ConsumerWidget {
   /// Creates the scope around [child].
-  const TinestToastScope({required this.child, super.key});
+  const new({required this.child, super.key});
 
   /// Content the toasts are drawn over.
   final Widget child;

@@ -34,7 +34,7 @@ typedef WorkspaceNavValue = ({
 /// Left navigation listing every workspace and its worktrees.
 class WorkspaceSidebar extends ConsumerWidget {
   /// Creates the workspace sidebar.
-  const WorkspaceSidebar({
+  const new({
     required this.hosts,
     required this.catalog,
     required this.homeSessions,
@@ -250,9 +250,7 @@ class WorkspaceSidebar extends ConsumerWidget {
     final loose = homeSessions.value ?? const <HomeSessionEntry>[];
     if (entries.isEmpty && loose.isEmpty && catalogErrors.isEmpty) {
       if (pendingHosts) {
-        return SidebarTreeSkeleton(
-          semanticLabel: l10n.workspaceCatalogLoading,
-        );
+        return SidebarTreeSkeleton(semanticLabel: l10n.workspaceCatalogLoading);
       }
       return _SidebarEmptyState(message: l10n.workspaceNoWorkspaces);
     }
@@ -392,12 +390,9 @@ class WorkspaceSidebar extends ConsumerWidget {
             label: l10n.workspaceProjectMenu,
             menuChildren: <Widget>[
               TRMenuItem(
-                key: ValueKey<String>(
-                  'workspace-unregister-${workspace.id}',
-                ),
-                onPressed: () => unawaited(
-                  _unregisterWorkspace(context, ref, entry),
-                ),
+                key: ValueKey<String>('workspace-unregister-${workspace.id}'),
+                onPressed: () =>
+                    unawaited(_unregisterWorkspace(context, ref, entry)),
                 child: TRText.inherit(l10n.workspaceUnregister),
               ),
             ],
@@ -462,9 +457,8 @@ class WorkspaceSidebar extends ConsumerWidget {
       context: context,
       builder: (dialogContext) => _ArchiveWorktreeDialog(
         worktree: worktree,
-        loadPreview: () => entry.api.workspaces.previewWorktreeArchive(
-          worktree.id,
-        ),
+        loadPreview: () =>
+            entry.api.workspaces.previewWorktreeArchive(worktree.id),
         archive: ({required force}) => ref
             .read(workspaceCatalogControllerProvider.notifier)
             .archiveWorktree(entry.hostId, worktree.id, force: force),
@@ -497,9 +491,7 @@ class WorkspaceSidebar extends ConsumerWidget {
       context: context,
       builder: (context) => TRAlertDialog(
         title: TRText.inherit(l10n.workspaceUnregisterTitle(workspace.name)),
-        content: TRText.inherit(
-          l10n.workspaceUnregisterBody(AppIdentity.name),
-        ),
+        content: TRText.inherit(l10n.workspaceUnregisterBody(AppIdentity.name)),
         actions: <TRButton>[
           TRButton(
             appearance: TRAppearance.ghost,
@@ -535,7 +527,7 @@ class WorkspaceSidebar extends ConsumerWidget {
 }
 
 class _CatalogRefreshing extends StatelessWidget {
-  const _CatalogRefreshing({required this.label, super.key});
+  const new({required this.label, super.key});
 
   final String label;
 
@@ -564,7 +556,7 @@ class _CatalogRefreshing extends StatelessWidget {
 
 /// Keeps Git archive inspection and mutation visible inside one dialog.
 class _ArchiveWorktreeDialog extends StatefulWidget {
-  const _ArchiveWorktreeDialog({
+  const new({
     required this.worktree,
     required this.loadPreview,
     required this.archive,
@@ -722,7 +714,7 @@ class _ArchiveWorktreeDialogState extends State<_ArchiveWorktreeDialog> {
 }
 
 class _ArchiveProgress extends StatelessWidget {
-  const _ArchiveProgress({required this.label});
+  const new({required this.label});
 
   final String label;
 
@@ -746,7 +738,7 @@ class _ArchiveProgress extends StatelessWidget {
 
 /// Heading that separates the project tree from sessions without a project.
 class _SidebarSectionLabel extends StatelessWidget {
-  const _SidebarSectionLabel({required this.text});
+  const new({required this.text});
 
   final String text;
 
@@ -758,20 +750,12 @@ class _SidebarSectionLabel extends StatelessWidget {
       TRSpacing.small,
       TRSpacing.extraSmall,
     ),
-    child: TRText(
-      text,
-      variant: TRTextVariant.label,
-      color: TRTextColor.muted,
-    ),
+    child: TRText(text, variant: TRTextVariant.label, color: TRTextColor.muted),
   );
 }
 
 class _SidebarEmptyState extends StatelessWidget {
-  const _SidebarEmptyState({
-    required this.message,
-    this.actionLabel,
-    this.onAction,
-  });
+  const new({required this.message, this.actionLabel, this.onAction});
 
   final String message;
 

@@ -55,43 +55,39 @@ void main() {
     },
   );
 
-  test(
-    'assistant deltas of one turn merge even when tools interleave',
-    () {
-      final items = projectChatTimeline(<TimelineEventDto>[
-        event('user.message', <String, dynamic>{'text': 'Fix it'}),
-        event('assistant.delta', <String, dynamic>{'text': 'Reading '}),
-        event('tool.requested', <String, dynamic>{
-          'callId': 'call-1',
-          'name': 'read_file',
-          'arguments': <String, dynamic>{'path': 'lib/main.dart'},
-        }),
-        event('tool.completed', <String, dynamic>{
-          'callId': 'call-1',
-          'name': 'read_file',
-          'output': 'void main() {}',
-          'isError': false,
-        }),
-        event('assistant.delta', <String, dynamic>{'text': 'the '}),
-        event('assistant.delta', <String, dynamic>{'text': 'file.'}),
-        event('turn.completed', <String, dynamic>{'toolRounds': 1}),
-      ]);
+  test('assistant deltas of one turn merge even when tools interleave', () {
+    final items = projectChatTimeline(<TimelineEventDto>[
+      event('user.message', <String, dynamic>{'text': 'Fix it'}),
+      event('assistant.delta', <String, dynamic>{'text': 'Reading '}),
+      event('tool.requested', <String, dynamic>{
+        'callId': 'call-1',
+        'name': 'read_file',
+        'arguments': <String, dynamic>{'path': 'lib/main.dart'},
+      }),
+      event('tool.completed', <String, dynamic>{
+        'callId': 'call-1',
+        'name': 'read_file',
+        'output': 'void main() {}',
+        'isError': false,
+      }),
+      event('assistant.delta', <String, dynamic>{'text': 'the '}),
+      event('assistant.delta', <String, dynamic>{'text': 'file.'}),
+      event('turn.completed', <String, dynamic>{'toolRounds': 1}),
+    ]);
 
-      expect(items.map((item) => item.runtimeType.toString()), <String>[
-        'ChatUserMessage',
-        'ChatAssistantMessage',
-        'ChatToolActivity',
-        'ChatAssistantMessage',
-        'ChatNotice',
-      ]);
-      expect((items[1] as ChatAssistantMessage).markdown, 'Reading ');
-      expect((items[3] as ChatAssistantMessage).markdown, 'the file.');
-      expect((items[3] as ChatAssistantMessage).isStreaming, isFalse);
-      expect((items[4] as ChatNotice).kind, ChatNoticeKind.turnCompleted);
-      expect((items[4] as ChatNotice).toolRounds, 1);
-    },
-    tags: const <String>['feature_test__turn_execution__unit'],
-  );
+    expect(items.map((item) => item.runtimeType.toString()), <String>[
+      'ChatUserMessage',
+      'ChatAssistantMessage',
+      'ChatToolActivity',
+      'ChatAssistantMessage',
+      'ChatNotice',
+    ]);
+    expect((items[1] as ChatAssistantMessage).markdown, 'Reading ');
+    expect((items[3] as ChatAssistantMessage).markdown, 'the file.');
+    expect((items[3] as ChatAssistantMessage).isStreaming, isFalse);
+    expect((items[4] as ChatNotice).kind, ChatNoticeKind.turnCompleted);
+    expect((items[4] as ChatNotice).toolRounds, 1);
+  }, tags: const <String>['feature_test__turn_execution__unit']);
 
   test(
     'reasoning phases stream, complete, split across tools, and omit empties',
@@ -155,171 +151,159 @@ void main() {
     },
   );
 
-  test(
-    'tool requests and results merge into one activity per call',
-    () {
-      final items = projectChatTimeline(<TimelineEventDto>[
-        event('tool.requested', <String, dynamic>{
-          'callId': 'call-1',
-          'name': 'exec_command',
-          'arguments': <String, dynamic>{'command': 'dart test'},
-        }),
-        event('tool.completed', <String, dynamic>{
-          'callId': 'call-1',
-          'name': 'exec_command',
-          'output': '{"exitCode":0,"output":"ok"}',
-          'isError': false,
-        }),
-        event('tool.requested', <String, dynamic>{
-          'callId': 'call-2',
-          'name': 'apply_patch',
-          'arguments': <String, dynamic>{'patch': 'diff'},
-        }),
-        event('tool.failed', <String, dynamic>{
-          'callId': 'call-2',
-          'name': 'apply_patch',
-          'error': 'context mismatch',
-        }),
-        event('tool.requested', <String, dynamic>{
-          'callId': 'call-3',
-          'name': 'exec_command',
-          'arguments': <String, dynamic>{'command': 'rm -rf /'},
-        }),
-        event('tool.denied', <String, dynamic>{
-          'callId': 'call-3',
-          'name': 'exec_command',
-        }),
-        event('tool.requested', <String, dynamic>{
-          'callId': 'call-4',
-          'name': 'read_file',
-          'arguments': <String, dynamic>{'path': 'a.dart'},
-        }),
-      ]);
+  test('tool requests and results merge into one activity per call', () {
+    final items = projectChatTimeline(<TimelineEventDto>[
+      event('tool.requested', <String, dynamic>{
+        'callId': 'call-1',
+        'name': 'exec_command',
+        'arguments': <String, dynamic>{'command': 'dart test'},
+      }),
+      event('tool.completed', <String, dynamic>{
+        'callId': 'call-1',
+        'name': 'exec_command',
+        'output': '{"exitCode":0,"output":"ok"}',
+        'isError': false,
+      }),
+      event('tool.requested', <String, dynamic>{
+        'callId': 'call-2',
+        'name': 'apply_patch',
+        'arguments': <String, dynamic>{'patch': 'diff'},
+      }),
+      event('tool.failed', <String, dynamic>{
+        'callId': 'call-2',
+        'name': 'apply_patch',
+        'error': 'context mismatch',
+      }),
+      event('tool.requested', <String, dynamic>{
+        'callId': 'call-3',
+        'name': 'exec_command',
+        'arguments': <String, dynamic>{'command': 'rm -rf /'},
+      }),
+      event('tool.denied', <String, dynamic>{
+        'callId': 'call-3',
+        'name': 'exec_command',
+      }),
+      event('tool.requested', <String, dynamic>{
+        'callId': 'call-4',
+        'name': 'read_file',
+        'arguments': <String, dynamic>{'path': 'a.dart'},
+      }),
+    ]);
 
-      final activities = items.cast<ChatToolActivity>();
-      expect(activities, hasLength(4));
-      expect(activities[0].status, ChatToolStatus.succeeded);
-      expect(activities[0].output, '{"exitCode":0,"output":"ok"}');
-      expect(activities[0].arguments['command'], 'dart test');
-      expect(activities[1].status, ChatToolStatus.failed);
-      expect(activities[1].error, 'context mismatch');
-      expect(activities[2].status, ChatToolStatus.denied);
-      expect(activities[3].status, ChatToolStatus.running);
-    },
-    tags: const <String>['feature_test__turn_execution__unit'],
-  );
+    final activities = items.cast<ChatToolActivity>();
+    expect(activities, hasLength(4));
+    expect(activities[0].status, ChatToolStatus.succeeded);
+    expect(activities[0].output, '{"exitCode":0,"output":"ok"}');
+    expect(activities[0].arguments['command'], 'dart test');
+    expect(activities[1].status, ChatToolStatus.failed);
+    expect(activities[1].error, 'context mismatch');
+    expect(activities[2].status, ChatToolStatus.denied);
+    expect(activities[3].status, ChatToolStatus.running);
+  }, tags: const <String>['feature_test__turn_execution__unit']);
 
-  test(
-    'successful attach_file activity yields only its attachment card',
-    () {
-      final items = projectChatTimeline(<TimelineEventDto>[
-        event('tool.requested', <String, dynamic>{
-          'callId': 'attach-1',
-          'name': 'attach_file',
-          'presentation': <String, dynamic>{'timeline': 'suppressed'},
-          'arguments': <String, dynamic>{'path': 'result.txt'},
-        }),
-        event('tool.completed', <String, dynamic>{
-          'callId': 'attach-1',
-          'name': 'attach_file',
-          'presentation': <String, dynamic>{'timeline': 'suppressed'},
-          'output': '{"attachmentId":"attachment-1"}',
-          'isError': false,
-        }),
-        event('assistant.attachment', <String, dynamic>{
-          'id': 'attachment-1',
-          'fileName': 'result.txt',
-          'mimeType': 'text/plain',
-          'byteSize': 5,
-        }),
-      ]);
+  test('successful attach_file activity yields only its attachment card', () {
+    final items = projectChatTimeline(<TimelineEventDto>[
+      event('tool.requested', <String, dynamic>{
+        'callId': 'attach-1',
+        'name': 'attach_file',
+        'presentation': <String, dynamic>{'timeline': 'suppressed'},
+        'arguments': <String, dynamic>{'path': 'result.txt'},
+      }),
+      event('tool.completed', <String, dynamic>{
+        'callId': 'attach-1',
+        'name': 'attach_file',
+        'presentation': <String, dynamic>{'timeline': 'suppressed'},
+        'output': '{"attachmentId":"attachment-1"}',
+        'isError': false,
+      }),
+      event('assistant.attachment', <String, dynamic>{
+        'id': 'attachment-1',
+        'fileName': 'result.txt',
+        'mimeType': 'text/plain',
+        'byteSize': 5,
+      }),
+    ]);
 
-      expect(items.whereType<ChatToolActivity>(), isEmpty);
-      expect(items.whereType<ChatAttachmentMessage>(), hasLength(1));
-    },
-    tags: const <String>['feature_test__conversation_attachments__unit'],
-  );
+    expect(items.whereType<ChatToolActivity>(), isEmpty);
+    expect(items.whereType<ChatAttachmentMessage>(), hasLength(1));
+  }, tags: const <String>['feature_test__conversation_attachments__unit']);
 
-  test(
-    'truncated and repeated tool histories stay renderable',
-    () {
-      final orphan = projectChatTimeline(<TimelineEventDto>[
-        event('tool.completed', <String, dynamic>{
-          'callId': 'call-1',
-          'name': 'read_file',
-          'output': 'text',
-          'isError': false,
-        }),
-        event('tool.requested', <String, dynamic>{
-          'callId': 'call-1',
-          'name': 'read_file',
-          'arguments': <String, dynamic>{'path': 'a.dart'},
-        }),
-      ]).cast<ChatToolActivity>();
-      expect(orphan, hasLength(1));
-      expect(orphan.single.status, ChatToolStatus.succeeded);
-      expect(orphan.single.arguments['path'], 'a.dart');
+  test('truncated and repeated tool histories stay renderable', () {
+    final orphan = projectChatTimeline(<TimelineEventDto>[
+      event('tool.completed', <String, dynamic>{
+        'callId': 'call-1',
+        'name': 'read_file',
+        'output': 'text',
+        'isError': false,
+      }),
+      event('tool.requested', <String, dynamic>{
+        'callId': 'call-1',
+        'name': 'read_file',
+        'arguments': <String, dynamic>{'path': 'a.dart'},
+      }),
+    ]).cast<ChatToolActivity>();
+    expect(orphan, hasLength(1));
+    expect(orphan.single.status, ChatToolStatus.succeeded);
+    expect(orphan.single.arguments['path'], 'a.dart');
 
-      final duplicateTerminal = projectChatTimeline(<TimelineEventDto>[
-        event('tool.requested', <String, dynamic>{
-          'callId': 'call-1',
-          'name': 'read_file',
-          'arguments': <String, dynamic>{'path': 'a.dart'},
-        }),
-        event('tool.completed', <String, dynamic>{
-          'callId': 'call-1',
-          'name': 'read_file',
-          'output': 'first',
-          'isError': false,
-        }),
-        event('tool.completed', <String, dynamic>{
-          'callId': 'call-1',
-          'name': 'read_file',
-          'output': 'second',
-          'isError': false,
-        }),
-      ]).cast<ChatToolActivity>();
-      expect(duplicateTerminal, hasLength(1));
-      expect(duplicateTerminal.single.output, 'first');
+    final duplicateTerminal = projectChatTimeline(<TimelineEventDto>[
+      event('tool.requested', <String, dynamic>{
+        'callId': 'call-1',
+        'name': 'read_file',
+        'arguments': <String, dynamic>{'path': 'a.dart'},
+      }),
+      event('tool.completed', <String, dynamic>{
+        'callId': 'call-1',
+        'name': 'read_file',
+        'output': 'first',
+        'isError': false,
+      }),
+      event('tool.completed', <String, dynamic>{
+        'callId': 'call-1',
+        'name': 'read_file',
+        'output': 'second',
+        'isError': false,
+      }),
+    ]).cast<ChatToolActivity>();
+    expect(duplicateTerminal, hasLength(1));
+    expect(duplicateTerminal.single.output, 'first');
 
-      final reinvoked = projectChatTimeline(<TimelineEventDto>[
-        event('tool.requested', <String, dynamic>{
-          'callId': 'call-1',
-          'name': 'read_file',
-          'arguments': <String, dynamic>{'path': 'a.dart'},
-        }),
-        event('tool.completed', <String, dynamic>{
-          'callId': 'call-1',
-          'name': 'read_file',
-          'output': 'first',
-          'isError': false,
-        }),
-        event('tool.requested', <String, dynamic>{
-          'callId': 'call-1',
-          'name': 'read_file',
-          'arguments': <String, dynamic>{'path': 'b.dart'},
-        }),
-      ]).cast<ChatToolActivity>();
-      expect(reinvoked, hasLength(2));
-      expect(reinvoked.last.status, ChatToolStatus.running);
-      expect(reinvoked.last.arguments['path'], 'b.dart');
+    final reinvoked = projectChatTimeline(<TimelineEventDto>[
+      event('tool.requested', <String, dynamic>{
+        'callId': 'call-1',
+        'name': 'read_file',
+        'arguments': <String, dynamic>{'path': 'a.dart'},
+      }),
+      event('tool.completed', <String, dynamic>{
+        'callId': 'call-1',
+        'name': 'read_file',
+        'output': 'first',
+        'isError': false,
+      }),
+      event('tool.requested', <String, dynamic>{
+        'callId': 'call-1',
+        'name': 'read_file',
+        'arguments': <String, dynamic>{'path': 'b.dart'},
+      }),
+    ]).cast<ChatToolActivity>();
+    expect(reinvoked, hasLength(2));
+    expect(reinvoked.last.status, ChatToolStatus.running);
+    expect(reinvoked.last.arguments['path'], 'b.dart');
 
-      final duplicateRequest = projectChatTimeline(<TimelineEventDto>[
-        event('tool.requested', <String, dynamic>{
-          'callId': 'call-1',
-          'name': 'read_file',
-          'arguments': <String, dynamic>{'path': 'a.dart'},
-        }),
-        event('tool.requested', <String, dynamic>{
-          'callId': 'call-1',
-          'name': 'read_file',
-          'arguments': <String, dynamic>{'path': 'a.dart'},
-        }),
-      ]);
-      expect(duplicateRequest, hasLength(1));
-    },
-    tags: const <String>['feature_test__turn_execution__unit'],
-  );
+    final duplicateRequest = projectChatTimeline(<TimelineEventDto>[
+      event('tool.requested', <String, dynamic>{
+        'callId': 'call-1',
+        'name': 'read_file',
+        'arguments': <String, dynamic>{'path': 'a.dart'},
+      }),
+      event('tool.requested', <String, dynamic>{
+        'callId': 'call-1',
+        'name': 'read_file',
+        'arguments': <String, dynamic>{'path': 'a.dart'},
+      }),
+    ]);
+    expect(duplicateRequest, hasLength(1));
+  }, tags: const <String>['feature_test__turn_execution__unit']);
 
   test(
     'approvals, usage, failures, and unknown events are typed not dumped',
@@ -402,10 +386,7 @@ void main() {
         second,
         third,
       ]);
-      expect(
-        unsorted.map((item) => item.key),
-        sorted.map((item) => item.key),
-      );
+      expect(unsorted.map((item) => item.key), sorted.map((item) => item.key));
 
       final before = projectChatTimeline(<TimelineEventDto>[first, second]);
       expect(
@@ -526,9 +507,7 @@ void main() {
             'label': 'Choose storage',
             'glyph': 'ask',
           },
-          'arguments': <String, dynamic>{
-            'questions': <Map<String, dynamic>>[],
-          },
+          'arguments': <String, dynamic>{'questions': <Map<String, dynamic>>[]},
         }),
         event('tool.failed', <String, dynamic>{
           'callId': 'call-ask',
@@ -576,19 +555,15 @@ void main() {
     tags: const <String>['feature_test__turn_execution__unit'],
   );
 
-  test(
-    'empty assistant text and empty input produce no items',
-    () {
-      expect(projectChatTimeline(const <TimelineEventDto>[]), isEmpty);
-      expect(
-        projectChatTimeline(<TimelineEventDto>[
-          event('assistant.delta', <String, dynamic>{'text': ''}),
-        ]),
-        isEmpty,
-      );
-    },
-    tags: const <String>['feature_test__turn_execution__unit'],
-  );
+  test('empty assistant text and empty input produce no items', () {
+    expect(projectChatTimeline(const <TimelineEventDto>[]), isEmpty);
+    expect(
+      projectChatTimeline(<TimelineEventDto>[
+        event('assistant.delta', <String, dynamic>{'text': ''}),
+      ]),
+      isEmpty,
+    );
+  }, tags: const <String>['feature_test__turn_execution__unit']);
 
   test(
     'a block extended by an older page keeps the identity it already had',
@@ -637,12 +612,12 @@ void main() {
           }, at: index),
       ];
 
-      final before = projectChatTimeline(
-        deltas.sublist(3),
-      ).whereType<ChatReasoningActivity>().single;
-      final after = projectChatTimeline(
-        deltas,
-      ).whereType<ChatReasoningActivity>().single;
+      final before = projectChatTimeline(deltas.sublist(3))
+          .whereType<ChatReasoningActivity>()
+          .single;
+      final after = projectChatTimeline(deltas)
+          .whereType<ChatReasoningActivity>()
+          .single;
 
       expect(after.markdown, startsWith('thought 1 '));
       expect(

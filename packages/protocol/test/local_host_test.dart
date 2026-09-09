@@ -105,7 +105,7 @@ void main() {
 }
 
 final class _Environment implements LocalDaemonEnvironment {
-  const _Environment({
+  const new({
     required this.values,
     this.linux = false,
     this.macOS = false,

@@ -82,10 +82,8 @@ void main() {
   test('truncates once the budget runs out', tags: _tags, () async {
     await write('/w/AGENTS.md', 'a' * 10);
     await write('/w/pkg/AGENTS.md', 'b' * 10);
-    final loaded = await loader(maxBytes: 15).load(
-      workspaceRoot: '/w',
-      workingDirectory: '/w/pkg',
-    );
+    final loaded = await loader(maxBytes: 15)
+        .load(workspaceRoot: '/w', workingDirectory: '/w/pkg');
     expect(loaded!.text, contains('a' * 10));
     expect(loaded.text, contains('b' * 5));
     expect(loaded.text, isNot(contains('b' * 6)));
@@ -94,10 +92,8 @@ void main() {
   test('stops reading once the budget is spent', tags: _tags, () async {
     await write('/w/AGENTS.md', 'a' * 10);
     await write('/w/pkg/AGENTS.md', 'b' * 10);
-    final loaded = await loader(maxBytes: 10).load(
-      workspaceRoot: '/w',
-      workingDirectory: '/w/pkg',
-    );
+    final loaded = await loader(maxBytes: 10)
+        .load(workspaceRoot: '/w', workingDirectory: '/w/pkg');
     expect(loaded!.paths, <String>['/w/AGENTS.md']);
   });
 

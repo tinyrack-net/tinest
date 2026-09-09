@@ -13,7 +13,7 @@ typedef RelayDeviceSessionTerminator = Future<void> Function(String deviceId);
 /// An approved device persisted by the daemon.
 final class RelayApprovedDevice {
   /// Creates an approved relay device.
-  RelayApprovedDevice({
+  new({
     required this.id,
     required this.name,
     required List<int> publicKey,
@@ -80,7 +80,7 @@ final class MemoryRelayDeviceRepository implements RelayDeviceRepository {
 /// Pairing failure safe to return across the daemon RPC boundary.
 final class RelayPairingException implements Exception {
   /// Creates a pairing failure with a machine-readable [code].
-  const RelayPairingException(this.code, this.message);
+  const new(this.code, this.message);
 
   /// Stable error code.
   final String code;
@@ -95,10 +95,8 @@ final class RelayPairingException implements Exception {
 /// Successful encrypted registration and its acknowledgement capability.
 final class RelayPairingRegistrationResult {
   /// Creates a successful registration result.
-  RelayPairingRegistrationResult({
-    required this.device,
-    required List<int> offerSecret,
-  }) : offerSecret = List<int>.unmodifiable(offerSecret);
+  new({required this.device, required List<int> offerSecret})
+    : offerSecret = List<int>.unmodifiable(offerSecret);
 
   /// Newly registered or idempotently retried device.
   final RelayApprovedDevice device;
@@ -110,7 +108,7 @@ final class RelayPairingRegistrationResult {
 /// Creates, consumes, lists, and revokes daemon relay registrations.
 final class RelayPairingService {
   /// Creates a pairing service for one daemon identity.
-  RelayPairingService({
+  new({
     required this.serverId,
     required this.relayUri,
     required List<int> daemonIdentityPublicKey,
@@ -278,7 +276,7 @@ final class RelayPairingService {
 }
 
 final class _PairingGrant {
-  _PairingGrant(this.offer);
+  new(this.offer);
 
   final RelayPairingOffer offer;
   RelayApprovedDevice? device;

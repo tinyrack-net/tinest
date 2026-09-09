@@ -6,7 +6,7 @@ import 'package:dio/dio.dart';
 /// Dio-backed network adapter created only by the daemon composition root.
 final class DioPluginNetworkGateway implements PluginNetworkGateway {
   /// Creates the adapter over a host-owned HTTP client.
-  const DioPluginNetworkGateway(this._dio);
+  const new(this._dio);
 
   final Dio _dio;
 
@@ -90,7 +90,7 @@ final class DioPluginNetworkGateway implements PluginNetworkGateway {
 /// Bounded transport diagnostic that never includes URLs, headers, or bodies.
 final class PluginNetworkTransportException implements Exception {
   /// Creates a transport failure from a stable Dio classification.
-  const PluginNetworkTransportException(this.kind);
+  const new(this.kind);
 
   /// Stable failure kind without request data.
   final String kind;

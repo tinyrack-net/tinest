@@ -29,9 +29,7 @@ Future<int> relaySetEnabled({
   required bool enabled,
 }) async {
   final status = await relay.setRelayEnabled(enabled: enabled);
-  output.writeln(
-    status.enabled ? 'Relay enabled.' : 'Relay disabled.',
-  );
+  output.writeln(status.enabled ? 'Relay enabled.' : 'Relay disabled.');
   return 0;
 }
 
@@ -102,9 +100,7 @@ Future<int> relayDeviceRevoke({
 }
 
 String _terminalQr(String data) {
-  final image = QrImage(
-    QrCode.fromData(data: data, errorCorrectLevel: QrErrorCorrectLevel.M),
-  );
+  final image = QrImage(QrCode(payload: QrPayload.fromString(data)));
   const quiet = 2;
   final size = image.moduleCount + quiet * 2;
   bool dark(int row, int column) =>

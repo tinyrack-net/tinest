@@ -9,24 +9,20 @@ import 'package:shelf/shelf_io.dart' as shelf_io;
 import 'package:test/test.dart';
 
 void main() {
-  test(
-    'pairing and RPC cross a real daemon, relay, and client',
-    () async {
-      final stack = await _RelayStack.start('pairing');
-      addTearDown(stack.close);
+  test('pairing and RPC cross a real daemon, relay, and client', () async {
+    final stack = await _RelayStack.start('pairing');
+    addTearDown(stack.close);
 
-      final paired = await stack.pair(deviceId: 'phone');
-      final client = await stack.connectRelay(paired);
+    final paired = await stack.pair(deviceId: 'phone');
+    final client = await stack.connectRelay(paired);
 
-      expect(client.serverInfo.serverId, stack.daemon.serverId);
-      expect((await client.getRelayStatus()).connected, isTrue);
-      expect(
-        (await client.listRelayDevices()).map((device) => device.id),
-        contains('phone'),
-      );
-    },
-    tags: const <String>['feature_test__daemon_relay__verticalSlice'],
-  );
+    expect(client.serverInfo.serverId, stack.daemon.serverId);
+    expect((await client.getRelayStatus()).connected, isTrue);
+    expect(
+      (await client.listRelayDevices()).map((device) => device.id),
+      contains('phone'),
+    );
+  }, tags: const <String>['feature_test__daemon_relay__verticalSlice']);
 
   test(
     'revocation terminates the live relay session and rejects its key',
@@ -107,7 +103,7 @@ Stream<List<int>> _bytes(int total, int byte) async* {
 }
 
 final class _RelayStack {
-  _RelayStack._({
+  new _({
     required this.home,
     required this.relayService,
     required this.relayServer,
@@ -179,7 +175,7 @@ final class _RelayStack {
 
   Future<RelayPairingResult> pair({required String deviceId}) async {
     final offer = await admin.createRelayPairingOffer();
-    return RelayDevicePairer().pair(
+    return await RelayDevicePairer().pair(
       pairingUrl: Uri.parse(offer.url),
       deviceId: deviceId,
       deviceName: deviceId,
@@ -189,7 +185,7 @@ final class _RelayStack {
   }
 
   Future<TinestClient> pairAndConnect({required String deviceId}) async =>
-      connectRelay(await pair(deviceId: deviceId));
+      await connectRelay(await pair(deviceId: deviceId));
 
   Future<TinestClient> connectRelay(RelayPairingResult paired) async {
     final client = await TinestClient.connect(
@@ -222,7 +218,7 @@ final class _RelayStack {
 }
 
 final class _OfflineMetadataSource implements ProviderCatalogMetadataSource {
-  const _OfflineMetadataSource();
+  const new();
 
   @override
   Future<void> close() async {}

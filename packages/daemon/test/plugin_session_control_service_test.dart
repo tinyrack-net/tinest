@@ -66,74 +66,70 @@ void main() {
     }
   });
 
-  test(
-    'registration rejects missing schemas and invalid defaults',
-    () {
-      const descriptor = PluginDescriptorDto(
-        apiMajor: 5,
-        id: 'acme.control',
-        version: '1.0.0',
-        name: 'Control',
-        entrypoint: 'main.lua',
-        source: PluginSource.user,
-        sourcePath: 'plugins/acme.control',
-        requestedCapabilities: <String>[],
-      );
+  test('registration rejects missing schemas and invalid defaults', () {
+    const descriptor = PluginDescriptorDto(
+      apiMajor: 5,
+      id: 'acme.control',
+      version: '1.0.0',
+      name: 'Control',
+      entrypoint: 'main.lua',
+      source: PluginSource.user,
+      sourcePath: 'plugins/acme.control',
+      requestedCapabilities: <String>[],
+    );
 
-      expect(
-        () => PluginRegistrationParser.parse(
-          descriptor: descriptor,
-          revisionHash: 'revision',
-          value: <String, Object?>{
-            'api': 5,
-            'spec': <String, Object?>{
-              'session_controls': <Object?>[
-                <String, Object?>{
-                  'id': 'mode',
-                  'binding': _controlBinding,
-                  'metadata': <String, Object?>{'default': false},
-                },
-              ],
-            },
+    expect(
+      () => PluginRegistrationParser.parse(
+        descriptor: descriptor,
+        revisionHash: 'revision',
+        value: <String, Object?>{
+          'api': 5,
+          'spec': <String, Object?>{
+            'session_controls': <Object?>[
+              <String, Object?>{
+                'id': 'mode',
+                'binding': _controlBinding,
+                'metadata': <String, Object?>{'default': false},
+              },
+            ],
           },
+        },
+      ),
+      throwsA(
+        isA<PluginRegistrationException>().having(
+          (error) => error.path,
+          'path',
+          r'$.session_controls[0].schema',
         ),
-        throwsA(
-          isA<PluginRegistrationException>().having(
-            (error) => error.path,
-            'path',
-            r'$.session_controls[0].schema',
-          ),
-        ),
-      );
-      expect(
-        () => PluginRegistrationParser.parse(
-          descriptor: descriptor,
-          revisionHash: 'revision',
-          value: <String, Object?>{
-            'api': 5,
-            'spec': <String, Object?>{
-              'session_controls': <Object?>[
-                <String, Object?>{
-                  'id': 'mode',
-                  'binding': _controlBinding,
-                  'schema': <String, Object?>{'type': 'boolean'},
-                  'metadata': <String, Object?>{'default': 'false'},
-                },
-              ],
-            },
+      ),
+    );
+    expect(
+      () => PluginRegistrationParser.parse(
+        descriptor: descriptor,
+        revisionHash: 'revision',
+        value: <String, Object?>{
+          'api': 5,
+          'spec': <String, Object?>{
+            'session_controls': <Object?>[
+              <String, Object?>{
+                'id': 'mode',
+                'binding': _controlBinding,
+                'schema': <String, Object?>{'type': 'boolean'},
+                'metadata': <String, Object?>{'default': 'false'},
+              },
+            ],
           },
+        },
+      ),
+      throwsA(
+        isA<PluginRegistrationException>().having(
+          (error) => error.path,
+          'path',
+          r'$.session_controls[0].metadata.default',
         ),
-        throwsA(
-          isA<PluginRegistrationException>().having(
-            (error) => error.path,
-            'path',
-            r'$.session_controls[0].metadata.default',
-          ),
-        ),
-      );
-    },
-    tags: const <String>['feature_test__session_plan__unit'],
-  );
+      ),
+    );
+  }, tags: const <String>['feature_test__session_plan__unit']);
 
   test(
     'real tinest.plan handler normalizes and survives runtime restart',
@@ -535,9 +531,7 @@ void main() {
         action: PluginUiActionDto(
           documentId: rendered.id,
           actionId: 'acme.controls/refresh',
-          data: <String, dynamic>{
-            'action_id': 'acme.controls/refresh',
-          },
+          data: <String, dynamic>{'action_id': 'acme.controls/refresh'},
         ),
       ),
     );
@@ -561,9 +555,7 @@ void main() {
           action: PluginUiActionDto(
             documentId: rendered.id,
             actionId: 'acme.controls/denied',
-            data: <String, dynamic>{
-              'action_id': 'acme.controls/denied',
-            },
+            data: <String, dynamic>{'action_id': 'acme.controls/denied'},
           ),
         ),
       ),
@@ -985,7 +977,7 @@ return tinest.plugin.define({session_controls = {mode}})
 }
 
 final class _SingleBundleLoader implements PluginBundleLoader {
-  const _SingleBundleLoader(this.bundle);
+  const new(this.bundle);
 
   final PluginBundle bundle;
 
@@ -997,7 +989,7 @@ final class _SingleBundleLoader implements PluginBundleLoader {
 }
 
 final class _UiHost {
-  _UiHost() {
+  new() {
     primitives = HostPrimitiveRegistry(<HostPrimitive<Object?, Object?>>[
       HostPrimitiveContracts.clockCurrentTime
           .bind(decode: _object, invoke: _currentTime)
@@ -1027,7 +1019,7 @@ Map<String, Object?> _object(Object? value) {
 }
 
 final class _SourceCatalog implements PluginSourceCatalog {
-  const _SourceCatalog(this.ids);
+  const new(this.ids);
 
   final List<String> ids;
 

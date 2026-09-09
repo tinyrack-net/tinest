@@ -14,10 +14,7 @@ export 'package:agent/agent.dart' show Clock, SystemClock;
 /// to turn it into model prompt blocks.
 final class ImplicitSkillDocument {
   /// Creates one immutable implicit skill document.
-  const ImplicitSkillDocument({
-    required this.name,
-    required this.instructions,
-  });
+  const new({required this.name, required this.instructions});
 
   /// Stable catalog name.
   final String name;
@@ -41,7 +38,7 @@ abstract interface class IdGenerator {
 /// UuidIdGenerator defines a public contract.
 final class UuidIdGenerator implements IdGenerator {
   /// Creates a [UuidIdGenerator].
-  const UuidIdGenerator();
+  const new();
 
   @override
   String generate() => const Uuid().v4();
@@ -60,7 +57,7 @@ abstract interface class WorkspaceCanonicalizer {
 /// IoWorkspaceCanonicalizer defines a public contract.
 final class IoWorkspaceCanonicalizer implements WorkspaceCanonicalizer {
   /// Creates a [IoWorkspaceCanonicalizer].
-  const IoWorkspaceCanonicalizer();
+  const new();
 
   @override
   String canonicalizeExistingDirectory(String path) {
@@ -95,7 +92,7 @@ abstract interface class WorkspacePathGateway {
 /// Production workspace filesystem adapter.
 final class IoWorkspacePathGateway implements WorkspacePathGateway {
   /// Creates the production workspace filesystem adapter.
-  const IoWorkspacePathGateway();
+  const new();
 
   @override
   String canonicalizeExistingDirectory(String path) =>
@@ -141,7 +138,7 @@ final class FileSearchRequest {
   ///
   /// [maxDepth] and [maxScannedEntries] bound the fallback walk used outside a
   /// Git repository so an unbounded tree cannot stall the daemon.
-  const FileSearchRequest({
+  const new({
     required this.root,
     required this.query,
     this.limit = 50,
@@ -177,11 +174,7 @@ abstract interface class WorkspaceFileIndexGateway {
 /// One checkout reported by `git worktree list --porcelain`.
 final class GitWorktreeSnapshot {
   /// Creates a Git worktree snapshot.
-  const GitWorktreeSnapshot({
-    required this.path,
-    this.branch,
-    this.head,
-  });
+  const new({required this.path, this.branch, this.head});
 
   /// Checkout path.
   final String path;
@@ -196,7 +189,7 @@ final class GitWorktreeSnapshot {
 /// State that may make archiving destructive.
 final class GitWorktreeState {
   /// Creates worktree safety state.
-  const GitWorktreeState({this.dirty = false, this.unpushedCommitCount = 0});
+  const new({this.dirty = false, this.unpushedCommitCount = 0});
 
   /// Whether tracked or untracked files have changes.
   final bool dirty;
@@ -208,7 +201,7 @@ final class GitWorktreeState {
 /// Typed request for `git worktree add`.
 final class GitWorktreeCreateRequest {
   /// Creates a managed-worktree request.
-  const GitWorktreeCreateRequest({
+  const new({
     required this.repositoryRoot,
     required this.path,
     required this.mode,
@@ -239,7 +232,7 @@ final class GitWorktreeCreateRequest {
 /// diagnostic is a generic internal failure.
 final class GitCommandException implements Exception {
   /// Creates a failed Git invocation report.
-  const GitCommandException({
+  const new({
     required this.arguments,
     required this.workingDirectory,
     required this.exitCode,
@@ -310,7 +303,7 @@ abstract interface class GitWorkspaceGateway {
 /// Result returned by a process invocation.
 final class CommandResult {
   /// Creates an immutable command result.
-  const CommandResult({
+  const new({
     required this.exitCode,
     required this.stdout,
     required this.stderr,
@@ -391,7 +384,7 @@ abstract interface class PipeGateway {
 /// Production pipe adapter.
 final class IoPipeGateway implements PipeGateway {
   /// Creates the production pipe adapter.
-  const IoPipeGateway();
+  const new();
 
   @override
   Future<ExecProcess> start({
@@ -408,7 +401,7 @@ final class IoPipeGateway implements PipeGateway {
 }
 
 final class _IoPipeProcess implements ExecProcess {
-  _IoPipeProcess(this._process) {
+  new(this._process) {
     // stdout and stderr are interleaved because the agent reads one transcript
     // and a program's diagnostics are only meaningful next to the output they
     // describe. Lossy decoding keeps a stray byte from killing the stream.
@@ -469,7 +462,7 @@ final class _IoPipeProcess implements ExecProcess {
 /// Production shell adapter for worktree lifecycle hooks.
 final class ShellWorktreeHookRunner implements WorktreeHookRunner {
   /// Creates the production hook adapter.
-  const ShellWorktreeHookRunner();
+  const new();
 
   @override
   Future<CommandResult> run(
@@ -494,7 +487,7 @@ final class ShellWorktreeHookRunner implements WorktreeHookRunner {
 /// Production process adapter.
 final class IoCommandRunner implements CommandRunner {
   /// Creates the production process adapter.
-  const IoCommandRunner();
+  const new();
 
   @override
   Future<CommandResult> run(

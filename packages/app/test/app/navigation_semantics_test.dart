@@ -13,10 +13,7 @@ import 'package:protocol/protocol.dart';
 import '../support/fake_tinest_api.dart';
 import '../support/router_harness.dart';
 
-Future<void> _sendBackGesture(
-  WidgetTester tester,
-  MethodCall call,
-) async {
+Future<void> _sendBackGesture(WidgetTester tester, MethodCall call) async {
   final message = const StandardMethodCodec().encodeMethodCall(call);
   await tester.binding.defaultBinaryMessenger.handlePlatformMessage(
     'flutter/backgesture',
@@ -235,10 +232,7 @@ void main() {
       await tester.pumpAndSettle();
       expect(currentLocation(router), sessionLocation);
       expect(find.text('Route session'), findsWidgets);
-      expect(
-        find.byKey(const ValueKey('workspace-new-button')),
-        findsNothing,
-      );
+      expect(find.byKey(const ValueKey('workspace-new-button')), findsNothing);
 
       await startAndUpdate();
       await _sendBackGesture(tester, const MethodCall('commitBackGesture'));
@@ -264,9 +258,7 @@ void main() {
       );
       addTearDown(router.dispose);
 
-      unawaited(
-        router.push<void>(const GeneralSettingsRoute().location),
-      );
+      unawaited(router.push<void>(const GeneralSettingsRoute().location));
       // One frame applies GoRouter's new configuration; the next paints the
       // Material route at its reduced-motion destination.
       await tester.pump();
@@ -303,9 +295,10 @@ void main() {
         branch: null,
         kind: WorktreeKind.directory,
       );
-      final homeSession = session('home-session', 'Home session').copyWith(
-        worktreeId: homeWorktree.id,
-      );
+      final homeSession = session(
+        'home-session',
+        'Home session',
+      ).copyWith(worktreeId: homeWorktree.id);
       final router = await pumpRoutedApp(
         tester,
         FakeTinestApi(
@@ -426,25 +419,23 @@ void main() {
     tags: const <String>['feature_test__app_navigation__widget'],
   );
 
-  testWidgets(
-    'settings Up on a wide deep link closes to the workspace home',
-    (tester) async {
-      await useDesktop(tester);
-      final router = await pumpRoutedApp(
-        tester,
-        apiWith(<SessionDto>[]),
-        initialLocation: const GeneralSettingsRoute().location,
-      );
-      addTearDown(router.dispose);
+  testWidgets('settings Up on a wide deep link closes to the workspace home', (
+    tester,
+  ) async {
+    await useDesktop(tester);
+    final router = await pumpRoutedApp(
+      tester,
+      apiWith(<SessionDto>[]),
+      initialLocation: const GeneralSettingsRoute().location,
+    );
+    addTearDown(router.dispose);
 
-      await tester.tap(
-        find.byKey(const ValueKey<String>('settings-back-button')),
-      );
-      await tester.pumpAndSettle();
-      expect(currentLocation(router), const WorkspaceHomeRoute().location);
-    },
-    tags: const <String>['feature_test__app_navigation__widget'],
-  );
+    await tester.tap(
+      find.byKey(const ValueKey<String>('settings-back-button')),
+    );
+    await tester.pumpAndSettle();
+    expect(currentLocation(router), const WorkspaceHomeRoute().location);
+  }, tags: const <String>['feature_test__app_navigation__widget']);
 
   testWidgets(
     'wide daemon categories Up leaves without stepping through its detail',
@@ -507,38 +498,36 @@ void main() {
     tags: const <String>['feature_test__app_navigation__widget'],
   );
 
-  testWidgets(
-    'desktop settings Up closes the task in one press',
-    (tester) async {
-      await useDesktop(tester);
-      final router = await pumpRoutedApp(
-        tester,
-        apiWith(<SessionDto>[session('session', 'Route session')]),
-        initialLocation: worktreeLocation,
-      );
-      addTearDown(router.dispose);
+  testWidgets('desktop settings Up closes the task in one press', (
+    tester,
+  ) async {
+    await useDesktop(tester);
+    final router = await pumpRoutedApp(
+      tester,
+      apiWith(<SessionDto>[session('session', 'Route session')]),
+      initialLocation: worktreeLocation,
+    );
+    addTearDown(router.dispose);
 
-      await tester.tap(
-        find.byKey(const ValueKey<String>('workspace-settings-button')),
-      );
-      await tester.pumpAndSettle();
-      expect(
-        currentLocation(router),
-        const ProviderSettingsRoute(hostId: 'server').location,
-      );
-      expect(
-        find.byKey(const ValueKey<String>('provider-detail-openai')),
-        findsOneWidget,
-      );
+    await tester.tap(
+      find.byKey(const ValueKey<String>('workspace-settings-button')),
+    );
+    await tester.pumpAndSettle();
+    expect(
+      currentLocation(router),
+      const ProviderSettingsRoute(hostId: 'server').location,
+    );
+    expect(
+      find.byKey(const ValueKey<String>('provider-detail-openai')),
+      findsOneWidget,
+    );
 
-      await tester.tap(
-        find.byKey(const ValueKey<String>('settings-back-button')),
-      );
-      await tester.pumpAndSettle();
-      expect(currentLocation(router), worktreeLocation);
-    },
-    tags: const <String>['feature_test__app_navigation__widget'],
-  );
+    await tester.tap(
+      find.byKey(const ValueKey<String>('settings-back-button')),
+    );
+    await tester.pumpAndSettle();
+    expect(currentLocation(router), worktreeLocation);
+  }, tags: const <String>['feature_test__app_navigation__widget']);
 
   testWidgets(
     'settings Up below the split width closes the detail before the task',
@@ -557,9 +546,8 @@ void main() {
         find.byKey(const ValueKey<String>('workspace-settings-button')),
       );
       await tester.pumpAndSettle();
-      final settingsLocation = const ProviderSettingsRoute(
-        hostId: 'server',
-      ).location;
+      final settingsLocation = const ProviderSettingsRoute(hostId: 'server')
+          .location;
       expect(currentLocation(router), settingsLocation);
       expect(
         find.byKey(const ValueKey<String>('provider-detail-openai')),
@@ -699,9 +687,7 @@ void main() {
 
       expect(currentLocation(router), const AdvancedSettingsRoute().location);
       expect(
-        find.byKey(
-          const ValueKey<String>('settings-category-pane-advanced'),
-        ),
+        find.byKey(const ValueKey<String>('settings-category-pane-advanced')),
         findsOneWidget,
       );
       expect(tester.takeException(), isNull);
@@ -730,21 +716,13 @@ void main() {
       final childNavigator = SettingsShellRoute.$navigatorKey.currentState;
 
       await tester.tap(
-        find.byKey(
-          const ValueKey<String>('settings-category-row-permission'),
-        ),
+        find.byKey(const ValueKey<String>('settings-category-row-permission')),
       );
       await tester.pump();
       await tester.pump();
 
-      expect(
-        currentLocation(router),
-        const PermissionSettingsRoute().location,
-      );
-      expect(
-        tester.state<State<UnifiedSettingsPage>>(shell),
-        same(shellState),
-      );
+      expect(currentLocation(router), const PermissionSettingsRoute().location);
+      expect(tester.state<State<UnifiedSettingsPage>>(shell), same(shellState));
       expect(
         SettingsShellRoute.$navigatorKey.currentState,
         same(childNavigator),
@@ -767,138 +745,125 @@ void main() {
     tags: const <String>['feature_test__app_navigation__widget'],
   );
 
-  testWidgets(
-    'selecting a session keeps the workspace page mounted',
-    (tester) async {
-      await useDesktop(tester);
-      final router = await pumpRoutedApp(
-        tester,
-        apiWith(<SessionDto>[
-          session('one', 'Session one'),
-          session('two', 'Session two'),
-        ]),
-        initialLocation: SessionRoute(
+  testWidgets('selecting a session keeps the workspace page mounted', (
+    tester,
+  ) async {
+    await useDesktop(tester);
+    final router = await pumpRoutedApp(
+      tester,
+      apiWith(<SessionDto>[
+        session('one', 'Session one'),
+        session('two', 'Session two'),
+      ]),
+      initialLocation: SessionRoute(
+        hostId: 'server',
+        workspaceId: workspace.id,
+        worktreeId: worktree.id,
+        sessionId: 'one',
+      ).location,
+    );
+    addTearDown(router.dispose);
+
+    final before = tester.state<State<WorkspacePage>>(
+      find.byType(WorkspacePage),
+    );
+    await tester.tap(
+      find.byKey(const ValueKey<String>('workspace-all-sessions-menu')),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Session two'));
+    await tester.pumpAndSettle();
+
+    expect(currentLocation(router), contains('two'));
+    expect(
+      tester.state<State<WorkspacePage>>(find.byType(WorkspacePage)),
+      same(before),
+    );
+  }, tags: const <String>['feature_test__app_navigation__widget']);
+
+  testWidgets('a later session location opens that session', (tester) async {
+    await useDesktop(tester);
+    final router = await pumpRoutedApp(
+      tester,
+      apiWith(<SessionDto>[
+        session('one', 'Session one'),
+        session('two', 'Session two'),
+      ]),
+      initialLocation: SessionRoute(
+        hostId: 'server',
+        workspaceId: workspace.id,
+        worktreeId: worktree.id,
+        sessionId: 'one',
+      ).location,
+    );
+    addTearDown(router.dispose);
+    expect(find.text('Session two'), findsNothing);
+
+    // Selecting a session replaces the location instead of pushing, so the
+    // page survives and has to react to the new session itself.
+    unawaited(
+      router.replace<void>(
+        SessionRoute(
           hostId: 'server',
           workspaceId: workspace.id,
           worktreeId: worktree.id,
-          sessionId: 'one',
+          sessionId: 'two',
         ).location,
-      );
-      addTearDown(router.dispose);
+      ),
+    );
+    await tester.pumpAndSettle();
 
-      final before = tester.state<State<WorkspacePage>>(
-        find.byType(WorkspacePage),
-      );
-      await tester.tap(
-        find.byKey(const ValueKey<String>('workspace-all-sessions-menu')),
-      );
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('Session two'));
-      await tester.pumpAndSettle();
+    expect(find.text('Session two'), findsWidgets);
+  }, tags: const <String>['feature_test__app_navigation__widget']);
 
-      expect(currentLocation(router), contains('two'));
-      expect(
-        tester.state<State<WorkspacePage>>(find.byType(WorkspacePage)),
-        same(before),
-      );
-    },
-    tags: const <String>['feature_test__app_navigation__widget'],
-  );
+  testWidgets('adding a remote daemon closes back to the daemon list', (
+    tester,
+  ) async {
+    await useDesktop(tester);
+    final router = await pumpRoutedApp(
+      tester,
+      apiWith(<SessionDto>[]),
+      initialLocation: const DaemonSettingsRoute().location,
+    );
+    addTearDown(router.dispose);
 
-  testWidgets(
-    'a later session location opens that session',
-    (tester) async {
-      await useDesktop(tester);
-      final router = await pumpRoutedApp(
-        tester,
-        apiWith(<SessionDto>[
-          session('one', 'Session one'),
-          session('two', 'Session two'),
-        ]),
-        initialLocation: SessionRoute(
-          hostId: 'server',
-          workspaceId: workspace.id,
-          worktreeId: worktree.id,
-          sessionId: 'one',
-        ).location,
-      );
-      addTearDown(router.dispose);
-      expect(find.text('Session two'), findsNothing);
+    await tester.tap(
+      find.byKey(const ValueKey<String>('app-settings-add-remote')),
+    );
+    await tester.pumpAndSettle();
+    expect(currentLocation(router), const ConnectDaemonRoute().location);
+    expect(router.canPop(), isTrue);
 
-      // Selecting a session replaces the location instead of pushing, so the
-      // page survives and has to react to the new session itself.
-      unawaited(
-        router.replace<void>(
-          SessionRoute(
-            hostId: 'server',
-            workspaceId: workspace.id,
-            worktreeId: worktree.id,
-            sessionId: 'two',
-          ).location,
-        ),
-      );
-      await tester.pumpAndSettle();
+    await tester.tap(
+      find.byKey(const ValueKey<String>('remote-host-back-button')),
+    );
+    await tester.pumpAndSettle();
+    expect(currentLocation(router), const DaemonSettingsRoute().location);
+  }, tags: const <String>['feature_test__app_navigation__widget']);
 
-      expect(find.text('Session two'), findsWidgets);
-    },
-    tags: const <String>['feature_test__app_navigation__widget'],
-  );
+  testWidgets('reopening settings from the shell does not stack duplicates', (
+    tester,
+  ) async {
+    await useDesktop(tester);
+    final router = await pumpRoutedApp(
+      tester,
+      apiWith(<SessionDto>[]),
+      initialLocation: const WorkspaceHomeRoute().location,
+    );
+    addTearDown(router.dispose);
 
-  testWidgets(
-    'adding a remote daemon closes back to the daemon list',
-    (tester) async {
-      await useDesktop(tester);
-      final router = await pumpRoutedApp(
-        tester,
-        apiWith(<SessionDto>[]),
-        initialLocation: const DaemonSettingsRoute().location,
-      );
-      addTearDown(router.dispose);
+    openSettingsTask(router);
+    await tester.pumpAndSettle();
+    openSettingsTask(router);
+    await tester.pumpAndSettle();
+    expect(currentLocation(router), const SettingsHomeRoute().location);
 
-      await tester.tap(
-        find.byKey(const ValueKey<String>('app-settings-add-remote')),
-      );
-      await tester.pumpAndSettle();
-      expect(currentLocation(router), const ConnectDaemonRoute().location);
-      expect(router.canPop(), isTrue);
-
-      await tester.tap(
-        find.byKey(const ValueKey<String>('remote-host-back-button')),
-      );
-      await tester.pumpAndSettle();
-      expect(currentLocation(router), const DaemonSettingsRoute().location);
-    },
-    tags: const <String>['feature_test__app_navigation__widget'],
-  );
-
-  testWidgets(
-    'reopening settings from the shell does not stack duplicates',
-    (tester) async {
-      await useDesktop(tester);
-      final router = await pumpRoutedApp(
-        tester,
-        apiWith(<SessionDto>[]),
-        initialLocation: const WorkspaceHomeRoute().location,
-      );
-      addTearDown(router.dispose);
-
-      openSettingsTask(router);
-      await tester.pumpAndSettle();
-      openSettingsTask(router);
-      await tester.pumpAndSettle();
-      expect(
-        currentLocation(router),
-        const SettingsHomeRoute().location,
-      );
-
-      await tester.tap(
-        find.byKey(const ValueKey<String>('settings-back-button')),
-      );
-      await tester.pumpAndSettle();
-      expect(currentLocation(router), const WorkspaceHomeRoute().location);
-    },
-    tags: const <String>['feature_test__app_navigation__widget'],
-  );
+    await tester.tap(
+      find.byKey(const ValueKey<String>('settings-back-button')),
+    );
+    await tester.pumpAndSettle();
+    expect(currentLocation(router), const WorkspaceHomeRoute().location);
+  }, tags: const <String>['feature_test__app_navigation__widget']);
 
   testWidgets(
     'a delayed workspace restore cannot replace an open settings task',

@@ -56,11 +56,7 @@ void main() {
       addTearDown(() async {
         clipboard?.kill();
         await tester.pumpWidget(const SizedBox.shrink());
-        for (final directory in <Directory>[
-          daemonHome,
-          userHome,
-          workspace,
-        ]) {
+        for (final directory in <Directory>[daemonHome, userHome, workspace]) {
           if (directory.existsSync()) directory.deleteSync(recursive: true);
         }
       });
@@ -115,9 +111,7 @@ void main() {
         find.byKey(const ValueKey<String>('new-workspace-project-add')),
       );
       final sidebarCheckout = find.descendant(
-        of: find.byKey(
-          const ValueKey<String>('workspace-sidebar-tree'),
-        ),
+        of: find.byKey(const ValueKey<String>('workspace-sidebar-tree')),
         matching: find.text('main'),
       );
       await _pumpUntilFinder(tester, sidebarCheckout, 'the Git checkout');
@@ -146,9 +140,8 @@ void main() {
             (await setupClient.terminals.listTerminals(checkout.id)).isNotEmpty,
         'Tinest to create the terminal through its real daemon',
       );
-      final terminal = (await setupClient.terminals.listTerminals(
-        checkout.id,
-      )).single;
+      final terminal = (await setupClient.terminals.listTerminals(checkout.id))
+          .single;
       final terminalViewFinder = find
           .byKey(ValueKey<String>('terminal-view-${terminal.id}'))
           .hitTestable();
@@ -162,9 +155,9 @@ void main() {
         "stty -echo; printf '\\r\\n$wrapReadyMarker\\r\\n'\r",
       );
       await _waitUntil(
-        () => _terminalRows(
-          terminalView,
-        ).any((line) => line.contains(wrapReadyMarker)),
+        () =>
+            _terminalRows(terminalView)
+                .any((line) => line.contains(wrapReadyMarker)),
         'the shell to disable echo before the wrapped-row probe',
       );
       await tester.pumpAndSettle();
@@ -193,9 +186,7 @@ void main() {
       final terminalSurface = find
           .descendant(
             of: find.byKey(ValueKey<String>('terminal-view-${terminal.id}')),
-            matching: find.byKey(
-              const ValueKey<String>('tr-terminal-surface'),
-            ),
+            matching: find.byKey(const ValueKey<String>('tr-terminal-surface')),
           )
           .last;
       await tester.tap(terminalSurface);
@@ -203,11 +194,7 @@ void main() {
       await _waitForTerminalFocus(tester);
 
       final windowId = await _findWindow();
-      await _run('xdotool', <String>[
-        'windowfocus',
-        '--sync',
-        windowId,
-      ]);
+      await _run('xdotool', <String>['windowfocus', '--sync', windowId]);
       await _activateHangulEngineForFocusedWindow();
       await tester.pumpAndSettle();
       await _ensureHangulMode(modeProbe);
@@ -217,9 +204,8 @@ void main() {
       );
       await _waitForTerminalParsed(terminalView.terminal);
       final wrappedEraseObserved = await _waitForOptional(
-        () => _terminalRows(terminalView).any(
-          (line) => line.contains('WRAPQ') && !line.contains('WRAPQW'),
-        ),
+        () => _terminalRows(terminalView)
+            .any((line) => line.contains('WRAPQ') && !line.contains('WRAPQW')),
         const Duration(seconds: 15),
       );
       final terminalRows = _terminalRows(terminalView);
@@ -277,14 +263,10 @@ void main() {
       await nativeMenuGesture.up();
       await tester.pumpAndSettle();
       if (artifactDirectory != null) {
-        final windows = await _run('xwininfo', <String>[
-          '-root',
-          '-tree',
-        ]);
+        final windows = await _run('xwininfo', <String>['-root', '-tree']);
         final pointer = await _run('xdotool', <String>['getmouselocation']);
-        await File('$artifactDirectory/menu-window.txt').writeAsString(
-          '${pointer.stdout}\n${windows.stdout}',
-        );
+        await File('$artifactDirectory/menu-window.txt')
+            .writeAsString('${pointer.stdout}\n${windows.stdout}');
       }
       // Copy is disabled with no selection, so the first enabled native GTK
       // menu item reached by Down is Paste.
@@ -350,7 +332,7 @@ Future<TinestApi> _connectToDaemon(int port, String token) async {
 }
 
 final class _FixedDirectoryPicker implements DirectoryPickerPort {
-  const _FixedDirectoryPicker(this.path);
+  const new(this.path);
 
   final String path;
 
@@ -444,10 +426,7 @@ Future<void> _chord(List<String> modifiers, String key) async {
   arguments
     ..addAll(<String>[key, 'sleep', '0.04', 'keyup', key])
     ..addAll(<String>[
-      for (final modifier in modifiers.reversed) ...<String>[
-        'keyup',
-        modifier,
-      ],
+      for (final modifier in modifiers.reversed) ...<String>['keyup', modifier],
     ]);
   await _run('xdotool', arguments);
 }

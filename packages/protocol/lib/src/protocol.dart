@@ -39,7 +39,7 @@ String? decodeWebSocketTokenProtocol(String protocol) {
 /// Raised when a protocol payload cannot be decoded.
 class ProtocolException implements Exception {
   /// Creates a protocol failure.
-  const ProtocolException(this.message);
+  const new(this.message);
 
   /// Human-readable protocol failure detail.
   final String message;

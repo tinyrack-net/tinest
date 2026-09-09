@@ -31,20 +31,14 @@ void main() {
     expect(await restarted.read(owner, 'API_TOKEN'), 'secret-value');
     expect(
       await restarted.read(
-        const PluginSecretScope(
-          agentId: 'agent-b',
-          pluginId: 'acme.reader',
-        ),
+        const PluginSecretScope(agentId: 'agent-b', pluginId: 'acme.reader'),
         'API_TOKEN',
       ),
       isNull,
     );
     expect(
       await restarted.read(
-        const PluginSecretScope(
-          agentId: 'agent-a',
-          pluginId: 'acme.other',
-        ),
+        const PluginSecretScope(agentId: 'agent-a', pluginId: 'acme.other'),
         'API_TOKEN',
       ),
       isNull,
@@ -57,10 +51,8 @@ void main() {
     final vault = _MemorySecretVault();
     final bindings = pluginSecretRpcBindings(secrets: vault);
     final context = RpcConnectionContext();
-    RpcBindingDescriptor binding(RpcProcedureDescriptor procedure) =>
-        bindings.singleWhere(
-          (candidate) => candidate.procedure.name == procedure.name,
-        );
+    RpcBindingDescriptor binding(RpcProcedureDescriptor procedure) => bindings
+        .singleWhere((candidate) => candidate.procedure.name == procedure.name);
     const set = PluginSecretSetParamsDto(
       agentId: 'agent-a',
       pluginId: 'acme.reader',
@@ -68,17 +60,13 @@ void main() {
       value: 'must-not-round-trip',
     );
 
-    final setResult = await binding(
-      pluginsSetSecretProcedure,
-    ).invoke(set.toJson(), context);
+    final setResult = await binding(pluginsSetSecretProcedure)
+        .invoke(set.toJson(), context);
     expect(setResult, isEmpty);
     expect(jsonEncode(setResult), isNot(contains('must-not-round-trip')));
     expect(
       await vault.read(
-        const PluginSecretScope(
-          agentId: 'agent-a',
-          pluginId: 'acme.reader',
-        ),
+        const PluginSecretScope(agentId: 'agent-a', pluginId: 'acme.reader'),
         'API_TOKEN',
       ),
       'must-not-round-trip',
@@ -89,12 +77,10 @@ void main() {
       pluginId: 'acme.reader',
       name: 'API_TOKEN',
     );
-    final first = await binding(
-      pluginsRemoveSecretProcedure,
-    ).invoke(remove.toJson(), context);
-    final missing = await binding(
-      pluginsRemoveSecretProcedure,
-    ).invoke(remove.toJson(), context);
+    final first = await binding(pluginsRemoveSecretProcedure)
+        .invoke(remove.toJson(), context);
+    final missing = await binding(pluginsRemoveSecretProcedure)
+        .invoke(remove.toJson(), context);
     expect(first, isEmpty);
     expect(missing, first);
   });
@@ -108,11 +94,7 @@ final class _MemorySecretVault implements PluginSecretVault {
       _values[_key(scope, name)];
 
   @override
-  Future<void> set(
-    PluginSecretScope scope,
-    String name,
-    String value,
-  ) async {
+  Future<void> set(PluginSecretScope scope, String name, String value) async {
     _values[_key(scope, name)] = value;
   }
 

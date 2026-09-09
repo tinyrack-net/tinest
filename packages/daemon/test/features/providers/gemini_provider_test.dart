@@ -115,9 +115,7 @@ data: [DONE]
               blocks: <ModelRoleBlock>[
                 ModelRoleBlock(role: ModelRole.system, content: 'test'),
               ],
-              history: <ConversationItem>[
-                UserConversationItem('hello'),
-              ],
+              history: <ConversationItem>[UserConversationItem('hello')],
               tools: <ModelToolDefinition>[],
             ),
             CancellationToken(),
@@ -125,10 +123,7 @@ data: [DONE]
           .toList();
 
       expect(events.whereType<ModelTextDelta>().single.delta, 'hello');
-      expect(
-        events.whereType<ModelReasoningDelta>().single.delta,
-        'plan',
-      );
+      expect(events.whereType<ModelReasoningDelta>().single.delta, 'plan');
       expect(
         events.whereType<ModelFunctionCall>().single.arguments['path'],
         'README.md',
@@ -151,7 +146,7 @@ data: [DONE]
 }
 
 final class _RecordingAdapter implements HttpClientAdapter {
-  _RecordingAdapter(this.body);
+  new(this.body);
   final String body;
   RequestOptions? options;
 

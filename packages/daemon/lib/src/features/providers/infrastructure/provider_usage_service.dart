@@ -9,7 +9,7 @@ import 'package:protocol/protocol.dart';
 /// Lazily reads provider subscription quota with bounded caching.
 final class ProviderUsageService {
   /// Creates a provider usage service over Tinest-owned connections only.
-  factory ProviderUsageService({
+  factory({
     required ProviderRepository repository,
     required CredentialRepository credentials,
     required ProviderUsageGateway gateway,
@@ -25,7 +25,7 @@ final class ProviderUsageService {
     cacheDuration,
   );
 
-  ProviderUsageService._(
+  new _(
     this._repository,
     this._credentials,
     this._gateway,
@@ -50,7 +50,7 @@ final class ProviderUsageService {
   /// Lists quota state for configured connections without reading other CLIs.
   Future<List<ProviderUsageDto>> listUsage() async {
     final connections = await _repository.listConnections();
-    return Future.wait(connections.map(_usageFor));
+    return await Future.wait(connections.map(_usageFor));
   }
 
   Future<ProviderUsageDto> _usageFor(ProviderConnectionDto connection) {
@@ -104,10 +104,7 @@ final class ProviderUsageService {
         result = _error(connection.id, now);
       }
     }
-    _cache[connection.id] = _CachedUsage(
-      result,
-      now.add(cacheDuration),
-    );
+    _cache[connection.id] = _CachedUsage(result, now.add(cacheDuration));
     return result;
   }
 
@@ -133,13 +130,13 @@ final class ProviderUsageService {
         credential,
       );
       await _credentials.setCredential(connection.id, refreshed);
-      return _gateway.fetchOpenAIUsage(refreshed);
+      return await _gateway.fetchOpenAIUsage(refreshed);
     }
   }
 }
 
 final class _CachedUsage {
-  const _CachedUsage(this.value, this.expiresAt);
+  const new(this.value, this.expiresAt);
 
   final ProviderUsageDto value;
   final DateTime expiresAt;

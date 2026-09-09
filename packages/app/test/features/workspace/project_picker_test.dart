@@ -33,26 +33,24 @@ void main() {
     homeDirectory: homeDirectory,
   );
 
-  testWidgets(
-    'a remote daemon opens the browser at the home it reported',
-    (tester) async {
-      await tester.binding.setSurfaceSize(const Size(1100, 900));
-      addTearDown(() => tester.binding.setSurfaceSize(null));
-      final api = FakeTinestApi(
-        serverInfo: info(homeDirectory: home),
-        directories: directories,
-      );
-      final router = await _pump(tester, api);
-      addTearDown(router.dispose);
+  testWidgets('a remote daemon opens the browser at the home it reported', (
+    tester,
+  ) async {
+    await tester.binding.setSurfaceSize(const Size(1100, 900));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    final api = FakeTinestApi(
+      serverInfo: info(homeDirectory: home),
+      directories: directories,
+    );
+    final router = await _pump(tester, api);
+    addTearDown(router.dispose);
 
-      await _openProjectPicker(tester);
+    await _openProjectPicker(tester);
 
-      expect(find.text('Daemon의 폴더 선택'), findsOneWidget);
-      expect(api.suggestedQueries.first, home);
-      expect(find.text('projects'), findsOneWidget);
-    },
-    tags: const <String>['feature_test__workspace_registration__widget'],
-  );
+    expect(find.text('Daemon의 폴더 선택'), findsOneWidget);
+    expect(api.suggestedQueries.first, home);
+    expect(find.text('projects'), findsOneWidget);
+  }, tags: const <String>['feature_test__workspace_registration__widget']);
 
   testWidgets(
     'a remote daemon without a reported home falls back to the drive root',
@@ -94,27 +92,25 @@ void main() {
     tags: const <String>['feature_test__workspace_registration__widget'],
   );
 
-  testWidgets(
-    'cancelling the native chooser registers nothing',
-    (tester) async {
-      await tester.binding.setSurfaceSize(const Size(1100, 900));
-      addTearDown(() => tester.binding.setSurfaceSize(null));
-      final api = FakeTinestApi(
-        serverInfo: info(homeDirectory: home),
-        directories: directories,
-      );
-      final picker = _FakeDirectoryPicker();
-      final router = await _pump(tester, api, embedded: true, picker: picker);
-      addTearDown(router.dispose);
+  testWidgets('cancelling the native chooser registers nothing', (
+    tester,
+  ) async {
+    await tester.binding.setSurfaceSize(const Size(1100, 900));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    final api = FakeTinestApi(
+      serverInfo: info(homeDirectory: home),
+      directories: directories,
+    );
+    final picker = _FakeDirectoryPicker();
+    final router = await _pump(tester, api, embedded: true, picker: picker);
+    addTearDown(router.dispose);
 
-      await _openProjectPicker(tester);
+    await _openProjectPicker(tester);
 
-      expect(picker.calls, 1);
-      expect(api.registeredPaths, isEmpty);
-      expect(find.text('Daemon의 폴더 선택'), findsNothing);
-    },
-    tags: const <String>['feature_test__workspace_registration__widget'],
-  );
+    expect(picker.calls, 1);
+    expect(api.registeredPaths, isEmpty);
+    expect(find.text('Daemon의 폴더 선택'), findsNothing);
+  }, tags: const <String>['feature_test__workspace_registration__widget']);
 
   testWidgets(
     'repository registration shows progress while Git discovery is pending',
@@ -133,16 +129,12 @@ void main() {
 
       await tester.tap(find.byKey(const ValueKey('new-workspace-project')));
       await tester.pumpAndSettle();
-      await tester.tap(
-        find.byKey(const ValueKey('new-workspace-project-add')),
-      );
+      await tester.tap(find.byKey(const ValueKey('new-workspace-project-add')));
       await tester.pump();
       await tester.pump();
 
       expect(
-        find.byKey(
-          const ValueKey<String>('new-workspace-project-registering'),
-        ),
+        find.byKey(const ValueKey<String>('new-workspace-project-registering')),
         findsOneWidget,
       );
       expect(find.byType(TRSpinner), findsOneWidget);
@@ -217,7 +209,7 @@ AppServices _embeddedServices(FakeTinestApi api) {
 }
 
 final class _FakeDirectoryPicker implements DirectoryPickerPort {
-  _FakeDirectoryPicker({this.result});
+  new({this.result});
 
   final String? result;
 
@@ -234,7 +226,7 @@ final class _FakeDirectoryPicker implements DirectoryPickerPort {
 }
 
 final class _FakeClients implements HostClientFactory {
-  const _FakeClients(this.api);
+  const new(this.api);
 
   final TinestApi api;
 
@@ -248,7 +240,7 @@ final class _FakeClients implements HostClientFactory {
 }
 
 final class _FakeEmbeddedLauncher implements EmbeddedDaemonLauncher {
-  const _FakeEmbeddedLauncher();
+  const new();
 
   @override
   Future<EmbeddedDaemonSession> start({
@@ -258,15 +250,14 @@ final class _FakeEmbeddedLauncher implements EmbeddedDaemonLauncher {
 }
 
 final class _FakeEmbeddedSession implements EmbeddedDaemonSession {
-  const _FakeEmbeddedSession();
+  const new();
 
   @override
   HostEndpoint get endpoint => HostEndpoint.parse('ws://embedded.test/ws');
 
   @override
-  DaemonCredentials get credentials => const DaemonCredentials(
-    bearerToken: 'embedded-bearer',
-  );
+  DaemonCredentials get credentials =>
+      const DaemonCredentials(bearerToken: 'embedded-bearer');
 
   @override
   String get serverId => 'embedded-server';

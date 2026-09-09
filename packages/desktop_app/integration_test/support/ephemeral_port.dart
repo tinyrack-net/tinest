@@ -16,7 +16,7 @@ const int testEmbeddedDaemonPort = 49152;
 ///
 /// The app-owned embedded-port contract keeps every real-daemon E2E here.
 final class EphemeralEmbeddedDaemonLauncher implements EmbeddedDaemonLauncher {
-  EphemeralEmbeddedDaemonLauncher(this.delegate);
+  new(this.delegate);
 
   final EmbeddedDaemonLauncher delegate;
   final Completer<EmbeddedDaemonSession> _started =

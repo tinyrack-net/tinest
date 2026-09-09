@@ -19,7 +19,7 @@ abstract interface class CliProgress {
 /// own a terminal never has to build one.
 final class SilentCliProgress implements CliProgress {
   /// Creates a silent progress reporter.
-  const SilentCliProgress();
+  const new();
 
   @override
   void start(String message) {}

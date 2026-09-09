@@ -3,7 +3,7 @@ import 'package:daemon/src/features/mcp/infrastructure/mcp.dart';
 /// Builds the real transports the daemon uses to reach MCP servers.
 final class IoMcpTransportFactory implements McpTransportFactory {
   /// Creates a factory that reports [clientVersion] during handshakes.
-  const IoMcpTransportFactory({this.clientVersion = '0.0.0'});
+  const new({this.clientVersion = '0.0.0'});
 
   /// The daemon version reported to servers.
   final String clientVersion;

@@ -5,7 +5,7 @@ import 'package:protocol/protocol.dart';
 /// handler.
 final class PluginRegistrationException extends FormatException {
   /// Creates a registration validation failure.
-  const PluginRegistrationException(super.message, {this.path});
+  const new(super.message, {this.path});
 
   /// Stable field path within the registration document.
   final String? path;
@@ -55,7 +55,7 @@ enum PluginLifecycle {
   /// The user activated a declarative UI action.
   uiAction('ui_action');
 
-  const PluginLifecycle(this.wireName);
+  new(this.wireName);
 
   /// Stable Lua registration key.
   final String wireName;
@@ -84,7 +84,7 @@ enum PluginHandlerKind {
   /// Declarative UI action callback.
   action('action');
 
-  const PluginHandlerKind(this.wireName);
+  new(this.wireName);
 
   /// Stable SDK wire name.
   final String wireName;
@@ -96,7 +96,7 @@ enum PluginHandlerKind {
 /// the deterministic key for the contribution kind, lifecycle, and local ID.
 final class PluginHandlerBinding {
   /// Creates one already-validated internal handler binding.
-  const PluginHandlerBinding({
+  const new({
     required this.pluginId,
     required this.executionRevisionHash,
     required this.kind,
@@ -130,7 +130,7 @@ final class PluginHandlerBinding {
 /// One registered Agent driver.
 final class PluginDriverRegistration {
   /// Creates validated driver metadata.
-  const PluginDriverRegistration({
+  const new({
     required this.id,
     required this.binding,
     required this.requiredCapabilities,
@@ -161,7 +161,7 @@ final class PluginDriverRegistration {
 /// One independently selectable Lua tool contribution.
 final class PluginToolRegistration {
   /// Creates validated tool metadata.
-  const PluginToolRegistration({
+  const new({
     required this.id,
     required this.name,
     required this.description,
@@ -216,7 +216,7 @@ final class PluginToolRegistration {
 /// One ordered lifecycle handler contribution.
 final class PluginHookRegistration {
   /// Creates validated lifecycle hook metadata.
-  const PluginHookRegistration({
+  const new({
     required this.id,
     required this.lifecycle,
     required this.binding,
@@ -255,7 +255,7 @@ final class PluginHookRegistration {
 /// One composer or session control contribution.
 final class PluginSessionControlRegistration {
   /// Creates validated control metadata.
-  const PluginSessionControlRegistration({
+  const new({
     required this.id,
     required this.binding,
     required this.requiredCapabilities,
@@ -286,7 +286,7 @@ final class PluginSessionControlRegistration {
 /// One declarative native UI contribution.
 final class PluginUiRegistration {
   /// Creates validated UI contribution metadata.
-  const PluginUiRegistration({
+  const new({
     required this.id,
     required this.slot,
     required this.binding,
@@ -330,7 +330,7 @@ final class PluginUiRegistration {
 /// Fully validated registration for one immutable plugin revision.
 final class PluginRegistration {
   /// Creates an immutable registration.
-  PluginRegistration({
+  new({
     required this.descriptor,
     required this.revisionHash,
     required this.driver,
@@ -396,12 +396,7 @@ abstract final class PluginRegistrationParser {
     if (spec['driver'] != null) {
       final raw = _object(spec['driver'], r'$.driver');
       final localId = _string(raw['id'], r'$.driver.id');
-      final id = _contributionId(
-        descriptor.id,
-        localId,
-        ids,
-        r'$.driver.id',
-      );
+      final id = _contributionId(descriptor.id, localId, ids, r'$.driver.id');
       final capabilities = _capabilities(
         raw['required_capabilities'],
         r'$.driver.required_capabilities',
@@ -472,20 +467,11 @@ abstract final class PluginRegistrationParser {
       final path = entry.path;
       final raw = entry.raw;
       final localId = _string(raw['id'], '$path.id');
-      final id = _contributionId(
-        descriptor.id,
-        localId,
-        ids,
-        '$path.id',
-      );
+      final id = _contributionId(descriptor.id, localId, ids, '$path.id');
       final kind = entry.template
           ? 'template'
           : _string(raw['kind'] ?? 'function', '$path.kind');
-      if (!const <String>{
-        'function',
-        'deferred',
-        'template',
-      }.contains(kind)) {
+      if (!const <String>{'function', 'deferred', 'template'}.contains(kind)) {
         throw PluginRegistrationException(
           'Unsupported tool kind: $kind',
           path: '$path.kind',
@@ -532,11 +518,7 @@ abstract final class PluginRegistrationParser {
         payloadSchema: entry.template
             ? _schema(raw['payload_schema'], '$path.payload_schema')
             : null,
-        effects: _stringSet(
-          raw['effects'],
-          '$path.effects',
-          _effectPattern,
-        ),
+        effects: _stringSet(raw['effects'], '$path.effects', _effectPattern),
         requiredCapabilities: capabilities,
         declaredOperations: operations,
         presentation: _resolveReferences(
@@ -598,12 +580,7 @@ abstract final class PluginRegistrationParser {
         raw['id'] ?? lifecycle.wireName.replaceAll('_', '-'),
         '$path.id',
       );
-      final id = _contributionId(
-        descriptor.id,
-        localId,
-        ids,
-        '$path.id',
-      );
+      final id = _contributionId(descriptor.id, localId, ids, '$path.id');
       final capabilities = _capabilities(
         raw['required_capabilities'],
         '$path.required_capabilities',
@@ -674,12 +651,7 @@ abstract final class PluginRegistrationParser {
           '${indexed.$1}]';
       final raw = indexed.$2;
       final localId = _string(raw['id'], '$path.id');
-      final id = _contributionId(
-        descriptor.id,
-        localId,
-        ids,
-        '$path.id',
-      );
+      final id = _contributionId(descriptor.id, localId, ids, '$path.id');
       final capabilities = _capabilities(
         raw['required_capabilities'],
         '$path.required_capabilities',
@@ -743,12 +715,7 @@ abstract final class PluginRegistrationParser {
           '${indexed.$1}]';
       final raw = indexed.$2;
       final localId = _string(raw['id'], '$path.id');
-      final id = _contributionId(
-        descriptor.id,
-        localId,
-        ids,
-        '$path.id',
-      );
+      final id = _contributionId(descriptor.id, localId, ids, '$path.id');
       final capabilities = _capabilities(
         raw['required_capabilities'],
         '$path.required_capabilities',
@@ -783,14 +750,12 @@ abstract final class PluginRegistrationParser {
           path: '$path.metadata.default',
         );
       } on PluginJsonValidationException catch (error) {
-        throw PluginRegistrationException(
-          error.message,
-          path: error.path,
-        );
+        throw PluginRegistrationException(error.message, path: error.path);
       }
-      final metadata = Map<String, Object?>.unmodifiable(
-        <String, Object?>{...rawMetadata, 'default': defaultValue},
-      );
+      final metadata = Map<String, Object?>.unmodifiable(<String, Object?>{
+        ...rawMetadata,
+        'default': defaultValue,
+      });
       final control = PluginSessionControlRegistration(
         id: id,
         binding: _binding(
@@ -830,12 +795,7 @@ abstract final class PluginRegistrationParser {
           '${indexed.$1}]';
       final raw = indexed.$2;
       final localId = _string(raw['id'], '$path.id');
-      final id = _contributionId(
-        descriptor.id,
-        localId,
-        ids,
-        '$path.id',
-      );
+      final id = _contributionId(descriptor.id, localId, ids, '$path.id');
       final slotName = _string(raw['slot'], '$path.slot');
       final slot = _uiSlot(slotName, '$path.slot');
       final capabilities = _capabilities(
@@ -847,15 +807,9 @@ abstract final class PluginRegistrationParser {
         raw['declared_operations'],
         '$path.declared_operations',
       );
-      final inputSchema = _schema(
-        raw['input_schema'],
-        '$path.input_schema',
-      );
+      final inputSchema = _schema(raw['input_schema'], '$path.input_schema');
       final metadata = _optionalObject(raw['metadata'], '$path.metadata');
-      final dependsOn = _uiDependencies(
-        raw['depends_on'],
-        '$path.depends_on',
-      );
+      final dependsOn = _uiDependencies(raw['depends_on'], '$path.depends_on');
       final contribution = PluginUiRegistration(
         id: id,
         slot: slot,
@@ -976,10 +930,7 @@ List<Map<String, Object?>> _objects(Object? value, String path) {
 
 String _string(Object? value, String path) {
   if (value is String && value.trim().isNotEmpty) return value;
-  throw PluginRegistrationException(
-    'Expected a non-empty string.',
-    path: path,
-  );
+  throw PluginRegistrationException('Expected a non-empty string.', path: path);
 }
 
 PluginHandlerBinding _binding(
@@ -1043,10 +994,8 @@ Map<String, Object?> _resolveReferences(
   String path,
 ) => Map<String, Object?>.unmodifiable(
   value.map(
-    (key, item) => MapEntry(
-      key,
-      _resolveReferenceValue(item, pluginId, '$path.$key'),
-    ),
+    (key, item) =>
+        MapEntry(key, _resolveReferenceValue(item, pluginId, '$path.$key')),
   ),
 );
 
@@ -1081,10 +1030,8 @@ Object? _resolveReferenceValue(Object? value, String pluginId, String path) {
     }
     return Map<String, Object?>.unmodifiable(
       object.map(
-        (key, item) => MapEntry(
-          key,
-          _resolveReferenceValue(item, pluginId, '$path.$key'),
-        ),
+        (key, item) =>
+            MapEntry(key, _resolveReferenceValue(item, pluginId, '$path.$key')),
       ),
     );
   }
@@ -1119,11 +1066,7 @@ String _contributionId(
   return id;
 }
 
-Set<String> _capabilities(
-  Object? value,
-  String path,
-  Set<String> declared,
-) {
+Set<String> _capabilities(Object? value, String path, Set<String> declared) {
   final capabilities = _stringSet(value, path, _capabilityPattern);
   final undeclared = capabilities.difference(declared);
   if (undeclared.isNotEmpty) {
@@ -1212,10 +1155,7 @@ PluginUiSlot _uiSlot(String value, String path) {
   for (final slot in PluginUiSlot.values) {
     if (slot.name == value) return slot;
   }
-  throw PluginRegistrationException(
-    'Unsupported UI slot: $value',
-    path: path,
-  );
+  throw PluginRegistrationException('Unsupported UI slot: $value', path: path);
 }
 
 /// Live host state a UI contribution may declare a dependency on.

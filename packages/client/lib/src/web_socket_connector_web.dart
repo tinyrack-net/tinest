@@ -11,7 +11,7 @@ WebSocketConnector createConnector() => const WebWebSocketConnector();
 /// subprotocol, which the daemon accepts as an equivalent credential.
 final class WebWebSocketConnector implements WebSocketConnector {
   /// Creates a [WebWebSocketConnector].
-  const WebWebSocketConnector();
+  const new();
 
   @override
   Future<WebSocketChannel> connect(

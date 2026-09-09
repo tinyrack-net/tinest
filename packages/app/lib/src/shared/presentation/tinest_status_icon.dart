@@ -44,7 +44,7 @@ TinestStatus? tinestStatusFromName(String name) {
 /// attention icon while it waits on the user, a status icon once it stopped.
 class TinestStatusIcon extends StatelessWidget {
   /// Creates a status indicator.
-  const TinestStatusIcon({required this.status, super.key});
+  const new({required this.status, super.key});
 
   /// The meaning to draw.
   final TinestStatus status;

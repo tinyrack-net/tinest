@@ -28,11 +28,8 @@ abstract interface class PluginSdkAuthoringProvider {
 /// Owns editor-only Lua SDK files beneath the daemon config directory.
 final class PluginAuthoringEnvironmentService {
   /// Creates the service over one explicit config root and SDK provider.
-  PluginAuthoringEnvironmentService({
-    required String configDirectory,
-    required this.sdk,
-    required this._ids,
-  }) : _configRoot = p.normalize(p.absolute(configDirectory));
+  new({required String configDirectory, required this.sdk, required this._ids})
+    : _configRoot = p.normalize(p.absolute(configDirectory));
 
   final String _configRoot;
   final IdGenerator _ids;
@@ -321,13 +318,14 @@ final class PluginAuthoringEnvironmentService {
         'The SDK authoring bundle requires library/tinest.lua.',
       );
     }
+    final sdkDescription = <String, Object>{
+      'apiMajor': sdk.apiMajor,
+      'sdkAbiHash': sdk.sdkAbiHash,
+      'luaRuntimeVersion': sdk.luaRuntimeVersion,
+      'luaLanguageServerVersion': sdk.luaLanguageServerVersion,
+    };
     files['sdk.json'] = utf8.encode(
-      '${const JsonEncoder.withIndent('  ').convert(<String, Object>{
-        'apiMajor': sdk.apiMajor,
-        'sdkAbiHash': sdk.sdkAbiHash,
-        'luaRuntimeVersion': sdk.luaRuntimeVersion,
-        'luaLanguageServerVersion': sdk.luaLanguageServerVersion,
-      })}\n',
+      '${const JsonEncoder.withIndent('  ').convert(sdkDescription)}\n',
     );
     return Map<String, List<int>>.unmodifiable(files);
   }
@@ -368,36 +366,40 @@ final class PluginAuthoringEnvironmentService {
       String configurationPath,
     })
     paths,
-  ) =>
-      '${const JsonEncoder.withIndent('  ').convert(<String, Object>{
-        r'$schema': 'https://raw.githubusercontent.com/LuaLS/vscode-lua/master/'
-            'setting/schema.json',
-        'runtime.version': 'Lua 5.5',
-        'runtime.path': <String>['?.lua', '?/init.lua'],
-        'runtime.pathStrict': true,
-        'runtime.builtin': <String, String>{
-          'basic': 'disable',
-          'bit': 'disable',
-          'bit32': 'disable',
-          'coroutine': 'disable',
-          'debug': 'disable',
-          'ffi': 'disable',
-          'io': 'disable',
-          'jit': 'disable',
-          'os': 'disable',
-          'package': 'disable',
-          'string.buffer': 'disable',
-          'table.clear': 'disable',
-          'table.new': 'disable',
-        },
-        'workspace.library': <String>[
-          paths.libraryPath,
-          paths.authoringLibraryPath,
-        ],
-        'workspace.checkThirdParty': 'Disable',
-        'diagnostics.globals': <String>[],
-        'type.checkTableShape': true,
-      })}\n';
+  ) {
+    const disabledBuiltins = <String, String>{
+      'basic': 'disable',
+      'bit': 'disable',
+      'bit32': 'disable',
+      'coroutine': 'disable',
+      'debug': 'disable',
+      'ffi': 'disable',
+      'io': 'disable',
+      'jit': 'disable',
+      'os': 'disable',
+      'package': 'disable',
+      'string.buffer': 'disable',
+      'table.clear': 'disable',
+      'table.new': 'disable',
+    };
+    final configuration = <String, Object>{
+      r'$schema':
+          'https://raw.githubusercontent.com/LuaLS/vscode-lua/master/'
+          'setting/schema.json',
+      'runtime.version': 'Lua 5.5',
+      'runtime.path': <String>['?.lua', '?/init.lua'],
+      'runtime.pathStrict': true,
+      'runtime.builtin': disabledBuiltins,
+      'workspace.library': <String>[
+        paths.libraryPath,
+        paths.authoringLibraryPath,
+      ],
+      'workspace.checkThirdParty': 'Disable',
+      'diagnostics.globals': <String>[],
+      'type.checkTableShape': true,
+    };
+    return '${const JsonEncoder.withIndent('  ').convert(configuration)}\n';
+  }
 }
 
 bool _isAuthoringOnlyDiagnostic(String code) =>
@@ -408,7 +410,7 @@ bool _isAuthoringOnlyDiagnostic(String code) =>
 /// Expected plugin-authoring setup failure.
 final class PluginAuthoringException implements Exception {
   /// Creates an authoring failure suitable for RPC error mapping.
-  const PluginAuthoringException(this.message);
+  const new(this.message);
 
   /// User-safe failure detail.
   final String message;

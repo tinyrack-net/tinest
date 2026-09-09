@@ -127,11 +127,7 @@ void main() {
         // everywhere else.
         await tester.tap(find.byKey(sendKey));
         await tester.pumpAndSettle();
-        expect(
-          submitted.last,
-          'second',
-          reason: 'send button on $platform',
-        );
+        expect(submitted.last, 'second', reason: 'send button on $platform');
       }
     },
   );
@@ -153,16 +149,14 @@ void main() {
 
       await tester.tap(find.byKey(inputKey));
       await tester.pump();
-      final state =
-          tester.state<EditableTextState>(
-            find.byType(EditableText),
-          )..updateEditingValue(
-            const TextEditingValue(
-              text: '한글',
-              selection: TextSelection.collapsed(offset: 2),
-              composing: TextRange(start: 0, end: 2),
-            ),
-          );
+      final state = tester.state<EditableTextState>(find.byType(EditableText))
+        ..updateEditingValue(
+          const TextEditingValue(
+            text: '한글',
+            selection: TextSelection.collapsed(offset: 2),
+            composing: TextRange(start: 0, end: 2),
+          ),
+        );
       await tester.pump();
       await tester.sendKeyEvent(LogicalKeyboardKey.enter);
       await tester.pumpAndSettle();
@@ -218,9 +212,8 @@ void main() {
                   if (item != null) setState(() => queued.remove(item));
                   return item;
                 },
-                onQueuedSendNow: (id) => setState(
-                  () => queued.removeWhere((q) => q.id == id),
-                ),
+                onQueuedSendNow: (id) =>
+                    setState(() => queued.removeWhere((q) => q.id == id)),
                 bar: _bar(),
               );
             },
@@ -230,10 +223,7 @@ void main() {
 
       // Typing is never taken away, and the button says what it will do.
       expect(tester.widget<TextField>(find.byType(TextField)).enabled, isTrue);
-      expect(
-        findAccessibleAction(testL10n.composerQueueLabel),
-        findsOneWidget,
-      );
+      expect(findAccessibleAction(testL10n.composerQueueLabel), findsOneWidget);
 
       await tester.enterText(find.byKey(inputKey), 'follow up');
       await tester.sendKeyEvent(LogicalKeyboardKey.enter);
@@ -301,10 +291,7 @@ void main() {
       // simply waiting its turn, or nobody knows to act on it.
       final error = find.byKey(const ValueKey('queued-turn-0-error'));
       expect(error, findsOneWidget);
-      expect(
-        tester.widget<TRText>(error).color,
-        TRTextColor.danger,
-      );
+      expect(tester.widget<TRText>(error).color, TRTextColor.danger);
       expect(find.textContaining('offline'), findsOneWidget);
 
       final queuedCard = find.byKey(const ValueKey('queued-turn-0'));
@@ -456,9 +443,9 @@ void main() {
         matching: find.byType(TRCard),
       );
       expect(composerCard, findsOneWidget);
-      final focusColor = Theme.of(
-        tester.element(composerCard),
-      ).extension<TinyrackThemeData>()!.focus;
+      final focusColor = Theme.of(tester.element(composerCard))
+          .extension<TinyrackThemeData>()!
+          .focus;
       List<BorderSide> paintedComposerFocusBorders() => tester
           .widgetList<DecoratedBox>(
             find.descendant(
@@ -596,9 +583,7 @@ void main() {
             .dx,
         lessThan(
           tester
-              .getTopLeft(
-                find.byKey(const ValueKey('session-composer-send')),
-              )
+              .getTopLeft(find.byKey(const ValueKey('session-composer-send')))
               .dx,
         ),
         reason: 'the settings row leaves the leftover space empty',
@@ -626,9 +611,7 @@ void main() {
         TRControlMetrics.heightOf(TRUiSize.xl),
       );
       expect(
-        find.byKey(
-          const ValueKey<String>('session-composer-context-meter'),
-        ),
+        find.byKey(const ValueKey<String>('session-composer-context-meter')),
         findsOneWidget,
       );
       // Prompt actions and context usage stay reachable in compact mode.
@@ -734,11 +717,7 @@ void main() {
         const ValueKey<String>('tr-drawer-drag-handle'),
       );
       final startingHandleRect = tester.getRect(handle);
-      await tester.timedDrag(
-        handle,
-        const Offset(0, -120),
-        TRMotion.slow,
-      );
+      await tester.timedDrag(handle, const Offset(0, -120), TRMotion.slow);
       await tester.pumpAndSettle();
       expect(tester.getRect(handle), startingHandleRect);
 
@@ -746,11 +725,7 @@ void main() {
         const ValueKey<String>('session-composer-settings-agent-select'),
       );
       final startingAgentTop = tester.getRect(agentSelect).top;
-      await tester.timedDrag(
-        agentSelect,
-        const Offset(0, -80),
-        TRMotion.slow,
-      );
+      await tester.timedDrag(agentSelect, const Offset(0, -80), TRMotion.slow);
       await tester.pumpAndSettle();
       expect(tester.getRect(handle), startingHandleRect);
       expect(tester.getRect(agentSelect).top, lessThan(startingAgentTop));
@@ -768,10 +743,7 @@ void main() {
       await headerGesture.moveBy(const Offset(0, 20));
       await headerGesture.moveBy(const Offset(0, 80));
       await tester.pump();
-      expect(
-        tester.getRect(handle).top,
-        greaterThan(startingHandleRect.top),
-      );
+      expect(tester.getRect(handle).top, greaterThan(startingHandleRect.top));
       await headerGesture.up();
       await tester.pumpAndSettle();
       expect(tester.getRect(handle), startingHandleRect);
@@ -790,11 +762,7 @@ void main() {
         expect(find.byType(TRDrawer), findsOneWidget, reason: setting);
       }
 
-      await tester.timedDrag(
-        handle,
-        const Offset(0, 300),
-        TRMotion.fast,
-      );
+      await tester.timedDrag(handle, const Offset(0, 300), TRMotion.fast);
       await tester.pumpAndSettle();
       expect(find.byType(TRDrawer), findsNothing);
     },
@@ -830,9 +798,7 @@ void main() {
       );
       await tester.pumpAndSettle();
       expect(
-        find.byKey(
-          const ValueKey<String>('session-composer-settings-sheet'),
-        ),
+        find.byKey(const ValueKey<String>('session-composer-settings-sheet')),
         findsOneWidget,
       );
       final settingsDrawer = find.byType(TRDrawer);
@@ -894,9 +860,7 @@ void main() {
       );
       await tester.pumpAndSettle();
       await tester.tap(
-        find.byKey(
-          const ValueKey<String>('session-composer-agent-planner'),
-        ),
+        find.byKey(const ValueKey<String>('session-composer-agent-planner')),
       );
       await tester.pumpAndSettle();
       expect(hostKey.currentState!.agentId, 'planner');
@@ -926,9 +890,7 @@ void main() {
 
       await tester.tap(
         find.byKey(
-          const ValueKey<String>(
-            'session-composer-settings-control-fast_mode',
-          ),
+          const ValueKey<String>('session-composer-settings-control-fast_mode'),
         ),
       );
       await tester.pumpAndSettle();
@@ -974,9 +936,7 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(
         find.byKey(
-          const ValueKey<String>(
-            'session-composer-settings-permission-select',
-          ),
+          const ValueKey<String>('session-composer-settings-permission-select'),
         ),
       );
       await tester.pumpAndSettle();
@@ -987,9 +947,7 @@ void main() {
       expect(hostKey.currentState!.permissionMode, PermissionMode.readOnly);
 
       expect(
-        find.byKey(
-          const ValueKey<String>('session-composer-settings-mode'),
-        ),
+        find.byKey(const ValueKey<String>('session-composer-settings-mode')),
         findsNothing,
       );
       expect(find.byType(TRDrawer), findsOneWidget);
@@ -1021,10 +979,7 @@ void main() {
         const ValueKey<String>('session-composer-settings-agent'),
       );
       expect(
-        find.descendant(
-          of: agentRow,
-          matching: find.byIcon(TinestIcons.lock),
-        ),
+        find.descendant(of: agentRow, matching: find.byIcon(TinestIcons.lock)),
         findsOneWidget,
       );
       expect(
@@ -1061,10 +1016,7 @@ void main() {
       Focus.of(
         tester.element(
           find
-              .descendant(
-                of: blockedAgent,
-                matching: find.byType(MouseRegion),
-              )
+              .descendant(of: blockedAgent, matching: find.byType(MouseRegion))
               .first,
         ),
       ).requestFocus();
@@ -1087,9 +1039,7 @@ void main() {
       addTearDown(() => tester.binding.setSurfaceSize(null));
       await tester.pumpWidget(
         _harness(
-          api: FakeTinestApi(
-            connections: const <ProviderConnectionDto>[],
-          ),
+          api: FakeTinestApi(connections: const <ProviderConnectionDto>[]),
           composer: const TRUiDensityScope(
             density: TRUiDensity.comfortable,
             child: _CompactSettingsHost(),
@@ -1106,10 +1056,7 @@ void main() {
         const ValueKey<String>('session-composer-settings-model'),
       );
       expect(
-        find.descendant(
-          of: modelRow,
-          matching: find.byIcon(TinestIcons.lock),
-        ),
+        find.descendant(of: modelRow, matching: find.byIcon(TinestIcons.lock)),
         findsOneWidget,
       );
       expect(
@@ -1147,10 +1094,7 @@ void main() {
       Focus.of(
         tester.element(
           find
-              .descendant(
-                of: blockedModel,
-                matching: find.byType(MouseRegion),
-              )
+              .descendant(of: blockedModel, matching: find.byType(MouseRegion))
               .first,
         ),
       ).requestFocus();
@@ -1173,9 +1117,7 @@ void main() {
       addTearDown(() => tester.binding.setSurfaceSize(null));
       await tester.pumpWidget(
         _harness(
-          api: FakeTinestApi(
-            connections: const <ProviderConnectionDto>[],
-          ),
+          api: FakeTinestApi(connections: const <ProviderConnectionDto>[]),
           composer: SessionComposer(
             enabled: true,
             onSubmit: (_) {},
@@ -1204,9 +1146,7 @@ void main() {
         tester.getSemantics(modelChip).hint,
         testL10n.composerConnectProviderFirst,
       );
-      final container = ProviderScope.containerOf(
-        tester.element(modelChip),
-      );
+      final container = ProviderScope.containerOf(tester.element(modelChip));
       final toasts = container.read(appToastControllerProvider);
 
       await tester.tap(modelChip);
@@ -1333,9 +1273,7 @@ void main() {
       await pointer.addPointer(location: Offset.zero);
       await pointer.moveTo(
         tester.getCenter(
-          find.byKey(
-            const ValueKey<String>('session-composer-context-meter'),
-          ),
+          find.byKey(const ValueKey<String>('session-composer-context-meter')),
         ),
       );
       await tester.pump(const Duration(seconds: 1));
@@ -1424,9 +1362,9 @@ void main() {
         matching: find.byType(TRCard),
       );
       expect(composerCard, findsOneWidget);
-      final focus = Theme.of(
-        tester.element(composerCard),
-      ).extension<TinyrackThemeData>()!.focus;
+      final focus = Theme.of(tester.element(composerCard))
+          .extension<TinyrackThemeData>()!
+          .focus;
       List<BorderSide> rings() => tester
           .widgetList<DecoratedBox>(
             find.descendant(
@@ -1555,9 +1493,7 @@ void main() {
     'an open list takes plain Tab and leaves modified Tab alone',
     tags: const <String>['feature_test__composer_file_mention__widget'],
     (tester) async {
-      await tester.pumpWidget(
-        _completionHarness(onSubmit: (_) {}),
-      );
+      await tester.pumpWidget(_completionHarness(onSubmit: (_) {}));
       await tester.pumpAndSettle();
 
       Future<void> shiftTab() async {
@@ -2195,7 +2131,7 @@ const _compactSettingsModel = ProviderModelDto(
 );
 
 class _CompactSettingsHost extends StatefulWidget {
-  const _CompactSettingsHost({this.agentEnabled = true, super.key});
+  const new({this.agentEnabled = true, super.key});
 
   final bool agentEnabled;
 
@@ -2216,9 +2152,7 @@ class _CompactSettingsHostState extends State<_CompactSettingsHost> {
       hostId: 'server',
       definitions: _compactAgentDefinitions,
       agentDefinitionId: agentId,
-      selection: const ModelSelectionDto(
-        modelId: 'openai/gpt-settings',
-      ),
+      selection: const ModelSelectionDto(modelId: 'openai/gpt-settings'),
       onAgentChanged: (value) => setState(() => agentId = value),
       onModelChanged: (_, nextControls) =>
           setState(() => controls = nextControls),
@@ -2249,9 +2183,8 @@ Widget _harness({
     localizationsDelegates: testLocalizationsDelegates,
     supportedLocales: testSupportedLocales,
     builder: (context, child) => MediaQuery(
-      data: MediaQuery.of(
-        context,
-      ).copyWith(padding: mediaPadding, viewPadding: mediaPadding),
+      data: MediaQuery.of(context)
+          .copyWith(padding: mediaPadding, viewPadding: mediaPadding),
       child: TinestUiDensity(child: child!),
     ),
     home: Scaffold(
@@ -2317,7 +2250,7 @@ const List<String> _files = <String>[
 
 /// Holds the active token the way the real completion scope does.
 class _CompletionHost extends StatefulWidget {
-  const _CompletionHost({
+  const new({
     required this.onSubmit,
     this.onClientCommand,
     this.attachmentInput,
@@ -2400,7 +2333,7 @@ class _CompletionHostState extends State<_CompletionHost> {
 /// Supplies exactly one attachment, so a command submission has something to
 /// collide with.
 final class _OneFileAttachmentInput implements AttachmentInputPort {
-  const _OneFileAttachmentInput();
+  const new();
 
   @override
   bool get supportsDrop => false;

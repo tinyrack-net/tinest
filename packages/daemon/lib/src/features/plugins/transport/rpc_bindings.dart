@@ -51,9 +51,7 @@ List<RpcBindingDescriptor> pluginRpcBindings<T extends Object>({
     );
   }),
   RpcBinding(pluginsGrantProcedure, (request, _) async {
-    return PluginGrantListResultDto(
-      grants: await plugins.grant(request.grant),
-    );
+    return PluginGrantListResultDto(grants: await plugins.grant(request.grant));
   }),
   RpcBinding(pluginsRevokeProcedure, (request, _) async {
     return PluginGrantListResultDto(
@@ -85,39 +83,38 @@ List<RpcBindingDescriptor> pluginRpcBindings<T extends Object>({
 /// The two get separate codes because a host answers them differently: an
 /// Agent that has not pinned a revision yet has nothing to show, while a
 /// rejection is a real failure the user should read.
-List<RpcBindingDescriptor> pluginUiRpcBindings({required PluginUiService ui}) =>
-    <RpcBindingDescriptor>[
-      RpcBinding(pluginsRenderUiProcedure, (request, _) async {
-        try {
-          return PluginUiDocumentResultDto(document: await ui.render(request));
-        } on PluginUiException catch (error) {
-          throw _pluginUiRejection(error.message);
-        } on PluginRevisionUnavailable catch (error) {
-          throw RpcFailureException(
-            code: RpcErrorCodes.pluginRevisionUnavailable,
-            message: _safePluginUiFailureMessage(error.message),
-          );
-        } on PluginRuntimeClosed catch (error) {
-          throw _pluginUiRejection(error.message);
-        }
-      }),
-      RpcBinding(pluginsDispatchUiActionProcedure, (request, _) async {
-        try {
-          return PluginUiDocumentResultDto(
-            document: await ui.dispatch(request),
-          );
-        } on PluginUiException catch (error) {
-          throw _pluginUiRejection(error.message);
-        } on PluginRevisionUnavailable catch (error) {
-          throw RpcFailureException(
-            code: RpcErrorCodes.pluginRevisionUnavailable,
-            message: _safePluginUiFailureMessage(error.message),
-          );
-        } on PluginRuntimeClosed catch (error) {
-          throw _pluginUiRejection(error.message);
-        }
-      }),
-    ];
+List<RpcBindingDescriptor> pluginUiRpcBindings({
+  required PluginUiService ui,
+}) => <RpcBindingDescriptor>[
+  RpcBinding(pluginsRenderUiProcedure, (request, _) async {
+    try {
+      return PluginUiDocumentResultDto(document: await ui.render(request));
+    } on PluginUiException catch (error) {
+      throw _pluginUiRejection(error.message);
+    } on PluginRevisionUnavailable catch (error) {
+      throw RpcFailureException(
+        code: RpcErrorCodes.pluginRevisionUnavailable,
+        message: _safePluginUiFailureMessage(error.message),
+      );
+    } on PluginRuntimeClosed catch (error) {
+      throw _pluginUiRejection(error.message);
+    }
+  }),
+  RpcBinding(pluginsDispatchUiActionProcedure, (request, _) async {
+    try {
+      return PluginUiDocumentResultDto(document: await ui.dispatch(request));
+    } on PluginUiException catch (error) {
+      throw _pluginUiRejection(error.message);
+    } on PluginRevisionUnavailable catch (error) {
+      throw RpcFailureException(
+        code: RpcErrorCodes.pluginRevisionUnavailable,
+        message: _safePluginUiFailureMessage(error.message),
+      );
+    } on PluginRuntimeClosed catch (error) {
+      throw _pluginUiRejection(error.message);
+    }
+  }),
+];
 
 RpcFailureException _pluginUiRejection(String message) => RpcFailureException(
   code: RpcErrorCodes.pluginUiRejected,
@@ -139,10 +136,7 @@ String _safePluginUiFailureMessage(String message) {
 List<RpcBindingDescriptor> pluginAuthoringRpcBindings({
   required PluginAuthoringEnvironmentService authoring,
 }) => <RpcBindingDescriptor>[
-  RpcBinding(pluginsGetPluginAuthoringEnvironmentProcedure, (
-    request,
-    _,
-  ) async {
+  RpcBinding(pluginsGetPluginAuthoringEnvironmentProcedure, (request, _) async {
     return PluginAuthoringEnvironmentResultDto(
       environment: await authoring.get(request.id),
     );
@@ -163,10 +157,7 @@ List<RpcBindingDescriptor> pluginSecretRpcBindings({
 }) => <RpcBindingDescriptor>[
   RpcBinding(pluginsSetSecretProcedure, (request, _) async {
     await secrets.set(
-      PluginSecretScope(
-        agentId: request.agentId,
-        pluginId: request.pluginId,
-      ),
+      PluginSecretScope(agentId: request.agentId, pluginId: request.pluginId),
       request.name,
       request.value,
     );
@@ -174,10 +165,7 @@ List<RpcBindingDescriptor> pluginSecretRpcBindings({
   }),
   RpcBinding(pluginsRemoveSecretProcedure, (request, _) async {
     await secrets.remove(
-      PluginSecretScope(
-        agentId: request.agentId,
-        pluginId: request.pluginId,
-      ),
+      PluginSecretScope(agentId: request.agentId, pluginId: request.pluginId),
       request.name,
     );
     return const EmptyResultDto();

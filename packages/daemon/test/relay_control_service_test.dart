@@ -78,12 +78,9 @@ void main() {
           .singleWhere(
             (item) => item.procedure.name == relaySetEndpointProcedure.name,
           )
-          .invoke(
-            const <String, dynamic>{
-              'endpoint': 'wss://second-relay.example/v1/ws',
-            },
-            RpcConnectionContext(),
-          );
+          .invoke(const <String, dynamic>{
+            'endpoint': 'wss://second-relay.example/v1/ws',
+          }, RpcConnectionContext());
       expect(endpointResult['endpoint'], 'wss://second-relay.example/v1/ws');
       final listResult = await bindings
           .singleWhere(
@@ -95,10 +92,9 @@ void main() {
           .singleWhere(
             (item) => item.procedure.name == relayRevokeDeviceProcedure.name,
           )
-          .invoke(
-            const <String, dynamic>{'deviceId': 'phone'},
-            RpcConnectionContext(),
-          );
+          .invoke(const <String, dynamic>{
+            'deviceId': 'phone',
+          }, RpcConnectionContext());
       expect(await service.listDevices(), isEmpty);
       await service.revokeDevice('missing');
       expect((await service.setEnabled(enabled: false)).connected, isFalse);
@@ -110,14 +106,14 @@ void main() {
 }
 
 final class _Clock implements Clock {
-  const _Clock();
+  const new();
 
   @override
   DateTime nowUtc() => DateTime.utc(2026, 8, 8);
 }
 
 final class _Ids implements IdGenerator {
-  const _Ids();
+  const new();
 
   @override
   String generate() => 'offer-1';

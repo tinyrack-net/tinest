@@ -3,7 +3,7 @@ import 'package:protocol/protocol.dart';
 /// One row of the subagent track: a descendant session with its tree depth.
 final class SubagentTrackRow {
   /// Creates a track row.
-  const SubagentTrackRow({required this.session, required this.depth});
+  const new({required this.session, required this.depth});
 
   /// The subagent session behind this row.
   final SessionDto session;

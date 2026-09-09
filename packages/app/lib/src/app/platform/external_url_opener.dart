@@ -10,13 +10,11 @@ abstract interface class ExternalUrlOpener {
 /// Production external URL adapter backed by Flutter's maintained launcher.
 final class PlatformExternalUrlOpener implements ExternalUrlOpener {
   /// Creates the production URL opener.
-  const PlatformExternalUrlOpener();
+  const new();
 
   @override
-  Future<bool> open(Uri uri) => launchUrl(
-    uri,
-    mode: LaunchMode.externalApplication,
-  );
+  Future<bool> open(Uri uri) =>
+      launchUrl(uri, mode: LaunchMode.externalApplication);
 }
 
 /// External authorization URL adapter supplied by the app composition root.

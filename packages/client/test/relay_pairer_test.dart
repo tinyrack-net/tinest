@@ -55,7 +55,7 @@ void main() {
 }
 
 final class _LostAcknowledgementConnector implements WebSocketConnector {
-  _LostAcknowledgementConnector(this.offer);
+  new(this.offer);
 
   final RelayPairingOffer offer;
   final List<List<int>> requests = <List<int>>[];

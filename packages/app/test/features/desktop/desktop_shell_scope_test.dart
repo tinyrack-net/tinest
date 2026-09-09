@@ -68,123 +68,115 @@ void main() {
     );
   }
 
-  testWidgets(
-    'closing the window hides it and leaves the process running',
-    (tester) async {
-      final harness = build();
-      await tester.pumpWidget(harness.app);
-      await tester.pumpAndSettle();
+  testWidgets('closing the window hides it and leaves the process running', (
+    tester,
+  ) async {
+    final harness = build();
+    await tester.pumpWidget(harness.app);
+    await tester.pumpAndSettle();
 
-      expect(harness.window.preventingClose, isTrue);
-      expect(harness.tray.installs, 1);
-      expect(
-        harness.tray.menu.entries
-            .firstWhere((entry) => entry.key == trayItemToggleWindow)
-            .label,
-        testL10n.trayHideWindow,
-      );
+    expect(harness.window.preventingClose, isTrue);
+    expect(harness.tray.installs, 1);
+    expect(
+      harness.tray.menu.entries
+          .firstWhere((entry) => entry.key == trayItemToggleWindow)
+          .label,
+      testL10n.trayHideWindow,
+    );
 
-      harness.window.requestClose();
-      await tester.pumpAndSettle();
+    harness.window.requestClose();
+    await tester.pumpAndSettle();
 
-      expect(harness.window.hides, 1);
-      expect(harness.terminator.terminations, 0);
-      expect(harness.window.visible.value, isFalse);
-      // The tray now offers to bring the window back.
-      expect(
-        harness.tray.menu.entries
-            .firstWhere((entry) => entry.key == trayItemToggleWindow)
-            .label,
-        testL10n.trayShowWindow,
-      );
-    },
-    tags: const <String>['feature_test__desktop_residency__widget'],
-  );
+    expect(harness.window.hides, 1);
+    expect(harness.terminator.terminations, 0);
+    expect(harness.window.visible.value, isFalse);
+    // The tray now offers to bring the window back.
+    expect(
+      harness.tray.menu.entries
+          .firstWhere((entry) => entry.key == trayItemToggleWindow)
+          .label,
+      testL10n.trayShowWindow,
+    );
+  }, tags: const <String>['feature_test__desktop_residency__widget']);
 
-  testWidgets(
-    'the tray label flips even though a hidden window stops frames',
-    (tester) async {
-      final harness = build();
-      await tester.pumpWidget(harness.app);
-      await tester.pumpAndSettle();
-      final settled = harness.tray.menus.length;
+  testWidgets('the tray label flips even though a hidden window stops frames', (
+    tester,
+  ) async {
+    final harness = build();
+    await tester.pumpWidget(harness.app);
+    await tester.pumpAndSettle();
+    final settled = harness.tray.menus.length;
 
-      // Hiding the window makes the Linux and Windows embedders report
-      // AppLifecycleState.hidden, and `scheduleFrame` is a no-op while frames
-      // are disabled. Anything that waits for a build or a post-frame callback
-      // to reach the tray is therefore never going to run again.
-      addTearDown(tester.binding.resetInternalState);
-      await tester.binding.defaultBinaryMessenger.handlePlatformMessage(
-        SystemChannels.lifecycle.name,
-        const StringCodec().encodeMessage('AppLifecycleState.hidden'),
-        (_) {},
-      );
-      expect(tester.binding.framesEnabled, isFalse);
+    // Hiding the window makes the Linux and Windows embedders report
+    // AppLifecycleState.hidden, and `scheduleFrame` is a no-op while frames
+    // are disabled. Anything that waits for a build or a post-frame callback
+    // to reach the tray is therefore never going to run again.
+    addTearDown(tester.binding.resetInternalState);
+    await tester.binding.defaultBinaryMessenger.handlePlatformMessage(
+      SystemChannels.lifecycle.name,
+      const StringCodec().encodeMessage('AppLifecycleState.hidden'),
+      (_) {},
+    );
+    expect(tester.binding.framesEnabled, isFalse);
 
-      harness.window.requestClose();
-      // Deliberately not a pump: the production embedder would not give one.
-      await tester.idle();
+    harness.window.requestClose();
+    // Deliberately not a pump: the production embedder would not give one.
+    await tester.idle();
 
-      expect(harness.tray.menus.length, greaterThan(settled));
-      expect(
-        harness.tray.menu.entries
-            .firstWhere((entry) => entry.key == trayItemToggleWindow)
-            .label,
-        testL10n.trayShowWindow,
-      );
-    },
-    tags: const <String>['feature_test__desktop_residency__widget'],
-  );
+    expect(harness.tray.menus.length, greaterThan(settled));
+    expect(
+      harness.tray.menu.entries
+          .firstWhere((entry) => entry.key == trayItemToggleWindow)
+          .label,
+      testL10n.trayShowWindow,
+    );
+  }, tags: const <String>['feature_test__desktop_residency__widget']);
 
-  testWidgets(
-    'a hide the app did not ask for still flips the tray label',
-    (tester) async {
-      final harness = build();
-      await tester.pumpWidget(harness.app);
-      await tester.pumpAndSettle();
+  testWidgets('a hide the app did not ask for still flips the tray label', (
+    tester,
+  ) async {
+    final harness = build();
+    await tester.pumpWidget(harness.app);
+    await tester.pumpAndSettle();
 
-      // The window can leave the screen without the app calling hide, and the
-      // native show and hide events are the only report of it.
-      harness.window.emitNativeVisibility(visible: false);
-      await tester.idle();
+    // The window can leave the screen without the app calling hide, and the
+    // native show and hide events are the only report of it.
+    harness.window.emitNativeVisibility(visible: false);
+    await tester.idle();
 
-      expect(harness.window.hides, 0);
-      expect(
-        harness.tray.menu.entries
-            .firstWhere((entry) => entry.key == trayItemToggleWindow)
-            .label,
-        testL10n.trayShowWindow,
-      );
-    },
-    tags: const <String>['feature_test__desktop_residency__widget'],
-  );
+    expect(harness.window.hides, 0);
+    expect(
+      harness.tray.menu.entries
+          .firstWhere((entry) => entry.key == trayItemToggleWindow)
+          .label,
+      testL10n.trayShowWindow,
+    );
+  }, tags: const <String>['feature_test__desktop_residency__widget']);
 
-  testWidgets(
-    'the tray toggles the window and never quits by accident',
-    (tester) async {
-      final harness = build();
-      await tester.pumpWidget(harness.app);
-      await tester.pumpAndSettle();
+  testWidgets('the tray toggles the window and never quits by accident', (
+    tester,
+  ) async {
+    final harness = build();
+    await tester.pumpWidget(harness.app);
+    await tester.pumpAndSettle();
 
-      harness.tray.select(trayItemToggleWindow);
-      await tester.pumpAndSettle();
-      expect(harness.window.visible.value, isFalse);
-      expect(harness.window.hides, 1);
+    harness.tray.select(trayItemToggleWindow);
+    await tester.pumpAndSettle();
+    expect(harness.window.visible.value, isFalse);
+    expect(harness.window.hides, 1);
 
-      harness.tray.select(trayItemToggleWindow);
-      await tester.pumpAndSettle();
-      expect(harness.window.visible.value, isTrue);
-      expect(harness.window.shows, 1);
+    harness.tray.select(trayItemToggleWindow);
+    await tester.pumpAndSettle();
+    expect(harness.window.visible.value, isTrue);
+    expect(harness.window.shows, 1);
 
-      // Selecting the informational daemon row must do nothing at all.
-      harness.tray.select(trayItemDaemonStatus);
-      await tester.pumpAndSettle();
-      expect(harness.window.hides, 1);
-      expect(harness.window.shows, 1);
-      expect(harness.terminator.terminations, 0);
-    },
-    tags: const <String>['feature_test__desktop_residency__widget'],
-  );
+    // Selecting the informational daemon row must do nothing at all.
+    harness.tray.select(trayItemDaemonStatus);
+    await tester.pumpAndSettle();
+    expect(harness.window.hides, 1);
+    expect(harness.window.shows, 1);
+    expect(harness.terminator.terminations, 0);
+  }, tags: const <String>['feature_test__desktop_residency__widget']);
 
   testWidgets(
     'clicking the tray icon reveals the window and repeating it keeps it up',
@@ -274,9 +266,7 @@ void main() {
 
       await tester.tap(
         find.descendant(
-          of: find.byKey(
-            const ValueKey<String>('general-settings-theme-mode'),
-          ),
+          of: find.byKey(const ValueKey<String>('general-settings-theme-mode')),
           matching: find.byType(TextButton),
         ),
       );
@@ -358,119 +348,109 @@ void main() {
     tags: const <String>['feature_test__desktop_residency__widget'],
   );
 
-  testWidgets(
-    'quitting ends the process even when stopping the daemon fails',
-    (tester) async {
-      final harness = build(
-        embeddedLauncher: const _StubLauncher(_StubSession.failing()),
-      );
-      await tester.pumpWidget(harness.app);
-      await tester.pumpAndSettle();
+  testWidgets('quitting ends the process even when stopping the daemon fails', (
+    tester,
+  ) async {
+    final harness = build(
+      embeddedLauncher: const _StubLauncher(_StubSession.failing()),
+    );
+    await tester.pumpWidget(harness.app);
+    await tester.pumpAndSettle();
 
-      harness.tray.select(trayItemQuit);
-      await tester.pumpAndSettle();
+    harness.tray.select(trayItemQuit);
+    await tester.pumpAndSettle();
 
-      expect(harness.terminator.terminations, 1);
-    },
-    tags: const <String>['feature_test__desktop_residency__widget'],
-  );
+    expect(harness.terminator.terminations, 1);
+  }, tags: const <String>['feature_test__desktop_residency__widget']);
 
-  testWidgets(
-    'quitting ends the process when the daemon never stops',
-    (tester) async {
-      final harness = build(
-        embeddedLauncher: const _StubLauncher(_StubSession.hanging()),
-      );
-      await tester.pumpWidget(harness.app);
-      await tester.pumpAndSettle();
+  testWidgets('quitting ends the process when the daemon never stops', (
+    tester,
+  ) async {
+    final harness = build(
+      embeddedLauncher: const _StubLauncher(_StubSession.hanging()),
+    );
+    await tester.pumpWidget(harness.app);
+    await tester.pumpAndSettle();
 
-      harness.tray.select(trayItemQuit);
-      await tester.pump();
-      // A daemon that will not stop must not hold the app on screen forever.
-      expect(harness.terminator.terminations, 0);
+    harness.tray.select(trayItemQuit);
+    await tester.pump();
+    // A daemon that will not stop must not hold the app on screen forever.
+    expect(harness.terminator.terminations, 0);
 
-      await tester.pump(quitBudget);
-      expect(harness.terminator.terminations, 1);
-    },
-    tags: const <String>['feature_test__desktop_residency__widget'],
-  );
+    await tester.pump(quitBudget);
+    expect(harness.terminator.terminations, 1);
+  }, tags: const <String>['feature_test__desktop_residency__widget']);
 
-  testWidgets(
-    'the tray menu follows the language and ignores idle rebuilds',
-    (tester) async {
-      final english = build(localeTag: 'en');
-      await tester.pumpWidget(english.app);
-      await tester.pumpAndSettle();
+  testWidgets('the tray menu follows the language and ignores idle rebuilds', (
+    tester,
+  ) async {
+    final english = build(localeTag: 'en');
+    await tester.pumpWidget(english.app);
+    await tester.pumpAndSettle();
 
-      String quitLabel(FakeTrayIcon tray) => tray.menu.entries
-          .firstWhere((entry) => entry.key == trayItemQuit)
-          .label;
+    String quitLabel(FakeTrayIcon tray) => tray.menu.entries
+        .firstWhere((entry) => entry.key == trayItemQuit)
+        .label;
 
-      // The stored language wins over the platform locale the harness pins.
-      expect(quitLabel(english.tray), 'Quit');
+    // The stored language wins over the platform locale the harness pins.
+    expect(quitLabel(english.tray), 'Quit');
 
-      // A rebuild that changes nothing visible must not churn the native menu.
-      final settled = english.tray.menus.length;
-      await tester.pump();
-      await tester.pumpAndSettle();
-      expect(english.tray.menus, hasLength(settled));
+    // A rebuild that changes nothing visible must not churn the native menu.
+    final settled = english.tray.menus.length;
+    await tester.pump();
+    await tester.pumpAndSettle();
+    expect(english.tray.menus, hasLength(settled));
 
-      // A fresh tree, so the second app installs its own tray rather than
-      // reusing the element the first one already attached to.
-      await tester.pumpWidget(const SizedBox.shrink());
-      await tester.pumpAndSettle();
+    // A fresh tree, so the second app installs its own tray rather than
+    // reusing the element the first one already attached to.
+    await tester.pumpWidget(const SizedBox.shrink());
+    await tester.pumpAndSettle();
 
-      final korean = build(localeTag: 'ko');
-      await tester.pumpWidget(korean.app);
-      await tester.pumpAndSettle();
-      expect(quitLabel(korean.tray), '종료');
-    },
-    tags: const <String>['feature_test__desktop_residency__widget'],
-  );
+    final korean = build(localeTag: 'ko');
+    await tester.pumpWidget(korean.app);
+    await tester.pumpAndSettle();
+    expect(quitLabel(korean.tray), '종료');
+  }, tags: const <String>['feature_test__desktop_residency__widget']);
 
-  testWidgets(
-    'a menu change during installation waits for the icon to exist',
-    (tester) async {
-      // The native tray rejects a menu before its icon exists, so a second
-      // frame must not overtake an install that is still running.
-      final gate = Completer<void>();
-      final harness = build(localeTag: 'en', installGate: gate);
-      await tester.pumpWidget(harness.app);
-      await tester.pump();
-      await tester.pump();
+  testWidgets('a menu change during installation waits for the icon to exist', (
+    tester,
+  ) async {
+    // The native tray rejects a menu before its icon exists, so a second
+    // frame must not overtake an install that is still running.
+    final gate = Completer<void>();
+    final harness = build(localeTag: 'en', installGate: gate);
+    await tester.pumpWidget(harness.app);
+    await tester.pump();
+    await tester.pump();
 
-      expect(harness.tray.operations, <String>['install']);
+    expect(harness.tray.operations, <String>['install']);
 
-      gate.complete();
-      await tester.pumpAndSettle();
+    gate.complete();
+    await tester.pumpAndSettle();
 
-      expect(harness.tray.operations.first, 'install');
-      expect(harness.tray.operations.sublist(1), everyElement('update'));
-    },
-    tags: const <String>['feature_test__desktop_residency__widget'],
-  );
+    expect(harness.tray.operations.first, 'install');
+    expect(harness.tray.operations.sublist(1), everyElement('update'));
+  }, tags: const <String>['feature_test__desktop_residency__widget']);
 
-  testWidgets(
-    'a login launch starts hidden and offers to show the window',
-    (tester) async {
-      final harness = build(startHidden: true);
-      await tester.pumpWidget(harness.app);
-      await tester.pumpAndSettle();
+  testWidgets('a login launch starts hidden and offers to show the window', (
+    tester,
+  ) async {
+    final harness = build(startHidden: true);
+    await tester.pumpWidget(harness.app);
+    await tester.pumpAndSettle();
 
-      expect(
-        harness.tray.menu.entries
-            .firstWhere((entry) => entry.key == trayItemToggleWindow)
-            .label,
-        testL10n.trayShowWindow,
-      );
-      expect(harness.window.shows, 0);
-    },
-    tags: const <String>['feature_test__desktop_residency__widget'],
-  );
+    expect(
+      harness.tray.menu.entries
+          .firstWhere((entry) => entry.key == trayItemToggleWindow)
+          .label,
+      testL10n.trayShowWindow,
+    );
+    expect(harness.window.shows, 0);
+  }, tags: const <String>['feature_test__desktop_residency__widget']);
 }
 
 final class _OfflineClients implements HostClientFactory {
-  const _OfflineClients();
+  const new();
 
   @override
   Future<TinestApi> connect({
@@ -482,7 +462,7 @@ final class _OfflineClients implements HostClientFactory {
 }
 
 final class _StubLauncher implements EmbeddedDaemonLauncher {
-  const _StubLauncher(this.session);
+  const new(this.session);
 
   final EmbeddedDaemonSession session;
 
@@ -495,9 +475,9 @@ final class _StubLauncher implements EmbeddedDaemonLauncher {
 
 /// An embedded session whose stop misbehaves the way a wedged daemon does.
 final class _StubSession implements EmbeddedDaemonSession {
-  const _StubSession.failing() : _hangs = false;
+  const new failing() : _hangs = false;
 
-  const _StubSession.hanging() : _hangs = true;
+  const new hanging() : _hangs = true;
 
   final bool _hangs;
 
@@ -505,9 +485,8 @@ final class _StubSession implements EmbeddedDaemonSession {
   HostEndpoint get endpoint => HostEndpoint.parse('ws://embedded.test/ws');
 
   @override
-  DaemonCredentials get credentials => const DaemonCredentials(
-    bearerToken: 'embedded-bearer',
-  );
+  DaemonCredentials get credentials =>
+      const DaemonCredentials(bearerToken: 'embedded-bearer');
 
   @override
   String get serverId => 'embedded-server';

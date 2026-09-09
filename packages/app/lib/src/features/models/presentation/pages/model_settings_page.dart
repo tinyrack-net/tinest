@@ -18,7 +18,7 @@ import 'package:tinyrack_ui/tinyrack_ui.dart';
 /// Daemon-global concrete default model settings.
 class ModelSettingsPage extends ConsumerWidget {
   /// Creates model settings for [hostId].
-  const ModelSettingsPage({required this.hostId, super.key});
+  const new({required this.hostId, super.key});
 
   /// Selected daemon host.
   final String hostId;
@@ -61,9 +61,8 @@ class ModelSettingsPage extends ConsumerWidget {
           enabled: !blocked,
           appearance: TRFieldAppearance.ghost,
           leading: Icon(blocked ? TinestIcons.lock : TinestIcons.memory),
-          onValueChange: (option) => unawaited(
-            _set(context, ref, option.selection),
-          ),
+          onValueChange: (option) =>
+              unawaited(_set(context, ref, option.selection)),
         );
         return SettingsScaffold(
           children: <Widget>[
@@ -73,12 +72,8 @@ class ModelSettingsPage extends ConsumerWidget {
               footer: l10n.modelSettingsSectionDescription,
               banner: unavailable
                   ? TRAlert(
-                      key: const ValueKey<String>(
-                        'model-settings-unavailable',
-                      ),
-                      title: TRText.inherit(
-                        l10n.modelSettingsUnavailableTitle,
-                      ),
+                      key: const ValueKey<String>('model-settings-unavailable'),
+                      title: TRText.inherit(l10n.modelSettingsUnavailableTitle),
                       description: TRText.inherit(
                         l10n.modelSettingsUnavailableDescription(
                           current.modelId,

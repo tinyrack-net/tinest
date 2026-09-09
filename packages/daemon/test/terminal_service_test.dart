@@ -212,93 +212,85 @@ void main() {
     tags: const <String>['feature_test__terminal_lifecycle__unit'],
   );
 
-  test(
-    'missing worktree paths fail with a typed creation reason',
-    () async {
-      final service = TerminalService(
-        gateway: _FakeTerminalGateway(_FakeTerminalProcess()),
-        screens: _FakeTerminalScreenFactory(),
-        worktreePath: (_) async => throw const FormatException('missing'),
-        shellFor: (_) async => const TerminalShell(executable: '/bin/sh'),
-      );
+  test('missing worktree paths fail with a typed creation reason', () async {
+    final service = TerminalService(
+      gateway: _FakeTerminalGateway(_FakeTerminalProcess()),
+      screens: _FakeTerminalScreenFactory(),
+      worktreePath: (_) async => throw const FormatException('missing'),
+      shellFor: (_) async => const TerminalShell(executable: '/bin/sh'),
+    );
 
-      await expectLater(
-        service.create(
-          id: 'terminal-1',
-          worktreeId: 'missing',
-          title: 'Terminal 1',
-          columns: 80,
-          rows: 24,
-        ),
-        throwsA(
-          isA<TerminalCreationException>().having(
-            (error) => error.reason,
-            'reason',
-            TerminalCreationFailureReason.worktreeUnavailable,
-          ),
-        ),
-      );
-    },
-    tags: const <String>['feature_test__terminal_lifecycle__unit'],
-  );
-
-  test(
-    'attaching claims a size only when the client asked it to',
-    () async {
-      final process = _FakeTerminalProcess();
-      final screens = _FakeTerminalScreenFactory();
-      final service = TerminalService(
-        gateway: _FakeTerminalGateway(process),
-        screens: screens,
-        worktreePath: (id) async => '/worktrees/$id',
-        shellFor: (id) async => const TerminalShell(executable: '/bin/sh'),
-      );
-      addTearDown(service.close);
-      await service.create(
+    await expectLater(
+      service.create(
         id: 'terminal-1',
-        worktreeId: 'worktree-1',
-        title: 'Terminal',
+        worktreeId: 'missing',
+        title: 'Terminal 1',
         columns: 80,
         rows: 24,
-      );
-
-      // Attaching, on its own, is passive: a pane that remounted at the same
-      // size or a client that reconnected has claimed nothing, and a size it
-      // did not ask for would fight every other attached client.
-      await service.attach(
-        'terminal-1',
-        const TerminalRestoreRequest(strategy: TerminalRestoreStrategy.resume),
-      );
-      expect(process.sizes, isEmpty);
-
-      final resized = await service.attach(
-        'terminal-1',
-        const TerminalRestoreRequest(
-          strategy: TerminalRestoreStrategy.resume,
-          viewport: TerminalViewport(columns: 100, rows: 30),
+      ),
+      throwsA(
+        isA<TerminalCreationException>().having(
+          (error) => error.reason,
+          'reason',
+          TerminalCreationFailureReason.worktreeUnavailable,
         ),
-      );
-      // The claim lands before the restore is read, so what the caller gets
-      // back already describes the geometry it asked for.
-      expect(process.sizes, <(int, int)>[(100, 30)]);
-      expect(resized.terminal.columns, 100);
-      expect(resized.terminal.rows, 30);
+      ),
+    );
+  }, tags: const <String>['feature_test__terminal_lifecycle__unit']);
 
-      await service.attach(
-        'terminal-1',
-        const TerminalRestoreRequest(
-          strategy: TerminalRestoreStrategy.resume,
-          viewport: TerminalViewport(columns: 100, rows: 30),
-        ),
-      );
-      expect(
-        process.sizes,
-        hasLength(1),
-        reason: 'an unchanged size is not a claim',
-      );
-    },
-    tags: const <String>['feature_test__terminal_lifecycle__unit'],
-  );
+  test('attaching claims a size only when the client asked it to', () async {
+    final process = _FakeTerminalProcess();
+    final screens = _FakeTerminalScreenFactory();
+    final service = TerminalService(
+      gateway: _FakeTerminalGateway(process),
+      screens: screens,
+      worktreePath: (id) async => '/worktrees/$id',
+      shellFor: (id) async => const TerminalShell(executable: '/bin/sh'),
+    );
+    addTearDown(service.close);
+    await service.create(
+      id: 'terminal-1',
+      worktreeId: 'worktree-1',
+      title: 'Terminal',
+      columns: 80,
+      rows: 24,
+    );
+
+    // Attaching, on its own, is passive: a pane that remounted at the same
+    // size or a client that reconnected has claimed nothing, and a size it
+    // did not ask for would fight every other attached client.
+    await service.attach(
+      'terminal-1',
+      const TerminalRestoreRequest(strategy: TerminalRestoreStrategy.resume),
+    );
+    expect(process.sizes, isEmpty);
+
+    final resized = await service.attach(
+      'terminal-1',
+      const TerminalRestoreRequest(
+        strategy: TerminalRestoreStrategy.resume,
+        viewport: TerminalViewport(columns: 100, rows: 30),
+      ),
+    );
+    // The claim lands before the restore is read, so what the caller gets
+    // back already describes the geometry it asked for.
+    expect(process.sizes, <(int, int)>[(100, 30)]);
+    expect(resized.terminal.columns, 100);
+    expect(resized.terminal.rows, 30);
+
+    await service.attach(
+      'terminal-1',
+      const TerminalRestoreRequest(
+        strategy: TerminalRestoreStrategy.resume,
+        viewport: TerminalViewport(columns: 100, rows: 30),
+      ),
+    );
+    expect(
+      process.sizes,
+      hasLength(1),
+      reason: 'an unchanged size is not a claim',
+    );
+  }, tags: const <String>['feature_test__terminal_lifecycle__unit']);
 }
 
 final class _FakeTerminalScreenFactory implements TerminalScreenFactory {
@@ -328,7 +320,7 @@ final class _FakeTerminalScreenFactory implements TerminalScreenFactory {
 /// the policy around it — which restore is chosen, and that a size claim lands
 /// before anything is serialized.
 final class _FakeTerminalScreen implements TerminalScreen {
-  _FakeTerminalScreen({
+  new({
     required this.columns,
     required this.rows,
     required this.scrollbackLines,
@@ -365,7 +357,7 @@ final class _FakeTerminalScreen implements TerminalScreen {
 }
 
 final class _FakeTerminalGateway implements TerminalGateway {
-  _FakeTerminalGateway(this.process);
+  new(this.process);
   final _FakeTerminalProcess process;
 
   @override

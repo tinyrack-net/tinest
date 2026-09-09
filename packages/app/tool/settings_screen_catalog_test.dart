@@ -43,7 +43,7 @@ import '../test/support/fake_tinest_api.dart';
 const _captureBoundary = ValueKey<String>('settings-screen-catalog');
 
 final class _Scenario {
-  const _Scenario({
+  const new({
     required this.id,
     required this.location,
     this.preparation = _CatalogPreparation.standard,
@@ -144,7 +144,7 @@ enum _ExpectedOverlay {
   adaptiveSelect('adaptive-select'),
   toast('toast');
 
-  const _ExpectedOverlay(this.manifestValue);
+  new(this.manifestValue);
 
   final String manifestValue;
 }
@@ -166,13 +166,13 @@ enum _CatalogScrollTarget {
   advancedDanger('advanced-danger'),
   remoteHostDanger('remote-host-danger');
 
-  const _CatalogScrollTarget(this.manifestValue);
+  new(this.manifestValue);
 
   final String manifestValue;
 }
 
 final class _ExpectedFrame {
-  const _ExpectedFrame({
+  const new({
     this.destination = 'route-default',
     this.state = 'normal',
     this.overlay = _ExpectedOverlay.none,
@@ -190,7 +190,7 @@ final class _ExpectedFrame {
 }
 
 final class _PreparedScenario {
-  const _PreparedScenario({required this.api, this.providerEvents});
+  const new({required this.api, this.providerEvents});
 
   final FakeTinestApi api;
   final StreamController<ClientEvent>? providerEvents;
@@ -206,7 +206,7 @@ enum _CatalogInteraction {
   pressed('pressed'),
   keyboardFocus('keyboard-focus');
 
-  const _CatalogInteraction(this.manifestValue);
+  new(this.manifestValue);
 
   final String manifestValue;
 }
@@ -216,14 +216,14 @@ enum _ScrollCheckpoint {
   middle('middle', 0.5),
   bottom('bottom', 1);
 
-  const _ScrollCheckpoint(this.manifestValue, this.fraction);
+  new(this.manifestValue, this.fraction);
 
   final String manifestValue;
   final double fraction;
 }
 
 final class _Variant {
-  const _Variant({
+  const new({
     required this.id,
     this.themeMode = AppThemeMode.dark,
     this.localeTag = 'en',
@@ -257,7 +257,7 @@ final class _Variant {
 }
 
 final class _CaptureCase {
-  const _CaptureCase({
+  const new({
     required this.scenario,
     required this.viewport,
     required this.variant,
@@ -269,7 +269,7 @@ final class _CaptureCase {
 }
 
 final class _Viewport {
-  const _Viewport(this.id, this.size);
+  const new(this.id, this.size);
 
   final String id;
   final Size size;
@@ -280,10 +280,7 @@ FakeTinestApi _defaultApi() {
     workspaces: _workspaces,
     worktrees: _worktrees,
     workspaceCatalogResponses: <WorkspaceCatalogDto>[
-      WorkspaceCatalogDto(
-        workspaces: _workspaces,
-        worktrees: _worktrees,
-      ),
+      WorkspaceCatalogDto(workspaces: _workspaces, worktrees: _worktrees),
     ],
     agentDefinitions: _agentDefinitions,
     skills: _skills,
@@ -589,12 +586,7 @@ Future<void> _catalogFailure(String message) {
   // The fake consumes this Future after the first widget pump. Attach an
   // eager handler so the test binding never observes an unhandled async error
   // before the visible Settings provider subscribes to the same Future.
-  unawaited(
-    failure.then<void>(
-      (_) {},
-      onError: (Object _, StackTrace _) {},
-    ),
-  );
+  unawaited(failure.then<void>((_) {}, onError: (Object _, StackTrace _) {}));
   return failure;
 }
 
@@ -706,9 +698,7 @@ final _agentDefinitions = List<AgentDefinitionDto>.unmodifiable(
             ? 'General-purpose coding agent'
             : 'Deterministic catalog agent $index',
         mode: index == 0 ? AgentMode.primary : AgentMode.subagent,
-        model: const AgentModelSelectionDto(
-          source: AgentModelSource.session,
-        ),
+        model: const AgentModelSelectionDto(source: AgentModelSource.session),
         driverId: 'tinest.standard/driver',
         extensionIds: const <String>[],
         toolIds: const <String>['tinest.files/read_file'],
@@ -755,31 +745,29 @@ final _providerConnections = List<ProviderConnectionDto>.unmodifiable(
       ),
   ],
 );
-final _mcpServers = List<McpServerStateDto>.unmodifiable(
-  <McpServerStateDto>[
-    for (var index = 0; index < 18; index += 1)
-      McpServerStateDto(
-        config: McpServerConfigDto(
-          id: index == 0 ? 'github' : 'catalog-$index',
-          transport: McpTransportKind.stdio,
-          command: 'npx',
-          args: <String>['-y', 'catalog-mcp-$index'],
-        ),
-        status: McpServerStatus.ready,
-        scope: McpConfigScope.user,
-        sourcePath: '/config/mcp.json',
-        protocolVersion: '2025-06-18',
-        serverName: index == 0 ? 'GitHub' : 'Catalog MCP $index',
-        tools: <McpToolSummaryDto>[
-          McpToolSummaryDto(
-            toolId: 'mcp__catalog_$index',
-            name: 'catalog_tool_$index',
-            description: 'Deterministic catalog tool $index.',
-          ),
-        ],
+final _mcpServers = List<McpServerStateDto>.unmodifiable(<McpServerStateDto>[
+  for (var index = 0; index < 18; index += 1)
+    McpServerStateDto(
+      config: McpServerConfigDto(
+        id: index == 0 ? 'github' : 'catalog-$index',
+        transport: McpTransportKind.stdio,
+        command: 'npx',
+        args: <String>['-y', 'catalog-mcp-$index'],
       ),
-  ],
-);
+      status: McpServerStatus.ready,
+      scope: McpConfigScope.user,
+      sourcePath: '/config/mcp.json',
+      protocolVersion: '2025-06-18',
+      serverName: index == 0 ? 'GitHub' : 'Catalog MCP $index',
+      tools: <McpToolSummaryDto>[
+        McpToolSummaryDto(
+          toolId: 'mcp__catalog_$index',
+          name: 'catalog_tool_$index',
+          description: 'Deterministic catalog tool $index.',
+        ),
+      ],
+    ),
+]);
 
 final _viewports = <_Viewport>[
   const _Viewport('reported-compact', Size(344, 672)),
@@ -832,14 +820,8 @@ final _scenarios = <_Scenario>[
     id: 'daemon-categories',
     location: const DaemonCategoriesRoute(hostId: 'server').location,
   ),
-  _Scenario(
-    id: 'general',
-    location: const GeneralSettingsRoute().location,
-  ),
-  _Scenario(
-    id: 'daemons',
-    location: const DaemonSettingsRoute().location,
-  ),
+  _Scenario(id: 'general', location: const GeneralSettingsRoute().location),
+  _Scenario(id: 'daemons', location: const DaemonSettingsRoute().location),
   _Scenario(
     id: 'projects',
     location: const ProjectSettingsRoute(hostId: 'server').location,
@@ -985,10 +967,7 @@ final _scenarios = <_Scenario>[
       key: 'permission-settings-error',
     ),
   ),
-  _Scenario(
-    id: 'advanced',
-    location: const AdvancedSettingsRoute().location,
-  ),
+  _Scenario(id: 'advanced', location: const AdvancedSettingsRoute().location),
   _Scenario(id: 'connect', location: const ConnectDaemonRoute().location),
   _Scenario(id: 'connect-link', location: const PairingLinkRoute().location),
   _Scenario(
@@ -1485,14 +1464,8 @@ const _environmentVariants = <_Variant>[
   _Variant(id: 'reduced-motion', reducedMotion: true),
 ];
 const _scrollVariants = <_Variant>[
-  _Variant(
-    id: 'scroll-middle',
-    scrollCheckpoint: _ScrollCheckpoint.middle,
-  ),
-  _Variant(
-    id: 'scroll-bottom',
-    scrollCheckpoint: _ScrollCheckpoint.bottom,
-  ),
+  _Variant(id: 'scroll-middle', scrollCheckpoint: _ScrollCheckpoint.middle),
+  _Variant(id: 'scroll-bottom', scrollCheckpoint: _ScrollCheckpoint.bottom),
 ];
 const _settingsInteractionTargetKey = 'settings-category-row-daemon';
 const _interactionVariants = <_Variant>[
@@ -1541,12 +1514,7 @@ const _environmentScenarioIds = <String>{
   'advanced',
   'connect-direct',
 };
-const _longListScenarioIds = <String>{
-  'projects',
-  'agents',
-  'mcp',
-  'providers',
-};
+const _longListScenarioIds = <String>{'projects', 'agents', 'mcp', 'providers'};
 const _matrixViewportIds = <String>{'mobile', 'desktop'};
 const _stateViewportIds = <String>{
   'reported-compact',
@@ -1686,7 +1654,7 @@ AppServices _catalogServices({
 }
 
 final class _CatalogLoadingSettingsRepository implements AppSettingsRepository {
-  _CatalogLoadingSettingsRepository(this.delegate);
+  new(this.delegate);
 
   final MemoryAppStore delegate;
   final Completer<AppSettings> _gate = Completer<AppSettings>();
@@ -1703,7 +1671,7 @@ final class _CatalogLoadingSettingsRepository implements AppSettingsRepository {
 }
 
 final class _CatalogErrorSettingsRepository implements AppSettingsRepository {
-  const _CatalogErrorSettingsRepository(this.delegate);
+  const new(this.delegate);
 
   final MemoryAppStore delegate;
 
@@ -1720,7 +1688,7 @@ final class _CatalogErrorSettingsRepository implements AppSettingsRepository {
 }
 
 final class _CatalogFailingLauncher implements EmbeddedDaemonLauncher {
-  const _CatalogFailingLauncher(this.failure);
+  const new(this.failure);
 
   final HostConnectionFailure failure;
 
@@ -1732,14 +1700,14 @@ final class _CatalogFailingLauncher implements EmbeddedDaemonLauncher {
 }
 
 final class _CatalogExternalUrlOpener implements ExternalUrlOpener {
-  const _CatalogExternalUrlOpener();
+  const new();
 
   @override
   Future<bool> open(Uri uri) async => true;
 }
 
 final class _CatalogHostClientFactory implements HostClientFactory {
-  const _CatalogHostClientFactory(this.api);
+  const new(this.api);
 
   final TinestApi api;
 
@@ -1753,7 +1721,7 @@ final class _CatalogHostClientFactory implements HostClientFactory {
 }
 
 final class _CatalogMcpErrorApi implements TinestApi {
-  const _CatalogMcpErrorApi(this.delegate);
+  const new(this.delegate);
 
   final TinestApi delegate;
 
@@ -1788,7 +1756,7 @@ final class _CatalogMcpErrorApi implements TinestApi {
 }
 
 final class _CatalogFailingMcpApi implements McpApi {
-  const _CatalogFailingMcpApi(this.delegate);
+  const new(this.delegate);
 
   final McpApi delegate;
 
@@ -1862,46 +1830,37 @@ void main() {
     }
   });
 
-  test(
-    'Settings shell catalog covers deterministic empty, loading, and error '
-    'registry states at every adaptive viewport',
-    () {
-      const expectedStates = <String, ({String preparation, String state})>{
-        'settings-home-no-daemon': (
-          preparation: 'noDaemon',
-          state: 'empty',
-        ),
-        'settings-registry-loading': (
-          preparation: 'registryLoading',
-          state: 'loading',
-        ),
-        'settings-registry-error': (
-          preparation: 'registryError',
-          state: 'error',
-        ),
-      };
-      final scenariosById = <String, _Scenario>{
-        for (final scenario in _scenarios) scenario.id: scenario,
-      };
-      final captures = _catalogCases();
+  test('Settings shell catalog covers deterministic empty, loading, and error '
+      'registry states at every adaptive viewport', () {
+    const expectedStates = <String, ({String preparation, String state})>{
+      'settings-home-no-daemon': (preparation: 'noDaemon', state: 'empty'),
+      'settings-registry-loading': (
+        preparation: 'registryLoading',
+        state: 'loading',
+      ),
+      'settings-registry-error': (preparation: 'registryError', state: 'error'),
+    };
+    final scenariosById = <String, _Scenario>{
+      for (final scenario in _scenarios) scenario.id: scenario,
+    };
+    final captures = _catalogCases();
 
-      for (final MapEntry(key: id, value: contract) in expectedStates.entries) {
-        final scenario = scenariosById[id];
-        expect(scenario, isNotNull, reason: '$id must be catalogued.');
-        expect(scenario!.matrixOnly, isTrue);
-        expect(scenario.preparation.name, contract.preparation);
-        expect(scenario.expected.state, contract.state);
-        expect(
-          captures
-              .where((capture) => capture.scenario.id == id)
-              .map((capture) => capture.viewport.id)
-              .toSet(),
-          _stateViewportIds,
-          reason: '$id needs every adaptive viewport frame.',
-        );
-      }
-    },
-  );
+    for (final MapEntry(key: id, value: contract) in expectedStates.entries) {
+      final scenario = scenariosById[id];
+      expect(scenario, isNotNull, reason: '$id must be catalogued.');
+      expect(scenario!.matrixOnly, isTrue);
+      expect(scenario.preparation.name, contract.preparation);
+      expect(scenario.expected.state, contract.state);
+      expect(
+        captures
+            .where((capture) => capture.scenario.id == id)
+            .map((capture) => capture.viewport.id)
+            .toSet(),
+        _stateViewportIds,
+        reason: '$id needs every adaptive viewport frame.',
+      );
+    }
+  });
 
   test(
     'interaction catalog records its stable navigation target in manifest',
@@ -1972,14 +1931,11 @@ void main() {
           interaction,
           targetKey: _settingsInteractionTargetKey,
         );
-        addTearDown(() async => cleanup?.call());
+        addTearDown(() async => await cleanup?.call());
         final target = _byKey('settings-category-row-daemon');
         expect(target, findsOneWidget);
         final surface = find
-            .descendant(
-              of: target,
-              matching: find.byType(AnimatedContainer),
-            )
+            .descendant(of: target, matching: find.byType(AnimatedContainer))
             .first;
         final theme = tester.element(target).tinyrackTheme;
         final expectedColor = switch (interaction) {
@@ -2013,151 +1969,137 @@ void main() {
       addTearDown(prepared.dispose);
       final api = _CatalogMcpErrorApi(prepared.api);
       for (var attempt = 0; attempt < 2; attempt += 1) {
-        await expectLater(
-          api.mcp.listMcpServers(),
-          throwsA(isA<StateError>()),
-        );
+        await expectLater(api.mcp.listMcpServers(), throwsA(isA<StateError>()));
       }
     },
   );
 
-  testWidgets(
-    'generate deterministic Settings visual catalog',
-    (tester) async {
-      await _loadPackageFontAliases();
-      final phase = Platform.environment['SETTINGS_CATALOG_PHASE'] ?? 'current';
-      _validatePhase(phase, variable: 'SETTINGS_CATALOG_PHASE');
-      final baselinePhase =
-          Platform.environment['SETTINGS_CATALOG_BASELINE_PHASE'];
-      if (baselinePhase != null) {
-        _validatePhase(
-          baselinePhase,
-          variable: 'SETTINGS_CATALOG_BASELINE_PHASE',
-        );
-        if (baselinePhase == phase) {
-          throw StateError(
-            'SETTINGS_CATALOG_BASELINE_PHASE must differ from '
-            'SETTINGS_CATALOG_PHASE.',
-          );
-        }
-      }
-      final scenarioFilter = _environmentFilter(
-        'SETTINGS_CATALOG_SCENARIOS',
-        alias: 'SETTINGS_CATALOG_SCENARIO',
+  testWidgets('generate deterministic Settings visual catalog', (tester) async {
+    await _loadPackageFontAliases();
+    final phase = Platform.environment['SETTINGS_CATALOG_PHASE'] ?? 'current';
+    _validatePhase(phase, variable: 'SETTINGS_CATALOG_PHASE');
+    final baselinePhase =
+        Platform.environment['SETTINGS_CATALOG_BASELINE_PHASE'];
+    if (baselinePhase != null) {
+      _validatePhase(
+        baselinePhase,
+        variable: 'SETTINGS_CATALOG_BASELINE_PHASE',
       );
-      final viewportFilter = _environmentFilter(
-        'SETTINGS_CATALOG_VIEWPORTS',
-        alias: 'SETTINGS_CATALOG_VIEWPORT',
+      if (baselinePhase == phase) {
+        throw StateError(
+          'SETTINGS_CATALOG_BASELINE_PHASE must differ from '
+          'SETTINGS_CATALOG_PHASE.',
+        );
+      }
+    }
+    final scenarioFilter = _environmentFilter(
+      'SETTINGS_CATALOG_SCENARIOS',
+      alias: 'SETTINGS_CATALOG_SCENARIO',
+    );
+    final viewportFilter = _environmentFilter(
+      'SETTINGS_CATALOG_VIEWPORTS',
+      alias: 'SETTINGS_CATALOG_VIEWPORT',
+    );
+    final variantFilter = _environmentFilter(
+      'SETTINGS_CATALOG_VARIANTS',
+      alias: 'SETTINGS_CATALOG_VARIANT',
+    );
+    final scope = Platform.environment['SETTINGS_CATALOG_SCOPE'] ?? 'all';
+    if (!const <String>{'all', 'base', 'state'}.contains(scope)) {
+      throw StateError('SETTINGS_CATALOG_SCOPE must be all, base, or state.');
+    }
+    final cases = _catalogCases()
+        .where(
+          (capture) =>
+              (scope == 'all' ||
+                  (scope == 'state') == capture.scenario.matrixOnly) &&
+              (scenarioFilter.isEmpty ||
+                  scenarioFilter.contains(capture.scenario.id)) &&
+              (viewportFilter.isEmpty ||
+                  viewportFilter.contains(capture.viewport.id)) &&
+              (variantFilter.isEmpty ||
+                  variantFilter.contains(capture.variant.id)),
+        )
+        .toList(growable: false);
+    if (scenarioFilter.isNotEmpty &&
+        !_scenarios.any((scenario) => scenarioFilter.contains(scenario.id))) {
+      throw StateError(
+        'SETTINGS_CATALOG_SCENARIOS did not match a catalog scenario.',
       );
-      final variantFilter = _environmentFilter(
-        'SETTINGS_CATALOG_VARIANTS',
-        alias: 'SETTINGS_CATALOG_VARIANT',
+    }
+    if (viewportFilter.isNotEmpty &&
+        !_viewports.any((viewport) => viewportFilter.contains(viewport.id))) {
+      throw StateError(
+        'SETTINGS_CATALOG_VIEWPORTS did not match a catalog viewport.',
       );
-      final scope = Platform.environment['SETTINGS_CATALOG_SCOPE'] ?? 'all';
-      if (!const <String>{'all', 'base', 'state'}.contains(scope)) {
-        throw StateError(
-          'SETTINGS_CATALOG_SCOPE must be all, base, or state.',
-        );
-      }
-      final cases = _catalogCases()
-          .where(
-            (capture) =>
-                (scope == 'all' ||
-                    (scope == 'state') == capture.scenario.matrixOnly) &&
-                (scenarioFilter.isEmpty ||
-                    scenarioFilter.contains(capture.scenario.id)) &&
-                (viewportFilter.isEmpty ||
-                    viewportFilter.contains(capture.viewport.id)) &&
-                (variantFilter.isEmpty ||
-                    variantFilter.contains(capture.variant.id)),
-          )
-          .toList(growable: false);
-      if (scenarioFilter.isNotEmpty &&
-          !_scenarios.any((scenario) => scenarioFilter.contains(scenario.id))) {
-        throw StateError(
-          'SETTINGS_CATALOG_SCENARIOS did not match a catalog scenario.',
-        );
-      }
-      if (viewportFilter.isNotEmpty &&
-          !_viewports.any((viewport) => viewportFilter.contains(viewport.id))) {
-        throw StateError(
-          'SETTINGS_CATALOG_VIEWPORTS did not match a catalog viewport.',
-        );
-      }
-      final variantIds = _catalogCases()
-          .map((capture) => capture.variant.id)
-          .toSet();
-      if (variantFilter.isNotEmpty && !variantFilter.any(variantIds.contains)) {
-        throw StateError(
-          'SETTINGS_CATALOG_VARIANTS did not match a catalog variant.',
-        );
-      }
-      if (cases.isEmpty) {
-        throw StateError(
-          'The selected scenario, viewport, and variant filters do not '
-          'intersect.',
-        );
-      }
-      final root = Directory('build/settings-screen-catalog/$phase');
-      if (root.existsSync()) root.deleteSync(recursive: true);
-      root.createSync(recursive: true);
-      final manifest = <Map<String, Object?>>[];
-      final contactSheets = <Map<String, Object?>>[];
+    }
+    final variantIds = _catalogCases()
+        .map((capture) => capture.variant.id)
+        .toSet();
+    if (variantFilter.isNotEmpty && !variantFilter.any(variantIds.contains)) {
+      throw StateError(
+        'SETTINGS_CATALOG_VARIANTS did not match a catalog variant.',
+      );
+    }
+    if (cases.isEmpty) {
+      throw StateError(
+        'The selected scenario, viewport, and variant filters do not '
+        'intersect.',
+      );
+    }
+    final root = Directory('build/settings-screen-catalog/$phase');
+    if (root.existsSync()) root.deleteSync(recursive: true);
+    root.createSync(recursive: true);
+    final manifest = <Map<String, Object?>>[];
+    final contactSheets = <Map<String, Object?>>[];
 
-      tester.view
-        ..devicePixelRatio = 1
-        ..physicalSize = cases.first.viewport.size;
-      addTearDown(tester.view.reset);
-      addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
-      addTearDown(
-        tester.platformDispatcher.clearPlatformBrightnessTestValue,
-      );
-      addTearDown(
-        tester.platformDispatcher.clearAccessibilityFeaturesTestValue,
-      );
+    tester.view
+      ..devicePixelRatio = 1
+      ..physicalSize = cases.first.viewport.size;
+    addTearDown(tester.view.reset);
+    addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+    addTearDown(tester.platformDispatcher.clearPlatformBrightnessTestValue);
+    addTearDown(tester.platformDispatcher.clearAccessibilityFeaturesTestValue);
 
-      for (final catalogCase in cases) {
-        await _captureCase(
-          tester: tester,
-          catalogCase: catalogCase,
-          root: root,
-          phase: phase,
-          manifest: manifest,
-          contactSheets: contactSheets,
-        );
-      }
+    for (final catalogCase in cases) {
+      await _captureCase(
+        tester: tester,
+        catalogCase: catalogCase,
+        root: root,
+        phase: phase,
+        manifest: manifest,
+        contactSheets: contactSheets,
+      );
+    }
 
-      if (baselinePhase != null) {
-        await _generateContactSheets(
-          tester: tester,
-          root: root,
-          phase: phase,
-          baselinePhase: baselinePhase,
-          captures: manifest,
-          contactSheets: contactSheets,
-        );
-      }
+    if (baselinePhase != null) {
+      await _generateContactSheets(
+        tester: tester,
+        root: root,
+        phase: phase,
+        baselinePhase: baselinePhase,
+        captures: manifest,
+        contactSheets: contactSheets,
+      );
+    }
 
-      expect(manifest, hasLength(cases.length));
-      expect(
-        manifest.every((capture) => (capture['byteLength']! as int) > 0),
-        isTrue,
-      );
-      expect(
-        contactSheets,
-        baselinePhase == null ? isEmpty : hasLength(cases.length),
-      );
-      expect(
-        contactSheets.every(
-          (sheet) =>
-              sheet['status'] == 'captured' &&
-              (sheet['byteLength']! as int) > 0,
-        ),
-        isTrue,
-      );
-    },
-    timeout: const Timeout(Duration(minutes: 45)),
-  );
+    expect(manifest, hasLength(cases.length));
+    expect(
+      manifest.every((capture) => (capture['byteLength']! as int) > 0),
+      isTrue,
+    );
+    expect(
+      contactSheets,
+      baselinePhase == null ? isEmpty : hasLength(cases.length),
+    );
+    expect(
+      contactSheets.every(
+        (sheet) =>
+            sheet['status'] == 'captured' && (sheet['byteLength']! as int) > 0,
+      ),
+      isTrue,
+    );
+  }, timeout: const Timeout(Duration(minutes: 45)));
 }
 
 Future<void> _captureCase({
@@ -2192,11 +2134,7 @@ Future<void> _captureCase({
   final window = FakeDesktopWindow(chrome: DesktopWindowChrome.custom);
   final prepared = _prepareScenario(scenario.preparation);
   final api = prepared.api;
-  final services = _catalogServices(
-    scenario: scenario,
-    api: api,
-    store: store,
-  );
+  final services = _catalogServices(scenario: scenario, api: api, store: store);
   Future<void> Function()? interactionCleanup;
   try {
     debugDefaultTargetPlatformOverride = scenario.platform;
@@ -2207,23 +2145,14 @@ Future<void> _captureCase({
       externalUrlOpener: const _CatalogExternalUrlOpener(),
       initialLocation: scenario.location,
     );
-    await tester.pumpWidget(
-      RepaintBoundary(
-        key: _captureBoundary,
-        child: app,
-      ),
-    );
+    await tester.pumpWidget(RepaintBoundary(key: _captureBoundary, child: app));
     await _pumpCatalogFrame(tester);
     if (variant.direction == TextDirection.rtl) {
       await _forceDirection(tester, variant.direction);
       await _pumpCatalogFrame(tester);
     }
     await _openRepresentativeDetail(tester, catalogCase);
-    await _applyScenarioAction(
-      tester,
-      scenario: scenario,
-      prepared: prepared,
-    );
+    await _applyScenarioAction(tester, scenario: scenario, prepared: prepared);
     await _applyScrollCheckpoint(tester, variant.scrollCheckpoint);
     interactionCleanup = await _applyInteraction(
       tester,
@@ -2785,9 +2714,7 @@ Future<void> _applyScrollCheckpoint(
         ? candidate
         : current,
   );
-  target.position.jumpTo(
-    target.position.maxScrollExtent * checkpoint.fraction,
-  );
+  target.position.jumpTo(target.position.maxScrollExtent * checkpoint.fraction);
   await tester.pump();
 }
 
@@ -2820,10 +2747,7 @@ Future<Future<void> Function()?> _applyInteraction(
     );
   }
   final row = find
-      .descendant(
-        of: target,
-        matching: find.byType(MouseRegion),
-      )
+      .descendant(of: target, matching: find.byType(MouseRegion))
       .first;
   if (row.evaluate().isEmpty) {
     throw StateError(
@@ -2846,9 +2770,7 @@ Future<Future<void> Function()?> _applyInteraction(
     case _CatalogInteraction.idle:
       return null;
     case _CatalogInteraction.hover:
-      final gesture = await tester.createGesture(
-        kind: PointerDeviceKind.mouse,
-      );
+      final gesture = await tester.createGesture(kind: PointerDeviceKind.mouse);
       await gesture.addPointer(location: Offset.zero);
       await gesture.moveTo(tester.getCenter(row));
       await tester.pump();
@@ -2858,9 +2780,7 @@ Future<Future<void> Function()?> _applyInteraction(
         await gesture.removePointer();
       };
     case _CatalogInteraction.pressed:
-      final gesture = await tester.startGesture(
-        tester.getCenter(row),
-      );
+      final gesture = await tester.startGesture(tester.getCenter(row));
       await tester.pump();
       // GestureDetector reports tap-down after its press deadline. The first
       // token-duration pump crosses that deadline; the second completes the
@@ -3135,9 +3055,7 @@ Future<void> _loadPackageFontAliases() async {
     await loader.load();
   }
   final lucideLoader = FontLoader('packages/lucide_flutter/LucideIcons')
-    ..addFont(
-      rootBundle.load('packages/lucide_flutter/assets/lucide.ttf'),
-    );
+    ..addFont(rootBundle.load('packages/lucide_flutter/assets/lucide.ttf'));
   await lucideLoader.load();
   _packageFontAliasesLoaded = true;
 }
@@ -3146,18 +3064,13 @@ Future<void> _capture(WidgetTester tester, File output) async {
   final boundary = tester.firstRenderObject<RenderRepaintBoundary>(
     find.byKey(_captureBoundary),
   );
-  final png = await tester.runAsync(
-    () async {
-      final image = await boundary.toImage();
-      final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
-      image.dispose();
-      if (bytes == null) throw StateError('PNG encoding returned no bytes.');
-      return bytes.buffer.asUint8List(
-        bytes.offsetInBytes,
-        bytes.lengthInBytes,
-      );
-    },
-  );
+  final png = await tester.runAsync(() async {
+    final image = await boundary.toImage();
+    final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
+    image.dispose();
+    if (bytes == null) throw StateError('PNG encoding returned no bytes.');
+    return bytes.buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes);
+  });
   if (png == null) throw StateError('PNG capture did not complete.');
   output.writeAsBytesSync(png, flush: true);
   if (output.lengthSync() == 0) {

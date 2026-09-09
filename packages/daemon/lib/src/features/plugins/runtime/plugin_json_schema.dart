@@ -3,8 +3,7 @@ import 'dart:convert';
 /// A plugin value is not finite, bounded JSON or does not satisfy its schema.
 final class PluginJsonValidationException extends FormatException {
   /// Creates a validation failure at [path].
-  PluginJsonValidationException(String message, {required this.path})
-    : super('$path: $message');
+  new(String message, {required this.path}) : super('$path: $message');
 
   /// JSON path containing the invalid value.
   final String path;

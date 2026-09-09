@@ -123,10 +123,9 @@ void main() {
       );
 
       expect(model.requests, hasLength(3));
-      expect(
-        model.requests.first.tools.map((tool) => tool.name),
-        <String>['tool_search_mcp'],
-      );
+      expect(model.requests.first.tools.map((tool) => tool.name), <String>[
+        'tool_search_mcp',
+      ]);
       expect(
         model.requests[1].tools.map((tool) => tool.name),
         contains('mcp__calendar__create_event'),
@@ -302,7 +301,7 @@ final class _DiscoveryModelGateway implements ModelGateway {
 }
 
 final class _BundleMapLoader implements PluginBundleLoader {
-  const _BundleMapLoader(this.bundles);
+  const new(this.bundles);
 
   final Map<String, PluginBundle> bundles;
 
@@ -311,7 +310,7 @@ final class _BundleMapLoader implements PluginBundleLoader {
 }
 
 final class _AskPolicy implements ApprovalPolicy {
-  const _AskPolicy();
+  const new();
 
   @override
   ApprovalEvaluation evaluate(ToolInvocation invocation) =>

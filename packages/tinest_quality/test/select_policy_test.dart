@@ -15,14 +15,10 @@ void main() {
   test('production selection controls follow the Select contract', () {
     final violations = <String>[];
     for (final file
-        in Directory(
-              'packages/app/lib',
-            )
+        in Directory('packages/app/lib')
             .listSync(recursive: true)
             .whereType<File>()
-            .where(
-              (file) => file.path.endsWith('.dart'),
-            )) {
+            .where((file) => file.path.endsWith('.dart'))) {
       final result = parseFile(
         path: p.normalize(p.absolute(file.path)),
         featureSet: FeatureSet.latestLanguageVersion(),
@@ -35,7 +31,7 @@ void main() {
 }
 
 final class _SelectPolicyVisitor extends RecursiveAstVisitor<void> {
-  _SelectPolicyVisitor(this.path, this.violations);
+  new(this.path, this.violations);
 
   final String path;
   final List<String> violations;

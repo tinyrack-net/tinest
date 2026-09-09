@@ -20,7 +20,7 @@ abstract interface class OAuthCallbackServerBinder {
 final class LoopbackOAuthCallbackServerBinder
     implements OAuthCallbackServerBinder {
   /// Creates the production callback binder.
-  const LoopbackOAuthCallbackServerBinder({this.port = 1455});
+  const new({this.port = 1455});
 
   /// The only loopback port registered for the public Codex OAuth client.
   final int port;
@@ -44,7 +44,7 @@ final class LoopbackOAuthCallbackServerBinder
 /// Production OpenAI browser and device-code OAuth adapter.
 final class OpenAIOAuthGateway implements ProviderOAuthGateway {
   /// Creates an OpenAI OAuth adapter.
-  factory OpenAIOAuthGateway({
+  factory({
     required Clock clock,
     Dio? dio,
     String issuer = 'https://auth.openai.com',
@@ -59,7 +59,7 @@ final class OpenAIOAuthGateway implements ProviderOAuthGateway {
     delay: delay,
   );
 
-  OpenAIOAuthGateway._({
+  new _({
     required this._clock,
     required this._dio,
     required this._issuer,
@@ -78,10 +78,8 @@ final class OpenAIOAuthGateway implements ProviderOAuthGateway {
       switch (flow) {
         AgentProviderAuthFlow.oauthBrowser => _startBrowser(),
         AgentProviderAuthFlow.oauthDevice => _startDevice(),
-        AgentProviderAuthFlow.apiKey ||
-        AgentProviderAuthFlow.none => throw StateError(
-          'The selected method is not an OAuth flow.',
-        ),
+        AgentProviderAuthFlow.apiKey || AgentProviderAuthFlow.none =>
+          throw StateError('The selected method is not an OAuth flow.'),
       };
 
   @override
@@ -156,9 +154,7 @@ final class OpenAIOAuthGateway implements ProviderOAuthGateway {
   Future<ProviderOAuthSession> _startDevice() async {
     final response = await _dio.post<Map<String, dynamic>>(
       '$_issuer/api/accounts/deviceauth/usercode',
-      data: const <String, String>{
-        'client_id': openAICodexOAuthClientId,
-      },
+      data: const <String, String>{'client_id': openAICodexOAuthClientId},
     );
     final data = response.data ?? const <String, dynamic>{};
     final deviceAuthId = data['device_auth_id'];
@@ -389,7 +385,7 @@ final class OpenAIOAuthGateway implements ProviderOAuthGateway {
 }
 
 final class _OpenAIOAuthSession implements ProviderOAuthSession {
-  factory _OpenAIOAuthSession({
+  factory({
     required String authorizationUrl,
     required String? instructions,
     required DateTime expiresAt,
@@ -405,7 +401,7 @@ final class _OpenAIOAuthSession implements ProviderOAuthSession {
     userCode: userCode,
   );
 
-  _OpenAIOAuthSession._({
+  new _({
     required this.authorizationUrl,
     required this.instructions,
     required this.expiresAt,

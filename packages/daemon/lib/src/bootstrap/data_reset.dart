@@ -35,11 +35,7 @@ enum DaemonDataResetFailureReason {
 /// Raised when stored daemon data cannot be erased.
 final class DaemonDataResetException implements Exception {
   /// Creates a [DaemonDataResetException].
-  const DaemonDataResetException(
-    this.message, {
-    required this.reason,
-    this.path,
-  });
+  const new(this.message, {required this.reason, this.path});
 
   /// Human-readable explanation of the failure.
   final String message;
@@ -57,7 +53,7 @@ final class DaemonDataResetException implements Exception {
 /// Native [DaemonDataFiles] adapter backed by `dart:io`.
 final class NativeDaemonDataFiles implements DaemonDataFiles {
   /// Creates the production filesystem adapter.
-  const NativeDaemonDataFiles();
+  const new();
 
   @override
   Future<bool> exists(String path) async =>
@@ -102,7 +98,7 @@ final class NativeDaemonDataFiles implements DaemonDataFiles {
 /// `daemon.lock` and an open handle on `tinest.sqlite`.
 final class DaemonDataReset {
   /// Creates a reset targeting one daemon's config and state directories.
-  const DaemonDataReset({
+  const new({
     required this.configDirectory,
     required this.homeDirectory,
     this.files = const NativeDaemonDataFiles(),
@@ -156,9 +152,7 @@ final class DaemonDataReset {
   /// another daemon still owns the directory, in which case nothing is
   /// deleted.
   Future<void> eraseAll() async {
-    await files.assertLockAvailable(
-      p.join(homeDirectory, 'v5', 'daemon.lock'),
-    );
+    await files.assertLockAvailable(p.join(homeDirectory, 'v5', 'daemon.lock'));
     for (final path in _targets()) {
       if (!await files.exists(path)) continue;
       try {
@@ -204,7 +198,7 @@ final class DaemonDataReset {
 /// must name the legacy versions they intend to remove.
 final class DaemonLegacyDataCleanup {
   /// Creates a cleanup operation for one daemon installation.
-  const DaemonLegacyDataCleanup({
+  const new({
     required this.configDirectory,
     required this.homeDirectory,
     this.files = const NativeDaemonDataFiles(),

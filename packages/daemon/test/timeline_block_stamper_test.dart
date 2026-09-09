@@ -35,9 +35,7 @@ void main() {
         reason: 'stamping carries the payload it was given',
       );
     },
-    tags: const <String>[
-      'feature_test__conversation_history_pagination__unit',
-    ],
+    tags: const <String>['feature_test__conversation_history_pagination__unit'],
   );
 
   test(
@@ -54,9 +52,7 @@ void main() {
         reason: 'the block reopened by the interruption keeps going',
       );
     },
-    tags: const <String>[
-      'feature_test__conversation_history_pagination__unit',
-    ],
+    tags: const <String>['feature_test__conversation_history_pagination__unit'],
   );
 
   test(
@@ -75,9 +71,7 @@ void main() {
         reason: 'prose closed the reasoning block it interrupted',
       );
     },
-    tags: const <String>[
-      'feature_test__conversation_history_pagination__unit',
-    ],
+    tags: const <String>['feature_test__conversation_history_pagination__unit'],
   );
 
   test(
@@ -88,9 +82,7 @@ void main() {
 
       expect(blockOf(delta), blockOf(started));
     },
-    tags: const <String>[
-      'feature_test__conversation_history_pagination__unit',
-    ],
+    tags: const <String>['feature_test__conversation_history_pagination__unit'],
   );
 
   test(
@@ -112,9 +104,7 @@ void main() {
       stamp('turn.completed', turnId: 'turn-b');
       expect(stamper.openBlockCount, 0);
     },
-    tags: const <String>[
-      'feature_test__conversation_history_pagination__unit',
-    ],
+    tags: const <String>['feature_test__conversation_history_pagination__unit'],
   );
 
   test(
@@ -132,9 +122,7 @@ void main() {
         reason: 'a block belongs to a turn, so an event without one has none',
       );
     },
-    tags: const <String>[
-      'feature_test__conversation_history_pagination__unit',
-    ],
+    tags: const <String>['feature_test__conversation_history_pagination__unit'],
   );
 }
 

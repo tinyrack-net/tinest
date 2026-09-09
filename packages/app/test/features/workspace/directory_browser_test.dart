@@ -93,7 +93,7 @@ void main() {
           home: Scaffold(
             body: Builder(
               builder: (context) => TextButton(
-                onPressed: () async => showDirectoryBrowser(
+                onPressed: () async => await showDirectoryBrowser(
                   context,
                   api: api,
                   initialPath: '/srv',
@@ -126,83 +126,77 @@ void main() {
     tags: const <String>['feature_test__workspace_async_loading__widget'],
   );
 
-  testWidgets(
-    'typing a path is debounced into a single daemon request',
-    (tester) async {
-      final api = FakeTinestApi(directories: tree);
-      await pump(tester, api);
-      final before = api.suggestedQueries.length;
+  testWidgets('typing a path is debounced into a single daemon request', (
+    tester,
+  ) async {
+    final api = FakeTinestApi(directories: tree);
+    await pump(tester, api);
+    final before = api.suggestedQueries.length;
 
-      final field = find.byKey(const ValueKey('directory-browser-path'));
-      await tester.enterText(field, '/srv/r');
-      await tester.pump(const Duration(milliseconds: 50));
-      await tester.enterText(field, '/srv/re');
-      await tester.pump(const Duration(milliseconds: 50));
-      await tester.enterText(field, '/srv/rep');
-      expect(api.suggestedQueries.length, before);
+    final field = find.byKey(const ValueKey('directory-browser-path'));
+    await tester.enterText(field, '/srv/r');
+    await tester.pump(const Duration(milliseconds: 50));
+    await tester.enterText(field, '/srv/re');
+    await tester.pump(const Duration(milliseconds: 50));
+    await tester.enterText(field, '/srv/rep');
+    expect(api.suggestedQueries.length, before);
 
-      await tester.pump(directoryBrowserDebounce);
-      await tester.pumpAndSettle();
-      expect(api.suggestedQueries.length, before + 1);
-      expect(api.suggestedQueries.last, '/srv/rep');
-      expect(find.text('repositories'), findsOneWidget);
-    },
-    tags: const <String>['feature_test__workspace_registration__widget'],
-  );
+    await tester.pump(directoryBrowserDebounce);
+    await tester.pumpAndSettle();
+    expect(api.suggestedQueries.length, before + 1);
+    expect(api.suggestedQueries.last, '/srv/rep');
+    expect(find.text('repositories'), findsOneWidget);
+  }, tags: const <String>['feature_test__workspace_registration__widget']);
 
-  testWidgets(
-    'a slow earlier listing never overwrites a newer one',
-    (tester) async {
-      final gate = Completer<void>();
-      final api = FakeTinestApi(
-        directories: tree,
-        suggestDirectoriesGate: gate.future,
-      );
-      await tester.pumpWidget(
-        MaterialApp(
-          theme: testLightTheme,
-          darkTheme: testDarkTheme,
-          locale: testLocale,
-          localizationsDelegates: testLocalizationsDelegates,
-          supportedLocales: testSupportedLocales,
-          home: Scaffold(
-            body: DirectoryBrowserDialog(api: api, initialPath: '/'),
-          ),
+  testWidgets('a slow earlier listing never overwrites a newer one', (
+    tester,
+  ) async {
+    final gate = Completer<void>();
+    final api = FakeTinestApi(
+      directories: tree,
+      suggestDirectoriesGate: gate.future,
+    );
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: testLightTheme,
+        darkTheme: testDarkTheme,
+        locale: testLocale,
+        localizationsDelegates: testLocalizationsDelegates,
+        supportedLocales: testSupportedLocales,
+        home: Scaffold(
+          body: DirectoryBrowserDialog(api: api, initialPath: '/'),
         ),
-      );
-      await tester.pump();
+      ),
+    );
+    await tester.pump();
 
-      await tester.enterText(
-        find.byKey(const ValueKey('directory-browser-path')),
-        '/srv',
-      );
-      await tester.pump(directoryBrowserDebounce);
-      gate.complete();
-      await tester.pumpAndSettle();
+    await tester.enterText(
+      find.byKey(const ValueKey('directory-browser-path')),
+      '/srv',
+    );
+    await tester.pump(directoryBrowserDebounce);
+    gate.complete();
+    await tester.pumpAndSettle();
 
-      // Both the initial '/' listing and the '/srv' listing resolved together;
-      // only the newest one may render.
-      expect(find.text('repositories'), findsOneWidget);
-      expect(find.text('srv'), findsNothing);
-    },
-    tags: const <String>['feature_test__workspace_registration__widget'],
-  );
+    // Both the initial '/' listing and the '/srv' listing resolved together;
+    // only the newest one may render.
+    expect(find.text('repositories'), findsOneWidget);
+    expect(find.text('srv'), findsNothing);
+  }, tags: const <String>['feature_test__workspace_registration__widget']);
 
-  testWidgets(
-    'daemon failures surface without clearing the dialog',
-    (tester) async {
-      final api = FakeTinestApi(
-        directories: tree,
-        suggestDirectoriesError: const TinestClientException(
-          'Permission denied',
-          code: 'request_failed',
-        ),
-      );
-      await pump(tester, api);
+  testWidgets('daemon failures surface without clearing the dialog', (
+    tester,
+  ) async {
+    final api = FakeTinestApi(
+      directories: tree,
+      suggestDirectoriesError: const TinestClientException(
+        'Permission denied',
+        code: 'request_failed',
+      ),
+    );
+    await pump(tester, api);
 
-      expect(find.text('Permission denied'), findsOneWidget);
-      expect(find.text('Daemon의 폴더 선택'), findsOneWidget);
-    },
-    tags: const <String>['feature_test__workspace_registration__widget'],
-  );
+    expect(find.text('Permission denied'), findsOneWidget);
+    expect(find.text('Daemon의 폴더 선택'), findsOneWidget);
+  }, tags: const <String>['feature_test__workspace_registration__widget']);
 }

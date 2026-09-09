@@ -10,7 +10,7 @@ import 'package:tinyrack_ui/tinyrack_ui.dart';
 /// here would reintroduce the flash this screen exists to remove.
 class BootSplash extends StatelessWidget {
   /// Creates the boot splash.
-  const BootSplash({super.key});
+  const new({super.key});
 
   @override
   Widget build(BuildContext context) => Theme(

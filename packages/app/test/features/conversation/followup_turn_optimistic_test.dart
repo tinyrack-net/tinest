@@ -82,145 +82,138 @@ void main() {
   const inputKey = ValueKey<String>('session-composer-input');
   const sendKey = ValueKey<String>('session-composer-send');
 
-  testWidgets(
-    'a follow-up prompt is visible before the daemon echoes it',
-    (tester) async {
-      await tester.binding.setSurfaceSize(const Size(1100, 760));
-      addTearDown(() => tester.binding.setSurfaceSize(null));
-      final startGate = Completer<void>();
-      final fake = api()
-        ..startTurnGate = startGate
-        ..emitTurnStartEvents = true;
-      final router = await pumpRoutedApp(
-        tester,
-        fake,
-        initialLocation: location,
-        disableAnimations: true,
-      );
-      addTearDown(router.dispose);
+  testWidgets('a follow-up prompt is visible before the daemon echoes it', (
+    tester,
+  ) async {
+    await tester.binding.setSurfaceSize(const Size(1100, 760));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    final startGate = Completer<void>();
+    final fake = api()
+      ..startTurnGate = startGate
+      ..emitTurnStartEvents = true;
+    final router = await pumpRoutedApp(
+      tester,
+      fake,
+      initialLocation: location,
+      disableAnimations: true,
+    );
+    addTearDown(router.dispose);
 
-      const prompt = 'Second request that must stay visible';
-      await tester.enterText(find.byKey(inputKey), prompt);
-      await tester.tap(find.byKey(sendKey));
-      for (var frame = 0; frame < 4; frame += 1) {
-        await tester.pump();
-      }
+    const prompt = 'Second request that must stay visible';
+    await tester.enterText(find.byKey(inputKey), prompt);
+    await tester.tap(find.byKey(sendKey));
+    for (var frame = 0; frame < 4; frame += 1) {
+      await tester.pump();
+    }
 
-      final timeline = find.byType(ChatTimelineView).hitTestable();
-      expect(timeline, findsOneWidget);
-      expect(
-        find.descendant(
-          of: timeline,
-          matching: find.text(prompt, findRichText: true),
-        ),
-        findsOneWidget,
-        reason: 'the prompt reads as sent while the RPC is still in flight',
-      );
+    final timeline = find.byType(ChatTimelineView).hitTestable();
+    expect(timeline, findsOneWidget);
+    expect(
+      find.descendant(
+        of: timeline,
+        matching: find.text(prompt, findRichText: true),
+      ),
+      findsOneWidget,
+      reason: 'the prompt reads as sent while the RPC is still in flight',
+    );
 
-      startGate.complete();
-      for (var frame = 0; frame < 8; frame += 1) {
-        await tester.pump();
-      }
+    startGate.complete();
+    for (var frame = 0; frame < 8; frame += 1) {
+      await tester.pump();
+    }
 
-      // The durable echo takes the same position rather than arriving beside
-      // the optimistic message.
-      expect(
-        find.descendant(
-          of: timeline,
-          matching: find.text(prompt, findRichText: true),
-        ),
-        findsOneWidget,
-        reason: 'the echo replaces the optimistic message, never doubles it',
-      );
-      expect(fake.startedPrompts, <String>[prompt]);
-    },
-    tags: const <String>['feature_test__turn_execution__widget'],
-  );
+    // The durable echo takes the same position rather than arriving beside
+    // the optimistic message.
+    expect(
+      find.descendant(
+        of: timeline,
+        matching: find.text(prompt, findRichText: true),
+      ),
+      findsOneWidget,
+      reason: 'the echo replaces the optimistic message, never doubles it',
+    );
+    expect(fake.startedPrompts, <String>[prompt]);
+  }, tags: const <String>['feature_test__turn_execution__widget']);
 
-  testWidgets(
-    'a rejected follow-up leaves nothing behind in the transcript',
-    (tester) async {
-      await tester.binding.setSurfaceSize(const Size(1100, 760));
-      addTearDown(() => tester.binding.setSurfaceSize(null));
-      final fake = api()
-        ..startTurnError = Exception('daemon rejected the turn');
-      final router = await pumpRoutedApp(
-        tester,
-        fake,
-        initialLocation: location,
-        disableAnimations: true,
-      );
-      addTearDown(router.dispose);
+  testWidgets('a rejected follow-up leaves nothing behind in the transcript', (
+    tester,
+  ) async {
+    await tester.binding.setSurfaceSize(const Size(1100, 760));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    final fake = api()..startTurnError = Exception('daemon rejected the turn');
+    final router = await pumpRoutedApp(
+      tester,
+      fake,
+      initialLocation: location,
+      disableAnimations: true,
+    );
+    addTearDown(router.dispose);
 
-      const prompt = 'Prompt that must not be lost';
-      await tester.enterText(find.byKey(inputKey), prompt);
-      await tester.tap(find.byKey(sendKey));
-      for (var frame = 0; frame < 8; frame += 1) {
-        await tester.pump();
-      }
+    const prompt = 'Prompt that must not be lost';
+    await tester.enterText(find.byKey(inputKey), prompt);
+    await tester.tap(find.byKey(sendKey));
+    for (var frame = 0; frame < 8; frame += 1) {
+      await tester.pump();
+    }
 
-      final timeline = find.byType(ChatTimelineView).hitTestable();
-      expect(
-        find.descendant(
-          of: timeline,
-          matching: find.text(prompt, findRichText: true),
-        ),
-        findsNothing,
-        reason: 'a prompt the composer took back is not also in the transcript',
-      );
-      expect(
-        tester.widget<TRTextField>(find.byKey(inputKey)).controller!.text,
-        prompt,
-      );
-    },
-    tags: const <String>['feature_test__turn_execution__widget'],
-  );
+    final timeline = find.byType(ChatTimelineView).hitTestable();
+    expect(
+      find.descendant(
+        of: timeline,
+        matching: find.text(prompt, findRichText: true),
+      ),
+      findsNothing,
+      reason: 'a prompt the composer took back is not also in the transcript',
+    );
+    expect(
+      tester.widget<TRTextField>(find.byKey(inputKey)).controller!.text,
+      prompt,
+    );
+  }, tags: const <String>['feature_test__turn_execution__widget']);
 
-  testWidgets(
-    'the composer queues behind a turn it has already started',
-    (tester) async {
-      // The daemon acks a turn well before it reports the session as running,
-      // and well before the durable echo. In that window the status is still
-      // idle, so without the accepted prompt counting as busy the next send
-      // races a turn that is already under way.
-      await tester.binding.setSurfaceSize(const Size(1100, 760));
-      addTearDown(() => tester.binding.setSurfaceSize(null));
-      final fake = api()
-        ..emitTurnStartEvents = false
-        ..emitUserMessageEcho = false;
-      final router = await pumpRoutedApp(
-        tester,
-        fake,
-        initialLocation: location,
-        disableAnimations: true,
-      );
-      addTearDown(router.dispose);
+  testWidgets('the composer queues behind a turn it has already started', (
+    tester,
+  ) async {
+    // The daemon acks a turn well before it reports the session as running,
+    // and well before the durable echo. In that window the status is still
+    // idle, so without the accepted prompt counting as busy the next send
+    // races a turn that is already under way.
+    await tester.binding.setSurfaceSize(const Size(1100, 760));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    final fake = api()
+      ..emitTurnStartEvents = false
+      ..emitUserMessageEcho = false;
+    final router = await pumpRoutedApp(
+      tester,
+      fake,
+      initialLocation: location,
+      disableAnimations: true,
+    );
+    addTearDown(router.dispose);
 
-      expect(
-        tester.widget<TRIconButton>(find.byKey(sendKey)).label,
-        testL10n.composerSendLabel,
-        reason: 'an idle session sends',
-      );
+    expect(
+      tester.widget<TRIconButton>(find.byKey(sendKey)).label,
+      testL10n.composerSendLabel,
+      reason: 'an idle session sends',
+    );
 
-      await tester.enterText(find.byKey(inputKey), 'first');
-      await tester.tap(find.byKey(sendKey));
-      for (var frame = 0; frame < 4; frame += 1) {
-        await tester.pump();
-      }
-      expect(fake.startedPrompts, <String>['first']);
+    await tester.enterText(find.byKey(inputKey), 'first');
+    await tester.tap(find.byKey(sendKey));
+    for (var frame = 0; frame < 4; frame += 1) {
+      await tester.pump();
+    }
+    expect(fake.startedPrompts, <String>['first']);
 
-      // The session is still reported idle and nothing has echoed, so the only
-      // thing that knows a turn is under way is the accepted prompt itself.
-      await tester.enterText(find.byKey(inputKey), 'second');
-      for (var frame = 0; frame < 2; frame += 1) {
-        await tester.pump();
-      }
-      expect(
-        tester.widget<TRIconButton>(find.byKey(sendKey)).label,
-        testL10n.composerQueueLabel,
-        reason: 'the next prompt queues behind the turn already accepted',
-      );
-    },
-    tags: const <String>['feature_test__conversation_turn_queue__widget'],
-  );
+    // The session is still reported idle and nothing has echoed, so the only
+    // thing that knows a turn is under way is the accepted prompt itself.
+    await tester.enterText(find.byKey(inputKey), 'second');
+    for (var frame = 0; frame < 2; frame += 1) {
+      await tester.pump();
+    }
+    expect(
+      tester.widget<TRIconButton>(find.byKey(sendKey)).label,
+      testL10n.composerQueueLabel,
+      reason: 'the next prompt queues behind the turn already accepted',
+    );
+  }, tags: const <String>['feature_test__conversation_turn_queue__widget']);
 }

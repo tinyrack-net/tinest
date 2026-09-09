@@ -178,12 +178,7 @@ Future<TinestClient> _connectTinestClient({
 }) {
   return TinestClient.connect(
     endpoint: HostEndpoint(
-      websocketUri: Uri(
-        scheme: 'ws',
-        host: host,
-        port: port,
-        path: '/v5/ws',
-      ),
+      websocketUri: Uri(scheme: 'ws', host: host, port: port, path: '/v5/ws'),
     ),
     credentials: DaemonCredentials(bearerToken: bearerToken),
     clientId: clientId,
@@ -223,7 +218,7 @@ Future<String> _promptForSecret() async {
 
 /// Reads platform facts from an injected environment map.
 final class _MapLocalDaemonEnvironment implements LocalDaemonEnvironment {
-  const _MapLocalDaemonEnvironment(this.values);
+  const new(this.values);
 
   @override
   final Map<String, String> values;

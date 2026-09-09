@@ -6,7 +6,7 @@ import 'package:cliweave/cliweave.dart';
 typedef RelaySmokeExecutor = Future<void> Function(Uri base, String? readyFile);
 
 final class _RelaySmokeContext implements CommandContext {
-  const _RelaySmokeContext({required this.process, required this.execute});
+  const new({required this.process, required this.execute});
 
   @override
   final RunProcess process;

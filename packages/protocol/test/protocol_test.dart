@@ -109,9 +109,7 @@ void main() {
       );
       expect(
         RelayRevokeDeviceParamsDto.fromJson(
-          const RelayRevokeDeviceParamsDto(
-            deviceId: 'device-1',
-          ).toJson(),
+          const RelayRevokeDeviceParamsDto(deviceId: 'device-1').toJson(),
         ).deviceId,
         'device-1',
       );
@@ -124,20 +122,13 @@ void main() {
     tags: const <String>['feature_test__daemon_relay__contract'],
   );
 
-  test(
-    'daemon permission defaults round-trip with full access',
-    () {
-      const settings = PermissionSettingsDto(
-        defaultMode: PermissionMode.fullAccess,
-      );
-      expect(
-        PermissionSettingsDto.fromJson(settings.toJson()),
-        settings,
-      );
-      expect(const PermissionSettingsDto().defaultMode, PermissionMode.ask);
-    },
-    tags: const <String>['feature_test__permission_settings__contract'],
-  );
+  test('daemon permission defaults round-trip with full access', () {
+    const settings = PermissionSettingsDto(
+      defaultMode: PermissionMode.fullAccess,
+    );
+    expect(PermissionSettingsDto.fromJson(settings.toJson()), settings);
+    expect(const PermissionSettingsDto().defaultMode, PermissionMode.ask);
+  }, tags: const <String>['feature_test__permission_settings__contract']);
 
   test('a session always carries one concrete permission mode', () {
     final session = SessionDto(
@@ -180,9 +171,7 @@ void main() {
   });
 
   test('session model overrides round-trip', () {
-    const selection = ModelSelectionDto(
-      modelId: 'provider/model',
-    );
+    const selection = ModelSelectionDto(modelId: 'provider/model');
     final overridden = SessionDto(
       id: 'session',
       worktreeId: 'worktree',
@@ -226,10 +215,7 @@ void main() {
       ).model,
       selection,
     );
-    expect(
-      const SessionSettingsPatchDto().model,
-      isNull,
-    );
+    expect(const SessionSettingsPatchDto().model, isNull);
   });
 
   test('model controls preserve typed values and per-model descriptors', () {
@@ -298,104 +284,100 @@ void main() {
     );
   });
 
-  test(
-    'multi-agent collaboration contracts round-trip',
-    () {
-      expect(sessionsListSubagentsProcedure.name, 'sessions.listSubagents');
+  test('multi-agent collaboration contracts round-trip', () {
+    expect(sessionsListSubagentsProcedure.name, 'sessions.listSubagents');
+    expect(
+      SessionStatus.values.map((value) => value.name),
+      isNot(contains('waitingForSubagent')),
+    );
+
+    final subagent = SessionDto(
+      id: 'child',
+      worktreeId: 'worktree',
+      title: 'explore_auth',
+      agentDefinitionId: 'explorer',
+      origin: SessionOrigin.delegated,
+      status: SessionStatus.running,
+      createdAt: now,
+      updatedAt: now,
+      model: sessionModel,
+      parentSessionId: 'root',
+      taskName: 'explore_auth',
+      agentPath: '/root/explore_auth',
+      rootSessionId: 'root',
+      lifecycle: AgentLifecycle.running,
+    );
+    _roundTrip(subagent, (value) => value.toJson(), SessionDto.fromJson);
+    final decoded = SessionDto.fromJson(
+      json.decode(json.encode(subagent.toJson())) as Map<String, dynamic>,
+    );
+    expect(decoded.taskName, 'explore_auth');
+    expect(decoded.agentPath, '/root/explore_auth');
+    expect(decoded.rootSessionId, 'root');
+    expect(decoded.lifecycle, AgentLifecycle.running);
+
+    final root = SessionDto(
+      id: 'root',
+      worktreeId: 'worktree',
+      title: 'Root',
+      agentDefinitionId: 'tinest',
+      origin: SessionOrigin.manual,
+      status: SessionStatus.idle,
+      createdAt: now,
+      updatedAt: now,
+      model: sessionModel,
+    );
+    expect(root.taskName, isNull);
+    expect(root.agentPath, isNull);
+    expect(root.rootSessionId, isNull);
+    expect(root.lifecycle, isNull);
+
+    final mail = AgentMailboxMessageDto(
+      id: 'mail-1',
+      sessionId: 'root',
+      senderPath: '/root/explore_auth',
+      recipientPath: '/root',
+      type: InterAgentMessageType.finalAnswer,
+      payload: 'The auth flow uses JWT.',
+      createdAt: now,
+      senderSessionId: 'child',
+    );
+    _roundTrip(
+      mail,
+      (value) => value.toJson(),
+      AgentMailboxMessageDto.fromJson,
+    );
+    expect(mail.deliveredAt, isNull);
+    for (final type in InterAgentMessageType.values) {
+      final copy = mail.copyWith(type: type);
       expect(
-        SessionStatus.values.map((value) => value.name),
-        isNot(contains('waitingForSubagent')),
+        AgentMailboxMessageDto.fromJson(
+          json.decode(json.encode(copy.toJson())) as Map<String, dynamic>,
+        ).type,
+        type,
       );
+    }
+    for (final lifecycle in AgentLifecycle.values) {
+      final copy = subagent.copyWith(lifecycle: lifecycle);
+      expect(
+        SessionDto.fromJson(
+          json.decode(json.encode(copy.toJson())) as Map<String, dynamic>,
+        ).lifecycle,
+        lifecycle,
+      );
+    }
 
-      final subagent = SessionDto(
-        id: 'child',
-        worktreeId: 'worktree',
-        title: 'explore_auth',
-        agentDefinitionId: 'explorer',
-        origin: SessionOrigin.delegated,
-        status: SessionStatus.running,
-        createdAt: now,
-        updatedAt: now,
-        model: sessionModel,
-        parentSessionId: 'root',
-        taskName: 'explore_auth',
-        agentPath: '/root/explore_auth',
-        rootSessionId: 'root',
-        lifecycle: AgentLifecycle.running,
-      );
-      _roundTrip(subagent, (value) => value.toJson(), SessionDto.fromJson);
-      final decoded = SessionDto.fromJson(
-        json.decode(json.encode(subagent.toJson())) as Map<String, dynamic>,
-      );
-      expect(decoded.taskName, 'explore_auth');
-      expect(decoded.agentPath, '/root/explore_auth');
-      expect(decoded.rootSessionId, 'root');
-      expect(decoded.lifecycle, AgentLifecycle.running);
-
-      final root = SessionDto(
-        id: 'root',
-        worktreeId: 'worktree',
-        title: 'Root',
-        agentDefinitionId: 'tinest',
-        origin: SessionOrigin.manual,
-        status: SessionStatus.idle,
-        createdAt: now,
-        updatedAt: now,
-        model: sessionModel,
-      );
-      expect(root.taskName, isNull);
-      expect(root.agentPath, isNull);
-      expect(root.rootSessionId, isNull);
-      expect(root.lifecycle, isNull);
-
-      final mail = AgentMailboxMessageDto(
-        id: 'mail-1',
-        sessionId: 'root',
-        senderPath: '/root/explore_auth',
-        recipientPath: '/root',
-        type: InterAgentMessageType.finalAnswer,
-        payload: 'The auth flow uses JWT.',
-        createdAt: now,
-        senderSessionId: 'child',
-      );
-      _roundTrip(
-        mail,
-        (value) => value.toJson(),
-        AgentMailboxMessageDto.fromJson,
-      );
-      expect(mail.deliveredAt, isNull);
-      for (final type in InterAgentMessageType.values) {
-        final copy = mail.copyWith(type: type);
-        expect(
-          AgentMailboxMessageDto.fromJson(
-            json.decode(json.encode(copy.toJson())) as Map<String, dynamic>,
-          ).type,
-          type,
-        );
-      }
-      for (final lifecycle in AgentLifecycle.values) {
-        final copy = subagent.copyWith(lifecycle: lifecycle);
-        expect(
-          SessionDto.fromJson(
-            json.decode(json.encode(copy.toJson())) as Map<String, dynamic>,
-          ).lifecycle,
-          lifecycle,
-        );
-      }
-
-      _roundTrip(
-        const SessionSubagentListParamsDto(sessionId: 'root'),
-        (value) => value.toJson(),
-        SessionSubagentListParamsDto.fromJson,
-      );
-      _roundTrip(
-        SessionListResultDto(sessions: <SessionDto>[root, subagent]),
-        (value) => value.toJson(),
-        SessionListResultDto.fromJson,
-      );
-    },
-    tags: const <String>['feature_test__agent_collaboration__contract'],
-  );
+    _roundTrip(
+      const SessionSubagentListParamsDto(sessionId: 'root'),
+      (value) => value.toJson(),
+      SessionSubagentListParamsDto.fromJson,
+    );
+    _roundTrip(
+      SessionListResultDto(sessions: <SessionDto>[root, subagent]),
+      (value) => value.toJson(),
+      SessionListResultDto.fromJson,
+    );
+  }, tags: const <String>['feature_test__agent_collaboration__contract']);
 
   test('agent definition and session contracts round-trip', () {
     const definition = AgentDefinitionDto(
@@ -407,10 +389,7 @@ void main() {
       model: AgentModelSelectionDto(source: AgentModelSource.session),
       driverId: 'tinest.standard/driver',
       extensionIds: <String>[],
-      toolIds: <String>[
-        'tinest.files/read_file',
-        'tinest.files/search_text',
-      ],
+      toolIds: <String>['tinest.files/read_file', 'tinest.files/search_text'],
       pluginSettings: <String, Map<String, dynamic>>{},
       callableAgentIds: <String>[],
       prompt: 'Review the requested code.',
@@ -437,63 +416,52 @@ void main() {
     _roundTrip(session, (value) => value.toJson(), SessionDto.fromJson);
   });
 
-  test(
-    'skill catalog contracts round-trip each view and summary',
-    () {
-      const skill = SkillSummaryDto(
-        id: 'commit',
-        name: 'commit',
-        description: 'Writes atomic commits.',
-        isImplicit: false,
-      );
+  test('skill catalog contracts round-trip each view and summary', () {
+    const skill = SkillSummaryDto(
+      id: 'commit',
+      name: 'commit',
+      description: 'Writes atomic commits.',
+      isImplicit: false,
+    );
 
-      _roundTrip(skill, (value) => value.toJson(), SkillSummaryDto.fromJson);
-      const params = SkillListParamsDto(
-        view: SkillListView.project,
-        workspaceId: 'workspace',
-      );
-      expect(params.toJson(), <String, dynamic>{
-        'view': 'project',
-        'workspaceId': 'workspace',
-      });
-      _roundTrip(
-        params,
-        (value) => value.toJson(),
-        SkillListParamsDto.fromJson,
-      );
-      _roundTrip(
-        const SkillListResultDto(skills: <SkillSummaryDto>[skill]),
-        (value) => value.toJson(),
-        SkillListResultDto.fromJson,
-      );
+    _roundTrip(skill, (value) => value.toJson(), SkillSummaryDto.fromJson);
+    const params = SkillListParamsDto(
+      view: SkillListView.project,
+      workspaceId: 'workspace',
+    );
+    expect(params.toJson(), <String, dynamic>{
+      'view': 'project',
+      'workspaceId': 'workspace',
+    });
+    _roundTrip(params, (value) => value.toJson(), SkillListParamsDto.fromJson);
+    _roundTrip(
+      const SkillListResultDto(skills: <SkillSummaryDto>[skill]),
+      (value) => value.toJson(),
+      SkillListResultDto.fromJson,
+    );
 
-      expect(promptsListSkillsProcedure.paramsType, SkillListParamsDto);
-      expect(promptsListSkillsProcedure.resultType, SkillListResultDto);
-      expect(
-        rpcProcedures
-            .map((procedure) => procedure.name)
-            .where(
-              <String>{
-                'prompts.getSkill',
-                'prompts.createSkill',
-                'prompts.updateSkill',
-                'prompts.deleteSkill',
-                'prompts.setSkillEnabled',
-              }.contains,
-            ),
-        isEmpty,
-      );
-      expect(
-        SkillListView.values,
-        <SkillListView>[
-          SkillListView.global,
-          SkillListView.project,
-          SkillListView.effective,
-        ],
-      );
-    },
-    tags: const <String>['feature_test__skill_catalog__contract'],
-  );
+    expect(promptsListSkillsProcedure.paramsType, SkillListParamsDto);
+    expect(promptsListSkillsProcedure.resultType, SkillListResultDto);
+    expect(
+      rpcProcedures
+          .map((procedure) => procedure.name)
+          .where(
+            <String>{
+              'prompts.getSkill',
+              'prompts.createSkill',
+              'prompts.updateSkill',
+              'prompts.deleteSkill',
+              'prompts.setSkillEnabled',
+            }.contains,
+          ),
+      isEmpty,
+    );
+    expect(SkillListView.values, <SkillListView>[
+      SkillListView.global,
+      SkillListView.project,
+      SkillListView.effective,
+    ]);
+  }, tags: const <String>['feature_test__skill_catalog__contract']);
 
   test('workspace and worktree contracts round-trip', () {
     final workspace = WorkspaceDto(
@@ -538,19 +506,12 @@ void main() {
       WorktreeArchivePreviewDto.fromJson,
     );
     _roundTrip(
-      const DirectorySuggestionDto(
-        path: '/workspace',
-        name: 'workspace',
-      ),
+      const DirectorySuggestionDto(path: '/workspace', name: 'workspace'),
       (value) => value.toJson(),
       DirectorySuggestionDto.fromJson,
     );
     _roundTrip(
-      const GitBranchDto(
-        name: 'main',
-        current: true,
-        checkedOut: true,
-      ),
+      const GitBranchDto(name: 'main', current: true, checkedOut: true),
       (value) => value.toJson(),
       GitBranchDto.fromJson,
     );
@@ -601,33 +562,29 @@ void main() {
     }
   });
 
-  test(
-    'the home workspace kind round-trips under a stable JSON name',
-    () {
-      final home = WorkspaceDto(
-        id: 'home',
-        name: 'Home',
-        rootPath: '/home/user',
-        kind: WorkspaceKind.home,
-        createdAt: now,
-      );
-      expect(home.toJson()['kind'], 'home');
-      _roundTrip(home, (value) => value.toJson(), WorkspaceDto.fromJson);
-      // The home checkout is an ordinary directory worktree, so nothing
-      // downstream of the session needs a second special case.
-      final checkout = WorktreeDto(
-        id: 'home-checkout',
-        workspaceId: home.id,
-        name: 'Home',
-        path: home.rootPath,
-        kind: WorktreeKind.directory,
-        isTinestOwned: false,
-        createdAt: now,
-      );
-      _roundTrip(checkout, (value) => value.toJson(), WorktreeDto.fromJson);
-    },
-    tags: const <String>['feature_test__session_home__contract'],
-  );
+  test('the home workspace kind round-trips under a stable JSON name', () {
+    final home = WorkspaceDto(
+      id: 'home',
+      name: 'Home',
+      rootPath: '/home/user',
+      kind: WorkspaceKind.home,
+      createdAt: now,
+    );
+    expect(home.toJson()['kind'], 'home');
+    _roundTrip(home, (value) => value.toJson(), WorkspaceDto.fromJson);
+    // The home checkout is an ordinary directory worktree, so nothing
+    // downstream of the session needs a second special case.
+    final checkout = WorktreeDto(
+      id: 'home-checkout',
+      workspaceId: home.id,
+      name: 'Home',
+      path: home.rootPath,
+      kind: WorktreeKind.directory,
+      isTinestOwned: false,
+      createdAt: now,
+    );
+    _roundTrip(checkout, (value) => value.toJson(), WorktreeDto.fromJson);
+  }, tags: const <String>['feature_test__session_home__contract']);
 
   final workspace = WorkspaceDto(
     id: 'workspace',
@@ -716,11 +673,7 @@ void main() {
       cacheRead: 0.25,
       cacheWrite: 0.5,
     ),
-    limits: const ModelLimitsDto(
-      context: 128000,
-      input: 120000,
-      output: 8000,
-    ),
+    limits: const ModelLimitsDto(context: 128000, input: 120000, output: 8000),
   );
   final catalog = ProviderCatalogDto(
     definitions: const <ProviderDefinitionDto>[definition],
@@ -1156,9 +1109,7 @@ void main() {
           name: 'Reviewer',
           description: 'Reviews code.',
           mode: AgentMode.subagent,
-          model: AgentModelSelectionDto(
-            source: AgentModelSource.session,
-          ),
+          model: AgentModelSelectionDto(source: AgentModelSource.session),
           driverId: 'tinest.standard/driver',
           extensionIds: <String>[],
           toolIds: <String>['tinest.files/read_file'],
@@ -1196,10 +1147,7 @@ void main() {
       ProviderConnectionIdParamsDto.fromJson,
     );
     _roundTrip(
-      const ProviderModelParamsDto(
-        connectionId: 'provider',
-        modelId: 'model',
-      ),
+      const ProviderModelParamsDto(connectionId: 'provider', modelId: 'model'),
       (value) => value.toJson(),
       ProviderModelParamsDto.fromJson,
     );
@@ -1251,18 +1199,12 @@ void main() {
       SessionIdParamsDto.fromJson,
     );
     _roundTrip(
-      const ApprovalResolveParamsDto(
-        approvalId: 'approval',
-        approved: true,
-      ),
+      const ApprovalResolveParamsDto(approvalId: 'approval', approved: true),
       (value) => value.toJson(),
       ApprovalResolveParamsDto.fromJson,
     );
     _roundTrip(
-      const TimelineSubscribeParamsDto(
-        sessionId: 'agent',
-        afterSequence: 12,
-      ),
+      const TimelineSubscribeParamsDto(sessionId: 'agent', afterSequence: 12),
       (value) => value.toJson(),
       TimelineSubscribeParamsDto.fromJson,
     );
@@ -1277,10 +1219,7 @@ void main() {
       // An unbounded subscribe stays expressible: the daemon's existing
       // full-history callers must keep working untouched.
       _roundTrip(
-        const TimelineSubscribeParamsDto(
-          sessionId: 'agent',
-          afterSequence: 0,
-        ),
+        const TimelineSubscribeParamsDto(sessionId: 'agent', afterSequence: 0),
         (value) => value.toJson(),
         TimelineSubscribeParamsDto.fromJson,
       );
@@ -1325,11 +1264,7 @@ void main() {
         sha256: 'hash',
         createdAt: now,
       );
-      _roundTrip(
-        attachment,
-        (value) => value.toJson(),
-        AttachmentDto.fromJson,
-      );
+      _roundTrip(attachment, (value) => value.toJson(), AttachmentDto.fromJson);
       expect(
         TurnStartParamsDto.fromJson(<String, dynamic>{
           'sessionId': 'agent',
@@ -1827,10 +1762,7 @@ void main() {
         inputSchema: <String, dynamic>{'type': 'object'},
         outputSchema: <String, dynamic>{'type': 'object'},
         effects: <String>['mcp.invoke'],
-        presentation: <String, dynamic>{
-          'group': 'mcp',
-          'server': 'github',
-        },
+        presentation: <String, dynamic>{'group': 'mcp', 'server': 'github'},
         available: false,
       ),
       (value) => value.toJson(),
@@ -2022,9 +1954,7 @@ void main() {
   test(
     'daemon model settings use concrete selections and model-owned RPCs',
     () {
-      const selection = ModelSelectionDto(
-        modelId: 'connection-1/model-1',
-      );
+      const selection = ModelSelectionDto(modelId: 'connection-1/model-1');
       _roundTrip(
         const DaemonModelSettingsDto(defaultModel: selection),
         (value) => value.toJson(),
@@ -2042,10 +1972,7 @@ void main() {
       );
 
       expect(modelsGetSettingsProcedure.name, 'models.getSettings');
-      expect(
-        modelsSetDefaultModelProcedure.name,
-        'models.setDefaultModel',
-      );
+      expect(modelsSetDefaultModelProcedure.name, 'models.setDefaultModel');
       expect(
         rpcProcedures.map((procedure) => procedure.name),
         isNot(
@@ -2187,23 +2114,19 @@ void main() {
     tags: const <String>['feature_test__worktree_lifecycle__contract'],
   );
 
-  test(
-    'failure codes stay unique and self-describing',
-    () {
-      // Codes are the translation key every client switches on, so a duplicate
-      // or a renamed constant silently drops a localized message.
-      const codes = RpcErrorCodes.all;
-      expect(codes, contains(RpcErrorCodes.branchAlreadyExists));
-      expect(codes, contains(RpcErrorCodes.gitCommandFailed));
-      expect(codes, contains(RpcErrorCodes.requestTimeout));
-      expect(codes, contains(RpcErrorCodes.internalError));
-      expect(
-        codes.every((code) => RegExp(r'^[a-z][a-z0-9_]*$').hasMatch(code)),
-        isTrue,
-      );
-    },
-    tags: const <String>['feature_test__worktree_lifecycle__contract'],
-  );
+  test('failure codes stay unique and self-describing', () {
+    // Codes are the translation key every client switches on, so a duplicate
+    // or a renamed constant silently drops a localized message.
+    const codes = RpcErrorCodes.all;
+    expect(codes, contains(RpcErrorCodes.branchAlreadyExists));
+    expect(codes, contains(RpcErrorCodes.gitCommandFailed));
+    expect(codes, contains(RpcErrorCodes.requestTimeout));
+    expect(codes, contains(RpcErrorCodes.internalError));
+    expect(
+      codes.every((code) => RegExp(r'^[a-z][a-z0-9_]*$').hasMatch(code)),
+      isTrue,
+    );
+  }, tags: const <String>['feature_test__worktree_lifecycle__contract']);
 }
 
 void _roundTrip<T>(

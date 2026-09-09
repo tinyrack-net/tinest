@@ -10,7 +10,7 @@ import 'package:web_socket_channel/web_socket_channel.dart';
 /// HTTP and WebSocket surface of one stateless relay replica.
 final class RelayService {
   /// Creates a relay replica with bounded registry resources.
-  RelayService({
+  new({
     RelayRegistry? registry,
     this.maxConnections = 4096,
     this.maxConnectionsPerIp = 64,
@@ -164,7 +164,7 @@ tinest_relay_reconnections_total $_reconnections
 enum _RelayRole { daemon, client }
 
 final class _RelayRoute {
-  const _RelayRoute(this.role, this.serverId);
+  const new(this.role, this.serverId);
 
   static _RelayRoute? fromRequest(Request request) {
     final role = switch (request.url.queryParameters['role']) {
@@ -187,7 +187,7 @@ final class _RelayRoute {
 }
 
 final class _WebSocketRelayPeer implements RelayPeer {
-  _WebSocketRelayPeer(
+  new(
     this._channel, {
     required Duration? initialFrameTimeout,
     required this.onReceived,
@@ -240,10 +240,7 @@ final class _WebSocketRelayPeer implements RelayPeer {
     };
     await _channel.sink
         .close(wireCode, reason)
-        .timeout(
-          const Duration(seconds: 1),
-          onTimeout: () {},
-        );
+        .timeout(const Duration(seconds: 1), onTimeout: () {});
     await _subscription.cancel();
   }
 

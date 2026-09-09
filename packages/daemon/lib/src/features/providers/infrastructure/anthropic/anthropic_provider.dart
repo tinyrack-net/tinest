@@ -10,7 +10,7 @@ import 'package:dio/dio.dart';
 /// Runtime configuration for an Anthropic Messages endpoint.
 final class AnthropicProviderConfig {
   /// Creates Anthropic endpoint configuration.
-  const AnthropicProviderConfig({
+  const new({
     required this.apiKey,
     this.id = 'anthropic',
     this.baseUrl = 'https://api.anthropic.com/v1',
@@ -48,7 +48,7 @@ final class AnthropicProviderConfig {
 /// Classified Anthropic transport or stream failure.
 final class AnthropicProviderException implements Exception {
   /// Creates a provider failure.
-  const AnthropicProviderException(this.message, {this.retryable = false});
+  const new(this.message, {this.retryable = false});
 
   /// User-safe description.
   final String message;
@@ -63,7 +63,7 @@ final class AnthropicProviderException implements Exception {
 /// Stateless Anthropic Messages streaming adapter.
 final class AnthropicMessagesProvider implements ModelGateway {
   /// Creates a Messages adapter.
-  AnthropicMessagesProvider(AnthropicProviderConfig config, {Dio? dio})
+  new(AnthropicProviderConfig config, {Dio? dio})
     : _config = config,
       _dio = dio ?? Dio(BaseOptions(baseUrl: config.baseUrl));
 
@@ -363,7 +363,7 @@ final class AnthropicMessagesProvider implements ModelGateway {
 }
 
 final class _AnthropicBlock {
-  _AnthropicBlock(this.raw);
+  new(this.raw);
   final Map<String, dynamic> raw;
   final StringBuffer arguments = StringBuffer();
   final StringBuffer thinking = StringBuffer();

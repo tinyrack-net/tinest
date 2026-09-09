@@ -7,7 +7,7 @@ import 'package:path/path.dart' as p;
 /// CredentialStore defines a public contract.
 class CredentialStore implements CredentialRepository {
   /// Creates a [CredentialStore].
-  CredentialStore(this.configDirectory);
+  new(this.configDirectory);
 
   /// The configDirectory public API member.
   final String configDirectory;
@@ -134,24 +134,22 @@ class CredentialStore implements CredentialRepository {
     await _writeCredentials();
   }
 
-  Future<void> _writeCredentials() => _writeJson(
-    _credentialsFile,
-    <String, dynamic>{
-      'schemaVersion': 2,
-      if (_bearerToken != null || _relayIdentityPrivateKey != null)
-        'daemon': <String, dynamic>{
-          'bearerToken': ?_bearerToken,
-          if (_relayIdentityPrivateKey case final privateKey?)
-            'relayIdentityPrivateKey': base64UrlEncode(privateKey),
+  Future<void> _writeCredentials() =>
+      _writeJson(_credentialsFile, <String, dynamic>{
+        'schemaVersion': 2,
+        if (_bearerToken != null || _relayIdentityPrivateKey != null)
+          'daemon': <String, dynamic>{
+            'bearerToken': ?_bearerToken,
+            if (_relayIdentityPrivateKey case final privateKey?)
+              'relayIdentityPrivateKey': base64UrlEncode(privateKey),
+          },
+        'providerCredentials': <String, dynamic>{
+          for (final entry in _providerCredentials.entries)
+            entry.key: _credentialToJson(entry.value),
         },
-      'providerCredentials': <String, dynamic>{
-        for (final entry in _providerCredentials.entries)
-          entry.key: _credentialToJson(entry.value),
-      },
-      if (_mcpSecrets.isNotEmpty)
-        'mcpSecrets': Map<String, String>.from(_mcpSecrets),
-    },
-  );
+        if (_mcpSecrets.isNotEmpty)
+          'mcpSecrets': Map<String, String>.from(_mcpSecrets),
+      });
 
   Future<void> _ensureDirectory() async {
     final directory = Directory(configDirectory);

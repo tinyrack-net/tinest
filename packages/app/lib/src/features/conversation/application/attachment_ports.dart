@@ -31,7 +31,7 @@ enum AttachmentFailureReason {
 /// knows the locale.
 final class AttachmentFailure implements Exception {
   /// Creates a failure for [reason].
-  const AttachmentFailure(this.reason);
+  const new(this.reason);
 
   /// What about the selection could not be accepted.
   final AttachmentFailureReason reason;
@@ -43,22 +43,17 @@ final class AttachmentFailure implements Exception {
 /// A repeatably readable local file waiting to be uploaded.
 final class PendingAttachment {
   /// Creates a pending attachment.
-  factory PendingAttachment({
+  factory({
     required String fileName,
     required String mimeType,
     required int byteSize,
     required Stream<List<int>> Function() openRead,
   }) => PendingAttachment._(fileName, mimeType, byteSize, openRead);
 
-  const PendingAttachment._(
-    this.fileName,
-    this.mimeType,
-    this.byteSize,
-    this._openRead,
-  );
+  const new _(this.fileName, this.mimeType, this.byteSize, this._openRead);
 
   /// Creates a repeatable in-memory pending attachment.
-  factory PendingAttachment.fromBytes({
+  factory fromBytes({
     required String fileName,
     required String mimeType,
     required Uint8List bytes,
@@ -95,10 +90,7 @@ final class PendingAttachment {
 /// Text and ordered files submitted by the composer.
 final class ComposerSubmission {
   /// Creates one immutable composer submission.
-  const ComposerSubmission({
-    required this.text,
-    required this.attachments,
-  });
+  const new({required this.text, required this.attachments});
 
   /// Trimmed prompt, which may be empty for attachment-only turns.
   final String text;

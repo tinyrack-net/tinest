@@ -9,7 +9,7 @@ import 'package:tinyrack_ui/tinyrack_ui.dart';
 /// inert placeholder per surface, announced once as a live region.
 class WorkspacePaneSkeleton extends StatelessWidget {
   /// Creates a placeholder for a workspace tab pane.
-  const WorkspacePaneSkeleton({required this.semanticLabel, super.key});
+  const new({required this.semanticLabel, super.key});
 
   /// Accessible description announced once for the complete placeholder.
   final String semanticLabel;
@@ -48,7 +48,7 @@ class WorkspacePaneSkeleton extends StatelessWidget {
 /// A placeholder for a conversation timeline whose history is still loading.
 class ChatTimelineSkeleton extends StatelessWidget {
   /// Creates a placeholder shaped like alternating chat turns.
-  const ChatTimelineSkeleton({required this.semanticLabel, super.key});
+  const new({required this.semanticLabel, super.key});
 
   /// Accessible description announced once for the complete placeholder.
   final String semanticLabel;
@@ -83,9 +83,9 @@ class ChatTimelineSkeleton extends StatelessWidget {
 }
 
 class _ChatTurnSkeleton extends StatelessWidget {
-  const _ChatTurnSkeleton.user() : _user = true;
+  const new user() : _user = true;
 
-  const _ChatTurnSkeleton.assistant() : _user = false;
+  const new assistant() : _user = false;
 
   final bool _user;
 
@@ -119,11 +119,7 @@ class _ChatTurnSkeleton extends StatelessWidget {
 /// accepted yet, instead of leaving an empty prompt that swallows keystrokes.
 class TerminalConnectingOverlay extends StatelessWidget {
   /// Creates a terminal attach placeholder.
-  const TerminalConnectingOverlay({
-    required this.semanticLabel,
-    required this.message,
-    super.key,
-  });
+  const new({required this.semanticLabel, required this.message, super.key});
 
   /// Accessible description announced once for the complete placeholder.
   final String semanticLabel;
@@ -180,7 +176,7 @@ class TerminalConnectingOverlay extends StatelessWidget {
 /// A placeholder for the workspace sidebar tree while catalogs load.
 class SidebarTreeSkeleton extends StatelessWidget {
   /// Creates a sidebar tree placeholder.
-  const SidebarTreeSkeleton({required this.semanticLabel, super.key});
+  const new({required this.semanticLabel, super.key});
 
   /// Accessible description announced once for the complete placeholder.
   final String semanticLabel;
@@ -211,7 +207,7 @@ class SidebarTreeSkeleton extends StatelessWidget {
 }
 
 class _SidebarProjectSkeleton extends StatelessWidget {
-  const _SidebarProjectSkeleton();
+  const new();
 
   @override
   Widget build(BuildContext context) => const Column(
@@ -237,11 +233,7 @@ class _SidebarProjectSkeleton extends StatelessWidget {
 /// A generic placeholder for a flat list whose rows are still loading.
 class ListRowsSkeleton extends StatelessWidget {
   /// Creates a list placeholder with [rows] single-line rows.
-  const ListRowsSkeleton({
-    required this.semanticLabel,
-    this.rows = 8,
-    super.key,
-  });
+  const new({required this.semanticLabel, this.rows = 8, super.key});
 
   /// Accessible description announced once for the complete placeholder.
   final String semanticLabel;
@@ -274,7 +266,7 @@ class ListRowsSkeleton extends StatelessWidget {
 }
 
 class _StaggeredTextLines extends StatelessWidget {
-  const _StaggeredTextLines();
+  const new();
 
   @override
   Widget build(BuildContext context) => const Padding(

@@ -19,7 +19,7 @@ abstract interface class RunnableModelCatalog {
 /// Stable model-settings failure exposed through RPC bindings.
 final class ModelSettingsFailure implements Exception {
   /// Creates a model-settings failure.
-  const ModelSettingsFailure(this.code, this.message);
+  const new(this.code, this.message);
 
   /// Stable machine-readable failure code.
   final String code;
@@ -34,12 +34,12 @@ final class ModelSettingsFailure implements Exception {
 /// Owns the single concrete daemon default model.
 final class DaemonModelSettingsService {
   /// Creates daemon model settings over typed storage and catalog ports.
-  factory DaemonModelSettingsService({
+  factory({
     required SettingsRepository settings,
     required RunnableModelCatalog catalog,
   }) => DaemonModelSettingsService._(settings, catalog);
 
-  DaemonModelSettingsService._(this._settings, this._catalog);
+  new _(this._settings, this._catalog);
 
   final SettingsRepository _settings;
   final RunnableModelCatalog _catalog;
@@ -70,13 +70,12 @@ final class DaemonModelSettingsService {
   });
 
   /// Replaces the default with a concrete runnable selection.
-  Future<DaemonModelSettingsDto> setDefaultModel(
-    ModelSelectionDto model,
-  ) => _serialize(() async {
-    await requireRunnable(model);
-    await _write(model);
-    return DaemonModelSettingsDto(defaultModel: model);
-  });
+  Future<DaemonModelSettingsDto> setDefaultModel(ModelSelectionDto model) =>
+      _serialize(() async {
+        await requireRunnable(model);
+        await _write(model);
+        return DaemonModelSettingsDto(defaultModel: model);
+      });
 
   /// Returns the stored default only when it can currently run.
   Future<ModelSelectionDto> requireDefaultModel() => _serialize(() async {
@@ -124,10 +123,7 @@ final class DaemonModelSettingsService {
 
   Future<T> _serialize<T>(Future<T> Function() action) {
     final run = _settled.then((_) => action());
-    _settled = run.then<void>(
-      (_) {},
-      onError: (Object _, StackTrace _) {},
-    );
+    _settled = run.then<void>((_) {}, onError: (Object _, StackTrace _) {});
     return run;
   }
 

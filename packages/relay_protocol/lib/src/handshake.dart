@@ -6,7 +6,7 @@ import 'package:relay_protocol/src/cipher.dart';
 
 /// Persistent Ed25519 identity used by a daemon or one registered device.
 final class RelayIdentity {
-  RelayIdentity._(this._keyPair, this.publicKey);
+  new _(this._keyPair, this.publicKey);
 
   /// Restores a deterministic identity from its 32-byte private seed.
   static Future<RelayIdentity> fromSeed(List<int> seed) async {
@@ -15,20 +15,14 @@ final class RelayIdentity {
     }
     final keyPair = await Ed25519().newKeyPairFromSeed(seed);
     final publicKey = await keyPair.extractPublicKey();
-    return RelayIdentity._(
-      keyPair,
-      Uint8List.fromList(publicKey.bytes),
-    );
+    return RelayIdentity._(keyPair, Uint8List.fromList(publicKey.bytes));
   }
 
   /// Generates a new persistent identity with platform secure randomness.
   static Future<RelayIdentity> generate() async {
     final keyPair = await Ed25519().newKeyPair();
     final publicKey = await keyPair.extractPublicKey();
-    return RelayIdentity._(
-      keyPair,
-      Uint8List.fromList(publicKey.bytes),
-    );
+    return RelayIdentity._(keyPair, Uint8List.fromList(publicKey.bytes));
   }
 
   final SimpleKeyPair _keyPair;
@@ -44,7 +38,7 @@ final class RelayIdentity {
 /// First mutually authenticated handshake message sent by a device.
 final class RelayClientHello {
   /// Creates a validated client hello.
-  RelayClientHello({
+  new({
     required this.serverId,
     required this.sessionId,
     required this.deviceId,
@@ -62,15 +56,14 @@ final class RelayClientHello {
   }
 
   /// Decodes a client hello from its strict JSON representation.
-  factory RelayClientHello.fromJson(Map<String, dynamic> json) =>
-      RelayClientHello(
-        serverId: json['serverId']! as String,
-        sessionId: json['sessionId']! as String,
-        deviceId: json['deviceId']! as String,
-        identityPublicKey: _decodeBytes(json['identityPublicKey']! as String),
-        ephemeralPublicKey: _decodeBytes(json['ephemeralPublicKey']! as String),
-        signature: _decodeBytes(json['signature']! as String),
-      );
+  factory fromJson(Map<String, dynamic> json) => RelayClientHello(
+    serverId: json['serverId']! as String,
+    sessionId: json['sessionId']! as String,
+    deviceId: json['deviceId']! as String,
+    identityPublicKey: _decodeBytes(json['identityPublicKey']! as String),
+    ephemeralPublicKey: _decodeBytes(json['ephemeralPublicKey']! as String),
+    signature: _decodeBytes(json['signature']! as String),
+  );
 
   /// Authoritative daemon identifier from the pairing offer.
   final String serverId;
@@ -104,7 +97,7 @@ final class RelayClientHello {
 /// Authenticated handshake response sent by the daemon.
 final class RelayDaemonHello {
   /// Creates a validated daemon hello.
-  RelayDaemonHello({
+  new({
     required List<int> identityPublicKey,
     required List<int> ephemeralPublicKey,
     required List<int> signature,
@@ -119,12 +112,11 @@ final class RelayDaemonHello {
   }
 
   /// Decodes a daemon hello from its strict JSON representation.
-  factory RelayDaemonHello.fromJson(Map<String, dynamic> json) =>
-      RelayDaemonHello(
-        identityPublicKey: _decodeBytes(json['identityPublicKey']! as String),
-        ephemeralPublicKey: _decodeBytes(json['ephemeralPublicKey']! as String),
-        signature: _decodeBytes(json['signature']! as String),
-      );
+  factory fromJson(Map<String, dynamic> json) => RelayDaemonHello(
+    identityPublicKey: _decodeBytes(json['identityPublicKey']! as String),
+    ephemeralPublicKey: _decodeBytes(json['ephemeralPublicKey']! as String),
+    signature: _decodeBytes(json['signature']! as String),
+  );
 
   /// Daemon Ed25519 public identity.
   final Uint8List identityPublicKey;
@@ -146,11 +138,9 @@ final class RelayDaemonHello {
 /// Derived secret and authenticated transcript used by record ciphers.
 final class RelayHandshakeResult {
   /// Creates an immutable handshake result.
-  RelayHandshakeResult({
-    required List<int> sharedSecret,
-    required List<int> transcript,
-  }) : sharedSecret = Uint8List.fromList(sharedSecret),
-       transcript = Uint8List.fromList(transcript);
+  new({required List<int> sharedSecret, required List<int> transcript})
+    : sharedSecret = Uint8List.fromList(sharedSecret),
+      transcript = Uint8List.fromList(transcript);
 
   /// Raw X25519 shared secret passed to HKDF.
   final Uint8List sharedSecret;
@@ -161,7 +151,7 @@ final class RelayHandshakeResult {
 
 /// Client-side state retained between the two handshake messages.
 final class RelayHandshakeInitiator {
-  RelayHandshakeInitiator._(this.hello, this._ephemeralKeyPair);
+  new _(this.hello, this._ephemeralKeyPair);
 
   /// Creates and signs the device hello.
   static Future<RelayHandshakeInitiator> start({
@@ -227,14 +217,18 @@ final class RelayHandshakeInitiator {
         'Daemon handshake signature is invalid.',
       );
     }
-    return _result(_ephemeralKeyPair, response.ephemeralPublicKey, transcript);
+    return await _result(
+      _ephemeralKeyPair,
+      response.ephemeralPublicKey,
+      transcript,
+    );
   }
 }
 
 /// Daemon-side authenticated handshake result and response.
 final class RelayHandshakeResponder {
   /// Creates a responder result.
-  const RelayHandshakeResponder({required this.hello, required this.result});
+  const new({required this.hello, required this.result});
 
   /// Verifies an approved device and signs a daemon response.
   static Future<RelayHandshakeResponder> respond({

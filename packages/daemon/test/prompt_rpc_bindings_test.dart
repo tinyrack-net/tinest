@@ -51,4 +51,4 @@ void main() {
 }
 
 final class _UnusedWorkspaceCatalog extends Mock
-    implements WorkspaceCatalogPort {}
+    implements WorkspaceCatalogPort;

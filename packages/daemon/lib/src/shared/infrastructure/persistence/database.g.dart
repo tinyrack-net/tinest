@@ -8212,7 +8212,7 @@ class $$WorkspacesTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$WorkspacesTable, Workspace>(table),
                   $$WorkspacesTableReferences(db, table, e),
                 ),
               )
@@ -8686,7 +8686,7 @@ class $$WorktreesTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$WorktreesTable, Worktree>(table),
                   $$WorktreesTableReferences(db, table, e),
                 ),
               )
@@ -9957,7 +9957,7 @@ class $$SessionsTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$SessionsTable, Session>(table),
                   $$SessionsTableReferences(db, table, e),
                 ),
               )
@@ -10699,8 +10699,10 @@ class $$TurnsTableTableManager
               ),
           withReferenceMapper: (p0) => p0
               .map(
-                (e) =>
-                    (e.readTable(table), $$TurnsTableReferences(db, table, e)),
+                (e) => (
+                  e.readTable<$TurnsTable, Turn>(table),
+                  $$TurnsTableReferences(db, table, e),
+                ),
               )
               .toList(),
           prefetchHooksCallback:
@@ -11216,7 +11218,9 @@ class $$AgentMailboxMessagesTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$AgentMailboxMessagesTable, AgentMailboxMessage>(
+                    table,
+                  ),
                   $$AgentMailboxMessagesTableReferences(db, table, e),
                 ),
               )
@@ -11567,7 +11571,7 @@ class $$AttachmentsTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$AttachmentsTable, Attachment>(table),
                   $$AttachmentsTableReferences(db, table, e),
                 ),
               )
@@ -11943,7 +11947,7 @@ class $$TurnAttachmentsTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$TurnAttachmentsTable, TurnAttachment>(table),
                   $$TurnAttachmentsTableReferences(db, table, e),
                 ),
               )
@@ -12295,7 +12299,7 @@ class $$TimelineEventsTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$TimelineEventsTable, TimelineEvent>(table),
                   $$TimelineEventsTableReferences(db, table, e),
                 ),
               )
@@ -12793,7 +12797,7 @@ class $$ApprovalRequestsTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$ApprovalRequestsTable, ApprovalRequest>(table),
                   $$ApprovalRequestsTableReferences(db, table, e),
                 ),
               )
@@ -13262,7 +13266,7 @@ class $$UserQuestionsTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$UserQuestionsTable, UserQuestionRow>(table),
                   $$UserQuestionsTableReferences(db, table, e),
                 ),
               )
@@ -13597,7 +13601,7 @@ class $$ProviderStatesTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$ProviderStatesTable, ProviderState>(table),
                   $$ProviderStatesTableReferences(db, table, e),
                 ),
               )
@@ -13763,7 +13767,16 @@ class $$SettingsTableTableManager
             Value<int> rowid = const Value.absent(),
           }) => SettingsCompanion.insert(key: key, value: value, rowid: rowid),
           withReferenceMapper: (p0) => p0
-              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .map(
+                (e) => (
+                  e.readTable<$SettingsTable, Setting>(table),
+                  BaseReferences<_$TinestDatabase, $SettingsTable, Setting>(
+                    db,
+                    table,
+                    e,
+                  ),
+                ),
+              )
               .toList(),
           prefetchHooksCallback: null,
         ),
@@ -14174,7 +14187,9 @@ class $$ProviderConnectionsTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$ProviderConnectionsTable, ProviderConnection>(
+                    table,
+                  ),
                   $$ProviderConnectionsTableReferences(db, table, e),
                 ),
               )
@@ -14622,7 +14637,7 @@ class $$ProviderModelsTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$ProviderModelsTable, ProviderModel>(table),
                   $$ProviderModelsTableReferences(db, table, e),
                 ),
               )

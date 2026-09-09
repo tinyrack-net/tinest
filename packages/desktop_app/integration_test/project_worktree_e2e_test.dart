@@ -44,13 +44,10 @@ void main() {
       final document =
           jsonDecode(await settingsFile.readAsString()) as Map<String, dynamic>;
       expect(document['other'], <String, dynamic>{'keep': true});
-      expect(
-        document['worktree'],
-        <String, dynamic>{
-          'setup': <dynamic>['dart pub get', 'dart test'],
-          'teardown': <dynamic>['dart run cleanup'],
-        },
-      );
+      expect(document['worktree'], <String, dynamic>{
+        'setup': <dynamic>['dart pub get', 'dart test'],
+        'teardown': <dynamic>['dart run cleanup'],
+      });
 
       await tester.pumpWidget(const SizedBox.shrink());
       await tester.pumpAndSettle();
@@ -99,9 +96,7 @@ void main() {
       await client.workspaces.saveProjectSettings(
         fixture.$3,
         ProjectSettingsDto(
-          setup: <String>[
-            if (Platform.isWindows) 'exit /b 69' else 'exit 69',
-          ],
+          setup: <String>[if (Platform.isWindows) 'exit /b 69' else 'exit 69'],
         ),
       );
 
@@ -218,9 +213,7 @@ void main() {
       addTearDown(() => tester.binding.setSurfaceSize(null));
       await tester.pumpWidget(TinestApp(services: fixture.$1.services));
       await pumpUntil(tester, find.text('archive-external'));
-      final menu = find.byKey(
-        ValueKey<String>('worktree-menu-${external.id}'),
-      );
+      final menu = find.byKey(ValueKey<String>('worktree-menu-${external.id}'));
       await tester.ensureVisible(menu);
       await tester.pumpAndSettle();
       await tester.tap(menu);
@@ -236,9 +229,8 @@ void main() {
 
       expect(externalPath.existsSync(), isFalse);
       expect(
-        (await client.workspaces.listGitBranches(fixture.$3)).map(
-          (branch) => branch.name,
-        ),
+        (await client.workspaces.listGitBranches(fixture.$3))
+            .map((branch) => branch.name),
         contains('archive-external'),
       );
       expect(

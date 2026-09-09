@@ -4,21 +4,18 @@ import 'package:test/test.dart';
 
 void main() {
   test('every authenticated RPC method has one feature owner', () {
-    expect(
-      daemonRpcProcedureGroups.keys,
-      <String>[
-        'workspaces',
-        'agents',
-        'prompts',
-        'models',
-        'providers',
-        'relay',
-        'mcp',
-        'plugins',
-        'sessions',
-        'terminals',
-      ],
-    );
+    expect(daemonRpcProcedureGroups.keys, <String>[
+      'workspaces',
+      'agents',
+      'prompts',
+      'models',
+      'providers',
+      'relay',
+      'mcp',
+      'plugins',
+      'sessions',
+      'terminals',
+    ]);
     expect(
       daemonRpcProcedures.map((procedure) => procedure.name).toSet(),
       hasLength(daemonRpcProcedures.length),
@@ -33,9 +30,7 @@ void main() {
       ]),
     );
     expect(
-      daemonRpcProcedureGroups['sessions']?.map(
-        (procedure) => procedure.name,
-      ),
+      daemonRpcProcedureGroups['sessions']?.map((procedure) => procedure.name),
       containsAll(<String>[
         sessionsCreateProcedure.name,
         sessionsStartTurnProcedure.name,
@@ -43,9 +38,7 @@ void main() {
       ]),
     );
     expect(
-      daemonRpcProcedureGroups['providers']?.map(
-        (procedure) => procedure.name,
-      ),
+      daemonRpcProcedureGroups['providers']?.map((procedure) => procedure.name),
       containsAll(<String>[
         providersCatalogProcedure.name,
         providersDeleteCustomProcedure.name,

@@ -5,7 +5,7 @@ import 'package:protocol/protocol.dart';
 /// Exposes the attachment application service through the relay feature port.
 final class RelayAttachmentAdapter implements RelayAttachmentHost {
   /// Creates an adapter over the shared attachment service.
-  const RelayAttachmentAdapter(this._service);
+  const new(this._service);
 
   final AttachmentService _service;
 

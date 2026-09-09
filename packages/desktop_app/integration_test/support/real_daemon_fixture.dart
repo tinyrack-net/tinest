@@ -10,7 +10,7 @@ import 'temporary_directory.dart';
 
 /// Real local daemon and production WebSocket composition for runner E2E.
 final class RealDaemonFixture {
-  RealDaemonFixture._({
+  new _({
     required this.home,
     required this.daemon,
     required this.store,
@@ -108,7 +108,7 @@ final class RealDaemonFixture {
 
 /// Stable wall clock shared by real-daemon E2E fixtures.
 final class FixedE2eClock implements Clock {
-  const FixedE2eClock();
+  const new();
 
   @override
   DateTime nowUtc() => DateTime.utc(2026, 8, 5, 12);
@@ -116,7 +116,7 @@ final class FixedE2eClock implements Clock {
 
 /// Deterministic daemon identifier source scoped by fixture ID.
 final class SequenceE2eIds implements IdGenerator {
-  SequenceE2eIds(this.prefix);
+  new(this.prefix);
 
   final String prefix;
   var _next = 0;

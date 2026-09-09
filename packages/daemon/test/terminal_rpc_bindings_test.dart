@@ -57,7 +57,7 @@ void main() {
 }
 
 final class _FailingGateway implements TerminalGateway {
-  const _FailingGateway(this.reason);
+  const new(this.reason);
 
   final TerminalCreationFailureReason reason;
 
@@ -86,7 +86,7 @@ final class _MemorySettings implements SettingsRepository {
 
 /// Creating a terminal fails before a screen is ever needed here.
 final class _UnusedScreenFactory implements TerminalScreenFactory {
-  const _UnusedScreenFactory();
+  const new();
 
   @override
   TerminalScreen create({

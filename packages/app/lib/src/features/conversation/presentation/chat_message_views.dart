@@ -15,7 +15,7 @@ import 'package:tinyrack_ui/tinyrack_ui.dart';
 /// A user prompt rendered in a trailing chat bubble.
 class ChatUserLine extends StatelessWidget {
   /// Creates a user line.
-  const ChatUserLine({
+  const new({
     required this.message,
     this.loadAttachment,
     this.exportAttachment,
@@ -60,7 +60,7 @@ class ChatUserLine extends StatelessWidget {
 /// An assistant-published file row.
 class ChatAttachmentLine extends StatelessWidget {
   /// Creates an assistant attachment line.
-  const ChatAttachmentLine({
+  const new({
     required this.message,
     this.loadAttachment,
     this.exportAttachment,
@@ -94,7 +94,7 @@ class ChatAttachmentLine extends StatelessWidget {
 /// Thumbnail or file pill shared by inbound and outbound attachments.
 class ChatAttachmentTile extends StatefulWidget {
   /// Creates an attachment tile.
-  const ChatAttachmentTile({
+  const new({
     required this.attachment,
     this.loadAttachment,
     this.exportAttachment,
@@ -168,9 +168,7 @@ class _ChatAttachmentTileState extends State<ChatAttachmentTile> {
                       width: TRControlMetrics.heightOf(TRUiSize.lg),
                       height: TRControlMetrics.heightOf(TRUiSize.lg),
                       fit: BoxFit.cover,
-                      errorBuilder: (_, _, _) => const Icon(
-                        TinestIcons.image,
-                      ),
+                      errorBuilder: (_, _, _) => const Icon(TinestIcons.image),
                     ),
                   )
                 : _failed
@@ -192,9 +190,7 @@ class _ChatAttachmentTileState extends State<ChatAttachmentTile> {
         behavior: HitTestBehavior.opaque,
         onTap: onTap,
         child: Container(
-          constraints: const BoxConstraints(
-            maxWidth: TRMeasurements.measureSm,
-          ),
+          constraints: const BoxConstraints(maxWidth: TRMeasurements.measureSm),
           padding: const EdgeInsets.all(TRSpacing.small),
           decoration: BoxDecoration(
             border: Border.all(color: context.tinyrackTheme.border),
@@ -251,7 +247,7 @@ String _attachmentSize(int bytes) {
 /// Assistant prose rendered as Markdown on the shared leading rail.
 class ChatAssistantMessageView extends ConsumerWidget {
   /// Creates an assistant message view.
-  const ChatAssistantMessageView({required this.message, super.key});
+  const new({required this.message, super.key});
 
   /// The assistant block to render.
   final ChatAssistantMessage message;
@@ -272,10 +268,8 @@ class ChatAssistantMessageView extends ConsumerWidget {
           children: <Widget>[
             ChatMarkdownBody(
               data: message.markdown,
-              onTapLink: (text, href, title) => openChatLink(
-                ref.read(externalUrlOpenerProvider),
-                href,
-              ),
+              onTapLink: (text, href, title) =>
+                  openChatLink(ref.read(externalUrlOpenerProvider), href),
             ),
             // A growing answer has nothing worth copying yet; a stopped one is
             // no longer streaming, so it keeps the action.
@@ -288,9 +282,8 @@ class ChatAssistantMessageView extends ConsumerWidget {
                   uiSize: TinestUiDensity.compactControlSize(context),
                   label: l10n.chatCopyResponse,
                   icon: const Icon(TinestIcons.copy),
-                  onPressed: () => Clipboard.setData(
-                    ClipboardData(text: message.markdown),
-                  ),
+                  onPressed: () =>
+                      Clipboard.setData(ClipboardData(text: message.markdown)),
                 ),
               ),
           ],
@@ -303,7 +296,7 @@ class ChatAssistantMessageView extends ConsumerWidget {
 /// A short muted line closing one turn.
 class ChatNoticeLine extends StatelessWidget {
   /// Creates a notice line.
-  const ChatNoticeLine({required this.notice, super.key});
+  const new({required this.notice, super.key});
 
   /// The notice to render.
   final ChatNotice notice;
@@ -332,7 +325,7 @@ class ChatNoticeLine extends StatelessWidget {
 /// Token accounting rendered as a muted footer.
 class ChatUsageLine extends StatelessWidget {
   /// Creates a usage line.
-  const ChatUsageLine({required this.usage, super.key});
+  const new({required this.usage, super.key});
 
   /// The usage entry to render.
   final ChatUsage usage;
@@ -359,7 +352,7 @@ class ChatUsageLine extends StatelessWidget {
 /// in the transcript as conversation, not as a tool row full of JSON.
 class ChatUserAnswerLine extends StatelessWidget {
   /// Creates an answered-question line.
-  const ChatUserAnswerLine({required this.answer, super.key});
+  const new({required this.answer, super.key});
 
   /// The answered questions to render.
   final ChatUserAnswer answer;
@@ -402,7 +395,7 @@ class ChatUserAnswerLine extends StatelessWidget {
 /// Tells the user that tools exist beyond the ones the model was handed.
 class ChatDeferredToolsLine extends StatelessWidget {
   /// Creates a deferred-tools line.
-  const ChatDeferredToolsLine({required this.notice, super.key});
+  const new({required this.notice, super.key});
 
   /// The notice to render.
   final ChatDeferredTools notice;
@@ -421,24 +414,21 @@ class ChatDeferredToolsLine extends StatelessWidget {
 /// An event this build cannot render, shown as a collapsible row.
 class ChatUnknownEventLine extends StatelessWidget {
   /// Creates an unknown-event line.
-  const ChatUnknownEventLine({required this.event, super.key});
+  const new({required this.event, super.key});
 
   /// The unrecognized event.
   final ChatUnknownEvent event;
 
   @override
   Widget build(BuildContext context) {
-    return TRChatStatusRow(
-      label: event.type,
-      status: TRChatToolStatus.denied,
-    );
+    return TRChatStatusRow(label: event.type, status: TRChatToolStatus.denied);
   }
 }
 
 /// Placeholder shown before a session has any timeline events.
 class ChatEmptyState extends StatelessWidget {
   /// Creates the empty state.
-  const ChatEmptyState({super.key});
+  const new({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -468,7 +458,7 @@ class ChatEmptyState extends StatelessWidget {
 /// Row shown while a turn is still running.
 class ChatRunningIndicator extends StatelessWidget {
   /// Creates the running indicator.
-  const ChatRunningIndicator({super.key});
+  const new({super.key});
 
   @override
   Widget build(BuildContext context) => TRChatStatusRow(

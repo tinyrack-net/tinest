@@ -5,7 +5,7 @@ import 'package:analyzer/dart/ast/visitor.dart';
 /// One call found inside a widget lifecycle method's synchronous region.
 final class LifecyclePhaseCall {
   /// Creates a finding.
-  const LifecyclePhaseCall({
+  const new({
     required this.member,
     required this.lifecycle,
     required this.offset,
@@ -60,10 +60,7 @@ List<LifecyclePhaseCall> findLifecyclePhaseCalls({
   required String source,
   required Set<String> members,
 }) {
-  final unit = parseString(
-    content: source,
-    throwIfDiagnostics: false,
-  ).unit;
+  final unit = parseString(content: source, throwIfDiagnostics: false).unit;
   final findings = <LifecyclePhaseCall>[];
   for (final declaration in unit.declarations) {
     if (declaration is! ClassDeclaration) continue;

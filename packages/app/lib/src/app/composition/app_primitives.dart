@@ -9,7 +9,7 @@ abstract interface class AppClock {
 /// SystemAppClock defines a public contract.
 final class SystemAppClock implements AppClock {
   /// Creates a [SystemAppClock].
-  const SystemAppClock();
+  const new();
 
   @override
   DateTime nowUtc() => DateTime.now().toUtc();
@@ -24,7 +24,7 @@ abstract interface class AppIdGenerator {
 /// UuidAppIdGenerator defines a public contract.
 final class UuidAppIdGenerator implements AppIdGenerator {
   /// Creates a [UuidAppIdGenerator].
-  const UuidAppIdGenerator();
+  const new();
 
   @override
   String generate() => const Uuid().v4();

@@ -12,7 +12,7 @@ typedef LuaHostCommandResolver = Future<lua.LuaHostCommand> Function();
 final class DeferredLuaHostProcessLauncher
     implements lua.LuaHostProcessLauncher {
   /// Creates a launcher over a lazily resolved host and concrete process port.
-  DeferredLuaHostProcessLauncher(this._resolver, this._delegate);
+  new(this._resolver, this._delegate);
 
   final LuaHostCommandResolver _resolver;
   final lua.LuaHostProcessLauncher _delegate;
@@ -24,7 +24,7 @@ final class DeferredLuaHostProcessLauncher
     required String workingDirectory,
   }) async {
     final resolved = await _resolve();
-    return _delegate.start(
+    return await _delegate.start(
       resolved.withEnvironment(command.environment),
       workingDirectory: workingDirectory,
     );

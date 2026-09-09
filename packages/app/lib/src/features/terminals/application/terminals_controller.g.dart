@@ -56,7 +56,7 @@ final class HostShellSettingsControllerProvider
 }
 
 String _$hostShellSettingsControllerHash() =>
-    r'ea3a949dab94a16205f7d0a237f6346a865903c5';
+    r'd7ca6cec781dfaa402798fe4e682c73888c21d2a';
 
 /// Loads and edits the daemon-wide shell inherited by project terminals.
 
@@ -157,7 +157,7 @@ final class TerminalsControllerProvider
 }
 
 String _$terminalsControllerHash() =>
-    r'9445d23bc160d9e63c5cedc6fb1c8c2d3c18adef';
+    r'0769c0baf4fbfb64a80c9c6c7397ec0c72057b91';
 
 /// Owns the live terminal catalog for one connected worktree.
 

@@ -7,10 +7,8 @@ import 'package:flutter/foundation.dart';
 /// Records window control without opening a native window.
 final class FakeDesktopWindow implements DesktopWindow {
   /// Creates a fake window that starts visible unless told otherwise.
-  FakeDesktopWindow({
-    bool visible = true,
-    this.chrome = DesktopWindowChrome.native,
-  }) : _visible = ValueNotifier<bool>(visible);
+  new({bool visible = true, this.chrome = DesktopWindowChrome.native})
+    : _visible = ValueNotifier<bool>(visible);
 
   @override
   final DesktopWindowChrome chrome;
@@ -112,7 +110,7 @@ final class FakeDesktopWindow implements DesktopWindow {
 /// Records the process-ending call instead of killing the test runner.
 final class FakeAppTerminator implements AppTerminator {
   /// Creates a terminator that only counts requests.
-  FakeAppTerminator({this.calls});
+  new({this.calls});
 
   /// Number of times the app asked to end the process.
   int terminations = 0;
@@ -133,7 +131,7 @@ final class FakeTrayIcon implements TrayIcon {
   ///
   /// A held gate reproduces a real tray, where installing the icon takes long
   /// enough for another frame to ask for a menu update.
-  FakeTrayIcon({this.installGate});
+  new({this.installGate});
 
   /// Completed by a test to let a pending [install] finish.
   final Completer<void>? installGate;
@@ -197,7 +195,7 @@ final class FakeTrayIcon implements TrayIcon {
 /// Records login-item registration without touching the real home directory.
 final class FakeAutostartRegistration implements AutostartRegistration {
   /// Creates a fake registration that starts unregistered.
-  FakeAutostartRegistration({this.enabled = false});
+  new({this.enabled = false});
 
   /// Whether the operating system would launch the app at login.
   bool enabled;

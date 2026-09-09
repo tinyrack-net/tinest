@@ -226,9 +226,7 @@ void main() {
     expect(decodedUpload.fileName, 'notes.txt');
     expect(decodedUpload.byteSize, 50 * 1024 * 1024);
 
-    final download = RelayAttachmentOpen.download(
-      attachmentId: 'attachment-1',
-    );
+    final download = RelayAttachmentOpen.download(attachmentId: 'attachment-1');
     expect(
       RelayAttachmentOpen.decode(download.encode()).attachmentId,
       'attachment-1',

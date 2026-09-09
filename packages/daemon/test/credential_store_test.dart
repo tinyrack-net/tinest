@@ -69,9 +69,8 @@ void main() {
         List<int>.generate(32, (i) => i),
       );
 
-      final credentialsJson = await File(
-        '${directory.path}/secrets.json',
-      ).readAsString();
+      final credentialsJson = await File('${directory.path}/secrets.json')
+          .readAsString();
       expect(jsonDecode(credentialsJson), <String, dynamic>{
         'schemaVersion': 2,
         'daemon': <String, dynamic>{
@@ -81,10 +80,7 @@ void main() {
           ),
         },
         'providerCredentials': <String, dynamic>{
-          'deepseek': <String, dynamic>{
-            'type': 'apiKey',
-            'key': 'api-secret',
-          },
+          'deepseek': <String, dynamic>{'type': 'apiKey', 'key': 'api-secret'},
           'openai': <String, dynamic>{
             'type': 'oauth',
             'accessToken': 'access-secret',
@@ -149,9 +145,7 @@ void main() {
 
     final reloaded = CredentialStore(directory.path);
     await reloaded.load();
-    expect(reloaded.mcpSecrets, <String, String>{
-      'github.token': 'mcp-secret',
-    });
+    expect(reloaded.mcpSecrets, <String, String>{'github.token': 'mcp-secret'});
     expect(reloaded.credential('openai'), isA<ApiKeyCredential>());
 
     await reloaded.setMcpSecret('github.token', 'rotated');

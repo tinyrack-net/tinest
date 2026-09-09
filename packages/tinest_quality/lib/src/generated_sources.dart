@@ -7,9 +7,7 @@ abstract final class GeneratedSources {
         isFreezedOutput(path) ||
         path.endsWith('/packages/desktop_app/pubspec.yaml') ||
         path == 'packages/desktop_app/pubspec.yaml' ||
-        RegExp(
-          '(?:^|/)lib/l10n/gen/app_localizations',
-        ).hasMatch(path);
+        RegExp('(?:^|/)lib/l10n/gen/app_localizations').hasMatch(path);
   }
 
   /// Whether [value] identifies output owned by the Freezed builder.
@@ -93,7 +91,7 @@ abstract final class GeneratedSources {
 /// Result of comparing checked-in generated source snapshots.
 final class GeneratedSourcesCheck {
   /// Creates a generated source comparison result.
-  const GeneratedSourcesCheck(this.changedPaths);
+  const new(this.changedPaths);
 
   /// Generated paths added, removed, or changed by their generators.
   final List<String> changedPaths;

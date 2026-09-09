@@ -20,222 +20,185 @@ final String _firstStreamChunk = List<String>.generate(
   36,
   (index) => '스트림 청크 1-$index',
 ).join('\n\n');
-final String _secondStreamChunk =
-    '\n\n${List<String>.generate(
-      12,
-      (index) => '스트림 청크 2-$index',
-    ).join('\n\n')}';
-final String _thirdStreamChunk =
-    '\n\n${List<String>.generate(
-      12,
-      (index) => '스트림 청크 3-$index',
-    ).join('\n\n')}';
+String _streamChunk(String label) =>
+    '\n\n${List<String>.generate(12, (index) => '$label-$index').join('\n\n')}';
+final String _secondStreamChunk = _streamChunk('스트림 청크 2');
+final String _thirdStreamChunk = _streamChunk('스트림 청크 3');
 const String _adversityModelId = 'openai/gpt-5.6-sol';
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
-  testWidgets(
-    'queued input crosses question, reconnect, approval, and restore '
-    'boundaries',
-    (tester) async {
-      tester.binding.platformDispatcher.localeTestValue = const Locale('ko');
-      addTearDown(tester.binding.platformDispatcher.clearLocaleTestValue);
-      await tester.binding.setSurfaceSize(const Size(1400, 1000));
-      addTearDown(() => tester.binding.setSurfaceSize(null));
+  testWidgets('queued input crosses question, reconnect, approval, and restore '
+      'boundaries', (tester) async {
+    tester.binding.platformDispatcher.localeTestValue = const Locale('ko');
+    addTearDown(tester.binding.platformDispatcher.clearLocaleTestValue);
+    await tester.binding.setSurfaceSize(const Size(1400, 1000));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
 
-      final provider = _AdversityProvider();
-      final fixture = await RealDaemonFixture.start(
-        id: 'conversation-adversity',
-        provider: provider,
-        providerCatalogMetadataSource: const _AdversityCatalogMetadataSource(),
+    final provider = _AdversityProvider();
+    final fixture = await RealDaemonFixture.start(
+      id: 'conversation-adversity',
+      provider: provider,
+      providerCatalogMetadataSource: const _AdversityCatalogMetadataSource(),
+    );
+    addTearDown(fixture.dispose);
+    final client = await fixture.connect(clientId: 'adversity-setup');
+    addTearDown(client.close);
+    final workspace = Directory('${fixture.home.path}/workspace')..createSync();
+    await client.workspaces.registerWorkspace(
+      workspaceId: 'adversity-workspace',
+      checkoutId: 'adversity-checkout',
+      rootPath: workspace.path,
+      name: 'Adversity Workspace',
+    );
+    final registeredWorktree =
+        (await client.workspaces.getWorkspaceCatalog()).worktrees.single;
+    // This scenario later exercises the deferred tool surface, so it must
+    // select an exact full-surface model before the injected gateway is
+    // allowed to receive a request.
+    final model = (await client.providers.listProviderModels('openai'))
+        .singleWhere((candidate) => candidate.id == _adversityModelId);
+    expect(model.capabilities.streaming, CapabilitySupport.supported);
+    expect(model.capabilities.functionTools, CapabilitySupport.supported);
+    expect(model.capabilities.deferredTools, CapabilitySupport.supported);
+    final tinest = await client.agents.getAgentDefinition('tinest');
+    await client.agents.updateAgentDefinition(
+      tinest.copyWith(
+        toolIds: <String>[
+          ...tinest.toolIds,
+          'tinest.interaction/request_user_input',
+        ],
+      ),
+      expectedContentHash: tinest.contentHash,
+    );
+    final SessionDto session;
+    try {
+      session = await client.sessions.createSession(
+        id: 'adversity-session',
+        worktreeId: 'adversity-checkout',
+        title: 'Adversity conversation',
+        agentDefinitionId: 'tinest',
+        model: ModelSelectionDto(modelId: model.id),
       );
-      addTearDown(fixture.dispose);
-      final client = await fixture.connect(clientId: 'adversity-setup');
-      addTearDown(client.close);
-      final workspace = Directory('${fixture.home.path}/workspace')
-        ..createSync();
-      await client.workspaces.registerWorkspace(
-        workspaceId: 'adversity-workspace',
-        checkoutId: 'adversity-checkout',
-        rootPath: workspace.path,
-        name: 'Adversity Workspace',
-      );
-      final registeredWorktree =
-          (await client.workspaces.getWorkspaceCatalog()).worktrees.single;
-      // This scenario later exercises the deferred tool surface, so it must
-      // select an exact full-surface model before the injected gateway is
-      // allowed to receive a request.
-      final model = (await client.providers.listProviderModels('openai'))
-          .singleWhere(
-            (candidate) => candidate.id == _adversityModelId,
-          );
-      expect(model.capabilities.streaming, CapabilitySupport.supported);
-      expect(model.capabilities.functionTools, CapabilitySupport.supported);
-      expect(model.capabilities.deferredTools, CapabilitySupport.supported);
-      final tinest = await client.agents.getAgentDefinition('tinest');
-      await client.agents.updateAgentDefinition(
-        tinest.copyWith(
-          toolIds: <String>[
-            ...tinest.toolIds,
-            'tinest.interaction/request_user_input',
-          ],
-        ),
-        expectedContentHash: tinest.contentHash,
-      );
-      final SessionDto session;
-      try {
-        session = await client.sessions.createSession(
-          id: 'adversity-session',
-          worktreeId: 'adversity-checkout',
-          title: 'Adversity conversation',
-          agentDefinitionId: 'tinest',
-          model: ModelSelectionDto(modelId: model.id),
-        );
-      } on TinestClientException catch (error) {
-        throw TestFailure('Session setup failed: ${error.details}');
-      }
+    } on TinestClientException catch (error) {
+      throw TestFailure('Session setup failed: ${error.details}');
+    }
 
-      await _pumpConversation(
-        tester,
-        fixture,
-        registeredWorktree.id,
-        session.id,
-      );
-      const composerKey = ValueKey<String>('session-composer-input');
-      const sendKey = ValueKey<String>('session-composer-send');
-      await _submit(tester, composerKey, sendKey, 'Stream first');
-      await _waitForProviderStart(
-        tester,
-        provider,
-        client,
-        session.id,
-        registeredWorktree.id,
-      );
-      await pumpUntil(
-        tester,
-        find.textContaining('스트림 청크 1-35', findRichText: true),
-      );
-      _expectTimelineTrailing(
-        tester,
-        find.textContaining('스트림 청크 1-35', findRichText: true),
-        phase: 'first overflowing stream chunk',
-      );
+    await _pumpConversation(tester, fixture, registeredWorktree.id, session.id);
+    const composerKey = ValueKey<String>('session-composer-input');
+    const sendKey = ValueKey<String>('session-composer-send');
+    await _submit(tester, composerKey, sendKey, 'Stream first');
+    await _waitForProviderStart(
+      tester,
+      provider,
+      client,
+      session.id,
+      registeredWorktree.id,
+    );
+    await pumpUntil(
+      tester,
+      find.textContaining('스트림 청크 1-35', findRichText: true),
+    );
+    _expectTimelineTrailing(
+      tester,
+      find.textContaining('스트림 청크 1-35', findRichText: true),
+      phase: 'first overflowing stream chunk',
+    );
 
-      await _submit(tester, composerKey, sendKey, 'Ask then patch');
-      await pumpUntil(
-        tester,
-        find.byKey(const ValueKey<String>('queued-turn-0')),
-      );
-      expect(find.text('Ask then patch'), findsWidgets);
-      provider.releaseFirstTurn.complete();
+    await _submit(tester, composerKey, sendKey, 'Ask then patch');
+    await pumpUntil(
+      tester,
+      find.byKey(const ValueKey<String>('queued-turn-0')),
+    );
+    expect(find.text('Ask then patch'), findsWidgets);
+    provider.releaseFirstTurn.complete();
 
-      await provider.secondStreamChunkStarted.future.timeout(
-        const Duration(minutes: 1),
-      );
-      final secondChunk = find.textContaining(
-        '스트림 청크 2-11',
-        findRichText: true,
-      );
-      await pumpUntil(tester, secondChunk);
-      _expectTimelineTrailing(
-        tester,
-        secondChunk,
-        phase: 'second stream chunk',
-      );
-      provider.releaseSecondStreamChunk.complete();
+    await provider.secondStreamChunkStarted.future.timeout(
+      const Duration(minutes: 1),
+    );
+    final secondChunk = find.textContaining('스트림 청크 2-11', findRichText: true);
+    await pumpUntil(tester, secondChunk);
+    _expectTimelineTrailing(tester, secondChunk, phase: 'second stream chunk');
+    provider.releaseSecondStreamChunk.complete();
 
-      await provider.thirdStreamChunkStarted.future.timeout(
-        const Duration(minutes: 1),
-      );
-      final thirdChunk = find.textContaining(
-        '스트림 청크 3-11',
-        findRichText: true,
-      );
-      await pumpUntil(tester, thirdChunk);
-      _expectTimelineTrailing(
-        tester,
-        thirdChunk,
-        phase: 'third stream chunk',
-      );
-      provider.releaseThirdStreamChunk.complete();
+    await provider.thirdStreamChunkStarted.future.timeout(
+      const Duration(minutes: 1),
+    );
+    final thirdChunk = find.textContaining('스트림 청크 3-11', findRichText: true);
+    await pumpUntil(tester, thirdChunk);
+    _expectTimelineTrailing(tester, thirdChunk, phase: 'third stream chunk');
+    provider.releaseThirdStreamChunk.complete();
 
-      await pumpUntil(tester, find.text('Storage'));
-      expect(find.text('Which store should the cache use?'), findsOneWidget);
-      await _remountConversation(
-        tester,
-        fixture,
-        registeredWorktree.id,
-        session.id,
-      );
-      expect(find.text('Which store should the cache use?'), findsOneWidget);
+    await pumpUntil(tester, find.text('Storage'));
+    expect(find.text('Which store should the cache use?'), findsOneWidget);
+    await _remountConversation(
+      tester,
+      fixture,
+      registeredWorktree.id,
+      session.id,
+    );
+    expect(find.text('Which store should the cache use?'), findsOneWidget);
 
-      await tester.tap(find.text('SQLite'));
-      final questionSubmit = find.byKey(
-        const ValueKey<String>('chat-question-submit'),
-      );
-      await pumpUntilCondition(
-        tester,
-        () => tester.widget<TRButton>(questionSubmit).onPressed != null,
-        'the restored question to become submittable',
-      );
-      await tester.tap(questionSubmit);
+    await tester.tap(find.text('SQLite'));
+    final questionSubmit = find.byKey(
+      const ValueKey<String>('chat-question-submit'),
+    );
+    await pumpUntilCondition(
+      tester,
+      () => tester.widget<TRButton>(questionSubmit).onPressed != null,
+      'the restored question to become submittable',
+    );
+    await tester.tap(questionSubmit);
 
-      var approval = _patchApproval();
-      await pumpUntil(tester, approval);
-      await _remountConversation(
-        tester,
-        fixture,
-        registeredWorktree.id,
-        session.id,
-      );
-      approval = _patchApproval();
-      await pumpUntil(tester, approval);
-      await tester.tap(
-        find.descendant(
-          of: approval,
-          matching: find.widgetWithText(TRButton, '승인'),
-        ),
-      );
-      await pumpUntil(
-        tester,
-        find.text('복합 대화 완료', findRichText: true),
-      );
-      expect(
-        await File('${workspace.path}/adversity.txt').readAsString(),
-        'restored\n',
-      );
+    var approval = _patchApproval();
+    await pumpUntil(tester, approval);
+    await _remountConversation(
+      tester,
+      fixture,
+      registeredWorktree.id,
+      session.id,
+    );
+    approval = _patchApproval();
+    await pumpUntil(tester, approval);
+    await tester.tap(
+      find.descendant(
+        of: approval,
+        matching: find.widgetWithText(TRButton, '승인'),
+      ),
+    );
+    await pumpUntil(tester, find.text('복합 대화 완료', findRichText: true));
+    expect(
+      await File('${workspace.path}/adversity.txt').readAsString(),
+      'restored\n',
+    );
 
-      await pumpUntilCondition(
-        tester,
-        () async =>
-            (await client.sessions.listSessions(
-              worktreeId: 'adversity-checkout',
-            )).single.status ==
-            SessionStatus.idle,
-        'the restored turn to become idle',
-      );
-      final timeline = await client.sessions.subscribeTimeline(session.id);
-      final sequences = timeline.map((event) => event.sequence).toList();
-      expect(sequences, orderedEquals(<int>[...sequences]..sort()));
-      expect(sequences.toSet(), hasLength(sequences.length));
-      expect(
-        timeline.where((event) => event.type == 'turn.completed'),
-        hasLength(2),
-      );
-      expect(
-        timeline.where((event) => event.type == 'userQuestion.answered'),
-        hasLength(1),
-      );
-      expect(
-        timeline.where((event) => event.type == 'approval.resolved'),
-        hasLength(1),
-      );
-    },
-    tags: const <String>[
-      'ui_journey__conversation_adversity__e2e',
-    ],
-  );
+    await pumpUntilCondition(
+      tester,
+      () async =>
+          (await client.sessions.listSessions(worktreeId: 'adversity-checkout'))
+              .single
+              .status ==
+          SessionStatus.idle,
+      'the restored turn to become idle',
+    );
+    final timeline = await client.sessions.subscribeTimeline(session.id);
+    final sequences = timeline.map((event) => event.sequence).toList();
+    expect(sequences, orderedEquals(<int>[...sequences]..sort()));
+    expect(sequences.toSet(), hasLength(sequences.length));
+    expect(
+      timeline.where((event) => event.type == 'turn.completed'),
+      hasLength(2),
+    );
+    expect(
+      timeline.where((event) => event.type == 'userQuestion.answered'),
+      hasLength(1),
+    );
+    expect(
+      timeline.where((event) => event.type == 'approval.resolved'),
+      hasLength(1),
+    );
+  }, tags: const <String>['ui_journey__conversation_adversity__e2e']);
 }
 
 Finder _patchApproval() => find.byWidgetPredicate(
@@ -350,27 +313,22 @@ Future<void> _waitForProviderStart(
   String worktreeId,
 ) async {
   try {
-    await pumpUntilCondition(
-      tester,
-      () async {
-        if (provider.firstTurnStarted.isCompleted) return true;
-        final current = (await client.sessions.listSessions(
-          worktreeId: worktreeId,
-        )).singleWhere((candidate) => candidate.id == sessionId);
-        if (current.status == SessionStatus.failed) {
-          throw TestFailure(
-            'The first adversity turn failed before reaching the provider: '
-            '${current.lastError ?? 'unknown error'}.',
-          );
-        }
-        return false;
-      },
-      'the adversity provider to receive the first turn',
-    );
+    await pumpUntilCondition(tester, () async {
+      if (provider.firstTurnStarted.isCompleted) return true;
+      final current = (await client.sessions.listSessions(
+        worktreeId: worktreeId,
+      )).singleWhere((candidate) => candidate.id == sessionId);
+      if (current.status == SessionStatus.failed) {
+        throw TestFailure(
+          'The first adversity turn failed before reaching the provider: '
+          '${current.lastError ?? 'unknown error'}.',
+        );
+      }
+      return false;
+    }, 'the adversity provider to receive the first turn');
   } on TestFailure catch (error) {
-    final session = (await client.sessions.listSessions(
-      worktreeId: worktreeId,
-    )).singleWhere((candidate) => candidate.id == sessionId);
+    final session = (await client.sessions.listSessions(worktreeId: worktreeId))
+        .singleWhere((candidate) => candidate.id == sessionId);
     final timeline = await client.sessions.subscribeTimeline(sessionId);
     final events = timeline
         .map((event) => '${event.sequence}:${event.type}:${event.data}')
@@ -385,7 +343,7 @@ Future<void> _waitForProviderStart(
 
 final class _AdversityCatalogMetadataSource
     implements ProviderCatalogMetadataSource {
-  const _AdversityCatalogMetadataSource();
+  const new();
 
   @override
   Future<Map<String, List<ProviderCatalogMetadata>>> fetch(

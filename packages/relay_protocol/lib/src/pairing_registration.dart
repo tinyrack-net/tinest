@@ -7,7 +7,7 @@ import 'package:relay_protocol/src/offer.dart';
 /// Decrypted device metadata carried by a one-time pairing registration.
 final class RelayPairingRegistrationPayload {
   /// Creates validated registration metadata.
-  RelayPairingRegistrationPayload({
+  new({
     required this.deviceId,
     required this.deviceName,
     required List<int> devicePublicKey,
@@ -20,15 +20,14 @@ final class RelayPairingRegistrationPayload {
   }
 
   /// Decodes registration metadata.
-  factory RelayPairingRegistrationPayload.fromJson(
-    Map<String, dynamic> json,
-  ) => RelayPairingRegistrationPayload(
-    deviceId: json['deviceId']! as String,
-    deviceName: json['deviceName']! as String,
-    devicePublicKey: base64Url.decode(
-      base64Url.normalize(json['devicePublicKey']! as String),
-    ),
-  );
+  factory fromJson(Map<String, dynamic> json) =>
+      RelayPairingRegistrationPayload(
+        deviceId: json['deviceId']! as String,
+        deviceName: json['deviceName']! as String,
+        devicePublicKey: base64Url.decode(
+          base64Url.normalize(json['devicePublicKey']! as String),
+        ),
+      );
 
   /// Daemon-scoped device identifier.
   final String deviceId;
@@ -50,17 +49,15 @@ final class RelayPairingRegistrationPayload {
 /// Registration request with only its random offer ID visible to the relay.
 final class RelayPairingRegistrationRequest {
   /// Creates an opaque registration request.
-  RelayPairingRegistrationRequest({
-    required this.offerId,
-    required List<int> encryptedPayload,
-  }) : encryptedPayload = Uint8List.fromList(encryptedPayload) {
+  new({required this.offerId, required List<int> encryptedPayload})
+    : encryptedPayload = Uint8List.fromList(encryptedPayload) {
     if (offerId.isEmpty) {
       throw const FormatException('Pairing offer ID must not be empty.');
     }
   }
 
   /// Parses the small visible routing header and opaque ciphertext.
-  factory RelayPairingRegistrationRequest.decode(List<int> bytes) {
+  factory decode(List<int> bytes) {
     if (bytes.length < 3) {
       throw const FormatException('Pairing registration is truncated.');
     }
@@ -151,7 +148,7 @@ Future<Uint8List> encryptRelayPairingAccepted({
     offerSecret,
     RelayDirection.daemonToClient,
   );
-  return cipher.encrypt(
+  return await cipher.encrypt(
     utf8.encode(jsonEncode(<String, String>{'deviceId': deviceId})),
   );
 }

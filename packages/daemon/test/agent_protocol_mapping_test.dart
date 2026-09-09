@@ -20,10 +20,7 @@ void main() {
       'integer': ModelControlValueDto.intValue(value: 7),
     };
     final agent = agentModelControls(protocol);
-    expect(
-      (agent['choice']! as AgentModelControlStringValue).value,
-      'high',
-    );
+    expect((agent['choice']! as AgentModelControlStringValue).value, 'high');
     expect((agent['toggle']! as AgentModelControlBoolValue).value, isTrue);
     expect((agent['integer']! as AgentModelControlIntValue).value, 7);
   });
@@ -33,12 +30,7 @@ void main() {
     expect(protocolLimits(null), isNull);
 
     final pricing = protocolPricing(
-      const AgentModelPricing(
-        input: 1,
-        output: 2,
-        cacheRead: 3,
-        cacheWrite: 4,
-      ),
+      const AgentModelPricing(input: 1, output: 2, cacheRead: 3, cacheWrite: 4),
     )!;
     expect(
       <double?>[

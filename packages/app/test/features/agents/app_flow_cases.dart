@@ -48,227 +48,200 @@ void _registerAgentsAppFlows() {
 
       expect(tester.takeException(), isNull);
     },
-    tags: const <String>[
-      'feature_test__agent_definition_management__widget',
-    ],
+    tags: const <String>['feature_test__agent_definition_management__widget'],
   );
 
-  testWidgets(
-    'agent collection explains that no definitions are configured',
-    (tester) async {
-      await _setTestViewport(tester, const Size(1200, 900));
-      final api = FakeTinestApi(
-        agentDefinitions: const <AgentDefinitionDto>[],
-      );
-      final router = await _pumpRoute(
-        tester,
-        api,
-        const AgentSettingsRoute(hostId: 'server').location,
-      );
-      addTearDown(router.dispose);
+  testWidgets('agent collection explains that no definitions are configured', (
+    tester,
+  ) async {
+    await _setTestViewport(tester, const Size(1200, 900));
+    final api = FakeTinestApi(agentDefinitions: const <AgentDefinitionDto>[]);
+    final router = await _pumpRoute(
+      tester,
+      api,
+      const AgentSettingsRoute(hostId: 'server').location,
+    );
+    addTearDown(router.dispose);
 
-      expect(find.text('설정된 Agent가 없습니다.'), findsOneWidget);
-      // The detail destination still explains that it needs a selection; the
-      // collection itself owns the distinct no-data copy above.
-      expect(find.text('Agent를 선택하세요.'), findsOneWidget);
-    },
-    tags: const <String>[
-      'feature_test__agent_definition_management__widget',
-    ],
-  );
+    expect(find.text('설정된 Agent가 없습니다.'), findsOneWidget);
+    // The detail destination still explains that it needs a selection; the
+    // collection itself owns the distinct no-data copy above.
+    expect(find.text('Agent를 선택하세요.'), findsOneWidget);
+  }, tags: const <String>['feature_test__agent_definition_management__widget']);
 
-  testWidgets(
-    'agent settings edits v5 definitions and creates subagents',
-    (tester) async {
-      await _setTestViewport(tester, const Size(1200, 900));
-      addTearDown(() => tester.binding.setSurfaceSize(null));
-      final api = FakeTinestApi();
-      final router = await _pumpRoute(
-        tester,
-        api,
-        const AgentSettingsRoute(hostId: 'server').location,
-      );
-      addTearDown(router.dispose);
+  testWidgets('agent settings edits v5 definitions and creates subagents', (
+    tester,
+  ) async {
+    await _setTestViewport(tester, const Size(1200, 900));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    final api = FakeTinestApi();
+    final router = await _pumpRoute(
+      tester,
+      api,
+      const AgentSettingsRoute(hostId: 'server').location,
+    );
+    addTearDown(router.dispose);
 
-      expect(find.byType(TRTreeNav<String>), findsOneWidget);
-      expect(
-        find.descendant(
-          of: find.byType(TRPaneHeader),
-          matching: find.text(testL10n.agentSettingsHeading),
-        ),
-        findsOneWidget,
-      );
-      expect(find.text('Tinest'), findsWidgets);
-      final prompt = _textInput('시스템 프롬프트 (Markdown)');
-      await tester.enterText(prompt, 'Always run focused tests.');
-      await tester.tap(find.widgetWithText(TRButton, '저장'));
-      await tester.pumpAndSettle();
-      expect(
-        (await api.agents.getAgentDefinition('tinest')).prompt,
-        'Always run focused tests.',
-      );
-      expect(find.text('Custom system prompt 사용'), findsNothing);
-      final settingsScroll = find
-          .descendant(
-            of: find.byType(SettingsScaffold),
-            matching: find.byType(Scrollable),
+    expect(find.byType(TRTreeNav<String>), findsOneWidget);
+    expect(
+      find.descendant(
+        of: find.byType(TRPaneHeader),
+        matching: find.text(testL10n.agentSettingsHeading),
+      ),
+      findsOneWidget,
+    );
+    expect(find.text('Tinest'), findsWidgets);
+    final prompt = _textInput('시스템 프롬프트 (Markdown)');
+    await tester.enterText(prompt, 'Always run focused tests.');
+    await tester.tap(find.widgetWithText(TRButton, '저장'));
+    await tester.pumpAndSettle();
+    expect(
+      (await api.agents.getAgentDefinition('tinest')).prompt,
+      'Always run focused tests.',
+    );
+    expect(find.text('Custom system prompt 사용'), findsNothing);
+    final settingsScroll = find
+        .descendant(
+          of: find.byType(SettingsScaffold),
+          matching: find.byType(Scrollable),
+        )
+        .first;
+    await tester.scrollUntilVisible(
+      find.byKey(const ValueKey<String>('agent-tool-group-filesystem')),
+      400,
+      scrollable: settingsScroll,
+    );
+    expect(
+      find.byKey(const ValueKey<String>('agent-tool-group-filesystem')),
+      findsOneWidget,
+    );
+
+    // Tools are behind their group, so nothing is listed until one opens.
+    expect(
+      find.byKey(
+        const ValueKey<String>('agent-tool-tile-tinest.files-read_file'),
+      ),
+      findsNothing,
+    );
+    // The selected read tool is still independently configurable.
+    final filesystemGroup = tester.widget<TinestCheckboxRow>(
+      find.byKey(const ValueKey<String>('agent-tool-group-filesystem')),
+    );
+    expect(filesystemGroup.value, isTrue);
+    expect(filesystemGroup.onChanged, isNotNull);
+
+    // scrollUntilVisible stops as soon as the row is built, which leaves it
+    // under the pinned save bar. Bring it fully into the viewport before
+    // aiming a pointer at it.
+    await tester.ensureVisible(
+      find.byKey(const ValueKey<String>('agent-tool-group-filesystem')),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(
+      find.byKey(const ValueKey<String>('agent-tool-group-filesystem')),
+    );
+    await tester.pumpAndSettle();
+    await tester.scrollUntilVisible(
+      find.byKey(
+        const ValueKey<String>('agent-tool-tile-tinest.files-read_file'),
+      ),
+      400,
+      scrollable: settingsScroll,
+    );
+    await tester.ensureVisible(
+      find.byKey(
+        const ValueKey<String>('agent-tool-tile-tinest.files-read_file'),
+      ),
+    );
+    await tester.pumpAndSettle();
+    final readFile = tester.widget<TinestCheckboxRow>(
+      find.byKey(
+        const ValueKey<String>('agent-tool-tile-tinest.files-read_file'),
+      ),
+    );
+    expect(readFile.value, isTrue);
+    expect(readFile.onChanged, isNotNull);
+    expect(
+      find.byKey(const ValueKey<String>('agent-tool-lock-read_file')),
+      findsNothing,
+    );
+    await tester.tap(
+      find.byKey(
+        const ValueKey<String>('agent-tool-tile-tinest.files-read_file'),
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(
+      tester
+          .widget<TinestCheckboxRow>(
+            find.byKey(
+              const ValueKey<String>('agent-tool-tile-tinest.files-read_file'),
+            ),
           )
-          .first;
-      await tester.scrollUntilVisible(
-        find.byKey(const ValueKey<String>('agent-tool-group-filesystem')),
-        400,
-        scrollable: settingsScroll,
-      );
-      expect(
-        find.byKey(const ValueKey<String>('agent-tool-group-filesystem')),
-        findsOneWidget,
-      );
+          .value,
+      isFalse,
+    );
 
-      // Tools are behind their group, so nothing is listed until one opens.
-      expect(
-        find.byKey(
-          const ValueKey<String>('agent-tool-tile-tinest.files-read_file'),
-        ),
-        findsNothing,
-      );
-      // The selected read tool is still independently configurable.
-      final filesystemGroup = tester.widget<TinestCheckboxRow>(
-        find.byKey(const ValueKey<String>('agent-tool-group-filesystem')),
-      );
-      expect(filesystemGroup.value, isTrue);
-      expect(filesystemGroup.onChanged, isNotNull);
+    await tester.scrollUntilVisible(
+      find.byKey(const ValueKey<String>('agent-tool-group-execution')),
+      200,
+      scrollable: find.byType(Scrollable).last,
+    );
+    await tester.tap(
+      find.byKey(const ValueKey<String>('agent-tool-group-execution')),
+    );
+    await tester.pumpAndSettle();
+    final toggleable = tester.widget<TinestCheckboxRow>(
+      find.byKey(
+        const ValueKey<String>('agent-tool-tile-tinest.terminal-exec_command'),
+      ),
+    );
+    expect(toggleable.onChanged, isNotNull);
 
-      // scrollUntilVisible stops as soon as the row is built, which leaves it
-      // under the pinned save bar. Bring it fully into the viewport before
-      // aiming a pointer at it.
-      await tester.ensureVisible(
-        find.byKey(const ValueKey<String>('agent-tool-group-filesystem')),
-      );
-      await tester.pumpAndSettle();
-      await tester.tap(
-        find.byKey(const ValueKey<String>('agent-tool-group-filesystem')),
-      );
-      await tester.pumpAndSettle();
-      await tester.scrollUntilVisible(
-        find.byKey(
-          const ValueKey<String>('agent-tool-tile-tinest.files-read_file'),
-        ),
-        400,
-        scrollable: settingsScroll,
-      );
-      await tester.ensureVisible(
-        find.byKey(
-          const ValueKey<String>('agent-tool-tile-tinest.files-read_file'),
-        ),
-      );
-      await tester.pumpAndSettle();
-      final readFile = tester.widget<TinestCheckboxRow>(
-        find.byKey(
-          const ValueKey<String>('agent-tool-tile-tinest.files-read_file'),
-        ),
-      );
-      expect(readFile.value, isTrue);
-      expect(readFile.onChanged, isNotNull);
-      expect(
-        find.byKey(const ValueKey<String>('agent-tool-lock-read_file')),
-        findsNothing,
-      );
-      await tester.tap(
-        find.byKey(
-          const ValueKey<String>('agent-tool-tile-tinest.files-read_file'),
-        ),
-      );
-      await tester.pumpAndSettle();
-      expect(
-        tester
-            .widget<TinestCheckboxRow>(
-              find.byKey(
-                const ValueKey<String>(
-                  'agent-tool-tile-tinest.files-read_file',
-                ),
-              ),
-            )
-            .value,
-        isFalse,
-      );
+    await tester.tap(find.byKey(const ValueKey('agent-add-button')));
+    await tester.pumpAndSettle();
+    expect(find.byType(TRAlertDialog), findsNothing);
+    expect(find.text('Agent 추가'), findsOneWidget);
+    await tester.enterText(_textInput('ID (파일명)'), 'reviewer');
+    await tester.enterText(_textInput('이름').last, 'Reviewer');
+    await tester.tap(find.byType(TRSelectFormField<AgentMode>));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('subagent').last);
+    tester.testTextInput.hide();
+    final createButton = find.widgetWithText(TRButton, '생성');
+    await tester.ensureVisible(createButton);
+    await tester.pumpAndSettle();
+    await tester.tap(createButton);
+    await tester.pumpAndSettle();
+    expect(find.text('Reviewer'), findsWidgets);
+    final created = await api.agents.getAgentDefinition('reviewer');
+    expect(created.version, 5);
+    expect(created.mode, AgentMode.subagent);
+    expect(created.prompt, isEmpty);
+    expect(created.driverId, 'tinest.standard/driver');
+    expect(created.extensionIds, isEmpty);
+    expect(created.pluginSettings, isEmpty);
 
-      await tester.scrollUntilVisible(
-        find.byKey(const ValueKey<String>('agent-tool-group-execution')),
-        200,
-        scrollable: find.byType(Scrollable).last,
-      );
-      await tester.tap(
-        find.byKey(const ValueKey<String>('agent-tool-group-execution')),
-      );
-      await tester.pumpAndSettle();
-      final toggleable = tester.widget<TinestCheckboxRow>(
-        find.byKey(
-          const ValueKey<String>(
-            'agent-tool-tile-tinest.terminal-exec_command',
-          ),
-        ),
-      );
-      expect(toggleable.onChanged, isNotNull);
-
-      await tester.tap(find.byKey(const ValueKey('agent-add-button')));
-      await tester.pumpAndSettle();
-      expect(find.byType(TRAlertDialog), findsNothing);
-      expect(find.text('Agent 추가'), findsOneWidget);
-      await tester.enterText(
-        _textInput('ID (파일명)'),
-        'reviewer',
-      );
-      await tester.enterText(
-        _textInput('이름').last,
-        'Reviewer',
-      );
-      await tester.tap(
-        find.byType(TRSelectFormField<AgentMode>),
-      );
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('subagent').last);
-      tester.testTextInput.hide();
-      final createButton = find.widgetWithText(TRButton, '생성');
-      await tester.ensureVisible(createButton);
-      await tester.pumpAndSettle();
-      await tester.tap(createButton);
-      await tester.pumpAndSettle();
-      expect(find.text('Reviewer'), findsWidgets);
-      final created = await api.agents.getAgentDefinition('reviewer');
-      expect(created.version, 5);
-      expect(created.mode, AgentMode.subagent);
-      expect(created.prompt, isEmpty);
-      expect(created.driverId, 'tinest.standard/driver');
-      expect(created.extensionIds, isEmpty);
-      expect(created.pluginSettings, isEmpty);
-
-      // The adaptive settings navigator can retain more than one lazily built
-      // pane while replacing the create destination with the new editor. The
-      // new definition must expose its own scroll owner so automation and
-      // keyboard reveal target that editor instead of an offstage pane.
-      final reviewerEditor = find.byKey(
-        const ValueKey<String>('agent-settings-editor-reviewer'),
-      );
-      expect(reviewerEditor, findsOneWidget);
-      await tester.scrollUntilVisible(
-        find.byKey(const ValueKey<String>('agent-archive-button')),
-        400,
-        scrollable: find
-            .descendant(
-              of: reviewerEditor,
-              matching: find.byType(Scrollable),
-            )
-            .first,
-      );
-      expect(
-        find.byKey(const ValueKey<String>('agent-archive-button')),
-        findsOneWidget,
-      );
-    },
-    tags: const <String>[
-      'feature_test__agent_definition_management__widget',
-    ],
-  );
+    // The adaptive settings navigator can retain more than one lazily built
+    // pane while replacing the create destination with the new editor. The
+    // new definition must expose its own scroll owner so automation and
+    // keyboard reveal target that editor instead of an offstage pane.
+    final reviewerEditor = find.byKey(
+      const ValueKey<String>('agent-settings-editor-reviewer'),
+    );
+    expect(reviewerEditor, findsOneWidget);
+    await tester.scrollUntilVisible(
+      find.byKey(const ValueKey<String>('agent-archive-button')),
+      400,
+      scrollable: find
+          .descendant(of: reviewerEditor, matching: find.byType(Scrollable))
+          .first,
+    );
+    expect(
+      find.byKey(const ValueKey<String>('agent-archive-button')),
+      findsOneWidget,
+    );
+  }, tags: const <String>['feature_test__agent_definition_management__widget']);
 
   testWidgets(
     'agent create validates input and keeps daemon failures in the pane',
@@ -285,37 +258,21 @@ void _registerAgentsAppFlows() {
 
       await tester.tap(find.byKey(const ValueKey('agent-add-button')));
       await tester.pumpAndSettle();
-      var create = tester.widget<TRButton>(
-        find.widgetWithText(TRButton, '생성'),
-      );
+      var create = tester.widget<TRButton>(find.widgetWithText(TRButton, '생성'));
       expect(create.onPressed, isNull);
 
-      await tester.enterText(
-        _textInput('ID (파일명)'),
-        'Invalid ID',
-      );
-      await tester.enterText(
-        _textInput('이름').last,
-        'Reviewer',
-      );
+      await tester.enterText(_textInput('ID (파일명)'), 'Invalid ID');
+      await tester.enterText(_textInput('이름').last, 'Reviewer');
       await tester.pumpAndSettle();
       expect(find.text('영문 소문자, 숫자, -, _만 사용할 수 있습니다.'), findsOneWidget);
 
-      await tester.enterText(
-        _textInput('ID (파일명)'),
-        'tinest',
-      );
+      await tester.enterText(_textInput('ID (파일명)'), 'tinest');
       await tester.pumpAndSettle();
       expect(find.text('이미 존재하는 Agent ID입니다.'), findsOneWidget);
 
-      await tester.enterText(
-        _textInput('ID (파일명)'),
-        'reviewer',
-      );
+      await tester.enterText(_textInput('ID (파일명)'), 'reviewer');
       await tester.pumpAndSettle();
-      create = tester.widget<TRButton>(
-        find.widgetWithText(TRButton, '생성'),
-      );
+      create = tester.widget<TRButton>(find.widgetWithText(TRButton, '생성'));
       expect(create.onPressed, isNotNull);
       await tester.tap(find.widgetWithText(TRButton, '생성'));
       await tester.pumpAndSettle();
@@ -398,10 +355,7 @@ void _registerAgentsAppFlows() {
         tester.getRect(modelHeading).left,
       );
       expect(
-        find.descendant(
-          of: modelRow,
-          matching: find.byIcon(TinestIcons.lock),
-        ),
+        find.descendant(of: modelRow, matching: find.byIcon(TinestIcons.lock)),
         findsOneWidget,
       );
       expect(
@@ -524,9 +478,7 @@ void _registerAgentsAppFlows() {
     (tester) async {
       await _setTestViewport(tester, const Size(1200, 900));
       addTearDown(() => tester.binding.setSurfaceSize(null));
-      final api = FakeTinestApi(
-        connections: const <ProviderConnectionDto>[],
-      );
+      final api = FakeTinestApi(connections: const <ProviderConnectionDto>[]);
       final router = await _pumpRoute(
         tester,
         api,
@@ -536,9 +488,7 @@ void _registerAgentsAppFlows() {
       await tester.pumpAndSettle();
 
       await tester.tap(
-        find.byKey(
-          const ValueKey<String>('agent-settings-model-source-fixed'),
-        ),
+        find.byKey(const ValueKey<String>('agent-settings-model-source-fixed')),
       );
       await tester.pumpAndSettle();
 
@@ -592,9 +542,7 @@ void _registerAgentsAppFlows() {
         name: 'Tinest',
         description: 'General coding',
         mode: AgentMode.primary,
-        model: AgentModelSelectionDto(
-          source: AgentModelSource.session,
-        ),
+        model: AgentModelSelectionDto(source: AgentModelSource.session),
         driverId: 'tinest.standard/driver',
         extensionIds: <String>['tinest.standard'],
         toolIds: <String>['tinest.files/read_file'],
@@ -619,9 +567,7 @@ void _registerAgentsAppFlows() {
         name: 'Reviewer',
         description: 'Reviews changes',
         mode: AgentMode.subagent,
-        model: AgentModelSelectionDto(
-          source: AgentModelSource.session,
-        ),
+        model: AgentModelSelectionDto(source: AgentModelSource.session),
         driverId: 'tinest.standard/driver',
         extensionIds: <String>[],
         toolIds: <String>['tinest.files/read_file'],
@@ -655,25 +601,19 @@ void _registerAgentsAppFlows() {
           )
           .first;
       await tester.scrollUntilVisible(
-        find.byKey(
-          const ValueKey<String>('agent-settings-model-source-fixed'),
-        ),
+        find.byKey(const ValueKey<String>('agent-settings-model-source-fixed')),
         300,
         scrollable: settingsScroll,
       );
       await tester.pumpAndSettle();
       await tester.tap(
-        find.byKey(
-          const ValueKey<String>('agent-settings-model-source-fixed'),
-        ),
+        find.byKey(const ValueKey<String>('agent-settings-model-source-fixed')),
       );
       await tester.pumpAndSettle();
       await tester.tap(find.byType(TRSelect<ModelPickerOption>).last);
       await tester.pumpAndSettle();
       await tester.tap(
-        find.byKey(
-          const ValueKey<String>('model-option-openai-gpt-5.6-sol'),
-        ),
+        find.byKey(const ValueKey<String>('model-option-openai-gpt-5.6-sol')),
       );
       await tester.pumpAndSettle();
       expect(
@@ -748,9 +688,7 @@ void _registerAgentsAppFlows() {
 
   testWidgets(
     'remote agent settings stays editable and exposes load errors',
-    (
-      tester,
-    ) async {
+    (tester) async {
       await _setTestViewport(tester, const Size(1400, 760));
       addTearDown(() => tester.binding.setSurfaceSize(null));
       const remoteInfo = ServerInfoDto(
@@ -886,9 +824,7 @@ void _registerAgentsAppFlows() {
       await tester.tap(find.widgetWithText(TRButton, '저장'));
       await tester.pumpAndSettle();
 
-      final reset = find.byKey(
-        const ValueKey<String>('agent-reset-button'),
-      );
+      final reset = find.byKey(const ValueKey<String>('agent-reset-button'));
       await _centerAgentSettingsAction(tester, reset);
       await tester.tap(reset);
       await tester.pumpAndSettle();
@@ -915,90 +851,80 @@ void _registerAgentsAppFlows() {
     ],
   );
 
-  testWidgets(
-    'a tool group header turns its whole group on and off at once',
-    (tester) async {
-      await _setTestViewport(tester, const Size(1200, 900));
-      addTearDown(() => tester.binding.setSurfaceSize(null));
-      final api = FakeTinestApi();
-      final router = await _pumpRoute(
-        tester,
-        api,
-        const AgentSettingsRoute(hostId: 'server').location,
-      );
-      addTearDown(router.dispose);
+  testWidgets('a tool group header turns its whole group on and off at once', (
+    tester,
+  ) async {
+    await _setTestViewport(tester, const Size(1200, 900));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    final api = FakeTinestApi();
+    final router = await _pumpRoute(
+      tester,
+      api,
+      const AgentSettingsRoute(hostId: 'server').location,
+    );
+    addTearDown(router.dispose);
 
-      final scrollable = find
-          .descendant(
-            of: find.byType(ListView).last,
-            matching: find.byType(Scrollable),
-          )
-          .first;
-      // scrollUntilVisible stops as soon as the row is built, which a list
-      // builds before it is on screen, so the row still has to be brought
-      // fully into view before it can be tapped.
-      Future<void> reveal(String key) async {
-        final finder = find.byKey(ValueKey<String>(key));
-        await tester.scrollUntilVisible(finder, 200, scrollable: scrollable);
-        await tester.ensureVisible(finder);
-        await tester.pumpAndSettle();
-      }
-
-      TinestCheckboxRow rowFor(String key) =>
-          tester.widget<TinestCheckboxRow>(find.byKey(ValueKey<String>(key)));
-
-      await reveal('agent-tool-group-mcp');
-      final initial = rowFor('agent-tool-group-mcp');
-      expect(initial.value, isFalse);
-      expect(initial.indeterminate, isFalse);
-
-      // Checking the header takes every tool in the group, not just one.
-      await tester.tap(
-        find.descendant(
-          of: find.byKey(const ValueKey<String>('agent-tool-group-mcp')),
-          matching: find.byType(TRCheckbox),
-        ),
-      );
+    final scrollable = find
+        .descendant(
+          of: find.byType(ListView).last,
+          matching: find.byType(Scrollable),
+        )
+        .first;
+    // scrollUntilVisible stops as soon as the row is built, which a list
+    // builds before it is on screen, so the row still has to be brought
+    // fully into view before it can be tapped.
+    Future<void> reveal(String key) async {
+      final finder = find.byKey(ValueKey<String>(key));
+      await tester.scrollUntilVisible(finder, 200, scrollable: scrollable);
+      await tester.ensureVisible(finder);
       await tester.pumpAndSettle();
-      expect(rowFor('agent-tool-group-mcp').value, isTrue);
+    }
 
-      await tester.tap(find.widgetWithText(TRButton, '저장'));
-      await tester.pumpAndSettle();
-      expect(
-        (await api.agents.getAgentDefinition('tinest')).toolIds,
-        <String>[
-          'tinest.files/read_file',
-          'tinest.mcp/list_mcp_resource_templates',
-          'tinest.mcp/list_mcp_resources',
-          'tinest.mcp/read_mcp_resource',
-        ],
-        reason: 'a group is stored as the ids it contains, not as itself',
-      );
+    TinestCheckboxRow rowFor(String key) =>
+        tester.widget<TinestCheckboxRow>(find.byKey(ValueKey<String>(key)));
 
-      // Turning one member off leaves the header partially checked.
-      await reveal('agent-tool-group-mcp');
-      await tester.tap(
-        find.byKey(const ValueKey<String>('agent-tool-group-mcp')),
-      );
-      await tester.pumpAndSettle();
-      await reveal('agent-tool-tile-tinest.mcp-read_mcp_resource');
-      await tester.tap(
-        find.byKey(
-          const ValueKey<String>(
-            'agent-tool-tile-tinest.mcp-read_mcp_resource',
-          ),
-        ),
-      );
-      await tester.pumpAndSettle();
-      await reveal('agent-tool-group-mcp');
-      final partial = rowFor('agent-tool-group-mcp');
-      expect(partial.value, isFalse);
-      expect(partial.indeterminate, isTrue);
-    },
-    tags: const <String>[
-      'feature_test__agent_definition_management__widget',
-    ],
-  );
+    await reveal('agent-tool-group-mcp');
+    final initial = rowFor('agent-tool-group-mcp');
+    expect(initial.value, isFalse);
+    expect(initial.indeterminate, isFalse);
+
+    // Checking the header takes every tool in the group, not just one.
+    await tester.tap(
+      find.descendant(
+        of: find.byKey(const ValueKey<String>('agent-tool-group-mcp')),
+        matching: find.byType(TRCheckbox),
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(rowFor('agent-tool-group-mcp').value, isTrue);
+
+    await tester.tap(find.widgetWithText(TRButton, '저장'));
+    await tester.pumpAndSettle();
+    expect((await api.agents.getAgentDefinition('tinest')).toolIds, <String>[
+      'tinest.files/read_file',
+      'tinest.mcp/list_mcp_resource_templates',
+      'tinest.mcp/list_mcp_resources',
+      'tinest.mcp/read_mcp_resource',
+    ], reason: 'a group is stored as the ids it contains, not as itself');
+
+    // Turning one member off leaves the header partially checked.
+    await reveal('agent-tool-group-mcp');
+    await tester.tap(
+      find.byKey(const ValueKey<String>('agent-tool-group-mcp')),
+    );
+    await tester.pumpAndSettle();
+    await reveal('agent-tool-tile-tinest.mcp-read_mcp_resource');
+    await tester.tap(
+      find.byKey(
+        const ValueKey<String>('agent-tool-tile-tinest.mcp-read_mcp_resource'),
+      ),
+    );
+    await tester.pumpAndSettle();
+    await reveal('agent-tool-group-mcp');
+    final partial = rowFor('agent-tool-group-mcp');
+    expect(partial.value, isFalse);
+    expect(partial.indeterminate, isTrue);
+  }, tags: const <String>['feature_test__agent_definition_management__widget']);
 
   testWidgets(
     'agent harness edits driver ordered extensions tools settings and grants',
@@ -1064,16 +990,12 @@ void _registerAgentsAppFlows() {
 
       await reveal('agent-extension-tinest.goal');
       await tester.tap(
-        find.byKey(
-          const ValueKey<String>('agent-extension-tinest.goal'),
-        ),
+        find.byKey(const ValueKey<String>('agent-extension-tinest.goal')),
       );
       await tester.pumpAndSettle();
       await reveal('agent-extension-up-tinest.goal');
       await tester.tap(
-        find.byKey(
-          const ValueKey<String>('agent-extension-up-tinest.goal'),
-        ),
+        find.byKey(const ValueKey<String>('agent-extension-up-tinest.goal')),
       );
       await tester.pumpAndSettle();
 
@@ -1092,9 +1014,7 @@ void _registerAgentsAppFlows() {
 
       await reveal('agent-plugin-settings-tinest.plan');
       await tester.enterText(
-        find.byKey(
-          const ValueKey<String>('agent-plugin-settings-tinest.plan'),
-        ),
+        find.byKey(const ValueKey<String>('agent-plugin-settings-tinest.plan')),
         '{"mode":"strict","maxSteps":4}',
       );
       await tester.pumpAndSettle();
@@ -1125,10 +1045,7 @@ void _registerAgentsAppFlows() {
       await tester.pumpAndSettle();
       final saved = await api.agents.getAgentDefinition('tinest');
       expect(saved.driverId, 'acme.xml/driver');
-      expect(saved.extensionIds, <String>[
-        'tinest.goal',
-        'tinest.plan',
-      ]);
+      expect(saved.extensionIds, <String>['tinest.goal', 'tinest.plan']);
       expect(
         saved.toolIds,
         containsAll(<String>[

@@ -15,7 +15,7 @@ class SettingsDao extends DatabaseAccessor<TinestDatabase>
     with _$SettingsDaoMixin
     implements SettingsRepository {
   /// Creates a [SettingsDao].
-  SettingsDao(super.attachedDatabase);
+  new(super.attachedDatabase);
 
   @override
   Future<String?> getValue(String key) async => (await (select(
@@ -23,9 +23,8 @@ class SettingsDao extends DatabaseAccessor<TinestDatabase>
   )..where((row) => row.key.equals(key))).getSingleOrNull())?.value;
 
   @override
-  Future<void> setValue(String key, String value) => into(
-    settings,
-  ).insertOnConflictUpdate(SettingsCompanion.insert(key: key, value: value));
+  Future<void> setValue(String key, String value) => into(settings)
+      .insertOnConflictUpdate(SettingsCompanion.insert(key: key, value: value));
 }
 
 @DriftAccessor(tables: <Type>[Workspaces, Worktrees])
@@ -34,7 +33,7 @@ class WorkspaceDao extends DatabaseAccessor<TinestDatabase>
     with _$WorkspaceDaoMixin
     implements WorkspaceRepository {
   /// Creates a [WorkspaceDao].
-  WorkspaceDao(super.attachedDatabase);
+  new(super.attachedDatabase);
 
   @override
   Future<List<WorkspaceDto>> list() async =>
@@ -94,9 +93,7 @@ class WorkspaceDao extends DatabaseAccessor<TinestDatabase>
 
   @override
   Future<void> unregister(String id) => transaction(() async {
-    await (delete(
-      worktrees,
-    )..where((row) => row.workspaceId.equals(id))).go();
+    await (delete(worktrees)..where((row) => row.workspaceId.equals(id))).go();
     await (delete(workspaces)..where((row) => row.id.equals(id))).go();
   });
 
@@ -115,7 +112,7 @@ class WorktreeDao extends DatabaseAccessor<TinestDatabase>
     with _$WorktreeDaoMixin
     implements WorktreeRepository {
   /// Creates a [WorktreeDao].
-  WorktreeDao(super.attachedDatabase);
+  new(super.attachedDatabase);
 
   @override
   Future<List<WorktreeDto>> list({String? workspaceId}) async {
@@ -200,7 +197,7 @@ class SessionDao extends DatabaseAccessor<TinestDatabase>
     with _$SessionDaoMixin
     implements SessionRepository {
   /// Creates a [SessionDao].
-  SessionDao(super.attachedDatabase);
+  new(super.attachedDatabase);
 
   @override
   Future<List<SessionDto>> list({String? worktreeId}) async {
@@ -235,7 +232,7 @@ class SessionDao extends DatabaseAccessor<TinestDatabase>
               SessionStatus.initializing.name,
             ]),
       );
-    return (await query.getSingle()).read(count) ?? 0;
+    return await (await query.getSingle()).read(count) ?? 0;
   }
 
   @override
@@ -301,11 +298,9 @@ class SessionDao extends DatabaseAccessor<TinestDatabase>
   @override
   Future<void> rewriteModelPrefix(String oldPrefix, String newPrefix) async {
     await attachedDatabase.transaction(() async {
-      final affected =
-          await (select(sessions)..where(
-                (row) => row.modelId.like('$oldPrefix/%'),
-              ))
-              .get();
+      final affected = await (select(
+        sessions,
+      )..where((row) => row.modelId.like('$oldPrefix/%'))).get();
       for (final session in affected) {
         final modelId = session.modelId;
         if (modelId == null) continue;
@@ -350,9 +345,7 @@ class SessionDao extends DatabaseAccessor<TinestDatabase>
     await (update(sessions)..where((row) => row.id.equals(id))).write(
       SessionsCompanion(
         contextTokensUsed: Value<int>(tokens),
-        totalCostUsd: Value<double>(
-          current.totalCostUsd + (usageCostUsd ?? 0),
-        ),
+        totalCostUsd: Value<double>(current.totalCostUsd + (usageCostUsd ?? 0)),
         hasCompleteCost: Value<bool>(
           current.hasCompleteCost && usageCostUsd != null,
         ),
@@ -469,7 +462,7 @@ class SessionDao extends DatabaseAccessor<TinestDatabase>
     String rootSessionId,
     String agentPath,
   ) async {
-    if (agentPath == '/root') return getById(rootSessionId);
+    if (agentPath == '/root') return await getById(rootSessionId);
     final row =
         await (select(sessions)..where(
               (table) =>
@@ -543,7 +536,7 @@ class AgentMailboxDao extends DatabaseAccessor<TinestDatabase>
     with _$AgentMailboxDaoMixin
     implements AgentMailboxRepository {
   /// Creates an agent mailbox DAO.
-  AgentMailboxDao(super.attachedDatabase);
+  new(super.attachedDatabase);
 
   @override
   Future<void> enqueue(
@@ -600,9 +593,7 @@ class AgentMailboxDao extends DatabaseAccessor<TinestDatabase>
     await (update(
       agentMailboxMessages,
     )..where((row) => row.id.isIn(ids))).write(
-      AgentMailboxMessagesCompanion(
-        deliveredAt: Value<DateTime?>(deliveredAt),
-      ),
+      AgentMailboxMessagesCompanion(deliveredAt: Value<DateTime?>(deliveredAt)),
     );
   }
 
@@ -628,7 +619,7 @@ class AttachmentDao extends DatabaseAccessor<TinestDatabase>
     with _$AttachmentDaoMixin
     implements AttachmentRepository {
   /// Creates an attachment DAO.
-  AttachmentDao(super.attachedDatabase);
+  new(super.attachedDatabase);
 
   @override
   Future<void> insert(AttachmentDto attachment) => into(attachments).insert(
@@ -744,7 +735,7 @@ class TimelineDao extends DatabaseAccessor<TinestDatabase>
     with _$TimelineDaoMixin
     implements TimelineRepository {
   /// Creates a [TimelineDao].
-  TimelineDao(super.attachedDatabase);
+  new(super.attachedDatabase);
 
   @override
   Future<TimelineEventDto> append({
@@ -781,7 +772,7 @@ class TimelineDao extends DatabaseAccessor<TinestDatabase>
 
   @override
   Future<List<TimelineEventDto>> after(String sessionId, int sequence) async =>
-      _ascending(sessionId, lowerExclusive: sequence);
+      await _ascending(sessionId, lowerExclusive: sequence);
 
   @override
   Future<List<TimelineEventDto>> tail(
@@ -802,7 +793,7 @@ class TimelineDao extends DatabaseAccessor<TinestDatabase>
       newest.last,
       floor: math.max(sequence + 1, newest.first.sequence - _span(limit) + 1),
     );
-    return _ascending(
+    return await _ascending(
       sessionId,
       lowerExclusive: start - 1,
       upperInclusive: newest.first.sequence,
@@ -826,7 +817,7 @@ class TimelineDao extends DatabaseAccessor<TinestDatabase>
       newest.last,
       floor: math.max(1, newest.first.sequence - _span(limit) + 1),
     );
-    return _ascending(
+    return await _ascending(
       sessionId,
       lowerExclusive: start - 1,
       upperInclusive: newest.first.sequence,
@@ -976,7 +967,7 @@ class TimelineDao extends DatabaseAccessor<TinestDatabase>
       ..addColumns(<Expression<Object>>[sessions.currentContextEpoch])
       ..where(sessions.id.equals(sessionId));
     final row = await query.getSingleOrNull();
-    return row?.read(sessions.currentContextEpoch) ?? 0;
+    return await row?.read(sessions.currentContextEpoch) ?? 0;
   }
 
   /// Appends [items] after the last ordinal, tagged with [epoch].
@@ -1138,7 +1129,7 @@ class ProviderDao extends DatabaseAccessor<TinestDatabase>
     with _$ProviderDaoMixin
     implements ProviderRepository {
   /// Creates a [ProviderDao].
-  ProviderDao(super.attachedDatabase);
+  new(super.attachedDatabase);
 
   @override
   Future<List<ProviderConnectionDto>> listConnections() async =>
@@ -1325,7 +1316,7 @@ class RuntimeDao extends DatabaseAccessor<TinestDatabase>
     with _$RuntimeDaoMixin
     implements RecoveryRepository {
   /// Creates a [RuntimeDao].
-  RuntimeDao(super.attachedDatabase);
+  new(super.attachedDatabase);
 
   @override
   Future<void> recoverInterruptedRuns() async {

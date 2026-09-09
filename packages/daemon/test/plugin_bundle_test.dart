@@ -43,13 +43,11 @@ $capabilities
 
 Reader documentation.
 ''');
-    await File(p.join(directory.path, 'main.lua')).writeAsString(
-      'return tinest.plugin.define({})\n',
-    );
+    await File(p.join(directory.path, 'main.lua'))
+        .writeAsString('return tinest.plugin.define({})\n');
     await Directory(p.join(directory.path, 'prompts')).create();
-    await File(p.join(directory.path, 'prompts', 'read.md')).writeAsString(
-      'Read carefully.\n',
-    );
+    await File(p.join(directory.path, 'prompts', 'read.md'))
+        .writeAsString('Read carefully.\n');
     return directory;
   }
 
@@ -112,9 +110,8 @@ Reader documentation.
         throwsA(isA<PluginBundleFormatException>()),
       );
 
-      await Directory(
-        p.join(config.path, 'v5', 'plugins', 'Acme.Reader'),
-      ).delete(recursive: true);
+      await Directory(p.join(config.path, 'v5', 'plugins', 'Acme.Reader'))
+          .delete(recursive: true);
       final plugin = await writePlugin();
       await File(p.join(plugin.path, 'native.dll')).writeAsBytes(<int>[0]);
       await expectLater(
@@ -217,10 +214,7 @@ Reader documentation.
       final activatedForA = await catalog.reload(
         'acme.reader',
         agentId: 'agent-a',
-        approvedCapabilities: const <String>{
-          'workspace.read',
-          'network.http',
-        },
+        approvedCapabilities: const <String>{'workspace.read', 'network.http'},
       );
       expect(
         activatedForA.revision!.contentHash,
@@ -238,10 +232,7 @@ Reader documentation.
       final invalid = await catalog.reload(
         'acme.reader',
         agentId: 'agent-a',
-        approvedCapabilities: const <String>{
-          'workspace.read',
-          'network.http',
-        },
+        approvedCapabilities: const <String>{'workspace.read', 'network.http'},
       );
       expect(
         invalid.revision!.contentHash,
@@ -290,9 +281,8 @@ Reader documentation.
       );
       final firstRevision = first.revision!;
 
-      await File(p.join(source.path, 'main.lua')).writeAsString(
-        'return require("tinest").plugin.define({})\n',
-      );
+      await File(p.join(source.path, 'main.lua'))
+          .writeAsString('return require("tinest").plugin.define({})\n');
       final second = await firstCatalog.reload(
         'acme.reader',
         agentId: 'agent-a',
@@ -368,10 +358,7 @@ Reader documentation.
         grants: grants,
         inspector: const _UiContributionInspector(),
       );
-      final restored = await restarted.getForAgent(
-        'agent-a',
-        'acme.reader',
-      );
+      final restored = await restarted.getForAgent('agent-a', 'acme.reader');
 
       expect(
         restored.contributions.map((contribution) => contribution.id),
@@ -425,9 +412,8 @@ Reader documentation.
     () async {
       final cache = NativePluginRevisionCache(state.path);
       await writePlugin();
-      final bundle = await NativePluginBundleLoader(
-        config.path,
-      ).load('acme.reader');
+      final bundle = await NativePluginBundleLoader(config.path)
+          .load('acme.reader');
       final contentHash = bundle.revision.contentHash;
       final executionHash = bundle.revision.executionRevisionHash;
 
@@ -465,7 +451,7 @@ Reader documentation.
 }
 
 final class _UiContributionInspector implements PluginBundleInspector {
-  const _UiContributionInspector();
+  const new();
 
   @override
   Future<PluginDescriptorDto> inspect(PluginBundle bundle) async =>

@@ -9,7 +9,7 @@ import 'package:tinyrack_ui/tinyrack_ui.dart';
 @immutable
 final class ComposerSuggestionsState {
   /// Creates a suggestions state.
-  const ComposerSuggestionsState({
+  const new({
     this.trigger,
     this.items = const <ComposerSuggestion>[],
     this.loading = false,
@@ -42,7 +42,7 @@ final class ComposerSuggestionsState {
 /// highlight, and its keyboard contract belong to `TRInlineSuggestions`.
 class ComposerSuggestionsOverlay extends StatelessWidget {
   /// Creates the composer's completion overlay.
-  const ComposerSuggestionsOverlay({
+  const new({
     required this.state,
     required this.controller,
     required this.onSelected,

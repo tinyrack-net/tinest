@@ -9,16 +9,15 @@ import 'package:http/http.dart' as http;
 import 'package:json_rpc_2/json_rpc_2.dart' as json_rpc;
 import 'package:protocol/protocol.dart';
 
-ModelSelectionDto? _canonicalSelection(
-  ModelSelectionDto? selection,
-) => selection == null
+ModelSelectionDto? _canonicalSelection(ModelSelectionDto? selection) =>
+    selection == null
     ? null
     : ModelSelectionDto(modelId: selection.qualifiedModelId);
 
 /// TinestClientException defines a public contract.
 class TinestClientException implements Exception {
   /// Creates a [TinestClientException].
-  const TinestClientException(
+  const new(
     this.message, {
     this.code,
     this.retryable = false,
@@ -71,7 +70,7 @@ class TinestClient
         TerminalsApi,
         AttachmentsApi,
         RelayApi {
-  TinestClient._({
+  new _({
     required this._endpoint,
     required this._credentials,
     required this._clientId,
@@ -416,9 +415,7 @@ class TinestClient
                   )))
               .sendRequest(procedure.name, procedure.encodeParams(params))
               .timeout(_requestTimeout);
-      return procedure.decodeResult(
-        Map<String, dynamic>.from(result as Map),
-      );
+      return procedure.decodeResult(Map<String, dynamic>.from(result as Map));
     } on TimeoutException {
       // Without this the deadline escapes _call untyped, so every caller that
       // handles TinestClientException misses it and leaves its UI mid-flight.
@@ -515,11 +512,7 @@ class TinestClient
   }) async {
     final response = await _call(
       workspacesSearchFilesProcedure,
-      FileSearchParamsDto(
-        worktreeId: worktreeId,
-        query: query,
-        limit: limit,
-      ),
+      FileSearchParamsDto(worktreeId: worktreeId, query: query, limit: limit),
     );
     return response;
   }
@@ -800,17 +793,12 @@ class TinestClient
   }
 
   @override
-  Future<void> setTerminalShell(ShellSpecDto? shell) => _call(
-    terminalsSetDefaultShellProcedure,
-    TerminalShellDto(shell: shell),
-  );
+  Future<void> setTerminalShell(ShellSpecDto? shell) =>
+      _call(terminalsSetDefaultShellProcedure, TerminalShellDto(shell: shell));
 
   @override
   Future<List<AgentDefinitionDto>> listAgentDefinitions() async {
-    final response = await _call(
-      agentsListProcedure,
-      const EmptyParamsDto(),
-    );
+    final response = await _call(agentsListProcedure, const EmptyParamsDto());
     return response.definitions;
   }
 
@@ -853,10 +841,8 @@ class TinestClient
   }
 
   @override
-  Future<void> archiveAgentDefinition(String id) => _call(
-    agentsArchiveProcedure,
-    AgentDefinitionIdParamsDto(id: id),
-  );
+  Future<void> archiveAgentDefinition(String id) =>
+      _call(agentsArchiveProcedure, AgentDefinitionIdParamsDto(id: id));
 
   @override
   Future<AgentDefinitionDto> resetAgentDefinition(String id) async {
@@ -892,10 +878,7 @@ class TinestClient
 
   @override
   Future<List<PluginDescriptorDto>> listPlugins() async {
-    final response = await _call(
-      pluginsListProcedure,
-      const EmptyParamsDto(),
-    );
+    final response = await _call(pluginsListProcedure, const EmptyParamsDto());
     return response.plugins;
   }
 
@@ -1136,10 +1119,7 @@ class TinestClient
 
   @override
   Future<void> removeMcpServer(String id) async {
-    await _call(
-      mcpRemoveServerProcedure,
-      McpServerIdParamsDto(id: id),
-    );
+    await _call(mcpRemoveServerProcedure, McpServerIdParamsDto(id: id));
   }
 
   @override
@@ -1312,9 +1292,7 @@ class TinestClient
   }
 
   @override
-  Future<List<ProviderModelDto>> listProviderModels(
-    String connectionId,
-  ) async {
+  Future<List<ProviderModelDto>> listProviderModels(String connectionId) async {
     final response = await _call(
       providersListModelsProcedure,
       ProviderConnectionIdParamsDto(connectionId: connectionId),
@@ -1323,20 +1301,17 @@ class TinestClient
   }
 
   @override
-  Future<DaemonModelSettingsDto> getSettings() => _call(
-    modelsGetSettingsProcedure,
-    const EmptyParamsDto(),
-  );
+  Future<DaemonModelSettingsDto> getSettings() =>
+      _call(modelsGetSettingsProcedure, const EmptyParamsDto());
 
   @override
-  Future<DaemonModelSettingsDto> setDefaultModel(
-    ModelSelectionDto model,
-  ) => _call(
-    modelsSetDefaultModelProcedure,
-    SetDaemonDefaultModelParamsDto(
-      model: ModelSelectionDto(modelId: model.qualifiedModelId),
-    ),
-  );
+  Future<DaemonModelSettingsDto> setDefaultModel(ModelSelectionDto model) =>
+      _call(
+        modelsSetDefaultModelProcedure,
+        SetDaemonDefaultModelParamsDto(
+          model: ModelSelectionDto(modelId: model.qualifiedModelId),
+        ),
+      );
 
   @override
   Future<ProviderConnectionDto> createCustomProvider(
@@ -1408,7 +1383,7 @@ class TinestClient
     required Stream<List<int>> bytes,
   }) async {
     if (_connector case final AttachmentTransport transport) {
-      return transport.upload(
+      return await transport.upload(
         fileName: fileName,
         mimeType: mimeType,
         byteSize: byteSize,
@@ -1455,7 +1430,7 @@ class TinestClient
   @override
   Future<AttachmentDownload> downloadAttachment(String id) async {
     if (_connector case final AttachmentTransport transport) {
-      return transport.download(id);
+      return await transport.download(id);
     }
     final client = http.Client();
     final request = http.Request(
@@ -1474,9 +1449,9 @@ class TinestClient
       );
     }
     final headers = response.headers;
-    final encodedName = RegExp(
-      r"filename\*=UTF-8''([^;]+)",
-    ).firstMatch(headers['content-disposition'] ?? '')?.group(1);
+    final encodedName = RegExp(r"filename\*=UTF-8''([^;]+)")
+        .firstMatch(headers['content-disposition'] ?? '')
+        ?.group(1);
     return AttachmentDownload(
       fileName: encodedName == null ? id : Uri.decodeComponent(encodedName),
       // The parameters after `;` are not part of the media type the caller
@@ -1516,10 +1491,7 @@ class TinestClient
   }) async {
     await _call(
       sessionsResolveApprovalProcedure,
-      ApprovalResolveParamsDto(
-        approvalId: approvalId,
-        approved: approved,
-      ),
+      ApprovalResolveParamsDto(approvalId: approvalId, approved: approved),
     );
   }
 
@@ -1537,10 +1509,7 @@ class TinestClient
     required List<UserQuestionAnswerDto> answers,
   }) async => (await _call(
     sessionsAnswerQuestionProcedure,
-    UserQuestionAnswerParamsDto(
-      requestId: requestId,
-      answers: answers,
-    ),
+    UserQuestionAnswerParamsDto(requestId: requestId, answers: answers),
   )).request;
 
   @override

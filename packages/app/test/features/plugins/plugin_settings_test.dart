@@ -75,12 +75,9 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.byKey(const ValueKey('plugin-reload-button')));
       await tester.pumpAndSettle();
-      expect(
-        api.reloadedPlugins,
-        <({String agentId, String pluginId})>[
-          (agentId: 'tinest', pluginId: 'tinest.plan'),
-        ],
-      );
+      expect(api.reloadedPlugins, <({String agentId, String pluginId})>[
+        (agentId: 'tinest', pluginId: 'tinest.plan'),
+      ]);
 
       await tester.tap(find.text('example.tools').first);
       await tester.pumpAndSettle();
@@ -99,9 +96,7 @@ void main() {
       expect(
         tester
             .widget<TRIconButton>(
-              find.byKey(
-                const ValueKey<String>('plugin-open-path-button'),
-              ),
+              find.byKey(const ValueKey<String>('plugin-open-path-button')),
             )
             .onPressed,
         isNotNull,
@@ -191,33 +186,31 @@ void main() {
     ],
   );
 
-  testWidgets(
-    'keeps the revision inside its row at a large text scale',
-    (tester) async {
-      await tester.binding.setSurfaceSize(const Size(390, 760));
-      addTearDown(() => tester.binding.setSurfaceSize(null));
-      final api = FakeTinestApi(
-        agentDefinitions: const <AgentDefinitionDto>[_tinestAgent],
-        plugins: const <PluginDescriptorDto>[_planPlugin],
-      );
-      final router = await _pumpPlugins(
-        tester,
-        api,
-        textScaler: const TextScaler.linear(2),
-      );
-      addTearDown(router.dispose);
-      await tester.tap(find.text('Plan').first);
-      await tester.pumpAndSettle();
+  testWidgets('keeps the revision inside its row at a large text scale', (
+    tester,
+  ) async {
+    await tester.binding.setSurfaceSize(const Size(390, 760));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    final api = FakeTinestApi(
+      agentDefinitions: const <AgentDefinitionDto>[_tinestAgent],
+      plugins: const <PluginDescriptorDto>[_planPlugin],
+    );
+    final router = await _pumpPlugins(
+      tester,
+      api,
+      textScaler: const TextScaler.linear(2),
+    );
+    addTearDown(router.dispose);
+    await tester.tap(find.text('Plan').first);
+    await tester.pumpAndSettle();
 
-      // Scaled up, the digest and its label no longer share a line, so the
-      // row hands the whole width to each in turn instead of overflowing.
-      final label = tester.getRect(find.text('활성 리비전'));
-      final revision = tester.getRect(find.text(_planRevisionLabel));
-      expect(revision.top, greaterThan(label.bottom));
-      expect(revision.right, lessThanOrEqualTo(390));
-    },
-    tags: const <String>['feature_test__plugin_management__widget'],
-  );
+    // Scaled up, the digest and its label no longer share a line, so the
+    // row hands the whole width to each in turn instead of overflowing.
+    final label = tester.getRect(find.text('활성 리비전'));
+    final revision = tester.getRect(find.text(_planRevisionLabel));
+    expect(revision.top, greaterThan(label.bottom));
+    expect(revision.right, lessThanOrEqualTo(390));
+  }, tags: const <String>['feature_test__plugin_management__widget']);
 
   testWidgets(
     'creates an app-data plugin starter without a global enable control',

@@ -5,10 +5,7 @@ import 'package:app/src/features/agents/presentation/tool_groups.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:protocol/protocol.dart';
 
-AgentToolDefinitionDto _tool(
-  String id,
-  String group,
-) => AgentToolDefinitionDto(
+AgentToolDefinitionDto _tool(String id, String group) => AgentToolDefinitionDto(
   id: id,
   originPluginId: 'test.tools',
   contributionId: id,
@@ -31,14 +28,15 @@ void main() {
       _tool('glob', 'filesystem'),
     ]);
 
-    expect(
-      grouped.map((view) => view.group),
-      <String>['execution', 'filesystem', 'third.party'],
-    );
-    expect(
-      grouped[1].tools.map((tool) => tool.id),
-      <String>['read_file', 'glob'],
-    );
+    expect(grouped.map((view) => view.group), <String>[
+      'execution',
+      'filesystem',
+      'third.party',
+    ]);
+    expect(grouped[1].tools.map((tool) => tool.id), <String>[
+      'read_file',
+      'glob',
+    ]);
   });
 
   test('a group nothing belongs to is not drawn', () {

@@ -2,24 +2,20 @@ import 'package:client/client.dart';
 import 'package:test/test.dart';
 
 void main() {
-  test(
-    'TinestApi exposes the v5 feature boundaries',
-    () {
-      final api = _ApiShapeProbe();
+  test('TinestApi exposes the v5 feature boundaries', () {
+    final api = _ApiShapeProbe();
 
-      expect(api.workspaces, isA<WorkspacesApi>());
-      expect(api.sessions, isA<SessionsApi>());
-      expect(api.agents, isA<AgentsApi>());
-      expect(api.plugins, isA<PluginsApi>());
-      expect(api.prompts, isA<PromptsApi>());
-      expect(api.providers, isA<ProvidersApi>());
-      expect(api.mcp, isA<McpApi>());
-      expect(api.terminals, isA<TerminalsApi>());
-      expect(api.attachments, isA<AttachmentsApi>());
-      expect(api.relay, isA<RelayApi>());
-    },
-    tags: const <String>['feature_test__daemon_relay__contract'],
-  );
+    expect(api.workspaces, isA<WorkspacesApi>());
+    expect(api.sessions, isA<SessionsApi>());
+    expect(api.agents, isA<AgentsApi>());
+    expect(api.plugins, isA<PluginsApi>());
+    expect(api.prompts, isA<PromptsApi>());
+    expect(api.providers, isA<ProvidersApi>());
+    expect(api.mcp, isA<McpApi>());
+    expect(api.terminals, isA<TerminalsApi>());
+    expect(api.attachments, isA<AttachmentsApi>());
+    expect(api.relay, isA<RelayApi>());
+  }, tags: const <String>['feature_test__daemon_relay__contract']);
 }
 
 final class _ApiShapeProbe

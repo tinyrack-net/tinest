@@ -73,16 +73,12 @@ void main() {
             .alignment,
         TRChatMessageAlignment.center,
       );
-      await tester.tap(
-        find.byKey(const ValueKey('chat-attachment-image-1')),
-      );
+      await tester.tap(find.byKey(const ValueKey('chat-attachment-image-1')));
       await tester.pumpAndSettle();
       expect(find.byType(InteractiveViewer), findsOneWidget);
       Navigator.of(tester.element(find.byType(InteractiveViewer))).pop();
       await tester.pumpAndSettle();
-      await tester.tap(
-        find.byKey(const ValueKey('chat-attachment-file-1')),
-      );
+      await tester.tap(find.byKey(const ValueKey('chat-attachment-file-1')));
       await tester.pump();
       expect(exported?.id, 'file-1');
     },

@@ -19,7 +19,7 @@ final sessionStarterProvider = Provider<SessionStarter>(SessionStarter.new);
 /// the prompt can unmount before the daemon finishes creating the session.
 final class SessionStarter {
   /// Creates a starter owned by the application provider container.
-  SessionStarter(this._ref);
+  new(this._ref);
 
   final Ref _ref;
 
@@ -92,11 +92,7 @@ final class SessionStarter {
       if (!_ref.mounted) return;
       await _ref
           .read(conversation.notifier)
-          .startTurn(
-            prompt,
-            attachments: attachments,
-            queueWhenBusy: false,
-          );
+          .startTurn(prompt, attachments: attachments, queueWhenBusy: false);
     } on Exception {
       // The session exists but its first turn did not start. The conversation
       // state auto-disposes with this temporary listener, so the prompt stays

@@ -21,7 +21,7 @@ abstract interface class DaemonRelaySocketConnector {
 /// Native WebSocket connector with an explicit self-hosted TLS override.
 final class IoDaemonRelaySocketConnector implements DaemonRelaySocketConnector {
   /// Creates the native connector.
-  const IoDaemonRelaySocketConnector();
+  const new();
 
   @override
   Future<StreamChannel<dynamic>> connect(
@@ -46,7 +46,7 @@ final class IoDaemonRelaySocketConnector implements DaemonRelaySocketConnector {
 /// Bridges encrypted relay envelopes into the daemon's typed RPC session port.
 final class DaemonRelayTransport {
   /// Creates an outbound relay adapter.
-  DaemonRelayTransport({
+  new({
     required this.serverId,
     required this.endpoint,
     required this.tlsPolicy,
@@ -255,10 +255,7 @@ final class DaemonRelayTransport {
           payload: utf8.encode(jsonEncode(response.hello.toJson())),
         ).encode(),
       );
-      rpcSessions.openSessionChannel(
-        session.channel,
-        relayDeviceId: device.id,
-      );
+      rpcSessions.openSessionChannel(session.channel, relayDeviceId: device.id);
     } on Object {
       final session = _sessions.remove(envelope.connectionId);
       await session?.close();
@@ -305,7 +302,7 @@ typedef _RelayFrameSender = Future<void> Function(
 );
 
 final class _DaemonRelaySession {
-  _DaemonRelaySession._({
+  new _({
     required this.connectionId,
     required this.deviceId,
     required this._incoming,
@@ -516,7 +513,7 @@ final class _DaemonRelaySession {
 typedef _AttachmentRecordSender = Future<void> Function(RelayRecord record);
 
 final class _DaemonUpload {
-  _DaemonUpload({
+  new({
     required this.streamId,
     required this.open,
     required this.attachments,
@@ -604,7 +601,7 @@ final class _DaemonUpload {
 }
 
 final class _DaemonDownload {
-  _DaemonDownload._({
+  new _({
     required this.streamId,
     required this.metadata,
     required this.bytes,

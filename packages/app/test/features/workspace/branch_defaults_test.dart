@@ -29,47 +29,31 @@ void main() {
     isDefault: true,
   );
 
-  test(
-    'the base branch prefers the latest remote default',
-    () {
-      expect(
-        defaultBaseBranch(const <GitBranchDto>[
-          local,
-          originMaster,
-          originMain,
-        ]),
-        'origin/main',
-      );
-      expect(
-        defaultBaseBranch(const <GitBranchDto>[local, originMaster]),
-        'origin/master',
-      );
-      expect(
-        defaultBaseBranch(const <GitBranchDto>[local, originTrunk]),
-        'origin/trunk',
-      );
-      expect(defaultBaseBranch(const <GitBranchDto>[feature, local]), 'main');
-      expect(defaultBaseBranch(const <GitBranchDto>[feature]), 'feature');
-      expect(defaultBaseBranch(const <GitBranchDto>[]), isNull);
-    },
-    tags: const <String>['feature_test__worktree_lifecycle__unit'],
-  );
+  test('the base branch prefers the latest remote default', () {
+    expect(
+      defaultBaseBranch(const <GitBranchDto>[local, originMaster, originMain]),
+      'origin/main',
+    );
+    expect(
+      defaultBaseBranch(const <GitBranchDto>[local, originMaster]),
+      'origin/master',
+    );
+    expect(
+      defaultBaseBranch(const <GitBranchDto>[local, originTrunk]),
+      'origin/trunk',
+    );
+    expect(defaultBaseBranch(const <GitBranchDto>[feature, local]), 'main');
+    expect(defaultBaseBranch(const <GitBranchDto>[feature]), 'feature');
+    expect(defaultBaseBranch(const <GitBranchDto>[]), isNull);
+  }, tags: const <String>['feature_test__worktree_lifecycle__unit']);
 
-  test(
-    'a local branch named like a remote default does not win',
-    () {
-      expect(
-        defaultBaseBranch(const <GitBranchDto>[
-          GitBranchDto(
-            name: 'origin/main',
-            current: false,
-            checkedOut: false,
-          ),
-          local,
-        ]),
-        'main',
-      );
-    },
-    tags: const <String>['feature_test__worktree_lifecycle__unit'],
-  );
+  test('a local branch named like a remote default does not win', () {
+    expect(
+      defaultBaseBranch(const <GitBranchDto>[
+        GitBranchDto(name: 'origin/main', current: false, checkedOut: false),
+        local,
+      ]),
+      'main',
+    );
+  }, tags: const <String>['feature_test__worktree_lifecycle__unit']);
 }

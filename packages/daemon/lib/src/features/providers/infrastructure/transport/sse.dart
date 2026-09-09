@@ -5,7 +5,7 @@ import 'dart:typed_data';
 /// ServerSentEvent defines a public contract.
 class ServerSentEvent {
   /// Creates a [ServerSentEvent].
-  const ServerSentEvent({required this.data, this.event});
+  const new({required this.data, this.event});
 
   /// The event public API member.
   final String? event;

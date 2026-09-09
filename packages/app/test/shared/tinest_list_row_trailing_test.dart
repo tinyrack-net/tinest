@@ -37,11 +37,7 @@ void main() {
     tester,
   ) async {
     await tester.pumpWidget(
-      _host(
-        width: _narrowWidth,
-        title: '테마',
-        trailing: _valueTrailing('다크'),
-      ),
+      _host(width: _narrowWidth, title: '테마', trailing: _valueTrailing('다크')),
     );
 
     final content = _contentRect(tester);

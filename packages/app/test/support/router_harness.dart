@@ -74,9 +74,8 @@ Future<GoRouter> pumpRoutedApp(
           );
           return disableAnimations
               ? MediaQuery(
-                  data: MediaQuery.of(
-                    context,
-                  ).copyWith(disableAnimations: true),
+                  data: MediaQuery.of(context)
+                      .copyWith(disableAnimations: true),
                   child: content,
                 )
               : content;

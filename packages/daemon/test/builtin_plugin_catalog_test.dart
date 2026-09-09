@@ -179,9 +179,8 @@ void main() {
       );
       await shadow.create(recursive: true);
       await File(p.join(shadow.path, 'PLUGIN.md')).writeAsString('malicious');
-      await File(
-        p.join(shadow.path, 'main.lua'),
-      ).writeAsString('error("owned")');
+      await File(p.join(shadow.path, 'main.lua'))
+          .writeAsString('error("owned")');
       final loader = NativePluginBundleLoader(config.path);
 
       final bundle = await loader.load('tinest.files');
@@ -229,14 +228,14 @@ return tinest.plugin.define({tools = {}, hooks = {}, ui = {}})
         inspector: const _PassthroughInspector(),
       );
 
-      expect(
-        await sources.listPluginIds(),
-        <String>['acme.echo', ..._builtInIds],
-      );
-      expect(
-        (await service.list()).map((plugin) => plugin.id),
-        <String>['acme.echo', ..._builtInIds],
-      );
+      expect(await sources.listPluginIds(), <String>[
+        'acme.echo',
+        ..._builtInIds,
+      ]);
+      expect((await service.list()).map((plugin) => plugin.id), <String>[
+        'acme.echo',
+        ..._builtInIds,
+      ]);
       expect((await service.get('tinest.plan')).source, PluginSource.builtIn);
     },
   );
@@ -278,15 +277,13 @@ return tinest.plugin.define({tools = {}, hooks = {}, ui = {}})
             .map((file) => p.relative(file.path, from: directory.path)),
         everyElement(anyOf(endsWith('.lua'), endsWith('.md'))),
       );
-      final manifest = await File(
-        p.join(directory.path, 'PLUGIN.md'),
-      ).readAsString();
+      final manifest = await File(p.join(directory.path, 'PLUGIN.md'))
+          .readAsString();
       expect(manifest, contains('id: acme.files'));
       expect(manifest, contains('name: Acme files'));
       expect(manifest, isNot(contains('id: tinest.files')));
-      final entrypoint = await File(
-        p.join(directory.path, 'main.lua'),
-      ).readAsString();
+      final entrypoint = await File(p.join(directory.path, 'main.lua'))
+          .readAsString();
       expect(entrypoint, contains('ui = tool_card'));
       expect(entrypoint, isNot(contains('tinest.files/tool')));
     },
@@ -363,9 +360,8 @@ return tinest.plugin.define({tools = {}, hooks = {}, ui = {}})
       await expectLater(changed, completes);
 
       changed = sources.changes.first.timeout(const Duration(seconds: 5));
-      await File(
-        p.join(nested.path, 'tool.lua'),
-      ).writeAsString('return {}', flush: true);
+      await File(p.join(nested.path, 'tool.lua'))
+          .writeAsString('return {}', flush: true);
       await expectLater(changed, completes);
     },
   );
@@ -376,13 +372,10 @@ return tinest.plugin.define({tools = {}, hooks = {}, ui = {}})
       final sources = NativePluginSourceCatalog(config.path);
       await sources.initialize();
       addTearDown(sources.close);
-      final changed = sources.changes.first.timeout(
-        const Duration(seconds: 5),
-      );
+      final changed = sources.changes.first.timeout(const Duration(seconds: 5));
 
-      await Directory(
-        p.join(config.path, 'v5', 'plugins', 'acme.echo'),
-      ).create();
+      await Directory(p.join(config.path, 'v5', 'plugins', 'acme.echo'))
+          .create();
 
       await expectLater(changed, completes);
     },
@@ -463,7 +456,7 @@ return tinest.plugin.define({tools = {}})
 }
 
 final class _PassthroughInspector implements PluginBundleInspector {
-  const _PassthroughInspector();
+  const new();
 
   @override
   Future<PluginDescriptorDto> inspect(PluginBundle bundle) async =>

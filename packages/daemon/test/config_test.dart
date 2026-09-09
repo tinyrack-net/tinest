@@ -112,10 +112,7 @@ void main() {
     expect(override.bearerToken, 'token');
     expect(override.relay.enabled, isTrue);
     expect(override.relay.endpoint.host, 'relay.example.test');
-    expect(
-      override.relay.tlsPolicy,
-      RelayTlsPolicy.allowInvalidCertificate,
-    );
+    expect(override.relay.tlsPolicy, RelayTlsPolicy.allowInvalidCertificate);
   });
 
   test('agents home override wins over the platform user home', () {
@@ -156,12 +153,7 @@ void main() {
     );
     expect(
       macOS.homeDirectory,
-      p.posix.join(
-        '/Users/test',
-        'Library',
-        'Application Support',
-        'Tinest',
-      ),
+      p.posix.join('/Users/test', 'Library', 'Application Support', 'Tinest'),
     );
     expect(macOS.configDirectory, macOS.homeDirectory);
 
@@ -223,7 +215,7 @@ void main() {
 }
 
 final class _Environment implements DaemonEnvironment {
-  const _Environment({
+  const new({
     required this.values,
     this.linux = false,
     this.macOS = false,

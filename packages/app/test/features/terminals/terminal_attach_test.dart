@@ -87,36 +87,30 @@ void main() {
     tags: const <String>['feature_test__workspace_async_loading__widget'],
   );
 
-  testWidgets(
-    'a failed attachment explains itself and retries on demand',
-    (tester) async {
-      await tester.binding.setSurfaceSize(const Size(1200, 900));
-      addTearDown(() => tester.binding.setSurfaceSize(null));
-      final api = FakeTinestApi(
-        workspaces: <WorkspaceDto>[workspace],
-        worktrees: <WorktreeDto>[checkout],
-        terminals: const <TerminalDto>[terminal],
-        terminalAttachError: Exception('host unreachable'),
-      );
-      final router = await pumpRoutedApp(
-        tester,
-        api,
-        initialLocation: location,
-      );
-      addTearDown(router.dispose);
+  testWidgets('a failed attachment explains itself and retries on demand', (
+    tester,
+  ) async {
+    await tester.binding.setSurfaceSize(const Size(1200, 900));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    final api = FakeTinestApi(
+      workspaces: <WorkspaceDto>[workspace],
+      worktrees: <WorktreeDto>[checkout],
+      terminals: const <TerminalDto>[terminal],
+      terminalAttachError: Exception('host unreachable'),
+    );
+    final router = await pumpRoutedApp(tester, api, initialLocation: location);
+    addTearDown(router.dispose);
 
-      expect(find.byType(TRAlert), findsOneWidget);
-      expect(find.textContaining('host unreachable'), findsOneWidget);
-      expect(find.byType(TerminalView), findsNothing);
+    expect(find.byType(TRAlert), findsOneWidget);
+    expect(find.textContaining('host unreachable'), findsOneWidget);
+    expect(find.byType(TerminalView), findsNothing);
 
-      api.terminalAttachError = null;
-      await tester.tap(
-        find.byKey(const ValueKey<String>('terminal-attach-retry')),
-      );
-      await tester.pumpAndSettle();
-      expect(find.byType(TerminalView), findsOneWidget);
-      expect(api.attachedTerminalIds, <String>[terminal.id]);
-    },
-    tags: const <String>['feature_test__workspace_async_loading__widget'],
-  );
+    api.terminalAttachError = null;
+    await tester.tap(
+      find.byKey(const ValueKey<String>('terminal-attach-retry')),
+    );
+    await tester.pumpAndSettle();
+    expect(find.byType(TerminalView), findsOneWidget);
+    expect(api.attachedTerminalIds, <String>[terminal.id]);
+  }, tags: const <String>['feature_test__workspace_async_loading__widget']);
 }

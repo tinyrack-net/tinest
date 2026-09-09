@@ -8,7 +8,7 @@ import 'package:yaml/yaml.dart';
 /// Scopes a command request to the global sources plus one workspace.
 final class CommandScope {
   /// Creates a scope; both fields are null for the global sources alone.
-  const CommandScope({this.workspaceId, this.projectRoot});
+  const new({this.workspaceId, this.projectRoot});
 
   /// The global sources with no project overlay.
   static const CommandScope global = CommandScope();
@@ -23,11 +23,7 @@ final class CommandScope {
 /// One command document read from a filesystem boundary.
 final class CommandDocument {
   /// Creates an immutable document snapshot.
-  const CommandDocument({
-    required this.id,
-    required this.sourcePath,
-    required this.source,
-  });
+  const new({required this.id, required this.sourcePath, required this.source});
 
   /// File-name derived stable command ID.
   final String id;
@@ -63,8 +59,7 @@ abstract interface class CommandFiles {
 /// `<id>/SKILL.md` because a command carries one prompt and no bundled files.
 final class NativeCommandFiles implements CommandFiles {
   /// Creates an adapter rooted at one commands directory.
-  NativeCommandFiles(String root, {required this.source})
-    : _directory = Directory(root);
+  new(String root, {required this.source}) : _directory = Directory(root);
 
   static const String _extension = '.md';
 
@@ -139,10 +134,8 @@ typedef ProjectCommandFilesBuilder = CommandFiles Function(String projectRoot);
 /// the daemon only resolves precedence between the roots that provide them.
 final class CommandService {
   /// Creates a command application service.
-  CommandService({
-    required List<CommandFiles> globalSources,
-    this.projectFiles,
-  }) : _globalSources = List<CommandFiles>.unmodifiable(globalSources) {
+  new({required List<CommandFiles> globalSources, this.projectFiles})
+    : _globalSources = List<CommandFiles>.unmodifiable(globalSources) {
     for (final source in _globalSources) {
       _subscriptions.add(source.changes.listen((_) => _changes.add(null)));
     }
@@ -264,7 +257,7 @@ final class CommandService {
 }
 
 final class _CommandMarkdown {
-  const _CommandMarkdown({required this.frontMatter, required this.body});
+  const new({required this.frontMatter, required this.body});
 
   /// Returns null when the document opens with no front matter fence.
   static _CommandMarkdown? split(String source) {

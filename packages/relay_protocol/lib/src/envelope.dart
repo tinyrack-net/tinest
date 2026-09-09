@@ -4,7 +4,7 @@ import 'dart:typed_data';
 /// Relay-only routing envelope whose payload stays end-to-end encrypted.
 final class RelayEnvelope {
   /// Creates an envelope for one client connection.
-  RelayEnvelope({required this.connectionId, required List<int> payload})
+  new({required this.connectionId, required List<int> payload})
     : payload = Uint8List.fromList(payload) {
     if (connectionId.isEmpty) {
       throw const FormatException('Connection ID must not be empty.');
@@ -12,7 +12,7 @@ final class RelayEnvelope {
   }
 
   /// Parses a strict binary envelope.
-  factory RelayEnvelope.decode(List<int> bytes) {
+  factory decode(List<int> bytes) {
     if (bytes.length < 3) {
       throw const FormatException('Relay envelope is truncated.');
     }

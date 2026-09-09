@@ -40,25 +40,18 @@ void main() {
     final registry = RelayRegistry(maxClientsPerDaemon: 1)
       ..attachDaemon(serverId: 'daemon-1', peer: MemoryRelayPeer());
     expect(
-      () => registry.attachDaemon(
-        serverId: 'daemon-1',
-        peer: MemoryRelayPeer(),
-      ),
+      () =>
+          registry.attachDaemon(serverId: 'daemon-1', peer: MemoryRelayPeer()),
       throwsA(isA<RelayAdmissionException>()),
     );
     expect(
-      () => registry.attachClient(
-        serverId: 'missing',
-        peer: MemoryRelayPeer(),
-      ),
+      () => registry.attachClient(serverId: 'missing', peer: MemoryRelayPeer()),
       throwsA(isA<RelayAdmissionException>()),
     );
     registry.attachClient(serverId: 'daemon-1', peer: MemoryRelayPeer());
     expect(
-      () => registry.attachClient(
-        serverId: 'daemon-1',
-        peer: MemoryRelayPeer(),
-      ),
+      () =>
+          registry.attachClient(serverId: 'daemon-1', peer: MemoryRelayPeer()),
       throwsA(isA<RelayAdmissionException>()),
     );
   });
@@ -147,10 +140,7 @@ void main() {
     await first.dispose();
     await pumpEventQueue();
     expect(
-      registry.attachClient(
-        serverId: 'daemon-1',
-        peer: MemoryRelayPeer(),
-      ),
+      registry.attachClient(serverId: 'daemon-1', peer: MemoryRelayPeer()),
       isNotEmpty,
     );
   });

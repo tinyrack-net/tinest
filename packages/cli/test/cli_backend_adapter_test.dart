@@ -207,7 +207,7 @@ final class _RecordingApi
         TerminalsApi,
         AttachmentsApi,
         RelayApi {
-  _RecordingApi(this._results);
+  new(this._results);
 
   /// Pre-typed futures, because [noSuchMethod] cannot infer the return type
   /// each member declares.

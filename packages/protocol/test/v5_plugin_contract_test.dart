@@ -4,44 +4,37 @@ import 'package:protocol/protocol.dart';
 import 'package:test/test.dart';
 
 void main() {
-  test(
-    'Agent definition is the complete version 5 harness contract',
-    () {
-      const definition = AgentDefinitionDto(
-        version: 5,
-        id: 'tinest',
-        name: 'Tinest',
-        description: 'Coding agent',
-        mode: AgentMode.primary,
-        model: AgentModelSelectionDto(source: AgentModelSource.session),
-        driverId: 'tinest.standard/driver',
-        extensionIds: <String>['tinest.plan', 'tinest.goal'],
-        toolIds: <String>[
-          'tinest.files/read_file',
-          'tinest.edit/apply_patch',
-        ],
-        pluginSettings: <String, Map<String, dynamic>>{
-          'tinest.plan': <String, dynamic>{'style': 'concise'},
-        },
-        callableAgentIds: <String>[],
-        prompt: 'Work carefully.',
-        contentHash: 'sha256',
-        sourcePath: r'C:\config\v5\agents\tinest.md',
-      );
+  test('Agent definition is the complete version 5 harness contract', () {
+    const definition = AgentDefinitionDto(
+      version: 5,
+      id: 'tinest',
+      name: 'Tinest',
+      description: 'Coding agent',
+      mode: AgentMode.primary,
+      model: AgentModelSelectionDto(source: AgentModelSource.session),
+      driverId: 'tinest.standard/driver',
+      extensionIds: <String>['tinest.plan', 'tinest.goal'],
+      toolIds: <String>['tinest.files/read_file', 'tinest.edit/apply_patch'],
+      pluginSettings: <String, Map<String, dynamic>>{
+        'tinest.plan': <String, dynamic>{'style': 'concise'},
+      },
+      callableAgentIds: <String>[],
+      prompt: 'Work carefully.',
+      contentHash: 'sha256',
+      sourcePath: r'C:\config\v5\agents\tinest.md',
+    );
 
-      final decoded = AgentDefinitionDto.fromJson(
-        jsonDecode(jsonEncode(definition)) as Map<String, dynamic>,
-      );
+    final decoded = AgentDefinitionDto.fromJson(
+      jsonDecode(jsonEncode(definition)) as Map<String, dynamic>,
+    );
 
-      expect(decoded, definition);
-      expect(decoded.driverId, 'tinest.standard/driver');
-      expect(decoded.prompt, 'Work carefully.');
-      expect(decoded.pluginSettings['tinest.plan'], <String, dynamic>{
-        'style': 'concise',
-      });
-    },
-    tags: const <String>['feature_test__agent_harness__contract'],
-  );
+    expect(decoded, definition);
+    expect(decoded.driverId, 'tinest.standard/driver');
+    expect(decoded.prompt, 'Work carefully.');
+    expect(decoded.pluginSettings['tinest.plan'], <String, dynamic>{
+      'style': 'concise',
+    });
+  }, tags: const <String>['feature_test__agent_harness__contract']);
 
   test(
     'plugin descriptors, revisions, diagnostics, grants, and UI round trip',
@@ -132,9 +125,10 @@ void main() {
           jsonDecode(jsonEncode(value)) as Map<String, dynamic>;
 
       expect(PluginDescriptorDto.fromJson(wire(descriptor)), descriptor);
-      final tool = PluginDescriptorDto.fromJson(
-        wire(descriptor),
-      ).contributions.single.tool!;
+      final tool = PluginDescriptorDto.fromJson(wire(descriptor))
+          .contributions
+          .single
+          .tool!;
       expect(tool.originPluginId, 'acme.reader');
       expect(tool.contributionId, 'read');
       expect(tool.kind, AgentToolKind.function);
@@ -185,10 +179,7 @@ void main() {
       expect(pluginsSetSecretProcedure.name, 'plugins.setSecret');
       expect(pluginsRemoveSecretProcedure.name, 'plugins.removeSecret');
       expect(pluginsRenderUiProcedure.name, 'plugins.renderUi');
-      expect(
-        pluginsDispatchUiActionProcedure.name,
-        'plugins.dispatchUiAction',
-      );
+      expect(pluginsDispatchUiActionProcedure.name, 'plugins.dispatchUiAction');
       expect(
         pluginsGetSessionControlProcedure.name,
         'plugins.getSessionControl',
@@ -206,9 +197,8 @@ void main() {
       );
       expect(
         PluginGrantParamsDto.fromJson(
-          jsonDecode(
-            jsonEncode(const PluginGrantParamsDto(grant: grant)),
-          ) as Map<String, dynamic>,
+          jsonDecode(jsonEncode(const PluginGrantParamsDto(grant: grant)))
+              as Map<String, dynamic>,
         ).grant,
         grant,
       );
@@ -222,10 +212,7 @@ void main() {
         pluginsSetSecretProcedure.encodeResult(const EmptyResultDto()),
         isNot(containsValue('never-return-this')),
       );
-      expect(
-        PluginSecretSetParamsDto.fromJson(secret.toJson()),
-        secret,
-      );
+      expect(PluginSecretSetParamsDto.fromJson(secret.toJson()), secret);
       const fork = PluginForkParamsDto(
         sourceId: 'tinest.files',
         id: 'acme.files',
@@ -248,9 +235,7 @@ void main() {
         PluginAuthoringEnvironmentResultDto.fromJson(
           jsonDecode(
             jsonEncode(
-              const PluginAuthoringEnvironmentResultDto(
-                environment: authoring,
-              ),
+              const PluginAuthoringEnvironmentResultDto(environment: authoring),
             ),
           ) as Map<String, dynamic>,
         ).environment,
@@ -348,17 +333,10 @@ void main() {
     ],
   );
 
-  test(
-    'plugin UI rejections have a protocol-owned code',
-    () {
-      expect(
-        RpcErrorCodes.all,
-        contains(RpcErrorCodes.pluginUiRejected),
-      );
-      expect(RpcErrorCodes.pluginUiRejected, 'plugin_ui_rejected');
-    },
-    tags: const <String>['feature_test__plugin_ui__contract'],
-  );
+  test('plugin UI rejections have a protocol-owned code', () {
+    expect(RpcErrorCodes.all, contains(RpcErrorCodes.pluginUiRejected));
+    expect(RpcErrorCodes.pluginUiRejected, 'plugin_ui_rejected');
+  }, tags: const <String>['feature_test__plugin_ui__contract']);
 
   test(
     'session control values are typed session-owned durable JSON',

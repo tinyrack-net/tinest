@@ -42,30 +42,24 @@ data: {"type":"message_stop"}
           .toList();
 
       final body = Map<String, dynamic>.from(adapter.options!.data as Map);
-      expect(
-        body['system'],
-        <Map<String, dynamic>>[
-          <String, dynamic>{'type': 'text', 'text': 'system-1'},
-          <String, dynamic>{'type': 'text', 'text': 'system-2'},
-        ],
-      );
-      expect(
-        body['messages'],
-        <Map<String, dynamic>>[
-          <String, dynamic>{
-            'role': 'user',
-            'content': <Map<String, dynamic>>[
-              <String, dynamic>{'type': 'text', 'text': 'user-1'},
-            ],
-          },
-          <String, dynamic>{
-            'role': 'assistant',
-            'content': <Map<String, dynamic>>[
-              <String, dynamic>{'type': 'text', 'text': 'assistant-1'},
-            ],
-          },
-        ],
-      );
+      expect(body['system'], <Map<String, dynamic>>[
+        <String, dynamic>{'type': 'text', 'text': 'system-1'},
+        <String, dynamic>{'type': 'text', 'text': 'system-2'},
+      ]);
+      expect(body['messages'], <Map<String, dynamic>>[
+        <String, dynamic>{
+          'role': 'user',
+          'content': <Map<String, dynamic>>[
+            <String, dynamic>{'type': 'text', 'text': 'user-1'},
+          ],
+        },
+        <String, dynamic>{
+          'role': 'assistant',
+          'content': <Map<String, dynamic>>[
+            <String, dynamic>{'type': 'text', 'text': 'assistant-1'},
+          ],
+        },
+      ]);
       // The two destinations partition the blocks. A role that matched
       // neither would vanish with no error, so count the round trip.
       expect(
@@ -126,27 +120,19 @@ data: {"type":"message_stop"}
         .toList();
 
     expect(events.whereType<ModelTextDelta>().single.delta, 'hello');
-    expect(
-      events.whereType<ModelReasoningDelta>().single.delta,
-      'plan',
-    );
+    expect(events.whereType<ModelReasoningDelta>().single.delta, 'plan');
     expect(
       events.whereType<ModelFunctionCall>().single.arguments,
-      <String, dynamic>{
-        'path': 'README.md',
-      },
+      <String, dynamic>{'path': 'README.md'},
     );
     final completed = events.whereType<ModelResponseCompleted>().single;
     expect(completed.usage.inputTokens, 7);
     expect(completed.usage.outputTokens, 5);
-    expect(
-      completed.assistant.opaqueItems.single['block'],
-      <String, dynamic>{
-        'type': 'thinking',
-        'thinking': 'plan',
-        'signature': 'signed',
-      },
-    );
+    expect(completed.assistant.opaqueItems.single['block'], <String, dynamic>{
+      'type': 'thinking',
+      'thinking': 'plan',
+      'signature': 'signed',
+    });
 
     final continuationAdapter = _RecordingAdapter('''
 event: message_start
@@ -202,7 +188,7 @@ ModelRequest _request({
 );
 
 final class _RecordingAdapter implements HttpClientAdapter {
-  _RecordingAdapter(this.body);
+  new(this.body);
   final String body;
   RequestOptions? options;
 

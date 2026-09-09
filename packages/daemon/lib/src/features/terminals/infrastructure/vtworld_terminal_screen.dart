@@ -8,7 +8,7 @@ import 'package:vtworld/vtworld.dart';
 /// mode handling cannot drift between two implementations.
 final class VtworldTerminalScreenFactory implements TerminalScreenFactory {
   /// Creates the production screen factory.
-  const VtworldTerminalScreenFactory();
+  const new();
 
   @override
   TerminalScreen create({
@@ -23,17 +23,14 @@ final class VtworldTerminalScreenFactory implements TerminalScreenFactory {
 }
 
 final class _VtworldTerminalScreen implements TerminalScreen {
-  _VtworldTerminalScreen({
-    required int columns,
-    required int rows,
-    required int scrollbackLines,
-  }) : _terminal = Terminal(
-         options: TerminalOptions(
-           cols: columns,
-           rows: rows,
-           scrollback: scrollbackLines,
-         ),
-       ) {
+  new({required int columns, required int rows, required int scrollbackLines})
+    : _terminal = Terminal(
+        options: TerminalOptions(
+          cols: columns,
+          rows: rows,
+          scrollback: scrollbackLines,
+        ),
+      ) {
     _terminal.loadAddon(_serialize);
     // Deliberately no `onData` subscription. This screen is a mirror, not a
     // terminal: answering a device-attributes or cursor-position query here

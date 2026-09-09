@@ -10,7 +10,7 @@ class PermissionSettingsController extends _$PermissionSettingsController {
   @override
   Future<PermissionSettingsDto> build(String hostId) async {
     final api = await requireHostApi(ref, hostId);
-    return api.agents.getDefaultPermissionMode();
+    return await api.agents.getDefaultPermissionMode();
   }
 
   /// Persists and exposes a new daemon-global permission default.

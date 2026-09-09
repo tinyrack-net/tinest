@@ -15,7 +15,7 @@ import 'package:tinyrack_ui/tinyrack_ui.dart';
 /// as a stack of forms rather than as a list of what is currently set.
 class TinestChoiceRow<T> extends StatelessWidget {
   /// Creates a choice setting row.
-  const TinestChoiceRow({
+  const new({
     required this.title,
     required this.semanticLabel,
     required this.items,
@@ -107,7 +107,7 @@ class TinestChoiceRow<T> extends StatelessWidget {
 /// could set its own was how one card ended up drawing two alignment lines.
 class TinestSwitchRow extends StatelessWidget {
   /// Creates a binary setting row.
-  const TinestSwitchRow({
+  const new({
     required this.title,
     required this.value,
     this.onChanged,
@@ -156,7 +156,7 @@ class TinestSwitchRow extends StatelessWidget {
 /// A labeled multi-selection setting backed by [TRCheckbox].
 class TinestCheckboxRow extends StatelessWidget {
   /// Creates a checkbox setting row.
-  const TinestCheckboxRow({
+  const new({
     required this.title,
     required this.value,
     this.onChanged,

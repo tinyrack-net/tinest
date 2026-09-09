@@ -130,43 +130,35 @@ void main() {
       expect(api.skillListRequests.last.view, SkillListView.project);
       expect(api.skillListRequests.last.workspaceId, workspace.id);
     },
-    tags: const <String>[
-      'feature_test__skill_catalog__widget',
-    ],
-  );
-
-  testWidgets(
-    'an invalid project route normalizes before listing skills',
-    (tester) async {
-      await _setViewport(tester, const Size(1200, 900));
-      final api = FakeTinestApi(workspaces: <WorkspaceDto>[workspace]);
-      final router = await _pumpSkills(
-        tester,
-        api,
-        workspaceId: 'removed-project',
-      );
-      addTearDown(router.dispose);
-
-      expect(
-        router
-            .routeInformationProvider
-            .value
-            .uri
-            .queryParameters['workspace-id'],
-        isNull,
-      );
-      expect(api.skillListRequests, isNotEmpty);
-      expect(
-        api.skillListRequests,
-        everyElement(
-          isA<SkillListParamsDto>()
-              .having((request) => request.view, 'view', SkillListView.global)
-              .having((request) => request.workspaceId, 'workspaceId', isNull),
-        ),
-      );
-    },
     tags: const <String>['feature_test__skill_catalog__widget'],
   );
+
+  testWidgets('an invalid project route normalizes before listing skills', (
+    tester,
+  ) async {
+    await _setViewport(tester, const Size(1200, 900));
+    final api = FakeTinestApi(workspaces: <WorkspaceDto>[workspace]);
+    final router = await _pumpSkills(
+      tester,
+      api,
+      workspaceId: 'removed-project',
+    );
+    addTearDown(router.dispose);
+
+    expect(
+      router.routeInformationProvider.value.uri.queryParameters['workspace-id'],
+      isNull,
+    );
+    expect(api.skillListRequests, isNotEmpty);
+    expect(
+      api.skillListRequests,
+      everyElement(
+        isA<SkillListParamsDto>()
+            .having((request) => request.view, 'view', SkillListView.global)
+            .having((request) => request.workspaceId, 'workspaceId', isNull),
+      ),
+    );
+  }, tags: const <String>['feature_test__skill_catalog__widget']);
 
   testWidgets(
     'initial catalog loading uses the shared form skeleton',
@@ -202,30 +194,25 @@ void main() {
     ],
   );
 
-  testWidgets(
-    'global and project catalogs use distinct empty states',
-    (tester) async {
-      await _setViewport(tester, const Size(1200, 900));
-      final api = FakeTinestApi(
-        workspaces: <WorkspaceDto>[workspace],
-        skills: const <SkillSummaryDto>[],
-        projectSkills: const <SkillSummaryDto>[],
-      );
-      final router = await _pumpSkills(tester, api);
-      addTearDown(router.dispose);
+  testWidgets('global and project catalogs use distinct empty states', (
+    tester,
+  ) async {
+    await _setViewport(tester, const Size(1200, 900));
+    final api = FakeTinestApi(
+      workspaces: <WorkspaceDto>[workspace],
+      skills: const <SkillSummaryDto>[],
+      projectSkills: const <SkillSummaryDto>[],
+    );
+    final router = await _pumpSkills(tester, api);
+    addTearDown(router.dispose);
 
-      expect(find.text('사용 가능한 전역 스킬이 없습니다.'), findsOneWidget);
-      await tester.tap(_scopeTrigger);
-      await tester.pumpAndSettle();
-      await tester.tap(find.widgetWithText(MenuItemButton, 'Tinest'));
-      await tester.pumpAndSettle();
-      expect(
-        find.text('이 프로젝트에 사용 가능한 스킬이 없습니다.'),
-        findsOneWidget,
-      );
-    },
-    tags: const <String>['feature_test__skill_catalog__widget'],
-  );
+    expect(find.text('사용 가능한 전역 스킬이 없습니다.'), findsOneWidget);
+    await tester.tap(_scopeTrigger);
+    await tester.pumpAndSettle();
+    await tester.tap(find.widgetWithText(MenuItemButton, 'Tinest'));
+    await tester.pumpAndSettle();
+    expect(find.text('이 프로젝트에 사용 가능한 스킬이 없습니다.'), findsOneWidget);
+  }, tags: const <String>['feature_test__skill_catalog__widget']);
 
   testWidgets(
     'a failed catalog load keeps the scope and offers retry',
@@ -283,40 +270,38 @@ void main() {
     ],
   );
 
-  testWidgets(
-    'the controlled scope selector adapts to a mobile sheet',
-    (tester) async {
-      await _setViewport(tester, const Size(390, 760));
-      final api = FakeTinestApi(
-        workspaces: _manyWorkspaces(now),
-        projectSkills: const <SkillSummaryDto>[projectSkill],
-      );
-      final router = await _pumpSkills(tester, api);
-      addTearDown(router.dispose);
+  testWidgets('the controlled scope selector adapts to a mobile sheet', (
+    tester,
+  ) async {
+    await _setViewport(tester, const Size(390, 760));
+    final api = FakeTinestApi(
+      workspaces: _manyWorkspaces(now),
+      projectSkills: const <SkillSummaryDto>[projectSkill],
+    );
+    final router = await _pumpSkills(tester, api);
+    addTearDown(router.dispose);
 
-      final layoutScope = tester.widget<TRAdaptiveLayoutScope>(
-        find.byType(TRAdaptiveLayoutScope),
-      );
-      expect(layoutScope.widthClass, TRAdaptiveWidthClass.compact);
-      expect(
-        find.byKey(const ValueKey<String>('settings-sidebar-surface')),
-        findsNothing,
-      );
+    final layoutScope = tester.widget<TRAdaptiveLayoutScope>(
+      find.byType(TRAdaptiveLayoutScope),
+    );
+    expect(layoutScope.widthClass, TRAdaptiveWidthClass.compact);
+    expect(
+      find.byKey(const ValueKey<String>('settings-sidebar-surface')),
+      findsNothing,
+    );
 
-      await tester.tap(_scopeTrigger);
-      await tester.pumpAndSettle();
-      expect(find.byType(TRDrawer), findsOneWidget);
-      await tester.enterText(_searchInput('프로젝트 검색'), 'drop');
-      await tester.pumpAndSettle();
-      await tester.tap(find.widgetWithText(MenuItemButton, 'Dropwell'));
-      await tester.pumpAndSettle();
+    await tester.tap(_scopeTrigger);
+    await tester.pumpAndSettle();
+    expect(find.byType(TRDrawer), findsOneWidget);
+    await tester.enterText(_searchInput('프로젝트 검색'), 'drop');
+    await tester.pumpAndSettle();
+    await tester.tap(find.widgetWithText(MenuItemButton, 'Dropwell'));
+    await tester.pumpAndSettle();
 
-      expect(find.byType(TRDrawer), findsNothing);
-      expect(api.skillListRequests.last.view, SkillListView.project);
-      expect(api.skillListRequests.last.workspaceId, 'dropwell');
-    },
-    tags: const <String>['feature_test__skill_catalog__widget'],
-  );
+    expect(find.byType(TRDrawer), findsNothing);
+    expect(api.skillListRequests.last.view, SkillListView.project);
+    expect(api.skillListRequests.last.workspaceId, 'dropwell');
+  }, tags: const <String>['feature_test__skill_catalog__widget']);
 
   testWidgets('English and Japanese catalog copy is available', (tester) async {
     await _setViewport(tester, const Size(1200, 900));

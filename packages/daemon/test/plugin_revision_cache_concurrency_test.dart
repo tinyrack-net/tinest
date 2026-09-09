@@ -51,10 +51,11 @@ void main() {
         }
       });
       for (var index = 0; index < 2; index += 1) {
-        await Isolate.spawn(
-          _storeRevision,
-          <Object>[state.path, gate.sendPort, done.sendPort],
-        );
+        await Isolate.spawn(_storeRevision, <Object>[
+          state.path,
+          gate.sendPort,
+          done.sendPort,
+        ]);
       }
       await finished;
       done.close();

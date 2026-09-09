@@ -14,26 +14,22 @@ import 'package:shelf/shelf_io.dart' as shelf_io;
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
-  testWidgets(
-    'a real relay pairs the app client and carries daemon RPC',
-    (tester) async {
-      final stack = await _RelayE2eStack.start('pairing');
-      addTearDown(stack.close);
+  testWidgets('a real relay pairs the app client and carries daemon RPC', (
+    tester,
+  ) async {
+    final stack = await _RelayE2eStack.start('pairing');
+    addTearDown(stack.close);
 
-      final paired = await stack.pair(deviceId: 'phone');
-      final client = await stack.connect(paired);
-      await tester.pump();
+    final paired = await stack.pair(deviceId: 'phone');
+    final client = await stack.connect(paired);
+    await tester.pump();
 
-      expect(client.serverInfo.serverId, stack.daemon.serverId);
-      expect((await client.relay.getRelayStatus()).connected, isTrue);
-      final devices = await client.relay.listRelayDevices();
-      expect(devices, hasLength(1));
-      expect(devices.single.id, 'phone');
-    },
-    tags: const <String>[
-      'feature_scenario__daemon_relay__pairing__e2e',
-    ],
-  );
+    expect(client.serverInfo.serverId, stack.daemon.serverId);
+    expect((await client.relay.getRelayStatus()).connected, isTrue);
+    final devices = await client.relay.listRelayDevices();
+    expect(devices, hasLength(1));
+    expect(devices.single.id, 'phone');
+  }, tags: const <String>['feature_scenario__daemon_relay__pairing__e2e']);
 
   testWidgets(
     'a bound failing direct path selects the authenticated real relay',
@@ -100,41 +96,33 @@ void main() {
       expect(selected, same(paired.connection));
       expect(relayApi.serverInfo.serverId, stack.daemon.serverId);
     },
-    tags: const <String>[
-      'feature_scenario__daemon_relay__failover__e2e',
-    ],
+    tags: const <String>['feature_scenario__daemon_relay__failover__e2e'],
   );
 
-  testWidgets(
-    'revoking a device terminates its real encrypted relay session',
-    (tester) async {
-      final stack = await _RelayE2eStack.start('revocation');
-      addTearDown(stack.close);
-      final paired = await stack.pair(deviceId: 'tablet');
-      final client = await stack.connect(paired);
-      final disconnected = client.states.firstWhere(
-        (state) => state == ClientConnectionState.disconnected,
-      );
+  testWidgets('revoking a device terminates its real encrypted relay session', (
+    tester,
+  ) async {
+    final stack = await _RelayE2eStack.start('revocation');
+    addTearDown(stack.close);
+    final paired = await stack.pair(deviceId: 'tablet');
+    final client = await stack.connect(paired);
+    final disconnected = client.states.firstWhere(
+      (state) => state == ClientConnectionState.disconnected,
+    );
 
-      await stack.admin.revokeRelayDevice('tablet');
-      await disconnected.timeout(const Duration(seconds: 5));
-      await tester.pump();
+    await stack.admin.revokeRelayDevice('tablet');
+    await disconnected.timeout(const Duration(seconds: 5));
+    await tester.pump();
 
-      expect(await stack.admin.listRelayDevices(), isEmpty);
-    },
-    tags: const <String>[
-      'feature_scenario__daemon_relay__revocation__e2e',
-    ],
-  );
+    expect(await stack.admin.listRelayDevices(), isEmpty);
+  }, tags: const <String>['feature_scenario__daemon_relay__revocation__e2e']);
 
   testWidgets(
     'a real relay streams an attachment beyond one credit window',
     (tester) async {
       final stack = await _RelayE2eStack.start('attachment');
       addTearDown(stack.close);
-      final client = await stack.connect(
-        await stack.pair(deviceId: 'laptop'),
-      );
+      final client = await stack.connect(await stack.pair(deviceId: 'laptop'));
       const size = relayAttachmentCreditWindowBytes + 257;
 
       final uploaded = await client.attachments.uploadAttachment(
@@ -168,7 +156,7 @@ Stream<List<int>> _bytes(int total, int byte) async* {
 }
 
 final class _RelayE2eStack {
-  _RelayE2eStack._({
+  new _({
     required this.home,
     required this.relayService,
     required this.relayServer,
@@ -241,7 +229,7 @@ final class _RelayE2eStack {
 
   Future<RelayPairingResult> pair({required String deviceId}) async {
     final offer = await admin.createRelayPairingOffer();
-    return RelayDevicePairer().pair(
+    return await RelayDevicePairer().pair(
       pairingUrl: Uri.parse(offer.url),
       deviceId: deviceId,
       deviceName: deviceId,
@@ -274,7 +262,7 @@ final class _RelayE2eStack {
 }
 
 final class _OfflineMetadataSource implements ProviderCatalogMetadataSource {
-  const _OfflineMetadataSource();
+  const new();
 
   @override
   Future<void> close() async {}

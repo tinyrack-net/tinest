@@ -21,7 +21,7 @@ import 'package:tinyrack_ui/tinyrack_ui.dart';
 /// Tinest application composition.
 class TinestApp extends StatelessWidget {
   /// Creates the application.
-  TinestApp({
+  new({
     required this.services,
     this.attachmentInput,
     this.directoryPicker,
@@ -87,7 +87,7 @@ class TinestApp extends StatelessWidget {
 
 /// Builds the app shell below [ProviderScope] so it can watch settings.
 class _TinestAppView extends ConsumerWidget {
-  const _TinestAppView({required this.router, required this.resident});
+  const new({required this.router, required this.resident});
 
   final GoRouter router;
 

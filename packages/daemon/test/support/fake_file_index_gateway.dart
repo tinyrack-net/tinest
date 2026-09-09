@@ -4,7 +4,7 @@ import 'package:protocol/protocol.dart';
 /// Records file search requests and replays scripted matches.
 final class FakeFileIndexGateway implements WorkspaceFileIndexGateway {
   /// Creates a fake index; [matches] is keyed by worktree root.
-  FakeFileIndexGateway({Map<String, List<FileMatchDto>>? matches})
+  new({Map<String, List<FileMatchDto>>? matches})
     : matches = matches ?? <String, List<FileMatchDto>>{};
 
   /// Scripted matches per worktree root.

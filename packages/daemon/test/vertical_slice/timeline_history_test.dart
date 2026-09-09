@@ -106,19 +106,14 @@ void main() {
         expect(
           newest.map((event) => event.sequence),
           orderedEquals(
-            List<int>.generate(
-              newest.length,
-              (i) => newest.first.sequence + i,
-            ),
+            List<int>.generate(newest.length, (i) => newest.first.sequence + i),
           ),
         );
         final newestTurn = full.last.turnId;
         expect(
           full
               .where((event) => event.turnId == newestTurn)
-              .every(
-                (event) => event.sequence >= newest.first.sequence,
-              ),
+              .every((event) => event.sequence >= newest.first.sequence),
           isTrue,
           reason: 'the newest turn is never split across a page boundary',
         );

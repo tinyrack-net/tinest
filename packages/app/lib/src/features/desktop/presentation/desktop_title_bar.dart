@@ -35,7 +35,7 @@ enum DesktopCaptionAction {
 /// Localized application menus with optional Flutter-owned window controls.
 class DesktopMenuBar extends StatelessWidget {
   /// Creates a menu row connected to typed application and window commands.
-  const DesktopMenuBar({
+  const new({
     required this.window,
     required this.sidebarCollapsed,
     required this.onNewWorkspace,
@@ -145,7 +145,7 @@ class DesktopMenuBar extends StatelessWidget {
 }
 
 class _ApplicationMenu extends StatelessWidget {
-  const _ApplicationMenu({
+  const new({
     required this.sidebarCollapsed,
     required this.onNewWorkspace,
     required this.onOpenSettings,
@@ -235,7 +235,7 @@ class _ApplicationMenu extends StatelessWidget {
 }
 
 class _CaptionButton extends StatelessWidget {
-  const _CaptionButton({
+  const new({
     required this.tooltip,
     required this.action,
     required this.onPressed,

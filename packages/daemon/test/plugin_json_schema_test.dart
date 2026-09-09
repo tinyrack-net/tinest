@@ -69,21 +69,17 @@ void main() {
       };
       for (final entry in values.entries) {
         expect(
-          () => validatePluginJsonSchema(
-            <String, Object?>{'type': entry.key},
-            entry.value,
-          ),
+          () => validatePluginJsonSchema(<String, Object?>{
+            'type': entry.key,
+          }, entry.value),
           returnsNormally,
           reason: entry.key,
         );
       }
       expect(
-        () => validatePluginJsonSchema(
-          <String, Object?>{
-            'type': <Object?>['string', 'null', 4],
-          },
-          null,
-        ),
+        () => validatePluginJsonSchema(<String, Object?>{
+          'type': <Object?>['string', 'null', 4],
+        }, null),
         returnsNormally,
       );
     });
@@ -123,12 +119,9 @@ void main() {
         returnsNormally,
       );
       expect(
-        () => validatePluginJsonSchema(
-          <String, Object?>{
-            'enum': <Object?>['one', 'two'],
-          },
-          'three',
-        ),
+        () => validatePluginJsonSchema(<String, Object?>{
+          'enum': <Object?>['one', 'two'],
+        }, 'three'),
         _validationAt(r'$', contains('enum')),
       );
     });
@@ -149,14 +142,11 @@ void main() {
         );
       }
       expect(
-        () => validatePluginJsonSchema(
-          <String, Object?>{
-            'minimum': 1,
-            'maximum': 3,
-            'minLength': 'ignored',
-          },
-          2,
-        ),
+        () => validatePluginJsonSchema(<String, Object?>{
+          'minimum': 1,
+          'maximum': 3,
+          'minLength': 'ignored',
+        }, 2),
         returnsNormally,
       );
     });
@@ -169,10 +159,7 @@ void main() {
         'properties': <String, Object?>{
           'items': <String, Object?>{
             'type': 'array',
-            'items': <String, Object?>{
-              'type': 'integer',
-              'minimum': 1,
-            },
+            'items': <String, Object?>{'type': 'integer', 'minimum': 1},
           },
         },
       };
@@ -260,9 +247,5 @@ void main() {
 Matcher _validationAt(String path, Matcher message) => throwsA(
   isA<PluginJsonValidationException>()
       .having((failure) => failure.path, 'path', path)
-      .having(
-        (failure) => failure.message,
-        'message',
-        message,
-      ),
+      .having((failure) => failure.message, 'message', message),
 );

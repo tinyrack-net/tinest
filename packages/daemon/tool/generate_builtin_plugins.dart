@@ -81,12 +81,7 @@ Future<void> _generatePluginSdk(Directory packageRoot) async {
       p.join(packageRoot.path, 'plugin_sdk', 'library', 'tinest.lua'),
     ),
     'tinestLuaSandboxDefinitionSourceBase64': File(
-      p.join(
-        packageRoot.path,
-        'plugin_sdk',
-        'library',
-        'tinest-sandbox.d.lua',
-      ),
+      p.join(packageRoot.path, 'plugin_sdk', 'library', 'tinest-sandbox.d.lua'),
     ),
   };
   final output = File(

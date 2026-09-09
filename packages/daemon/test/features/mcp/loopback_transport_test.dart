@@ -39,10 +39,7 @@ void main() {
       unstarted.send(<String, dynamic>{}),
       throwsA(isA<McpTransportClosed>()),
     );
-    expect(
-      const McpTransportClosed('why').toString(),
-      contains('why'),
-    );
+    expect(const McpTransportClosed('why').toString(), contains('why'));
     expect(const McpTransportClosed().toString(), 'McpTransportClosed');
   });
 

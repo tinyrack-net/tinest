@@ -157,120 +157,117 @@ void main() {
     },
   );
 
-  test(
-    'streams encrypted relay attachments with bounded credit',
-    () async {
-      final clientIdentity = await RelayIdentity.fromSeed(
-        List<int>.filled(32, 11),
-      );
-      final daemonIdentity = await RelayIdentity.fromSeed(
-        List<int>.filled(32, 12),
-      );
-      final pairing = RelayPairingService(
+  test('streams encrypted relay attachments with bounded credit', () async {
+    final clientIdentity = await RelayIdentity.fromSeed(
+      List<int>.filled(32, 11),
+    );
+    final daemonIdentity = await RelayIdentity.fromSeed(
+      List<int>.filled(32, 12),
+    );
+    final pairing = RelayPairingService(
+      serverId: 'daemon-attachments',
+      relayUri: Uri.parse('wss://relay.example/v1/ws'),
+      daemonIdentityPublicKey: daemonIdentity.publicKey,
+      devices: MemoryRelayDeviceRepository(),
+      clock: const _Clock(),
+      ids: const _Ids(),
+      randomBytes: (length) => List<int>.filled(length, 13),
+    );
+    final offer = pairing.createOffer();
+    await pairing.registerDevice(
+      offerId: offer.offerId,
+      offerSecret: offer.secret,
+      deviceId: 'tablet',
+      deviceName: 'Tablet',
+      devicePublicKey: clientIdentity.publicKey,
+    );
+    final daemonSocket = StreamChannelController<dynamic>(sync: true);
+    final clientSocket = StreamChannelController<dynamic>(sync: true);
+    final bridge = _RelayBridge(
+      daemon: daemonSocket.foreign,
+      client: clientSocket.foreign,
+    );
+    final attachmentHost = _MemoryAttachments();
+    final control = RelayControlService(
+      enabled: true,
+      endpoint: Uri.parse('wss://relay.example/v1/ws'),
+      serverId: 'daemon-attachments',
+      pairing: pairing,
+      applyEnabled: ({required enabled}) async {},
+    );
+    final transport = DaemonRelayTransport(
+      serverId: 'daemon-attachments',
+      endpoint: control.endpoint,
+      tlsPolicy: RelayTlsPolicy.systemTrust,
+      identity: daemonIdentity,
+      pairing: pairing,
+      rpcSessions: _RpcSessions(expectedDeviceId: 'tablet'),
+      attachments: attachmentHost,
+      control: control,
+      connector: _Connector(daemonSocket.local),
+    );
+    final relayConnector = RelayWebSocketConnector(
+      connection: RelayHostConnection(
+        id: 'relay',
+        credentialKey: 'relay-key',
         serverId: 'daemon-attachments',
         relayUri: Uri.parse('wss://relay.example/v1/ws'),
         daemonIdentityPublicKey: daemonIdentity.publicKey,
-        devices: MemoryRelayDeviceRepository(),
-        clock: const _Clock(),
-        ids: const _Ids(),
-        randomBytes: (length) => List<int>.filled(length, 13),
-      );
-      final offer = pairing.createOffer();
-      await pairing.registerDevice(
-        offerId: offer.offerId,
-        offerSecret: offer.secret,
+      ),
+      credential: RelayHostCredential(
         deviceId: 'tablet',
-        deviceName: 'Tablet',
-        devicePublicKey: clientIdentity.publicKey,
-      );
-      final daemonSocket = StreamChannelController<dynamic>(sync: true);
-      final clientSocket = StreamChannelController<dynamic>(sync: true);
-      final bridge = _RelayBridge(
-        daemon: daemonSocket.foreign,
-        client: clientSocket.foreign,
-      );
-      final attachmentHost = _MemoryAttachments();
-      final control = RelayControlService(
-        enabled: true,
-        endpoint: Uri.parse('wss://relay.example/v1/ws'),
-        serverId: 'daemon-attachments',
-        pairing: pairing,
-        applyEnabled: ({required enabled}) async {},
-      );
-      final transport = DaemonRelayTransport(
-        serverId: 'daemon-attachments',
-        endpoint: control.endpoint,
-        tlsPolicy: RelayTlsPolicy.systemTrust,
-        identity: daemonIdentity,
-        pairing: pairing,
-        rpcSessions: _RpcSessions(expectedDeviceId: 'tablet'),
-        attachments: attachmentHost,
-        control: control,
-        connector: _Connector(daemonSocket.local),
-      );
-      final relayConnector = RelayWebSocketConnector(
-        connection: RelayHostConnection(
-          id: 'relay',
-          credentialKey: 'relay-key',
-          serverId: 'daemon-attachments',
-          relayUri: Uri.parse('wss://relay.example/v1/ws'),
-          daemonIdentityPublicKey: daemonIdentity.publicKey,
-        ),
-        credential: RelayHostCredential(
-          deviceId: 'tablet',
-          privateKey: List<int>.filled(32, 11),
-        ),
-        socketConnector: _ClientConnector(clientSocket.local),
-      );
-      addTearDown(() async {
-        await transport.close();
-        await control.close();
-        await bridge.close();
-      });
-      await transport.start();
-      await relayConnector.connect(
-        Uri.parse('wss://ignored.example'),
-        headers: const <String, String>{},
-      );
+        privateKey: List<int>.filled(32, 11),
+      ),
+      socketConnector: _ClientConnector(clientSocket.local),
+    );
+    addTearDown(() async {
+      await transport.close();
+      await control.close();
+      await bridge.close();
+    });
+    await transport.start();
+    await relayConnector.connect(
+      Uri.parse('wss://ignored.example'),
+      headers: const <String, String>{},
+    );
 
-      const size = 50 * 1024 * 1024;
-      final uploaded = await relayConnector
-          .upload(
-            fileName: 'payload.bin',
-            mimeType: 'application/octet-stream',
-            byteSize: size,
-            bytes: _chunks(size, 0x5a),
-          )
-          .timeout(
-            const Duration(seconds: 30),
-            onTimeout: () => throw StateError(
-              'upload timed out after ${attachmentHost.uploadedBytes} bytes '
-              '(client frames ${bridge.clientFrames}, daemon frames '
-              '${bridge.daemonFrames})',
-            ),
-          );
-      expect(uploaded.byteSize, size);
-      expect(attachmentHost.uploadedBytes, size);
+    const size = 50 * 1024 * 1024;
+    final uploaded = await relayConnector
+        .upload(
+          fileName: 'payload.bin',
+          mimeType: 'application/octet-stream',
+          byteSize: size,
+          bytes: _chunks(size, 0x5a),
+        )
+        .timeout(
+          const Duration(seconds: 30),
+          onTimeout: () => throw StateError(
+            'upload timed out after ${attachmentHost.uploadedBytes} bytes '
+            '(client frames ${bridge.clientFrames}, daemon frames '
+            '${bridge.daemonFrames})',
+          ),
+        );
+    expect(uploaded.byteSize, size);
+    expect(attachmentHost.uploadedBytes, size);
 
-      final download = await relayConnector
-          .download(uploaded.id)
-          .timeout(
-            const Duration(seconds: 30),
-            onTimeout: () => throw StateError('download open timed out'),
-          );
-      var downloadedBytes = 0;
-      await download.bytes
-          .forEach((chunk) {
-            downloadedBytes += chunk.length;
-            expect(chunk, everyElement(0x5a));
-          })
-          .timeout(
-            const Duration(seconds: 30),
-            onTimeout: () => throw StateError('download body timed out'),
-          );
-      expect(downloadedBytes, size);
-    },
-  );
+    final download = await relayConnector
+        .download(uploaded.id)
+        .timeout(
+          const Duration(seconds: 30),
+          onTimeout: () => throw StateError('download open timed out'),
+        );
+    var downloadedBytes = 0;
+    await download.bytes
+        .forEach((chunk) {
+          downloadedBytes += chunk.length;
+          expect(chunk, everyElement(0x5a));
+        })
+        .timeout(
+          const Duration(seconds: 30),
+          onTimeout: () => throw StateError('download body timed out'),
+        );
+    expect(downloadedBytes, size);
+  });
 }
 
 Stream<List<int>> _chunks(int total, int byte) async* {
@@ -282,7 +279,7 @@ Stream<List<int>> _chunks(int total, int byte) async* {
 }
 
 final class _RelayBridge {
-  _RelayBridge({
+  new({
     required StreamChannel<dynamic> daemon,
     required StreamChannel<dynamic> client,
   }) : _daemon = daemon,
@@ -318,7 +315,7 @@ final class _RelayBridge {
 }
 
 final class _ClientConnector implements WebSocketConnector {
-  const _ClientConnector(this.channel);
+  const new(this.channel);
 
   final StreamChannel<dynamic> channel;
 
@@ -330,7 +327,7 @@ final class _ClientConnector implements WebSocketConnector {
 }
 
 final class _Connector implements DaemonRelaySocketConnector {
-  _Connector(this.channel);
+  new(this.channel);
 
   final StreamChannel<dynamic> channel;
   late Uri uri;
@@ -346,7 +343,7 @@ final class _Connector implements DaemonRelaySocketConnector {
 }
 
 final class _RpcSessions implements RpcSessionHost {
-  _RpcSessions({this.expectedDeviceId = 'phone'});
+  new({this.expectedDeviceId = 'phone'});
 
   final String expectedDeviceId;
   StreamChannel<String>? channel;
@@ -365,7 +362,7 @@ final class _RpcSessions implements RpcSessionHost {
 }
 
 final class _Attachments implements RelayAttachmentHost {
-  const _Attachments();
+  const new();
 
   @override
   Future<(RelayAttachment, Stream<List<int>>)> download(String id) =>
@@ -384,10 +381,8 @@ final class _MemoryAttachments implements RelayAttachmentHost {
   int uploadedBytes = 0;
 
   @override
-  Future<(RelayAttachment, Stream<List<int>>)> download(String id) async => (
-    _dto(id, uploadedBytes),
-    _chunks(uploadedBytes, 0x5a),
-  );
+  Future<(RelayAttachment, Stream<List<int>>)> download(String id) async =>
+      (_dto(id, uploadedBytes), _chunks(uploadedBytes, 0x5a));
 
   @override
   Future<RelayAttachment> upload({
@@ -417,14 +412,14 @@ final class _MemoryAttachments implements RelayAttachmentHost {
 }
 
 final class _Clock implements Clock {
-  const _Clock();
+  const new();
 
   @override
   DateTime nowUtc() => DateTime.utc(2026, 8, 8);
 }
 
 final class _Ids implements IdGenerator {
-  const _Ids();
+  const new();
 
   @override
   String generate() => 'offer-1';

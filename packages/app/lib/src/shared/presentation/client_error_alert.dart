@@ -70,7 +70,7 @@ String? clientErrorDiagnostics(TinestClientException error) {
 /// the trace id that points at the daemon log record.
 class ClientErrorAlert extends StatelessWidget {
   /// Creates a failure alert for [error].
-  const ClientErrorAlert({
+  const new({
     required this.error,
     required this.title,
     this.onRetry,

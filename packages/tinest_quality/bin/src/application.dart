@@ -32,7 +32,7 @@ enum _TinestQualityCommand {
   coverageDartPackage('_coverage-dart-package'),
   coverageFlutter('_coverage-flutter');
 
-  const _TinestQualityCommand(this.cliName);
+  new(this.cliName);
 
   final String cliName;
 }
@@ -40,7 +40,7 @@ enum _TinestQualityCommand {
 typedef _CommonFlags = ({int? jobs, String? reportPath});
 
 final class _QualityInvocation {
-  const _QualityInvocation({
+  const new({
     required this.command,
     required this.options,
     this.check = false,
@@ -54,7 +54,7 @@ final class _QualityInvocation {
 }
 
 final class _QualityCliContext implements CommandContext {
-  const _QualityCliContext({
+  const new({
     required this.process,
     required this.environment,
     required this.detectedJobs,
@@ -97,7 +97,7 @@ final class _QualityCliContext implements CommandContext {
 }
 
 final class _CallbackWriteStream implements WriteStream {
-  const _CallbackWriteStream(this.output);
+  const new(this.output);
 
   final QualityOutput output;
 
@@ -197,11 +197,8 @@ Command<_QualityCliContext> _scopedCommand(
         .map((values) => (common: values.$1, scopes: values.$2)),
     positional: PositionalSet.none(),
   ),
-  func: (context, flags, _) => context.execute(
-    command,
-    flags.common,
-    scopes: flags.scopes,
-  ),
+  func: (context, flags, _) =>
+      context.execute(command, flags.common, scopes: flags.scopes),
 );
 
 RouteMap<_QualityCliContext> _qualityRoutes() => buildRouteMap(
@@ -308,7 +305,7 @@ Future<int> _executeTinestQuality(
   final options = invocation.options;
   switch (command) {
     case _TinestQualityCommand.generate:
-      return _runMeasured(
+      return await _runMeasured(
         name: 'generate',
         jobs: options.jobs,
         reportPath: options.reportPath,
@@ -320,7 +317,7 @@ Future<int> _executeTinestQuality(
         ),
       );
     case _TinestQualityCommand.test:
-      return _runPlan(
+      return await _runPlan(
         WorkspaceVerificationPlans.tests(jobs: options.jobs),
         jobs: options.jobs,
         reportPath: options.reportPath,
@@ -328,7 +325,7 @@ Future<int> _executeTinestQuality(
         error: writeError,
       );
     case _TinestQualityCommand.verify:
-      return _runPlan(
+      return await _runPlan(
         WorkspaceVerificationPlans.full(
           jobs: options.jobs,
           serializeCoverage: Platform.isWindows,
@@ -339,7 +336,7 @@ Future<int> _executeTinestQuality(
         error: writeError,
       );
     case _TinestQualityCommand.e2e:
-      return _runMeasured(
+      return await _runMeasured(
         name: 'e2e',
         jobs: options.jobs,
         reportPath: options.reportPath,
@@ -364,7 +361,7 @@ Future<int> _executeTinestQuality(
       out(CiChangeScope.forPullRequest(files).outputValue);
       return 0;
     case _TinestQualityCommand.staticChecks:
-      return _runPlan(
+      return await _runPlan(
         WorkspaceVerificationPlans.staticChecks(jobs: options.jobs),
         jobs: options.jobs,
         reportPath: options.reportPath,
@@ -376,7 +373,7 @@ Future<int> _executeTinestQuality(
     case _TinestQualityCommand.featuresCheck:
       return _featuresCheck(out, writeError);
     case _TinestQualityCommand.testDart:
-      return _runDartPackages(
+      return await _runDartPackages(
         jobs: options.jobs,
         scopes: invocation.scopes,
         coverage: false,
@@ -386,7 +383,7 @@ Future<int> _executeTinestQuality(
       );
     case _TinestQualityCommand.testFlutter:
       final seed = _newTestSeed();
-      return _runMeasured(
+      return await _runMeasured(
         name: 'Flutter tests',
         jobs: options.jobs,
         reportPath: options.reportPath,
@@ -401,7 +398,7 @@ Future<int> _executeTinestQuality(
         ),
       );
     case _TinestQualityCommand.coverageDart:
-      return _runDartPackages(
+      return await _runDartPackages(
         jobs: options.jobs,
         scopes: invocation.scopes,
         coverage: true,
@@ -432,7 +429,7 @@ Future<int> _executeTinestQuality(
       return exitCode;
     case _TinestQualityCommand.coverageFlutter:
       final seed = _newTestSeed();
-      return _runMeasured(
+      return await _runMeasured(
         name: 'Flutter coverage',
         jobs: options.jobs,
         reportPath: options.reportPath,
@@ -481,9 +478,7 @@ Future<int> _runFlutterPackageTests({
     );
     if (result != 0) return result;
     if (coverage) {
-      _excludeGeneratedCoverage(
-        File('packages/$package/coverage/lcov.info'),
-      );
+      _excludeGeneratedCoverage(File('packages/$package/coverage/lcov.info'));
     }
   }
   return 0;
@@ -584,13 +579,10 @@ Future<int> _runDartPackages({
     error('No Dart packages with tests matched the requested scope.');
     return 64;
   }
-  final allocations = allocatePackageJobs(
-    <PackageWorkload>[
-      for (final target in targets)
-        PackageWorkload(name: target.name, suites: target.suites),
-    ],
-    jobs,
-  );
+  final allocations = allocatePackageJobs(<PackageWorkload>[
+    for (final target in targets)
+      PackageWorkload(name: target.name, suites: target.suites),
+  ], jobs);
   final tasks = <VerificationTask>[];
   if (coverage) {
     for (final target in targets) {
@@ -654,9 +646,7 @@ Future<int> _runDartPackages({
         maxJobs: jobs,
       ).run(
         VerificationPlan(
-          phases: <VerificationPhase>[
-            VerificationPhase(tasks: tasks),
-          ],
+          phases: <VerificationPhase>[VerificationPhase(tasks: tasks)],
         ),
       );
   if (!report.succeeded) {
@@ -755,11 +745,7 @@ List<_PackageTestTarget> _dartPackageTargets(Set<String> scopes) {
 }
 
 final class _PackageTestTarget {
-  const _PackageTestTarget({
-    required this.name,
-    required this.path,
-    required this.suites,
-  });
+  const new({required this.name, required this.path, required this.suites});
 
   final String name;
   final String path;
@@ -908,7 +894,7 @@ final Random _testSeedRandom = Random.secure();
 int _newTestSeed() => _testSeedRandom.nextInt(0x7fffffff);
 
 final class _ProcessTaskExecutor implements VerificationTaskExecutor {
-  const _ProcessTaskExecutor(this.out, this.error);
+  const new(this.out, this.error);
 
   final QualityOutput out;
   final QualityOutput error;

@@ -26,7 +26,7 @@ typedef ChatPluginUiActionDispatcher = Future<PluginUiDocumentDto> Function(
 /// Scrolling conversation body rendered from projected chat items.
 class ChatTimelineView extends StatefulWidget {
   /// Creates a timeline view.
-  const ChatTimelineView({
+  const new({
     required this.items,
     required this.busy,
     required this.sessionKey,
@@ -271,11 +271,8 @@ class _ChatTimelineViewState extends State<ChatTimelineView> {
     });
   }
 
-  Future<Uint8List> _load(ChatAttachment attachment) =>
-      _attachmentCache.putIfAbsent(
-        attachment.id,
-        () => widget.loadAttachment!(attachment),
-      );
+  Future<Uint8List> _load(ChatAttachment attachment) => _attachmentCache
+      .putIfAbsent(attachment.id, () => widget.loadAttachment!(attachment));
 
   double _estimatedItemExtent(_ChatTimelineEntry entry, int _) =>
       switch (entry) {
@@ -417,7 +414,7 @@ class _ChatTimelineViewState extends State<ChatTimelineView> {
 
 /// Keeps timeline visuals readable without narrowing their scroll viewport.
 class _ChatTimelineContentColumn extends StatelessWidget {
-  const _ChatTimelineContentColumn({required this.child});
+  const new({required this.child});
 
   final Widget child;
 
@@ -434,13 +431,13 @@ class _ChatTimelineContentColumn extends StatelessWidget {
 }
 
 sealed class _ChatTimelineEntry {
-  const _ChatTimelineEntry();
+  const new();
 
   String get key;
 }
 
 final class _ChatTimelineItemEntry extends _ChatTimelineEntry {
-  const _ChatTimelineItemEntry(this.item);
+  const new(this.item);
 
   final ChatItem item;
 
@@ -457,7 +454,7 @@ final class _ChatTimelineItemEntry extends _ChatTimelineEntry {
 /// row happens to be last — all of which the reader sees as the transcript
 /// twitching rather than as an indicator changing.
 final class _ChatTimelineRunningEntry extends _ChatTimelineEntry {
-  const _ChatTimelineRunningEntry({required this.showsIndicator});
+  const new({required this.showsIndicator});
 
   final bool showsIndicator;
 
@@ -468,7 +465,7 @@ final class _ChatTimelineRunningEntry extends _ChatTimelineEntry {
 /// Renders one projected chat item.
 class ChatItemView extends StatelessWidget {
   /// Creates a chat item view.
-  const ChatItemView({
+  const new({
     required this.item,
     this.expanded = false,
     this.onToggle,
@@ -522,15 +519,11 @@ class ChatItemView extends StatelessWidget {
       ),
       ChatPluginUiDocument() => PluginUiDocumentView(
         document: value.document,
-        semanticLabel: AppLocalizations.of(
-          context,
-        ).pluginUiSemanticLabel(value.document.pluginId),
-        invalidDocumentLabel: AppLocalizations.of(
-          context,
-        ).pluginUiInvalidTitle,
-        invalidDocumentDescription: AppLocalizations.of(
-          context,
-        ).pluginUiInvalidDescription(AppIdentity.displayName),
+        semanticLabel: AppLocalizations.of(context)
+            .pluginUiSemanticLabel(value.document.pluginId),
+        invalidDocumentLabel: AppLocalizations.of(context).pluginUiInvalidTitle,
+        invalidDocumentDescription: AppLocalizations.of(context)
+            .pluginUiInvalidDescription(AppIdentity.displayName),
         onAction: onPluginUiAction == null
             ? null
             : (action) => onPluginUiAction!(value.document, action),

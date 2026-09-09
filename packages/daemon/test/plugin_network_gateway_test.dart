@@ -63,10 +63,7 @@ void main() {
         InterceptorsWrapper(
           onRequest: (options, handler) {
             handler.resolve(
-              Response<ResponseBody>(
-                requestOptions: options,
-                statusCode: 204,
-              ),
+              Response<ResponseBody>(requestOptions: options, statusCode: 204),
             );
           },
         ),
@@ -92,9 +89,9 @@ void main() {
       );
 
       expect(
-        () => DioPluginNetworkGateway(
-          Dio()..httpClientAdapter = adapter,
-        ).send(_request(maximumResponseBytes: 3), _Cancellation()),
+        () =>
+            DioPluginNetworkGateway(Dio()..httpClientAdapter = adapter)
+                .send(_request(maximumResponseBytes: 3), _Cancellation()),
         throwsFormatException,
       );
     },
@@ -119,9 +116,9 @@ void main() {
       ),
     );
     expect(
-      () => DioPluginNetworkGateway(
-        Dio()..httpClientAdapter = adapter,
-      ).send(_request(), during),
+      () =>
+          DioPluginNetworkGateway(Dio()..httpClientAdapter = adapter)
+              .send(_request(), during),
       throwsA(isA<PluginHostOperationCancelledException>()),
     );
   });
@@ -160,9 +157,7 @@ void main() {
       );
     });
     await expectLater(
-      DioPluginNetworkGateway(
-        Dio()..httpClientAdapter = deadlineAdapter,
-      ).send(
+      DioPluginNetworkGateway(Dio()..httpClientAdapter = deadlineAdapter).send(
         _request(timeout: const Duration(milliseconds: 1)),
         _Cancellation(),
       ),
@@ -185,9 +180,8 @@ void main() {
       );
     });
 
-    final future = DioPluginNetworkGateway(
-      Dio()..httpClientAdapter = adapter,
-    ).send(_request(), _Cancellation());
+    final future = DioPluginNetworkGateway(Dio()..httpClientAdapter = adapter)
+        .send(_request(), _Cancellation());
     await expectLater(
       future,
       throwsA(
@@ -219,7 +213,7 @@ PluginNetworkRequest _request({
 );
 
 final class _NetworkAdapter implements HttpClientAdapter {
-  _NetworkAdapter(this._fetch);
+  new(this._fetch);
 
   final Future<ResponseBody> Function(
     RequestOptions options,

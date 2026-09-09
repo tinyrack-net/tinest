@@ -36,7 +36,7 @@ List<SettingsCategory> _categoriesInScope(SettingsCategoryScope scope) =>
 /// Shared responsive settings shell.
 class UnifiedSettingsPage extends ConsumerStatefulWidget {
   /// Creates a unified settings page.
-  const UnifiedSettingsPage({
+  const new({
     required this.navigator,
     this.category,
     this.hostId,
@@ -223,20 +223,15 @@ class _UnifiedSettingsPageState extends ConsumerState<UnifiedSettingsPage> {
         ),
         SettingsCategory.connection => _SettingsPanePair(
           primary: _SettingsSimplePane(
-            title: _settingsCategoryLabel(
-              l10n,
-              SettingsCategory.connection,
-            ),
+            title: _settingsCategoryLabel(l10n, SettingsCategory.connection),
             child: _HostScopedDetail(
               host: host,
               loading: registryLoading,
               loadingChild: SettingsSkeletonLayout.form(
                 semanticLabel: AppLocalizations.of(context).settingsLoading,
               ),
-              builder: (hostId) => DaemonConnectionsPage(
-                hostId: hostId,
-                embedded: true,
-              ),
+              builder: (hostId) =>
+                  DaemonConnectionsPage(hostId: hostId, embedded: true),
             ),
           ),
         ),
@@ -285,10 +280,7 @@ class _UnifiedSettingsPageState extends ConsumerState<UnifiedSettingsPage> {
         ),
         SettingsCategory.permission => _SettingsPanePair(
           primary: _SettingsSimplePane(
-            title: _settingsCategoryLabel(
-              l10n,
-              SettingsCategory.permission,
-            ),
+            title: _settingsCategoryLabel(l10n, SettingsCategory.permission),
             child: _HostScopedDetail(
               host: host,
               loading: registryLoading,
@@ -301,19 +293,13 @@ class _UnifiedSettingsPageState extends ConsumerState<UnifiedSettingsPage> {
         ),
         SettingsCategory.daemon => _SettingsPanePair(
           primary: _SettingsSimplePane(
-            title: _settingsCategoryLabel(
-              l10n,
-              SettingsCategory.daemon,
-            ),
+            title: _settingsCategoryLabel(l10n, SettingsCategory.daemon),
             child: const AppSettingsPage(embedded: true),
           ),
         ),
         SettingsCategory.advanced => _SettingsPanePair(
           primary: _SettingsSimplePane(
-            title: _settingsCategoryLabel(
-              l10n,
-              SettingsCategory.advanced,
-            ),
+            title: _settingsCategoryLabel(l10n, SettingsCategory.advanced),
             child: const AdvancedSettingsPage(embedded: true),
           ),
         ),
@@ -409,9 +395,7 @@ class _UnifiedSettingsPageState extends ConsumerState<UnifiedSettingsPage> {
     secondary: _HostScopedDetail(
       host: host,
       loading: loading,
-      loadingChild: SettingsSkeletonLayout.detail(
-        semanticLabel: semanticLabel,
-      ),
+      loadingChild: SettingsSkeletonLayout.detail(semanticLabel: semanticLabel),
       builder: (hostId) => builder(hostId, SettingsPaneSlot.detail),
     ),
   );
@@ -518,12 +502,7 @@ class _UnifiedSettingsPageState extends ConsumerState<UnifiedSettingsPage> {
     String? hostId,
     bool push = false,
   }) {
-    _goToSettingsCategory(
-      context,
-      category,
-      hostId: hostId,
-      push: push,
-    );
+    _goToSettingsCategory(context, category, hostId: hostId, push: push);
   }
 
   Future<void> _selectDaemon(String hostId) async {
@@ -548,7 +527,7 @@ class _UnifiedSettingsPageState extends ConsumerState<UnifiedSettingsPage> {
 /// Child content rendered by the stable typed Settings shell.
 class SettingsRouteContent extends StatelessWidget {
   /// Creates a Settings child-route surface.
-  const SettingsRouteContent({
+  const new({
     required this.kind,
     this.category,
     this.hostId,
@@ -588,10 +567,7 @@ class SettingsRouteContent extends StatelessWidget {
                 key: const ValueKey<String>('settings-daemon-categories-pane'),
                 child: scope.daemonCategories(hostId!),
               )
-            : scope.categoryContent(
-                SettingsCategory.provider,
-                hostId: hostId,
-              ),
+            : scope.categoryContent(SettingsCategory.provider, hostId: hostId),
       SettingsRouteContentKind.category => scope.categoryContent(
         category!,
         hostId: hostId,
@@ -614,7 +590,7 @@ enum SettingsRouteContentKind {
 }
 
 class _SettingsRouteContentScope extends InheritedWidget {
-  const _SettingsRouteContentScope({
+  const new({
     required this.categoryContent,
     required this.home,
     required this.daemonCategories,
@@ -641,14 +617,14 @@ class _SettingsRouteContentScope extends InheritedWidget {
 }
 
 class _SettingsPanePair {
-  const _SettingsPanePair({required this.primary, this.secondary});
+  const new({required this.primary, this.secondary});
 
   final Widget primary;
   final Widget? secondary;
 }
 
 class _SettingsSimplePane extends StatelessWidget {
-  const _SettingsSimplePane({required this.title, required this.child});
+  const new({required this.title, required this.child});
 
   final String title;
   final Widget child;
@@ -662,7 +638,7 @@ class _SettingsSimplePane extends StatelessWidget {
 }
 
 class _MobileSettingsHome extends StatelessWidget {
-  const _MobileSettingsHome({
+  const new({
     required this.hosts,
     required this.onCategorySelected,
     required this.onDaemonSelected,
@@ -694,9 +670,7 @@ class _MobileSettingsHome extends StatelessWidget {
                   ),
                   value: category,
                   leading: Icon(_settingsCategoryIcon(category)),
-                  label: TRText.inherit(
-                    _settingsCategoryLabel(l10n, category),
-                  ),
+                  label: TRText.inherit(_settingsCategoryLabel(l10n, category)),
                   trailing: Icon(TinestIcons.forwardFor(context)),
                 ),
             ],
@@ -722,15 +696,11 @@ class _MobileSettingsHome extends StatelessWidget {
                   items: <TRTreeNavItem<String>>[
                     for (final host in hosts)
                       TRTreeNavLeaf<String>(
-                        key: ValueKey<String>(
-                          'settings-daemon-row-${host.id}',
-                        ),
+                        key: ValueKey<String>('settings-daemon-row-${host.id}'),
                         value: host.id,
                         leading: Icon(hostStatusIcon(host.status)),
                         label: TRText.inherit(hostLabel(l10n, host)),
-                        description: TRText.inherit(
-                          hostStatusText(l10n, host),
-                        ),
+                        description: TRText.inherit(hostStatusText(l10n, host)),
                         trailing: Icon(TinestIcons.forwardFor(context)),
                       ),
                   ],
@@ -746,10 +716,7 @@ class _MobileSettingsHome extends StatelessWidget {
 }
 
 class _MobileDaemonCategories extends StatelessWidget {
-  const _MobileDaemonCategories({
-    required this.host,
-    required this.onCategorySelected,
-  });
+  const new({required this.host, required this.onCategorySelected});
 
   final HostRuntimeSnapshot? host;
   final void Function(SettingsCategory category, {String? hostId})
@@ -786,9 +753,7 @@ class _MobileDaemonCategories extends StatelessWidget {
                   ),
                   value: category,
                   leading: Icon(_settingsCategoryIcon(category)),
-                  label: TRText.inherit(
-                    _settingsCategoryLabel(l10n, category),
-                  ),
+                  label: TRText.inherit(_settingsCategoryLabel(l10n, category)),
                   trailing: Icon(TinestIcons.forwardFor(context)),
                 ),
             ],
@@ -804,7 +769,7 @@ class _MobileDaemonCategories extends StatelessWidget {
 }
 
 class _SettingsSidebar extends StatelessWidget {
-  const _SettingsSidebar({
+  const new({
     required this.selected,
     required this.hosts,
     required this.hostId,
@@ -874,9 +839,7 @@ class _SettingsSidebar extends StatelessWidget {
       items: <TRTreeNavItem<SettingsCategory>>[
         for (final category in _categoriesInScope(scope))
           TRTreeNavLeaf<SettingsCategory>(
-            key: ValueKey<String>(
-              'settings-category-row-${category.name}',
-            ),
+            key: ValueKey<String>('settings-category-row-${category.name}'),
             value: category,
             leading: Icon(_settingsCategoryIcon(category)),
             label: TRText.inherit(_settingsCategoryLabel(l10n, category)),
@@ -898,7 +861,7 @@ class _SettingsSidebar extends StatelessWidget {
 /// Offline daemons stay listed so their settings can be reached as soon as
 /// they reconnect, and so a saved selection does not silently jump elsewhere.
 class _DaemonSelect extends StatelessWidget {
-  const _DaemonSelect({
+  const new({
     required this.hosts,
     required this.hostId,
     required this.loading,
@@ -1095,7 +1058,7 @@ void _goToSettingsCategory(
 /// The daemon itself is chosen in the sidebar, so this only explains why a
 /// page cannot render yet.
 class _HostScopedDetail extends StatelessWidget {
-  const _HostScopedDetail({
+  const new({
     required this.host,
     required this.loading,
     required this.loadingChild,

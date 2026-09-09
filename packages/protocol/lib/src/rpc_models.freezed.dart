@@ -30,16 +30,21 @@ $HelloParamsDtoCopyWith<HelloParamsDto> get copyWith => _$HelloParamsDtoCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is HelloParamsDto&&(identical(other.clientId, clientId) || other.clientId == clientId)&&(identical(other.clientKind, clientKind) || other.clientKind == clientKind)&&(identical(other.protocolMajor, protocolMajor) || other.protocolMajor == protocolMajor)&&const DeepCollectionEquality().equals(other.capabilities, capabilities)&&(identical(other.protocolRevision, protocolRevision) || other.protocolRevision == protocolRevision)&&(identical(other.clientVersion, clientVersion) || other.clientVersion == clientVersion));
+  final _this = this as HelloParamsDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is HelloParamsDto&&(identical(other.clientId, _this.clientId) || other.clientId == _this.clientId)&&(identical(other.clientKind, _this.clientKind) || other.clientKind == _this.clientKind)&&(identical(other.protocolMajor, _this.protocolMajor) || other.protocolMajor == _this.protocolMajor)&&const DeepCollectionEquality().equals(other.capabilities, _this.capabilities)&&(identical(other.protocolRevision, _this.protocolRevision) || other.protocolRevision == _this.protocolRevision)&&(identical(other.clientVersion, _this.clientVersion) || other.clientVersion == _this.clientVersion));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,clientId,clientKind,protocolMajor,const DeepCollectionEquality().hash(capabilities),protocolRevision,clientVersion);
+int get hashCode {
+  final _this = this as HelloParamsDto;
+  return Object.hash(runtimeType,_this.clientId,_this.clientKind,_this.protocolMajor,const DeepCollectionEquality().hash(_this.capabilities),_this.protocolRevision,_this.clientVersion);
+}
 
 @override
 String toString() {
-  return 'HelloParamsDto(clientId: $clientId, clientKind: $clientKind, protocolMajor: $protocolMajor, capabilities: $capabilities, protocolRevision: $protocolRevision, clientVersion: $clientVersion)';
+  final _this = this as HelloParamsDto;
+  return 'HelloParamsDto(clientId: ${_this.clientId}, clientKind: ${_this.clientKind}, protocolMajor: ${_this.protocolMajor}, capabilities: ${_this.capabilities}, protocolRevision: ${_this.protocolRevision}, clientVersion: ${_this.clientVersion})';
 }
 
 
@@ -245,16 +250,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _HelloParamsDto&&(identical(other.clientId, clientId) || other.clientId == clientId)&&(identical(other.clientKind, clientKind) || other.clientKind == clientKind)&&(identical(other.protocolMajor, protocolMajor) || other.protocolMajor == protocolMajor)&&const DeepCollectionEquality().equals(other._capabilities, _capabilities)&&(identical(other.protocolRevision, protocolRevision) || other.protocolRevision == protocolRevision)&&(identical(other.clientVersion, clientVersion) || other.clientVersion == clientVersion));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _HelloParamsDto&&(identical(other.clientId, clientId) || other.clientId == clientId)&&(identical(other.clientKind, clientKind) || other.clientKind == clientKind)&&(identical(other.protocolMajor, protocolMajor) || other.protocolMajor == protocolMajor)&&const DeepCollectionEquality().equals(other.capabilities, _capabilities)&&(identical(other.protocolRevision, protocolRevision) || other.protocolRevision == protocolRevision)&&(identical(other.clientVersion, clientVersion) || other.clientVersion == clientVersion));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,clientId,clientKind,protocolMajor,const DeepCollectionEquality().hash(_capabilities),protocolRevision,clientVersion);
+int get hashCode {
+    return Object.hash(runtimeType,clientId,clientKind,protocolMajor,const DeepCollectionEquality().hash(_capabilities),protocolRevision,clientVersion);
+}
 
 @override
 String toString() {
-  return 'HelloParamsDto(clientId: $clientId, clientKind: $clientKind, protocolMajor: $protocolMajor, capabilities: $capabilities, protocolRevision: $protocolRevision, clientVersion: $clientVersion)';
+    return 'HelloParamsDto(clientId: $clientId, clientKind: $clientKind, protocolMajor: $protocolMajor, capabilities: $capabilities, protocolRevision: $protocolRevision, clientVersion: $clientVersion)';
 }
 
 
@@ -314,16 +321,21 @@ $WorkspaceRegisterParamsDtoCopyWith<WorkspaceRegisterParamsDto> get copyWith => 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is WorkspaceRegisterParamsDto&&(identical(other.workspaceId, workspaceId) || other.workspaceId == workspaceId)&&(identical(other.checkoutId, checkoutId) || other.checkoutId == checkoutId)&&(identical(other.rootPath, rootPath) || other.rootPath == rootPath)&&(identical(other.name, name) || other.name == name));
+  final _this = this as WorkspaceRegisterParamsDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is WorkspaceRegisterParamsDto&&(identical(other.workspaceId, _this.workspaceId) || other.workspaceId == _this.workspaceId)&&(identical(other.checkoutId, _this.checkoutId) || other.checkoutId == _this.checkoutId)&&(identical(other.rootPath, _this.rootPath) || other.rootPath == _this.rootPath)&&(identical(other.name, _this.name) || other.name == _this.name));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,workspaceId,checkoutId,rootPath,name);
+int get hashCode {
+  final _this = this as WorkspaceRegisterParamsDto;
+  return Object.hash(runtimeType,_this.workspaceId,_this.checkoutId,_this.rootPath,_this.name);
+}
 
 @override
 String toString() {
-  return 'WorkspaceRegisterParamsDto(workspaceId: $workspaceId, checkoutId: $checkoutId, rootPath: $rootPath, name: $name)';
+  final _this = this as WorkspaceRegisterParamsDto;
+  return 'WorkspaceRegisterParamsDto(workspaceId: ${_this.workspaceId}, checkoutId: ${_this.checkoutId}, rootPath: ${_this.rootPath}, name: ${_this.name})';
 }
 
 
@@ -519,16 +531,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WorkspaceRegisterParamsDto&&(identical(other.workspaceId, workspaceId) || other.workspaceId == workspaceId)&&(identical(other.checkoutId, checkoutId) || other.checkoutId == checkoutId)&&(identical(other.rootPath, rootPath) || other.rootPath == rootPath)&&(identical(other.name, name) || other.name == name));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _WorkspaceRegisterParamsDto&&(identical(other.workspaceId, workspaceId) || other.workspaceId == workspaceId)&&(identical(other.checkoutId, checkoutId) || other.checkoutId == checkoutId)&&(identical(other.rootPath, rootPath) || other.rootPath == rootPath)&&(identical(other.name, name) || other.name == name));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,workspaceId,checkoutId,rootPath,name);
+int get hashCode {
+    return Object.hash(runtimeType,workspaceId,checkoutId,rootPath,name);
+}
 
 @override
 String toString() {
-  return 'WorkspaceRegisterParamsDto(workspaceId: $workspaceId, checkoutId: $checkoutId, rootPath: $rootPath, name: $name)';
+    return 'WorkspaceRegisterParamsDto(workspaceId: $workspaceId, checkoutId: $checkoutId, rootPath: $rootPath, name: $name)';
 }
 
 
@@ -586,16 +600,21 @@ $WorkspaceIdParamsDtoCopyWith<WorkspaceIdParamsDto> get copyWith => _$WorkspaceI
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is WorkspaceIdParamsDto&&(identical(other.workspaceId, workspaceId) || other.workspaceId == workspaceId));
+  final _this = this as WorkspaceIdParamsDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is WorkspaceIdParamsDto&&(identical(other.workspaceId, _this.workspaceId) || other.workspaceId == _this.workspaceId));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,workspaceId);
+int get hashCode {
+  final _this = this as WorkspaceIdParamsDto;
+  return Object.hash(runtimeType,_this.workspaceId);
+}
 
 @override
 String toString() {
-  return 'WorkspaceIdParamsDto(workspaceId: $workspaceId)';
+  final _this = this as WorkspaceIdParamsDto;
+  return 'WorkspaceIdParamsDto(workspaceId: ${_this.workspaceId})';
 }
 
 
@@ -785,16 +804,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WorkspaceIdParamsDto&&(identical(other.workspaceId, workspaceId) || other.workspaceId == workspaceId));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _WorkspaceIdParamsDto&&(identical(other.workspaceId, workspaceId) || other.workspaceId == workspaceId));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,workspaceId);
+int get hashCode {
+    return Object.hash(runtimeType,workspaceId);
+}
 
 @override
 String toString() {
-  return 'WorkspaceIdParamsDto(workspaceId: $workspaceId)';
+    return 'WorkspaceIdParamsDto(workspaceId: $workspaceId)';
 }
 
 
@@ -849,16 +870,21 @@ $DirectorySuggestParamsDtoCopyWith<DirectorySuggestParamsDto> get copyWith => _$
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is DirectorySuggestParamsDto&&(identical(other.query, query) || other.query == query)&&(identical(other.limit, limit) || other.limit == limit));
+  final _this = this as DirectorySuggestParamsDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is DirectorySuggestParamsDto&&(identical(other.query, _this.query) || other.query == _this.query)&&(identical(other.limit, _this.limit) || other.limit == _this.limit));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,query,limit);
+int get hashCode {
+  final _this = this as DirectorySuggestParamsDto;
+  return Object.hash(runtimeType,_this.query,_this.limit);
+}
 
 @override
 String toString() {
-  return 'DirectorySuggestParamsDto(query: $query, limit: $limit)';
+  final _this = this as DirectorySuggestParamsDto;
+  return 'DirectorySuggestParamsDto(query: ${_this.query}, limit: ${_this.limit})';
 }
 
 
@@ -1050,16 +1076,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _DirectorySuggestParamsDto&&(identical(other.query, query) || other.query == query)&&(identical(other.limit, limit) || other.limit == limit));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _DirectorySuggestParamsDto&&(identical(other.query, query) || other.query == query)&&(identical(other.limit, limit) || other.limit == limit));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,query,limit);
+int get hashCode {
+    return Object.hash(runtimeType,query,limit);
+}
 
 @override
 String toString() {
-  return 'DirectorySuggestParamsDto(query: $query, limit: $limit)';
+    return 'DirectorySuggestParamsDto(query: $query, limit: $limit)';
 }
 
 
@@ -1115,16 +1143,21 @@ $FileSearchParamsDtoCopyWith<FileSearchParamsDto> get copyWith => _$FileSearchPa
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is FileSearchParamsDto&&(identical(other.worktreeId, worktreeId) || other.worktreeId == worktreeId)&&(identical(other.query, query) || other.query == query)&&(identical(other.limit, limit) || other.limit == limit));
+  final _this = this as FileSearchParamsDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is FileSearchParamsDto&&(identical(other.worktreeId, _this.worktreeId) || other.worktreeId == _this.worktreeId)&&(identical(other.query, _this.query) || other.query == _this.query)&&(identical(other.limit, _this.limit) || other.limit == _this.limit));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,worktreeId,query,limit);
+int get hashCode {
+  final _this = this as FileSearchParamsDto;
+  return Object.hash(runtimeType,_this.worktreeId,_this.query,_this.limit);
+}
 
 @override
 String toString() {
-  return 'FileSearchParamsDto(worktreeId: $worktreeId, query: $query, limit: $limit)';
+  final _this = this as FileSearchParamsDto;
+  return 'FileSearchParamsDto(worktreeId: ${_this.worktreeId}, query: ${_this.query}, limit: ${_this.limit})';
 }
 
 
@@ -1318,16 +1351,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _FileSearchParamsDto&&(identical(other.worktreeId, worktreeId) || other.worktreeId == worktreeId)&&(identical(other.query, query) || other.query == query)&&(identical(other.limit, limit) || other.limit == limit));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _FileSearchParamsDto&&(identical(other.worktreeId, worktreeId) || other.worktreeId == worktreeId)&&(identical(other.query, query) || other.query == query)&&(identical(other.limit, limit) || other.limit == limit));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,worktreeId,query,limit);
+int get hashCode {
+    return Object.hash(runtimeType,worktreeId,query,limit);
+}
 
 @override
 String toString() {
-  return 'FileSearchParamsDto(worktreeId: $worktreeId, query: $query, limit: $limit)';
+    return 'FileSearchParamsDto(worktreeId: $worktreeId, query: $query, limit: $limit)';
 }
 
 
@@ -1384,16 +1419,21 @@ $CommandListParamsDtoCopyWith<CommandListParamsDto> get copyWith => _$CommandLis
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CommandListParamsDto&&(identical(other.workspaceId, workspaceId) || other.workspaceId == workspaceId));
+  final _this = this as CommandListParamsDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CommandListParamsDto&&(identical(other.workspaceId, _this.workspaceId) || other.workspaceId == _this.workspaceId));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,workspaceId);
+int get hashCode {
+  final _this = this as CommandListParamsDto;
+  return Object.hash(runtimeType,_this.workspaceId);
+}
 
 @override
 String toString() {
-  return 'CommandListParamsDto(workspaceId: $workspaceId)';
+  final _this = this as CommandListParamsDto;
+  return 'CommandListParamsDto(workspaceId: ${_this.workspaceId})';
 }
 
 
@@ -1583,16 +1623,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CommandListParamsDto&&(identical(other.workspaceId, workspaceId) || other.workspaceId == workspaceId));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _CommandListParamsDto&&(identical(other.workspaceId, workspaceId) || other.workspaceId == workspaceId));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,workspaceId);
+int get hashCode {
+    return Object.hash(runtimeType,workspaceId);
+}
 
 @override
 String toString() {
-  return 'CommandListParamsDto(workspaceId: $workspaceId)';
+    return 'CommandListParamsDto(workspaceId: $workspaceId)';
 }
 
 
@@ -1647,16 +1689,21 @@ $GitBranchesListParamsDtoCopyWith<GitBranchesListParamsDto> get copyWith => _$Gi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is GitBranchesListParamsDto&&(identical(other.workspaceId, workspaceId) || other.workspaceId == workspaceId));
+  final _this = this as GitBranchesListParamsDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is GitBranchesListParamsDto&&(identical(other.workspaceId, _this.workspaceId) || other.workspaceId == _this.workspaceId));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,workspaceId);
+int get hashCode {
+  final _this = this as GitBranchesListParamsDto;
+  return Object.hash(runtimeType,_this.workspaceId);
+}
 
 @override
 String toString() {
-  return 'GitBranchesListParamsDto(workspaceId: $workspaceId)';
+  final _this = this as GitBranchesListParamsDto;
+  return 'GitBranchesListParamsDto(workspaceId: ${_this.workspaceId})';
 }
 
 
@@ -1846,16 +1893,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _GitBranchesListParamsDto&&(identical(other.workspaceId, workspaceId) || other.workspaceId == workspaceId));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _GitBranchesListParamsDto&&(identical(other.workspaceId, workspaceId) || other.workspaceId == workspaceId));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,workspaceId);
+int get hashCode {
+    return Object.hash(runtimeType,workspaceId);
+}
 
 @override
 String toString() {
-  return 'GitBranchesListParamsDto(workspaceId: $workspaceId)';
+    return 'GitBranchesListParamsDto(workspaceId: $workspaceId)';
 }
 
 
@@ -1910,16 +1959,21 @@ $WorktreeCreateParamsDtoCopyWith<WorktreeCreateParamsDto> get copyWith => _$Work
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is WorktreeCreateParamsDto&&(identical(other.id, id) || other.id == id)&&(identical(other.workspaceId, workspaceId) || other.workspaceId == workspaceId)&&(identical(other.mode, mode) || other.mode == mode)&&(identical(other.branchName, branchName) || other.branchName == branchName)&&(identical(other.baseBranch, baseBranch) || other.baseBranch == baseBranch)&&(identical(other.branchNaming, branchNaming) || other.branchNaming == branchNaming));
+  final _this = this as WorktreeCreateParamsDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is WorktreeCreateParamsDto&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.workspaceId, _this.workspaceId) || other.workspaceId == _this.workspaceId)&&(identical(other.mode, _this.mode) || other.mode == _this.mode)&&(identical(other.branchName, _this.branchName) || other.branchName == _this.branchName)&&(identical(other.baseBranch, _this.baseBranch) || other.baseBranch == _this.baseBranch)&&(identical(other.branchNaming, _this.branchNaming) || other.branchNaming == _this.branchNaming));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,workspaceId,mode,branchName,baseBranch,branchNaming);
+int get hashCode {
+  final _this = this as WorktreeCreateParamsDto;
+  return Object.hash(runtimeType,_this.id,_this.workspaceId,_this.mode,_this.branchName,_this.baseBranch,_this.branchNaming);
+}
 
 @override
 String toString() {
-  return 'WorktreeCreateParamsDto(id: $id, workspaceId: $workspaceId, mode: $mode, branchName: $branchName, baseBranch: $baseBranch, branchNaming: $branchNaming)';
+  final _this = this as WorktreeCreateParamsDto;
+  return 'WorktreeCreateParamsDto(id: ${_this.id}, workspaceId: ${_this.workspaceId}, mode: ${_this.mode}, branchName: ${_this.branchName}, baseBranch: ${_this.baseBranch}, branchNaming: ${_this.branchNaming})';
 }
 
 
@@ -2119,16 +2173,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WorktreeCreateParamsDto&&(identical(other.id, id) || other.id == id)&&(identical(other.workspaceId, workspaceId) || other.workspaceId == workspaceId)&&(identical(other.mode, mode) || other.mode == mode)&&(identical(other.branchName, branchName) || other.branchName == branchName)&&(identical(other.baseBranch, baseBranch) || other.baseBranch == baseBranch)&&(identical(other.branchNaming, branchNaming) || other.branchNaming == branchNaming));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _WorktreeCreateParamsDto&&(identical(other.id, id) || other.id == id)&&(identical(other.workspaceId, workspaceId) || other.workspaceId == workspaceId)&&(identical(other.mode, mode) || other.mode == mode)&&(identical(other.branchName, branchName) || other.branchName == branchName)&&(identical(other.baseBranch, baseBranch) || other.baseBranch == baseBranch)&&(identical(other.branchNaming, branchNaming) || other.branchNaming == branchNaming));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,workspaceId,mode,branchName,baseBranch,branchNaming);
+int get hashCode {
+    return Object.hash(runtimeType,id,workspaceId,mode,branchName,baseBranch,branchNaming);
+}
 
 @override
 String toString() {
-  return 'WorktreeCreateParamsDto(id: $id, workspaceId: $workspaceId, mode: $mode, branchName: $branchName, baseBranch: $baseBranch, branchNaming: $branchNaming)';
+    return 'WorktreeCreateParamsDto(id: $id, workspaceId: $workspaceId, mode: $mode, branchName: $branchName, baseBranch: $baseBranch, branchNaming: $branchNaming)';
 }
 
 
@@ -2188,16 +2244,21 @@ $WorktreeIdParamsDtoCopyWith<WorktreeIdParamsDto> get copyWith => _$WorktreeIdPa
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is WorktreeIdParamsDto&&(identical(other.worktreeId, worktreeId) || other.worktreeId == worktreeId));
+  final _this = this as WorktreeIdParamsDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is WorktreeIdParamsDto&&(identical(other.worktreeId, _this.worktreeId) || other.worktreeId == _this.worktreeId));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,worktreeId);
+int get hashCode {
+  final _this = this as WorktreeIdParamsDto;
+  return Object.hash(runtimeType,_this.worktreeId);
+}
 
 @override
 String toString() {
-  return 'WorktreeIdParamsDto(worktreeId: $worktreeId)';
+  final _this = this as WorktreeIdParamsDto;
+  return 'WorktreeIdParamsDto(worktreeId: ${_this.worktreeId})';
 }
 
 
@@ -2387,16 +2448,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WorktreeIdParamsDto&&(identical(other.worktreeId, worktreeId) || other.worktreeId == worktreeId));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _WorktreeIdParamsDto&&(identical(other.worktreeId, worktreeId) || other.worktreeId == worktreeId));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,worktreeId);
+int get hashCode {
+    return Object.hash(runtimeType,worktreeId);
+}
 
 @override
 String toString() {
-  return 'WorktreeIdParamsDto(worktreeId: $worktreeId)';
+    return 'WorktreeIdParamsDto(worktreeId: $worktreeId)';
 }
 
 
@@ -2451,16 +2514,21 @@ $WorktreeArchiveParamsDtoCopyWith<WorktreeArchiveParamsDto> get copyWith => _$Wo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is WorktreeArchiveParamsDto&&(identical(other.worktreeId, worktreeId) || other.worktreeId == worktreeId)&&(identical(other.force, force) || other.force == force));
+  final _this = this as WorktreeArchiveParamsDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is WorktreeArchiveParamsDto&&(identical(other.worktreeId, _this.worktreeId) || other.worktreeId == _this.worktreeId)&&(identical(other.force, _this.force) || other.force == _this.force));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,worktreeId,force);
+int get hashCode {
+  final _this = this as WorktreeArchiveParamsDto;
+  return Object.hash(runtimeType,_this.worktreeId,_this.force);
+}
 
 @override
 String toString() {
-  return 'WorktreeArchiveParamsDto(worktreeId: $worktreeId, force: $force)';
+  final _this = this as WorktreeArchiveParamsDto;
+  return 'WorktreeArchiveParamsDto(worktreeId: ${_this.worktreeId}, force: ${_this.force})';
 }
 
 
@@ -2652,16 +2720,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WorktreeArchiveParamsDto&&(identical(other.worktreeId, worktreeId) || other.worktreeId == worktreeId)&&(identical(other.force, force) || other.force == force));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _WorktreeArchiveParamsDto&&(identical(other.worktreeId, worktreeId) || other.worktreeId == worktreeId)&&(identical(other.force, force) || other.force == force));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,worktreeId,force);
+int get hashCode {
+    return Object.hash(runtimeType,worktreeId,force);
+}
 
 @override
 String toString() {
-  return 'WorktreeArchiveParamsDto(worktreeId: $worktreeId, force: $force)';
+    return 'WorktreeArchiveParamsDto(worktreeId: $worktreeId, force: $force)';
 }
 
 
@@ -2717,16 +2787,21 @@ $SessionListParamsDtoCopyWith<SessionListParamsDto> get copyWith => _$SessionLis
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SessionListParamsDto&&(identical(other.worktreeId, worktreeId) || other.worktreeId == worktreeId));
+  final _this = this as SessionListParamsDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SessionListParamsDto&&(identical(other.worktreeId, _this.worktreeId) || other.worktreeId == _this.worktreeId));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,worktreeId);
+int get hashCode {
+  final _this = this as SessionListParamsDto;
+  return Object.hash(runtimeType,_this.worktreeId);
+}
 
 @override
 String toString() {
-  return 'SessionListParamsDto(worktreeId: $worktreeId)';
+  final _this = this as SessionListParamsDto;
+  return 'SessionListParamsDto(worktreeId: ${_this.worktreeId})';
 }
 
 
@@ -2916,16 +2991,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SessionListParamsDto&&(identical(other.worktreeId, worktreeId) || other.worktreeId == worktreeId));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _SessionListParamsDto&&(identical(other.worktreeId, worktreeId) || other.worktreeId == worktreeId));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,worktreeId);
+int get hashCode {
+    return Object.hash(runtimeType,worktreeId);
+}
 
 @override
 String toString() {
-  return 'SessionListParamsDto(worktreeId: $worktreeId)';
+    return 'SessionListParamsDto(worktreeId: $worktreeId)';
 }
 
 
@@ -2980,16 +3057,21 @@ $SessionSubagentListParamsDtoCopyWith<SessionSubagentListParamsDto> get copyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SessionSubagentListParamsDto&&(identical(other.sessionId, sessionId) || other.sessionId == sessionId));
+  final _this = this as SessionSubagentListParamsDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SessionSubagentListParamsDto&&(identical(other.sessionId, _this.sessionId) || other.sessionId == _this.sessionId));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,sessionId);
+int get hashCode {
+  final _this = this as SessionSubagentListParamsDto;
+  return Object.hash(runtimeType,_this.sessionId);
+}
 
 @override
 String toString() {
-  return 'SessionSubagentListParamsDto(sessionId: $sessionId)';
+  final _this = this as SessionSubagentListParamsDto;
+  return 'SessionSubagentListParamsDto(sessionId: ${_this.sessionId})';
 }
 
 
@@ -3179,16 +3261,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SessionSubagentListParamsDto&&(identical(other.sessionId, sessionId) || other.sessionId == sessionId));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _SessionSubagentListParamsDto&&(identical(other.sessionId, sessionId) || other.sessionId == sessionId));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,sessionId);
+int get hashCode {
+    return Object.hash(runtimeType,sessionId);
+}
 
 @override
 String toString() {
-  return 'SessionSubagentListParamsDto(sessionId: $sessionId)';
+    return 'SessionSubagentListParamsDto(sessionId: $sessionId)';
 }
 
 
@@ -3245,16 +3329,21 @@ $SessionCreateParamsDtoCopyWith<SessionCreateParamsDto> get copyWith => _$Sessio
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SessionCreateParamsDto&&(identical(other.id, id) || other.id == id)&&(identical(other.worktreeId, worktreeId) || other.worktreeId == worktreeId)&&(identical(other.title, title) || other.title == title)&&(identical(other.agentDefinitionId, agentDefinitionId) || other.agentDefinitionId == agentDefinitionId)&&(identical(other.model, model) || other.model == model)&&const DeepCollectionEquality().equals(other.modelControls, modelControls)&&(identical(other.permissionMode, permissionMode) || other.permissionMode == permissionMode));
+  final _this = this as SessionCreateParamsDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SessionCreateParamsDto&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.worktreeId, _this.worktreeId) || other.worktreeId == _this.worktreeId)&&(identical(other.title, _this.title) || other.title == _this.title)&&(identical(other.agentDefinitionId, _this.agentDefinitionId) || other.agentDefinitionId == _this.agentDefinitionId)&&(identical(other.model, _this.model) || other.model == _this.model)&&const DeepCollectionEquality().equals(other.modelControls, _this.modelControls)&&(identical(other.permissionMode, _this.permissionMode) || other.permissionMode == _this.permissionMode));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,worktreeId,title,agentDefinitionId,model,const DeepCollectionEquality().hash(modelControls),permissionMode);
+int get hashCode {
+  final _this = this as SessionCreateParamsDto;
+  return Object.hash(runtimeType,_this.id,_this.worktreeId,_this.title,_this.agentDefinitionId,_this.model,const DeepCollectionEquality().hash(_this.modelControls),_this.permissionMode);
+}
 
 @override
 String toString() {
-  return 'SessionCreateParamsDto(id: $id, worktreeId: $worktreeId, title: $title, agentDefinitionId: $agentDefinitionId, model: $model, modelControls: $modelControls, permissionMode: $permissionMode)';
+  final _this = this as SessionCreateParamsDto;
+  return 'SessionCreateParamsDto(id: ${_this.id}, worktreeId: ${_this.worktreeId}, title: ${_this.title}, agentDefinitionId: ${_this.agentDefinitionId}, model: ${_this.model}, modelControls: ${_this.modelControls}, permissionMode: ${_this.permissionMode})';
 }
 
 
@@ -3476,16 +3565,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SessionCreateParamsDto&&(identical(other.id, id) || other.id == id)&&(identical(other.worktreeId, worktreeId) || other.worktreeId == worktreeId)&&(identical(other.title, title) || other.title == title)&&(identical(other.agentDefinitionId, agentDefinitionId) || other.agentDefinitionId == agentDefinitionId)&&(identical(other.model, model) || other.model == model)&&const DeepCollectionEquality().equals(other._modelControls, _modelControls)&&(identical(other.permissionMode, permissionMode) || other.permissionMode == permissionMode));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _SessionCreateParamsDto&&(identical(other.id, id) || other.id == id)&&(identical(other.worktreeId, worktreeId) || other.worktreeId == worktreeId)&&(identical(other.title, title) || other.title == title)&&(identical(other.agentDefinitionId, agentDefinitionId) || other.agentDefinitionId == agentDefinitionId)&&(identical(other.model, model) || other.model == model)&&const DeepCollectionEquality().equals(other.modelControls, _modelControls)&&(identical(other.permissionMode, permissionMode) || other.permissionMode == permissionMode));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,worktreeId,title,agentDefinitionId,model,const DeepCollectionEquality().hash(_modelControls),permissionMode);
+int get hashCode {
+    return Object.hash(runtimeType,id,worktreeId,title,agentDefinitionId,model,const DeepCollectionEquality().hash(_modelControls),permissionMode);
+}
 
 @override
 String toString() {
-  return 'SessionCreateParamsDto(id: $id, worktreeId: $worktreeId, title: $title, agentDefinitionId: $agentDefinitionId, model: $model, modelControls: $modelControls, permissionMode: $permissionMode)';
+    return 'SessionCreateParamsDto(id: $id, worktreeId: $worktreeId, title: $title, agentDefinitionId: $agentDefinitionId, model: $model, modelControls: $modelControls, permissionMode: $permissionMode)';
 }
 
 
@@ -3561,16 +3652,21 @@ $SessionSettingsPatchDtoCopyWith<SessionSettingsPatchDto> get copyWith => _$Sess
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SessionSettingsPatchDto&&(identical(other.hasModel, hasModel) || other.hasModel == hasModel)&&(identical(other.model, model) || other.model == model)&&(identical(other.hasModelControls, hasModelControls) || other.hasModelControls == hasModelControls)&&const DeepCollectionEquality().equals(other.modelControls, modelControls)&&(identical(other.permissionMode, permissionMode) || other.permissionMode == permissionMode));
+  final _this = this as SessionSettingsPatchDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SessionSettingsPatchDto&&(identical(other.hasModel, _this.hasModel) || other.hasModel == _this.hasModel)&&(identical(other.model, _this.model) || other.model == _this.model)&&(identical(other.hasModelControls, _this.hasModelControls) || other.hasModelControls == _this.hasModelControls)&&const DeepCollectionEquality().equals(other.modelControls, _this.modelControls)&&(identical(other.permissionMode, _this.permissionMode) || other.permissionMode == _this.permissionMode));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,hasModel,model,hasModelControls,const DeepCollectionEquality().hash(modelControls),permissionMode);
+int get hashCode {
+  final _this = this as SessionSettingsPatchDto;
+  return Object.hash(runtimeType,_this.hasModel,_this.model,_this.hasModelControls,const DeepCollectionEquality().hash(_this.modelControls),_this.permissionMode);
+}
 
 @override
 String toString() {
-  return 'SessionSettingsPatchDto(hasModel: $hasModel, model: $model, hasModelControls: $hasModelControls, modelControls: $modelControls, permissionMode: $permissionMode)';
+  final _this = this as SessionSettingsPatchDto;
+  return 'SessionSettingsPatchDto(hasModel: ${_this.hasModel}, model: ${_this.model}, hasModelControls: ${_this.hasModelControls}, modelControls: ${_this.modelControls}, permissionMode: ${_this.permissionMode})';
 }
 
 
@@ -3789,16 +3885,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SessionSettingsPatchDto&&(identical(other.hasModel, hasModel) || other.hasModel == hasModel)&&(identical(other.model, model) || other.model == model)&&(identical(other.hasModelControls, hasModelControls) || other.hasModelControls == hasModelControls)&&const DeepCollectionEquality().equals(other._modelControls, _modelControls)&&(identical(other.permissionMode, permissionMode) || other.permissionMode == permissionMode));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _SessionSettingsPatchDto&&(identical(other.hasModel, hasModel) || other.hasModel == hasModel)&&(identical(other.model, model) || other.model == model)&&(identical(other.hasModelControls, hasModelControls) || other.hasModelControls == hasModelControls)&&const DeepCollectionEquality().equals(other.modelControls, _modelControls)&&(identical(other.permissionMode, permissionMode) || other.permissionMode == permissionMode));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,hasModel,model,hasModelControls,const DeepCollectionEquality().hash(_modelControls),permissionMode);
+int get hashCode {
+    return Object.hash(runtimeType,hasModel,model,hasModelControls,const DeepCollectionEquality().hash(_modelControls),permissionMode);
+}
 
 @override
 String toString() {
-  return 'SessionSettingsPatchDto(hasModel: $hasModel, model: $model, hasModelControls: $hasModelControls, modelControls: $modelControls, permissionMode: $permissionMode)';
+    return 'SessionSettingsPatchDto(hasModel: $hasModel, model: $model, hasModelControls: $hasModelControls, modelControls: $modelControls, permissionMode: $permissionMode)';
 }
 
 
@@ -3869,16 +3967,21 @@ $SessionSettingsUpdateParamsDtoCopyWith<SessionSettingsUpdateParamsDto> get copy
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SessionSettingsUpdateParamsDto&&(identical(other.sessionId, sessionId) || other.sessionId == sessionId)&&(identical(other.patch, patch) || other.patch == patch));
+  final _this = this as SessionSettingsUpdateParamsDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SessionSettingsUpdateParamsDto&&(identical(other.sessionId, _this.sessionId) || other.sessionId == _this.sessionId)&&(identical(other.patch, _this.patch) || other.patch == _this.patch));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,sessionId,patch);
+int get hashCode {
+  final _this = this as SessionSettingsUpdateParamsDto;
+  return Object.hash(runtimeType,_this.sessionId,_this.patch);
+}
 
 @override
 String toString() {
-  return 'SessionSettingsUpdateParamsDto(sessionId: $sessionId, patch: $patch)';
+  final _this = this as SessionSettingsUpdateParamsDto;
+  return 'SessionSettingsUpdateParamsDto(sessionId: ${_this.sessionId}, patch: ${_this.patch})';
 }
 
 
@@ -4079,16 +4182,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SessionSettingsUpdateParamsDto&&(identical(other.sessionId, sessionId) || other.sessionId == sessionId)&&(identical(other.patch, patch) || other.patch == patch));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _SessionSettingsUpdateParamsDto&&(identical(other.sessionId, sessionId) || other.sessionId == sessionId)&&(identical(other.patch, patch) || other.patch == patch));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,sessionId,patch);
+int get hashCode {
+    return Object.hash(runtimeType,sessionId,patch);
+}
 
 @override
 String toString() {
-  return 'SessionSettingsUpdateParamsDto(sessionId: $sessionId, patch: $patch)';
+    return 'SessionSettingsUpdateParamsDto(sessionId: $sessionId, patch: $patch)';
 }
 
 
@@ -4153,16 +4258,21 @@ $AgentDefinitionIdParamsDtoCopyWith<AgentDefinitionIdParamsDto> get copyWith => 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AgentDefinitionIdParamsDto&&(identical(other.id, id) || other.id == id));
+  final _this = this as AgentDefinitionIdParamsDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AgentDefinitionIdParamsDto&&(identical(other.id, _this.id) || other.id == _this.id));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id);
+int get hashCode {
+  final _this = this as AgentDefinitionIdParamsDto;
+  return Object.hash(runtimeType,_this.id);
+}
 
 @override
 String toString() {
-  return 'AgentDefinitionIdParamsDto(id: $id)';
+  final _this = this as AgentDefinitionIdParamsDto;
+  return 'AgentDefinitionIdParamsDto(id: ${_this.id})';
 }
 
 
@@ -4352,16 +4462,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AgentDefinitionIdParamsDto&&(identical(other.id, id) || other.id == id));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _AgentDefinitionIdParamsDto&&(identical(other.id, id) || other.id == id));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id);
+int get hashCode {
+    return Object.hash(runtimeType,id);
+}
 
 @override
 String toString() {
-  return 'AgentDefinitionIdParamsDto(id: $id)';
+    return 'AgentDefinitionIdParamsDto(id: $id)';
 }
 
 
@@ -4416,16 +4528,21 @@ $AgentDefinitionCreateParamsDtoCopyWith<AgentDefinitionCreateParamsDto> get copy
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AgentDefinitionCreateParamsDto&&(identical(other.id, id) || other.id == id)&&(identical(other.definition, definition) || other.definition == definition));
+  final _this = this as AgentDefinitionCreateParamsDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AgentDefinitionCreateParamsDto&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.definition, _this.definition) || other.definition == _this.definition));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,definition);
+int get hashCode {
+  final _this = this as AgentDefinitionCreateParamsDto;
+  return Object.hash(runtimeType,_this.id,_this.definition);
+}
 
 @override
 String toString() {
-  return 'AgentDefinitionCreateParamsDto(id: $id, definition: $definition)';
+  final _this = this as AgentDefinitionCreateParamsDto;
+  return 'AgentDefinitionCreateParamsDto(id: ${_this.id}, definition: ${_this.definition})';
 }
 
 
@@ -4626,16 +4743,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AgentDefinitionCreateParamsDto&&(identical(other.id, id) || other.id == id)&&(identical(other.definition, definition) || other.definition == definition));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _AgentDefinitionCreateParamsDto&&(identical(other.id, id) || other.id == id)&&(identical(other.definition, definition) || other.definition == definition));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,definition);
+int get hashCode {
+    return Object.hash(runtimeType,id,definition);
+}
 
 @override
 String toString() {
-  return 'AgentDefinitionCreateParamsDto(id: $id, definition: $definition)';
+    return 'AgentDefinitionCreateParamsDto(id: $id, definition: $definition)';
 }
 
 
@@ -4700,16 +4819,21 @@ $AgentDefinitionUpdateParamsDtoCopyWith<AgentDefinitionUpdateParamsDto> get copy
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AgentDefinitionUpdateParamsDto&&(identical(other.definition, definition) || other.definition == definition)&&(identical(other.expectedContentHash, expectedContentHash) || other.expectedContentHash == expectedContentHash)&&(identical(other.force, force) || other.force == force));
+  final _this = this as AgentDefinitionUpdateParamsDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AgentDefinitionUpdateParamsDto&&(identical(other.definition, _this.definition) || other.definition == _this.definition)&&(identical(other.expectedContentHash, _this.expectedContentHash) || other.expectedContentHash == _this.expectedContentHash)&&(identical(other.force, _this.force) || other.force == _this.force));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,definition,expectedContentHash,force);
+int get hashCode {
+  final _this = this as AgentDefinitionUpdateParamsDto;
+  return Object.hash(runtimeType,_this.definition,_this.expectedContentHash,_this.force);
+}
 
 @override
 String toString() {
-  return 'AgentDefinitionUpdateParamsDto(definition: $definition, expectedContentHash: $expectedContentHash, force: $force)';
+  final _this = this as AgentDefinitionUpdateParamsDto;
+  return 'AgentDefinitionUpdateParamsDto(definition: ${_this.definition}, expectedContentHash: ${_this.expectedContentHash}, force: ${_this.force})';
 }
 
 
@@ -4912,16 +5036,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AgentDefinitionUpdateParamsDto&&(identical(other.definition, definition) || other.definition == definition)&&(identical(other.expectedContentHash, expectedContentHash) || other.expectedContentHash == expectedContentHash)&&(identical(other.force, force) || other.force == force));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _AgentDefinitionUpdateParamsDto&&(identical(other.definition, definition) || other.definition == definition)&&(identical(other.expectedContentHash, expectedContentHash) || other.expectedContentHash == expectedContentHash)&&(identical(other.force, force) || other.force == force));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,definition,expectedContentHash,force);
+int get hashCode {
+    return Object.hash(runtimeType,definition,expectedContentHash,force);
+}
 
 @override
 String toString() {
-  return 'AgentDefinitionUpdateParamsDto(definition: $definition, expectedContentHash: $expectedContentHash, force: $force)';
+    return 'AgentDefinitionUpdateParamsDto(definition: $definition, expectedContentHash: $expectedContentHash, force: $force)';
 }
 
 
@@ -4987,16 +5113,21 @@ $AgentDefinitionValidateParamsDtoCopyWith<AgentDefinitionValidateParamsDto> get 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AgentDefinitionValidateParamsDto&&(identical(other.id, id) || other.id == id)&&(identical(other.markdown, markdown) || other.markdown == markdown));
+  final _this = this as AgentDefinitionValidateParamsDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AgentDefinitionValidateParamsDto&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.markdown, _this.markdown) || other.markdown == _this.markdown));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,markdown);
+int get hashCode {
+  final _this = this as AgentDefinitionValidateParamsDto;
+  return Object.hash(runtimeType,_this.id,_this.markdown);
+}
 
 @override
 String toString() {
-  return 'AgentDefinitionValidateParamsDto(id: $id, markdown: $markdown)';
+  final _this = this as AgentDefinitionValidateParamsDto;
+  return 'AgentDefinitionValidateParamsDto(id: ${_this.id}, markdown: ${_this.markdown})';
 }
 
 
@@ -5188,16 +5319,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AgentDefinitionValidateParamsDto&&(identical(other.id, id) || other.id == id)&&(identical(other.markdown, markdown) || other.markdown == markdown));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _AgentDefinitionValidateParamsDto&&(identical(other.id, id) || other.id == id)&&(identical(other.markdown, markdown) || other.markdown == markdown));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,markdown);
+int get hashCode {
+    return Object.hash(runtimeType,id,markdown);
+}
 
 @override
 String toString() {
-  return 'AgentDefinitionValidateParamsDto(id: $id, markdown: $markdown)';
+    return 'AgentDefinitionValidateParamsDto(id: $id, markdown: $markdown)';
 }
 
 
@@ -5253,16 +5386,21 @@ $PluginIdParamsDtoCopyWith<PluginIdParamsDto> get copyWith => _$PluginIdParamsDt
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PluginIdParamsDto&&(identical(other.id, id) || other.id == id));
+  final _this = this as PluginIdParamsDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PluginIdParamsDto&&(identical(other.id, _this.id) || other.id == _this.id));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id);
+int get hashCode {
+  final _this = this as PluginIdParamsDto;
+  return Object.hash(runtimeType,_this.id);
+}
 
 @override
 String toString() {
-  return 'PluginIdParamsDto(id: $id)';
+  final _this = this as PluginIdParamsDto;
+  return 'PluginIdParamsDto(id: ${_this.id})';
 }
 
 
@@ -5452,16 +5590,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PluginIdParamsDto&&(identical(other.id, id) || other.id == id));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _PluginIdParamsDto&&(identical(other.id, id) || other.id == id));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id);
+int get hashCode {
+    return Object.hash(runtimeType,id);
+}
 
 @override
 String toString() {
-  return 'PluginIdParamsDto(id: $id)';
+    return 'PluginIdParamsDto(id: $id)';
 }
 
 
@@ -5516,16 +5656,21 @@ $PluginReloadParamsDtoCopyWith<PluginReloadParamsDto> get copyWith => _$PluginRe
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PluginReloadParamsDto&&(identical(other.id, id) || other.id == id)&&(identical(other.agentId, agentId) || other.agentId == agentId));
+  final _this = this as PluginReloadParamsDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PluginReloadParamsDto&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.agentId, _this.agentId) || other.agentId == _this.agentId));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,agentId);
+int get hashCode {
+  final _this = this as PluginReloadParamsDto;
+  return Object.hash(runtimeType,_this.id,_this.agentId);
+}
 
 @override
 String toString() {
-  return 'PluginReloadParamsDto(id: $id, agentId: $agentId)';
+  final _this = this as PluginReloadParamsDto;
+  return 'PluginReloadParamsDto(id: ${_this.id}, agentId: ${_this.agentId})';
 }
 
 
@@ -5717,16 +5862,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PluginReloadParamsDto&&(identical(other.id, id) || other.id == id)&&(identical(other.agentId, agentId) || other.agentId == agentId));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _PluginReloadParamsDto&&(identical(other.id, id) || other.id == id)&&(identical(other.agentId, agentId) || other.agentId == agentId));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,agentId);
+int get hashCode {
+    return Object.hash(runtimeType,id,agentId);
+}
 
 @override
 String toString() {
-  return 'PluginReloadParamsDto(id: $id, agentId: $agentId)';
+    return 'PluginReloadParamsDto(id: $id, agentId: $agentId)';
 }
 
 
@@ -5782,16 +5929,21 @@ $PluginScaffoldParamsDtoCopyWith<PluginScaffoldParamsDto> get copyWith => _$Plug
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PluginScaffoldParamsDto&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name));
+  final _this = this as PluginScaffoldParamsDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PluginScaffoldParamsDto&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.name, _this.name) || other.name == _this.name));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,name);
+int get hashCode {
+  final _this = this as PluginScaffoldParamsDto;
+  return Object.hash(runtimeType,_this.id,_this.name);
+}
 
 @override
 String toString() {
-  return 'PluginScaffoldParamsDto(id: $id, name: $name)';
+  final _this = this as PluginScaffoldParamsDto;
+  return 'PluginScaffoldParamsDto(id: ${_this.id}, name: ${_this.name})';
 }
 
 
@@ -5983,16 +6135,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PluginScaffoldParamsDto&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _PluginScaffoldParamsDto&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,name);
+int get hashCode {
+    return Object.hash(runtimeType,id,name);
+}
 
 @override
 String toString() {
-  return 'PluginScaffoldParamsDto(id: $id, name: $name)';
+    return 'PluginScaffoldParamsDto(id: $id, name: $name)';
 }
 
 
@@ -6048,16 +6202,21 @@ $PluginForkParamsDtoCopyWith<PluginForkParamsDto> get copyWith => _$PluginForkPa
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PluginForkParamsDto&&(identical(other.sourceId, sourceId) || other.sourceId == sourceId)&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name));
+  final _this = this as PluginForkParamsDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PluginForkParamsDto&&(identical(other.sourceId, _this.sourceId) || other.sourceId == _this.sourceId)&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.name, _this.name) || other.name == _this.name));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,sourceId,id,name);
+int get hashCode {
+  final _this = this as PluginForkParamsDto;
+  return Object.hash(runtimeType,_this.sourceId,_this.id,_this.name);
+}
 
 @override
 String toString() {
-  return 'PluginForkParamsDto(sourceId: $sourceId, id: $id, name: $name)';
+  final _this = this as PluginForkParamsDto;
+  return 'PluginForkParamsDto(sourceId: ${_this.sourceId}, id: ${_this.id}, name: ${_this.name})';
 }
 
 
@@ -6251,16 +6410,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PluginForkParamsDto&&(identical(other.sourceId, sourceId) || other.sourceId == sourceId)&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _PluginForkParamsDto&&(identical(other.sourceId, sourceId) || other.sourceId == sourceId)&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,sourceId,id,name);
+int get hashCode {
+    return Object.hash(runtimeType,sourceId,id,name);
+}
 
 @override
 String toString() {
-  return 'PluginForkParamsDto(sourceId: $sourceId, id: $id, name: $name)';
+    return 'PluginForkParamsDto(sourceId: $sourceId, id: $id, name: $name)';
 }
 
 
@@ -6317,16 +6478,21 @@ $AgentPluginGrantsParamsDtoCopyWith<AgentPluginGrantsParamsDto> get copyWith => 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AgentPluginGrantsParamsDto&&(identical(other.agentId, agentId) || other.agentId == agentId));
+  final _this = this as AgentPluginGrantsParamsDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AgentPluginGrantsParamsDto&&(identical(other.agentId, _this.agentId) || other.agentId == _this.agentId));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,agentId);
+int get hashCode {
+  final _this = this as AgentPluginGrantsParamsDto;
+  return Object.hash(runtimeType,_this.agentId);
+}
 
 @override
 String toString() {
-  return 'AgentPluginGrantsParamsDto(agentId: $agentId)';
+  final _this = this as AgentPluginGrantsParamsDto;
+  return 'AgentPluginGrantsParamsDto(agentId: ${_this.agentId})';
 }
 
 
@@ -6516,16 +6682,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AgentPluginGrantsParamsDto&&(identical(other.agentId, agentId) || other.agentId == agentId));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _AgentPluginGrantsParamsDto&&(identical(other.agentId, agentId) || other.agentId == agentId));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,agentId);
+int get hashCode {
+    return Object.hash(runtimeType,agentId);
+}
 
 @override
 String toString() {
-  return 'AgentPluginGrantsParamsDto(agentId: $agentId)';
+    return 'AgentPluginGrantsParamsDto(agentId: $agentId)';
 }
 
 
@@ -6580,16 +6748,21 @@ $PluginGrantParamsDtoCopyWith<PluginGrantParamsDto> get copyWith => _$PluginGran
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PluginGrantParamsDto&&(identical(other.grant, grant) || other.grant == grant));
+  final _this = this as PluginGrantParamsDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PluginGrantParamsDto&&(identical(other.grant, _this.grant) || other.grant == _this.grant));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,grant);
+int get hashCode {
+  final _this = this as PluginGrantParamsDto;
+  return Object.hash(runtimeType,_this.grant);
+}
 
 @override
 String toString() {
-  return 'PluginGrantParamsDto(grant: $grant)';
+  final _this = this as PluginGrantParamsDto;
+  return 'PluginGrantParamsDto(grant: ${_this.grant})';
 }
 
 
@@ -6788,16 +6961,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PluginGrantParamsDto&&(identical(other.grant, grant) || other.grant == grant));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _PluginGrantParamsDto&&(identical(other.grant, grant) || other.grant == grant));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,grant);
+int get hashCode {
+    return Object.hash(runtimeType,grant);
+}
 
 @override
 String toString() {
-  return 'PluginGrantParamsDto(grant: $grant)';
+    return 'PluginGrantParamsDto(grant: $grant)';
 }
 
 
@@ -6861,16 +7036,21 @@ $PluginSecretSetParamsDtoCopyWith<PluginSecretSetParamsDto> get copyWith => _$Pl
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PluginSecretSetParamsDto&&(identical(other.agentId, agentId) || other.agentId == agentId)&&(identical(other.pluginId, pluginId) || other.pluginId == pluginId)&&(identical(other.name, name) || other.name == name)&&(identical(other.value, value) || other.value == value));
+  final _this = this as PluginSecretSetParamsDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PluginSecretSetParamsDto&&(identical(other.agentId, _this.agentId) || other.agentId == _this.agentId)&&(identical(other.pluginId, _this.pluginId) || other.pluginId == _this.pluginId)&&(identical(other.name, _this.name) || other.name == _this.name)&&(identical(other.value, _this.value) || other.value == _this.value));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,agentId,pluginId,name,value);
+int get hashCode {
+  final _this = this as PluginSecretSetParamsDto;
+  return Object.hash(runtimeType,_this.agentId,_this.pluginId,_this.name,_this.value);
+}
 
 @override
 String toString() {
-  return 'PluginSecretSetParamsDto(agentId: $agentId, pluginId: $pluginId, name: $name, value: $value)';
+  final _this = this as PluginSecretSetParamsDto;
+  return 'PluginSecretSetParamsDto(agentId: ${_this.agentId}, pluginId: ${_this.pluginId}, name: ${_this.name}, value: ${_this.value})';
 }
 
 
@@ -7066,16 +7246,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PluginSecretSetParamsDto&&(identical(other.agentId, agentId) || other.agentId == agentId)&&(identical(other.pluginId, pluginId) || other.pluginId == pluginId)&&(identical(other.name, name) || other.name == name)&&(identical(other.value, value) || other.value == value));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _PluginSecretSetParamsDto&&(identical(other.agentId, agentId) || other.agentId == agentId)&&(identical(other.pluginId, pluginId) || other.pluginId == pluginId)&&(identical(other.name, name) || other.name == name)&&(identical(other.value, value) || other.value == value));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,agentId,pluginId,name,value);
+int get hashCode {
+    return Object.hash(runtimeType,agentId,pluginId,name,value);
+}
 
 @override
 String toString() {
-  return 'PluginSecretSetParamsDto(agentId: $agentId, pluginId: $pluginId, name: $name, value: $value)';
+    return 'PluginSecretSetParamsDto(agentId: $agentId, pluginId: $pluginId, name: $name, value: $value)';
 }
 
 
@@ -7133,16 +7315,21 @@ $PluginSecretRemoveParamsDtoCopyWith<PluginSecretRemoveParamsDto> get copyWith =
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PluginSecretRemoveParamsDto&&(identical(other.agentId, agentId) || other.agentId == agentId)&&(identical(other.pluginId, pluginId) || other.pluginId == pluginId)&&(identical(other.name, name) || other.name == name));
+  final _this = this as PluginSecretRemoveParamsDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PluginSecretRemoveParamsDto&&(identical(other.agentId, _this.agentId) || other.agentId == _this.agentId)&&(identical(other.pluginId, _this.pluginId) || other.pluginId == _this.pluginId)&&(identical(other.name, _this.name) || other.name == _this.name));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,agentId,pluginId,name);
+int get hashCode {
+  final _this = this as PluginSecretRemoveParamsDto;
+  return Object.hash(runtimeType,_this.agentId,_this.pluginId,_this.name);
+}
 
 @override
 String toString() {
-  return 'PluginSecretRemoveParamsDto(agentId: $agentId, pluginId: $pluginId, name: $name)';
+  final _this = this as PluginSecretRemoveParamsDto;
+  return 'PluginSecretRemoveParamsDto(agentId: ${_this.agentId}, pluginId: ${_this.pluginId}, name: ${_this.name})';
 }
 
 
@@ -7336,16 +7523,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PluginSecretRemoveParamsDto&&(identical(other.agentId, agentId) || other.agentId == agentId)&&(identical(other.pluginId, pluginId) || other.pluginId == pluginId)&&(identical(other.name, name) || other.name == name));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _PluginSecretRemoveParamsDto&&(identical(other.agentId, agentId) || other.agentId == agentId)&&(identical(other.pluginId, pluginId) || other.pluginId == pluginId)&&(identical(other.name, name) || other.name == name));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,agentId,pluginId,name);
+int get hashCode {
+    return Object.hash(runtimeType,agentId,pluginId,name);
+}
 
 @override
 String toString() {
-  return 'PluginSecretRemoveParamsDto(agentId: $agentId, pluginId: $pluginId, name: $name)';
+    return 'PluginSecretRemoveParamsDto(agentId: $agentId, pluginId: $pluginId, name: $name)';
 }
 
 
@@ -7402,16 +7591,21 @@ $PluginSessionControlParamsDtoCopyWith<PluginSessionControlParamsDto> get copyWi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PluginSessionControlParamsDto&&(identical(other.sessionId, sessionId) || other.sessionId == sessionId)&&(identical(other.pluginId, pluginId) || other.pluginId == pluginId)&&(identical(other.contributionId, contributionId) || other.contributionId == contributionId));
+  final _this = this as PluginSessionControlParamsDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PluginSessionControlParamsDto&&(identical(other.sessionId, _this.sessionId) || other.sessionId == _this.sessionId)&&(identical(other.pluginId, _this.pluginId) || other.pluginId == _this.pluginId)&&(identical(other.contributionId, _this.contributionId) || other.contributionId == _this.contributionId));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,sessionId,pluginId,contributionId);
+int get hashCode {
+  final _this = this as PluginSessionControlParamsDto;
+  return Object.hash(runtimeType,_this.sessionId,_this.pluginId,_this.contributionId);
+}
 
 @override
 String toString() {
-  return 'PluginSessionControlParamsDto(sessionId: $sessionId, pluginId: $pluginId, contributionId: $contributionId)';
+  final _this = this as PluginSessionControlParamsDto;
+  return 'PluginSessionControlParamsDto(sessionId: ${_this.sessionId}, pluginId: ${_this.pluginId}, contributionId: ${_this.contributionId})';
 }
 
 
@@ -7605,16 +7799,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PluginSessionControlParamsDto&&(identical(other.sessionId, sessionId) || other.sessionId == sessionId)&&(identical(other.pluginId, pluginId) || other.pluginId == pluginId)&&(identical(other.contributionId, contributionId) || other.contributionId == contributionId));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _PluginSessionControlParamsDto&&(identical(other.sessionId, sessionId) || other.sessionId == sessionId)&&(identical(other.pluginId, pluginId) || other.pluginId == pluginId)&&(identical(other.contributionId, contributionId) || other.contributionId == contributionId));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,sessionId,pluginId,contributionId);
+int get hashCode {
+    return Object.hash(runtimeType,sessionId,pluginId,contributionId);
+}
 
 @override
 String toString() {
-  return 'PluginSessionControlParamsDto(sessionId: $sessionId, pluginId: $pluginId, contributionId: $contributionId)';
+    return 'PluginSessionControlParamsDto(sessionId: $sessionId, pluginId: $pluginId, contributionId: $contributionId)';
 }
 
 
@@ -7671,16 +7867,21 @@ $PluginSessionControlSetParamsDtoCopyWith<PluginSessionControlSetParamsDto> get 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PluginSessionControlSetParamsDto&&(identical(other.sessionId, sessionId) || other.sessionId == sessionId)&&(identical(other.pluginId, pluginId) || other.pluginId == pluginId)&&(identical(other.contributionId, contributionId) || other.contributionId == contributionId)&&const DeepCollectionEquality().equals(other.value, value));
+  final _this = this as PluginSessionControlSetParamsDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PluginSessionControlSetParamsDto&&(identical(other.sessionId, _this.sessionId) || other.sessionId == _this.sessionId)&&(identical(other.pluginId, _this.pluginId) || other.pluginId == _this.pluginId)&&(identical(other.contributionId, _this.contributionId) || other.contributionId == _this.contributionId)&&const DeepCollectionEquality().equals(other.value, _this.value));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,sessionId,pluginId,contributionId,const DeepCollectionEquality().hash(value));
+int get hashCode {
+  final _this = this as PluginSessionControlSetParamsDto;
+  return Object.hash(runtimeType,_this.sessionId,_this.pluginId,_this.contributionId,const DeepCollectionEquality().hash(_this.value));
+}
 
 @override
 String toString() {
-  return 'PluginSessionControlSetParamsDto(sessionId: $sessionId, pluginId: $pluginId, contributionId: $contributionId, value: $value)';
+  final _this = this as PluginSessionControlSetParamsDto;
+  return 'PluginSessionControlSetParamsDto(sessionId: ${_this.sessionId}, pluginId: ${_this.pluginId}, contributionId: ${_this.contributionId}, value: ${_this.value})';
 }
 
 
@@ -7875,16 +8076,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PluginSessionControlSetParamsDto&&(identical(other.sessionId, sessionId) || other.sessionId == sessionId)&&(identical(other.pluginId, pluginId) || other.pluginId == pluginId)&&(identical(other.contributionId, contributionId) || other.contributionId == contributionId)&&const DeepCollectionEquality().equals(other.value, value));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _PluginSessionControlSetParamsDto&&(identical(other.sessionId, sessionId) || other.sessionId == sessionId)&&(identical(other.pluginId, pluginId) || other.pluginId == pluginId)&&(identical(other.contributionId, contributionId) || other.contributionId == contributionId)&&const DeepCollectionEquality().equals(other.value, value));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,sessionId,pluginId,contributionId,const DeepCollectionEquality().hash(value));
+int get hashCode {
+    return Object.hash(runtimeType,sessionId,pluginId,contributionId,const DeepCollectionEquality().hash(value));
+}
 
 @override
 String toString() {
-  return 'PluginSessionControlSetParamsDto(sessionId: $sessionId, pluginId: $pluginId, contributionId: $contributionId, value: $value)';
+    return 'PluginSessionControlSetParamsDto(sessionId: $sessionId, pluginId: $pluginId, contributionId: $contributionId, value: $value)';
 }
 
 
@@ -7941,16 +8144,21 @@ $PluginUiRenderParamsDtoCopyWith<PluginUiRenderParamsDto> get copyWith => _$Plug
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PluginUiRenderParamsDto&&(identical(other.agentId, agentId) || other.agentId == agentId)&&(identical(other.pluginId, pluginId) || other.pluginId == pluginId)&&(identical(other.contributionId, contributionId) || other.contributionId == contributionId)&&(identical(other.slot, slot) || other.slot == slot)&&const DeepCollectionEquality().equals(other.input, input)&&const DeepCollectionEquality().equals(other.context, context));
+  final _this = this as PluginUiRenderParamsDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PluginUiRenderParamsDto&&(identical(other.agentId, _this.agentId) || other.agentId == _this.agentId)&&(identical(other.pluginId, _this.pluginId) || other.pluginId == _this.pluginId)&&(identical(other.contributionId, _this.contributionId) || other.contributionId == _this.contributionId)&&(identical(other.slot, _this.slot) || other.slot == _this.slot)&&const DeepCollectionEquality().equals(other.input, _this.input)&&const DeepCollectionEquality().equals(other.context, _this.context));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,agentId,pluginId,contributionId,slot,const DeepCollectionEquality().hash(input),const DeepCollectionEquality().hash(context));
+int get hashCode {
+  final _this = this as PluginUiRenderParamsDto;
+  return Object.hash(runtimeType,_this.agentId,_this.pluginId,_this.contributionId,_this.slot,const DeepCollectionEquality().hash(_this.input),const DeepCollectionEquality().hash(_this.context));
+}
 
 @override
 String toString() {
-  return 'PluginUiRenderParamsDto(agentId: $agentId, pluginId: $pluginId, contributionId: $contributionId, slot: $slot, input: $input, context: $context)';
+  final _this = this as PluginUiRenderParamsDto;
+  return 'PluginUiRenderParamsDto(agentId: ${_this.agentId}, pluginId: ${_this.pluginId}, contributionId: ${_this.contributionId}, slot: ${_this.slot}, input: ${_this.input}, context: ${_this.context})';
 }
 
 
@@ -8155,16 +8363,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PluginUiRenderParamsDto&&(identical(other.agentId, agentId) || other.agentId == agentId)&&(identical(other.pluginId, pluginId) || other.pluginId == pluginId)&&(identical(other.contributionId, contributionId) || other.contributionId == contributionId)&&(identical(other.slot, slot) || other.slot == slot)&&const DeepCollectionEquality().equals(other.input, input)&&const DeepCollectionEquality().equals(other._context, _context));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _PluginUiRenderParamsDto&&(identical(other.agentId, agentId) || other.agentId == agentId)&&(identical(other.pluginId, pluginId) || other.pluginId == pluginId)&&(identical(other.contributionId, contributionId) || other.contributionId == contributionId)&&(identical(other.slot, slot) || other.slot == slot)&&const DeepCollectionEquality().equals(other.input, input)&&const DeepCollectionEquality().equals(other.context, _context));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,agentId,pluginId,contributionId,slot,const DeepCollectionEquality().hash(input),const DeepCollectionEquality().hash(_context));
+int get hashCode {
+    return Object.hash(runtimeType,agentId,pluginId,contributionId,slot,const DeepCollectionEquality().hash(input),const DeepCollectionEquality().hash(_context));
+}
 
 @override
 String toString() {
-  return 'PluginUiRenderParamsDto(agentId: $agentId, pluginId: $pluginId, contributionId: $contributionId, slot: $slot, input: $input, context: $context)';
+    return 'PluginUiRenderParamsDto(agentId: $agentId, pluginId: $pluginId, contributionId: $contributionId, slot: $slot, input: $input, context: $context)';
 }
 
 
@@ -8223,16 +8433,21 @@ $PluginUiActionParamsDtoCopyWith<PluginUiActionParamsDto> get copyWith => _$Plug
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PluginUiActionParamsDto&&(identical(other.agentId, agentId) || other.agentId == agentId)&&(identical(other.pluginId, pluginId) || other.pluginId == pluginId)&&(identical(other.action, action) || other.action == action));
+  final _this = this as PluginUiActionParamsDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PluginUiActionParamsDto&&(identical(other.agentId, _this.agentId) || other.agentId == _this.agentId)&&(identical(other.pluginId, _this.pluginId) || other.pluginId == _this.pluginId)&&(identical(other.action, _this.action) || other.action == _this.action));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,agentId,pluginId,action);
+int get hashCode {
+  final _this = this as PluginUiActionParamsDto;
+  return Object.hash(runtimeType,_this.agentId,_this.pluginId,_this.action);
+}
 
 @override
 String toString() {
-  return 'PluginUiActionParamsDto(agentId: $agentId, pluginId: $pluginId, action: $action)';
+  final _this = this as PluginUiActionParamsDto;
+  return 'PluginUiActionParamsDto(agentId: ${_this.agentId}, pluginId: ${_this.pluginId}, action: ${_this.action})';
 }
 
 
@@ -8435,16 +8650,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PluginUiActionParamsDto&&(identical(other.agentId, agentId) || other.agentId == agentId)&&(identical(other.pluginId, pluginId) || other.pluginId == pluginId)&&(identical(other.action, action) || other.action == action));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _PluginUiActionParamsDto&&(identical(other.agentId, agentId) || other.agentId == agentId)&&(identical(other.pluginId, pluginId) || other.pluginId == pluginId)&&(identical(other.action, action) || other.action == action));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,agentId,pluginId,action);
+int get hashCode {
+    return Object.hash(runtimeType,agentId,pluginId,action);
+}
 
 @override
 String toString() {
-  return 'PluginUiActionParamsDto(agentId: $agentId, pluginId: $pluginId, action: $action)';
+    return 'PluginUiActionParamsDto(agentId: $agentId, pluginId: $pluginId, action: $action)';
 }
 
 
@@ -8510,16 +8727,21 @@ $SkillListParamsDtoCopyWith<SkillListParamsDto> get copyWith => _$SkillListParam
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SkillListParamsDto&&(identical(other.view, view) || other.view == view)&&(identical(other.workspaceId, workspaceId) || other.workspaceId == workspaceId));
+  final _this = this as SkillListParamsDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SkillListParamsDto&&(identical(other.view, _this.view) || other.view == _this.view)&&(identical(other.workspaceId, _this.workspaceId) || other.workspaceId == _this.workspaceId));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,view,workspaceId);
+int get hashCode {
+  final _this = this as SkillListParamsDto;
+  return Object.hash(runtimeType,_this.view,_this.workspaceId);
+}
 
 @override
 String toString() {
-  return 'SkillListParamsDto(view: $view, workspaceId: $workspaceId)';
+  final _this = this as SkillListParamsDto;
+  return 'SkillListParamsDto(view: ${_this.view}, workspaceId: ${_this.workspaceId})';
 }
 
 
@@ -8711,16 +8933,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SkillListParamsDto&&(identical(other.view, view) || other.view == view)&&(identical(other.workspaceId, workspaceId) || other.workspaceId == workspaceId));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _SkillListParamsDto&&(identical(other.view, view) || other.view == view)&&(identical(other.workspaceId, workspaceId) || other.workspaceId == workspaceId));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,view,workspaceId);
+int get hashCode {
+    return Object.hash(runtimeType,view,workspaceId);
+}
 
 @override
 String toString() {
-  return 'SkillListParamsDto(view: $view, workspaceId: $workspaceId)';
+    return 'SkillListParamsDto(view: $view, workspaceId: $workspaceId)';
 }
 
 
@@ -8776,16 +9000,21 @@ $ProviderConnectApiKeyParamsDtoCopyWith<ProviderConnectApiKeyParamsDto> get copy
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProviderConnectApiKeyParamsDto&&(identical(other.definitionId, definitionId) || other.definitionId == definitionId)&&(identical(other.apiKey, apiKey) || other.apiKey == apiKey)&&(identical(other.connectionId, connectionId) || other.connectionId == connectionId)&&(identical(other.modelPrefix, modelPrefix) || other.modelPrefix == modelPrefix));
+  final _this = this as ProviderConnectApiKeyParamsDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProviderConnectApiKeyParamsDto&&(identical(other.definitionId, _this.definitionId) || other.definitionId == _this.definitionId)&&(identical(other.apiKey, _this.apiKey) || other.apiKey == _this.apiKey)&&(identical(other.connectionId, _this.connectionId) || other.connectionId == _this.connectionId)&&(identical(other.modelPrefix, _this.modelPrefix) || other.modelPrefix == _this.modelPrefix));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,definitionId,apiKey,connectionId,modelPrefix);
+int get hashCode {
+  final _this = this as ProviderConnectApiKeyParamsDto;
+  return Object.hash(runtimeType,_this.definitionId,_this.apiKey,_this.connectionId,_this.modelPrefix);
+}
 
 @override
 String toString() {
-  return 'ProviderConnectApiKeyParamsDto(definitionId: $definitionId, apiKey: $apiKey, connectionId: $connectionId, modelPrefix: $modelPrefix)';
+  final _this = this as ProviderConnectApiKeyParamsDto;
+  return 'ProviderConnectApiKeyParamsDto(definitionId: ${_this.definitionId}, apiKey: ${_this.apiKey}, connectionId: ${_this.connectionId}, modelPrefix: ${_this.modelPrefix})';
 }
 
 
@@ -8981,16 +9210,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProviderConnectApiKeyParamsDto&&(identical(other.definitionId, definitionId) || other.definitionId == definitionId)&&(identical(other.apiKey, apiKey) || other.apiKey == apiKey)&&(identical(other.connectionId, connectionId) || other.connectionId == connectionId)&&(identical(other.modelPrefix, modelPrefix) || other.modelPrefix == modelPrefix));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProviderConnectApiKeyParamsDto&&(identical(other.definitionId, definitionId) || other.definitionId == definitionId)&&(identical(other.apiKey, apiKey) || other.apiKey == apiKey)&&(identical(other.connectionId, connectionId) || other.connectionId == connectionId)&&(identical(other.modelPrefix, modelPrefix) || other.modelPrefix == modelPrefix));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,definitionId,apiKey,connectionId,modelPrefix);
+int get hashCode {
+    return Object.hash(runtimeType,definitionId,apiKey,connectionId,modelPrefix);
+}
 
 @override
 String toString() {
-  return 'ProviderConnectApiKeyParamsDto(definitionId: $definitionId, apiKey: $apiKey, connectionId: $connectionId, modelPrefix: $modelPrefix)';
+    return 'ProviderConnectApiKeyParamsDto(definitionId: $definitionId, apiKey: $apiKey, connectionId: $connectionId, modelPrefix: $modelPrefix)';
 }
 
 
@@ -9048,16 +9279,21 @@ $ProviderConnectNoneParamsDtoCopyWith<ProviderConnectNoneParamsDto> get copyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProviderConnectNoneParamsDto&&(identical(other.definitionId, definitionId) || other.definitionId == definitionId)&&(identical(other.connectionId, connectionId) || other.connectionId == connectionId)&&(identical(other.modelPrefix, modelPrefix) || other.modelPrefix == modelPrefix));
+  final _this = this as ProviderConnectNoneParamsDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProviderConnectNoneParamsDto&&(identical(other.definitionId, _this.definitionId) || other.definitionId == _this.definitionId)&&(identical(other.connectionId, _this.connectionId) || other.connectionId == _this.connectionId)&&(identical(other.modelPrefix, _this.modelPrefix) || other.modelPrefix == _this.modelPrefix));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,definitionId,connectionId,modelPrefix);
+int get hashCode {
+  final _this = this as ProviderConnectNoneParamsDto;
+  return Object.hash(runtimeType,_this.definitionId,_this.connectionId,_this.modelPrefix);
+}
 
 @override
 String toString() {
-  return 'ProviderConnectNoneParamsDto(definitionId: $definitionId, connectionId: $connectionId, modelPrefix: $modelPrefix)';
+  final _this = this as ProviderConnectNoneParamsDto;
+  return 'ProviderConnectNoneParamsDto(definitionId: ${_this.definitionId}, connectionId: ${_this.connectionId}, modelPrefix: ${_this.modelPrefix})';
 }
 
 
@@ -9251,16 +9487,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProviderConnectNoneParamsDto&&(identical(other.definitionId, definitionId) || other.definitionId == definitionId)&&(identical(other.connectionId, connectionId) || other.connectionId == connectionId)&&(identical(other.modelPrefix, modelPrefix) || other.modelPrefix == modelPrefix));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProviderConnectNoneParamsDto&&(identical(other.definitionId, definitionId) || other.definitionId == definitionId)&&(identical(other.connectionId, connectionId) || other.connectionId == connectionId)&&(identical(other.modelPrefix, modelPrefix) || other.modelPrefix == modelPrefix));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,definitionId,connectionId,modelPrefix);
+int get hashCode {
+    return Object.hash(runtimeType,definitionId,connectionId,modelPrefix);
+}
 
 @override
 String toString() {
-  return 'ProviderConnectNoneParamsDto(definitionId: $definitionId, connectionId: $connectionId, modelPrefix: $modelPrefix)';
+    return 'ProviderConnectNoneParamsDto(definitionId: $definitionId, connectionId: $connectionId, modelPrefix: $modelPrefix)';
 }
 
 
@@ -9317,16 +9555,21 @@ $ProviderConnectionIdParamsDtoCopyWith<ProviderConnectionIdParamsDto> get copyWi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProviderConnectionIdParamsDto&&(identical(other.connectionId, connectionId) || other.connectionId == connectionId));
+  final _this = this as ProviderConnectionIdParamsDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProviderConnectionIdParamsDto&&(identical(other.connectionId, _this.connectionId) || other.connectionId == _this.connectionId));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,connectionId);
+int get hashCode {
+  final _this = this as ProviderConnectionIdParamsDto;
+  return Object.hash(runtimeType,_this.connectionId);
+}
 
 @override
 String toString() {
-  return 'ProviderConnectionIdParamsDto(connectionId: $connectionId)';
+  final _this = this as ProviderConnectionIdParamsDto;
+  return 'ProviderConnectionIdParamsDto(connectionId: ${_this.connectionId})';
 }
 
 
@@ -9516,16 +9759,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProviderConnectionIdParamsDto&&(identical(other.connectionId, connectionId) || other.connectionId == connectionId));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProviderConnectionIdParamsDto&&(identical(other.connectionId, connectionId) || other.connectionId == connectionId));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,connectionId);
+int get hashCode {
+    return Object.hash(runtimeType,connectionId);
+}
 
 @override
 String toString() {
-  return 'ProviderConnectionIdParamsDto(connectionId: $connectionId)';
+    return 'ProviderConnectionIdParamsDto(connectionId: $connectionId)';
 }
 
 
@@ -9580,16 +9825,21 @@ $ProviderModelParamsDtoCopyWith<ProviderModelParamsDto> get copyWith => _$Provid
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProviderModelParamsDto&&(identical(other.connectionId, connectionId) || other.connectionId == connectionId)&&(identical(other.modelId, modelId) || other.modelId == modelId));
+  final _this = this as ProviderModelParamsDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProviderModelParamsDto&&(identical(other.connectionId, _this.connectionId) || other.connectionId == _this.connectionId)&&(identical(other.modelId, _this.modelId) || other.modelId == _this.modelId));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,connectionId,modelId);
+int get hashCode {
+  final _this = this as ProviderModelParamsDto;
+  return Object.hash(runtimeType,_this.connectionId,_this.modelId);
+}
 
 @override
 String toString() {
-  return 'ProviderModelParamsDto(connectionId: $connectionId, modelId: $modelId)';
+  final _this = this as ProviderModelParamsDto;
+  return 'ProviderModelParamsDto(connectionId: ${_this.connectionId}, modelId: ${_this.modelId})';
 }
 
 
@@ -9781,16 +10031,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProviderModelParamsDto&&(identical(other.connectionId, connectionId) || other.connectionId == connectionId)&&(identical(other.modelId, modelId) || other.modelId == modelId));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProviderModelParamsDto&&(identical(other.connectionId, connectionId) || other.connectionId == connectionId)&&(identical(other.modelId, modelId) || other.modelId == modelId));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,connectionId,modelId);
+int get hashCode {
+    return Object.hash(runtimeType,connectionId,modelId);
+}
 
 @override
 String toString() {
-  return 'ProviderModelParamsDto(connectionId: $connectionId, modelId: $modelId)';
+    return 'ProviderModelParamsDto(connectionId: $connectionId, modelId: $modelId)';
 }
 
 
@@ -9846,16 +10098,21 @@ $ProviderAuthStartParamsDtoCopyWith<ProviderAuthStartParamsDto> get copyWith => 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProviderAuthStartParamsDto&&(identical(other.definitionId, definitionId) || other.definitionId == definitionId)&&(identical(other.methodId, methodId) || other.methodId == methodId)&&(identical(other.connectionId, connectionId) || other.connectionId == connectionId)&&(identical(other.modelPrefix, modelPrefix) || other.modelPrefix == modelPrefix));
+  final _this = this as ProviderAuthStartParamsDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProviderAuthStartParamsDto&&(identical(other.definitionId, _this.definitionId) || other.definitionId == _this.definitionId)&&(identical(other.methodId, _this.methodId) || other.methodId == _this.methodId)&&(identical(other.connectionId, _this.connectionId) || other.connectionId == _this.connectionId)&&(identical(other.modelPrefix, _this.modelPrefix) || other.modelPrefix == _this.modelPrefix));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,definitionId,methodId,connectionId,modelPrefix);
+int get hashCode {
+  final _this = this as ProviderAuthStartParamsDto;
+  return Object.hash(runtimeType,_this.definitionId,_this.methodId,_this.connectionId,_this.modelPrefix);
+}
 
 @override
 String toString() {
-  return 'ProviderAuthStartParamsDto(definitionId: $definitionId, methodId: $methodId, connectionId: $connectionId, modelPrefix: $modelPrefix)';
+  final _this = this as ProviderAuthStartParamsDto;
+  return 'ProviderAuthStartParamsDto(definitionId: ${_this.definitionId}, methodId: ${_this.methodId}, connectionId: ${_this.connectionId}, modelPrefix: ${_this.modelPrefix})';
 }
 
 
@@ -10051,16 +10308,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProviderAuthStartParamsDto&&(identical(other.definitionId, definitionId) || other.definitionId == definitionId)&&(identical(other.methodId, methodId) || other.methodId == methodId)&&(identical(other.connectionId, connectionId) || other.connectionId == connectionId)&&(identical(other.modelPrefix, modelPrefix) || other.modelPrefix == modelPrefix));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProviderAuthStartParamsDto&&(identical(other.definitionId, definitionId) || other.definitionId == definitionId)&&(identical(other.methodId, methodId) || other.methodId == methodId)&&(identical(other.connectionId, connectionId) || other.connectionId == connectionId)&&(identical(other.modelPrefix, modelPrefix) || other.modelPrefix == modelPrefix));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,definitionId,methodId,connectionId,modelPrefix);
+int get hashCode {
+    return Object.hash(runtimeType,definitionId,methodId,connectionId,modelPrefix);
+}
 
 @override
 String toString() {
-  return 'ProviderAuthStartParamsDto(definitionId: $definitionId, methodId: $methodId, connectionId: $connectionId, modelPrefix: $modelPrefix)';
+    return 'ProviderAuthStartParamsDto(definitionId: $definitionId, methodId: $methodId, connectionId: $connectionId, modelPrefix: $modelPrefix)';
 }
 
 
@@ -10118,16 +10377,21 @@ $ProviderPrefixUpdateParamsDtoCopyWith<ProviderPrefixUpdateParamsDto> get copyWi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProviderPrefixUpdateParamsDto&&(identical(other.connectionId, connectionId) || other.connectionId == connectionId)&&(identical(other.modelPrefix, modelPrefix) || other.modelPrefix == modelPrefix));
+  final _this = this as ProviderPrefixUpdateParamsDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProviderPrefixUpdateParamsDto&&(identical(other.connectionId, _this.connectionId) || other.connectionId == _this.connectionId)&&(identical(other.modelPrefix, _this.modelPrefix) || other.modelPrefix == _this.modelPrefix));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,connectionId,modelPrefix);
+int get hashCode {
+  final _this = this as ProviderPrefixUpdateParamsDto;
+  return Object.hash(runtimeType,_this.connectionId,_this.modelPrefix);
+}
 
 @override
 String toString() {
-  return 'ProviderPrefixUpdateParamsDto(connectionId: $connectionId, modelPrefix: $modelPrefix)';
+  final _this = this as ProviderPrefixUpdateParamsDto;
+  return 'ProviderPrefixUpdateParamsDto(connectionId: ${_this.connectionId}, modelPrefix: ${_this.modelPrefix})';
 }
 
 
@@ -10319,16 +10583,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProviderPrefixUpdateParamsDto&&(identical(other.connectionId, connectionId) || other.connectionId == connectionId)&&(identical(other.modelPrefix, modelPrefix) || other.modelPrefix == modelPrefix));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProviderPrefixUpdateParamsDto&&(identical(other.connectionId, connectionId) || other.connectionId == connectionId)&&(identical(other.modelPrefix, modelPrefix) || other.modelPrefix == modelPrefix));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,connectionId,modelPrefix);
+int get hashCode {
+    return Object.hash(runtimeType,connectionId,modelPrefix);
+}
 
 @override
 String toString() {
-  return 'ProviderPrefixUpdateParamsDto(connectionId: $connectionId, modelPrefix: $modelPrefix)';
+    return 'ProviderPrefixUpdateParamsDto(connectionId: $connectionId, modelPrefix: $modelPrefix)';
 }
 
 
@@ -10384,16 +10650,21 @@ $ProviderAuthAttemptParamsDtoCopyWith<ProviderAuthAttemptParamsDto> get copyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProviderAuthAttemptParamsDto&&(identical(other.attemptId, attemptId) || other.attemptId == attemptId));
+  final _this = this as ProviderAuthAttemptParamsDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProviderAuthAttemptParamsDto&&(identical(other.attemptId, _this.attemptId) || other.attemptId == _this.attemptId));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,attemptId);
+int get hashCode {
+  final _this = this as ProviderAuthAttemptParamsDto;
+  return Object.hash(runtimeType,_this.attemptId);
+}
 
 @override
 String toString() {
-  return 'ProviderAuthAttemptParamsDto(attemptId: $attemptId)';
+  final _this = this as ProviderAuthAttemptParamsDto;
+  return 'ProviderAuthAttemptParamsDto(attemptId: ${_this.attemptId})';
 }
 
 
@@ -10583,16 +10854,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProviderAuthAttemptParamsDto&&(identical(other.attemptId, attemptId) || other.attemptId == attemptId));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProviderAuthAttemptParamsDto&&(identical(other.attemptId, attemptId) || other.attemptId == attemptId));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,attemptId);
+int get hashCode {
+    return Object.hash(runtimeType,attemptId);
+}
 
 @override
 String toString() {
-  return 'ProviderAuthAttemptParamsDto(attemptId: $attemptId)';
+    return 'ProviderAuthAttemptParamsDto(attemptId: $attemptId)';
 }
 
 
@@ -10647,16 +10920,21 @@ $ProviderCustomCreateParamsDtoCopyWith<ProviderCustomCreateParamsDto> get copyWi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProviderCustomCreateParamsDto&&(identical(other.id, id) || other.id == id)&&(identical(other.config, config) || other.config == config)&&(identical(other.apiKey, apiKey) || other.apiKey == apiKey)&&(identical(other.modelPrefix, modelPrefix) || other.modelPrefix == modelPrefix));
+  final _this = this as ProviderCustomCreateParamsDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProviderCustomCreateParamsDto&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.config, _this.config) || other.config == _this.config)&&(identical(other.apiKey, _this.apiKey) || other.apiKey == _this.apiKey)&&(identical(other.modelPrefix, _this.modelPrefix) || other.modelPrefix == _this.modelPrefix));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,config,apiKey,modelPrefix);
+int get hashCode {
+  final _this = this as ProviderCustomCreateParamsDto;
+  return Object.hash(runtimeType,_this.id,_this.config,_this.apiKey,_this.modelPrefix);
+}
 
 @override
 String toString() {
-  return 'ProviderCustomCreateParamsDto(id: $id, config: $config, apiKey: $apiKey, modelPrefix: $modelPrefix)';
+  final _this = this as ProviderCustomCreateParamsDto;
+  return 'ProviderCustomCreateParamsDto(id: ${_this.id}, config: ${_this.config}, apiKey: ${_this.apiKey}, modelPrefix: ${_this.modelPrefix})';
 }
 
 
@@ -10861,16 +11139,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProviderCustomCreateParamsDto&&(identical(other.id, id) || other.id == id)&&(identical(other.config, config) || other.config == config)&&(identical(other.apiKey, apiKey) || other.apiKey == apiKey)&&(identical(other.modelPrefix, modelPrefix) || other.modelPrefix == modelPrefix));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProviderCustomCreateParamsDto&&(identical(other.id, id) || other.id == id)&&(identical(other.config, config) || other.config == config)&&(identical(other.apiKey, apiKey) || other.apiKey == apiKey)&&(identical(other.modelPrefix, modelPrefix) || other.modelPrefix == modelPrefix));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,config,apiKey,modelPrefix);
+int get hashCode {
+    return Object.hash(runtimeType,id,config,apiKey,modelPrefix);
+}
 
 @override
 String toString() {
-  return 'ProviderCustomCreateParamsDto(id: $id, config: $config, apiKey: $apiKey, modelPrefix: $modelPrefix)';
+    return 'ProviderCustomCreateParamsDto(id: $id, config: $config, apiKey: $apiKey, modelPrefix: $modelPrefix)';
 }
 
 
@@ -10937,16 +11217,21 @@ $ProviderCustomUpdateParamsDtoCopyWith<ProviderCustomUpdateParamsDto> get copyWi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProviderCustomUpdateParamsDto&&(identical(other.connectionId, connectionId) || other.connectionId == connectionId)&&(identical(other.config, config) || other.config == config)&&(identical(other.apiKey, apiKey) || other.apiKey == apiKey));
+  final _this = this as ProviderCustomUpdateParamsDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProviderCustomUpdateParamsDto&&(identical(other.connectionId, _this.connectionId) || other.connectionId == _this.connectionId)&&(identical(other.config, _this.config) || other.config == _this.config)&&(identical(other.apiKey, _this.apiKey) || other.apiKey == _this.apiKey));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,connectionId,config,apiKey);
+int get hashCode {
+  final _this = this as ProviderCustomUpdateParamsDto;
+  return Object.hash(runtimeType,_this.connectionId,_this.config,_this.apiKey);
+}
 
 @override
 String toString() {
-  return 'ProviderCustomUpdateParamsDto(connectionId: $connectionId, config: $config, apiKey: $apiKey)';
+  final _this = this as ProviderCustomUpdateParamsDto;
+  return 'ProviderCustomUpdateParamsDto(connectionId: ${_this.connectionId}, config: ${_this.config}, apiKey: ${_this.apiKey})';
 }
 
 
@@ -11149,16 +11434,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProviderCustomUpdateParamsDto&&(identical(other.connectionId, connectionId) || other.connectionId == connectionId)&&(identical(other.config, config) || other.config == config)&&(identical(other.apiKey, apiKey) || other.apiKey == apiKey));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProviderCustomUpdateParamsDto&&(identical(other.connectionId, connectionId) || other.connectionId == connectionId)&&(identical(other.config, config) || other.config == config)&&(identical(other.apiKey, apiKey) || other.apiKey == apiKey));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,connectionId,config,apiKey);
+int get hashCode {
+    return Object.hash(runtimeType,connectionId,config,apiKey);
+}
 
 @override
 String toString() {
-  return 'ProviderCustomUpdateParamsDto(connectionId: $connectionId, config: $config, apiKey: $apiKey)';
+    return 'ProviderCustomUpdateParamsDto(connectionId: $connectionId, config: $config, apiKey: $apiKey)';
 }
 
 
@@ -11224,16 +11511,21 @@ $TurnStartParamsDtoCopyWith<TurnStartParamsDto> get copyWith => _$TurnStartParam
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TurnStartParamsDto&&(identical(other.sessionId, sessionId) || other.sessionId == sessionId)&&(identical(other.turnId, turnId) || other.turnId == turnId)&&(identical(other.prompt, prompt) || other.prompt == prompt)&&const DeepCollectionEquality().equals(other.attachmentIds, attachmentIds));
+  final _this = this as TurnStartParamsDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TurnStartParamsDto&&(identical(other.sessionId, _this.sessionId) || other.sessionId == _this.sessionId)&&(identical(other.turnId, _this.turnId) || other.turnId == _this.turnId)&&(identical(other.prompt, _this.prompt) || other.prompt == _this.prompt)&&const DeepCollectionEquality().equals(other.attachmentIds, _this.attachmentIds));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,sessionId,turnId,prompt,const DeepCollectionEquality().hash(attachmentIds));
+int get hashCode {
+  final _this = this as TurnStartParamsDto;
+  return Object.hash(runtimeType,_this.sessionId,_this.turnId,_this.prompt,const DeepCollectionEquality().hash(_this.attachmentIds));
+}
 
 @override
 String toString() {
-  return 'TurnStartParamsDto(sessionId: $sessionId, turnId: $turnId, prompt: $prompt, attachmentIds: $attachmentIds)';
+  final _this = this as TurnStartParamsDto;
+  return 'TurnStartParamsDto(sessionId: ${_this.sessionId}, turnId: ${_this.turnId}, prompt: ${_this.prompt}, attachmentIds: ${_this.attachmentIds})';
 }
 
 
@@ -11435,16 +11727,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TurnStartParamsDto&&(identical(other.sessionId, sessionId) || other.sessionId == sessionId)&&(identical(other.turnId, turnId) || other.turnId == turnId)&&(identical(other.prompt, prompt) || other.prompt == prompt)&&const DeepCollectionEquality().equals(other._attachmentIds, _attachmentIds));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _TurnStartParamsDto&&(identical(other.sessionId, sessionId) || other.sessionId == sessionId)&&(identical(other.turnId, turnId) || other.turnId == turnId)&&(identical(other.prompt, prompt) || other.prompt == prompt)&&const DeepCollectionEquality().equals(other.attachmentIds, _attachmentIds));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,sessionId,turnId,prompt,const DeepCollectionEquality().hash(_attachmentIds));
+int get hashCode {
+    return Object.hash(runtimeType,sessionId,turnId,prompt,const DeepCollectionEquality().hash(_attachmentIds));
+}
 
 @override
 String toString() {
-  return 'TurnStartParamsDto(sessionId: $sessionId, turnId: $turnId, prompt: $prompt, attachmentIds: $attachmentIds)';
+    return 'TurnStartParamsDto(sessionId: $sessionId, turnId: $turnId, prompt: $prompt, attachmentIds: $attachmentIds)';
 }
 
 
@@ -11502,16 +11796,21 @@ $SessionIdParamsDtoCopyWith<SessionIdParamsDto> get copyWith => _$SessionIdParam
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SessionIdParamsDto&&(identical(other.sessionId, sessionId) || other.sessionId == sessionId));
+  final _this = this as SessionIdParamsDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SessionIdParamsDto&&(identical(other.sessionId, _this.sessionId) || other.sessionId == _this.sessionId));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,sessionId);
+int get hashCode {
+  final _this = this as SessionIdParamsDto;
+  return Object.hash(runtimeType,_this.sessionId);
+}
 
 @override
 String toString() {
-  return 'SessionIdParamsDto(sessionId: $sessionId)';
+  final _this = this as SessionIdParamsDto;
+  return 'SessionIdParamsDto(sessionId: ${_this.sessionId})';
 }
 
 
@@ -11701,16 +12000,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SessionIdParamsDto&&(identical(other.sessionId, sessionId) || other.sessionId == sessionId));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _SessionIdParamsDto&&(identical(other.sessionId, sessionId) || other.sessionId == sessionId));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,sessionId);
+int get hashCode {
+    return Object.hash(runtimeType,sessionId);
+}
 
 @override
 String toString() {
-  return 'SessionIdParamsDto(sessionId: $sessionId)';
+    return 'SessionIdParamsDto(sessionId: $sessionId)';
 }
 
 
@@ -11765,16 +12066,21 @@ $ApprovalResolveParamsDtoCopyWith<ApprovalResolveParamsDto> get copyWith => _$Ap
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ApprovalResolveParamsDto&&(identical(other.approvalId, approvalId) || other.approvalId == approvalId)&&(identical(other.approved, approved) || other.approved == approved));
+  final _this = this as ApprovalResolveParamsDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ApprovalResolveParamsDto&&(identical(other.approvalId, _this.approvalId) || other.approvalId == _this.approvalId)&&(identical(other.approved, _this.approved) || other.approved == _this.approved));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,approvalId,approved);
+int get hashCode {
+  final _this = this as ApprovalResolveParamsDto;
+  return Object.hash(runtimeType,_this.approvalId,_this.approved);
+}
 
 @override
 String toString() {
-  return 'ApprovalResolveParamsDto(approvalId: $approvalId, approved: $approved)';
+  final _this = this as ApprovalResolveParamsDto;
+  return 'ApprovalResolveParamsDto(approvalId: ${_this.approvalId}, approved: ${_this.approved})';
 }
 
 
@@ -11966,16 +12272,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ApprovalResolveParamsDto&&(identical(other.approvalId, approvalId) || other.approvalId == approvalId)&&(identical(other.approved, approved) || other.approved == approved));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ApprovalResolveParamsDto&&(identical(other.approvalId, approvalId) || other.approvalId == approvalId)&&(identical(other.approved, approved) || other.approved == approved));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,approvalId,approved);
+int get hashCode {
+    return Object.hash(runtimeType,approvalId,approved);
+}
 
 @override
 String toString() {
-  return 'ApprovalResolveParamsDto(approvalId: $approvalId, approved: $approved)';
+    return 'ApprovalResolveParamsDto(approvalId: $approvalId, approved: $approved)';
 }
 
 
@@ -12031,16 +12339,21 @@ $SessionPendingInputParamsDtoCopyWith<SessionPendingInputParamsDto> get copyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SessionPendingInputParamsDto&&(identical(other.sessionId, sessionId) || other.sessionId == sessionId));
+  final _this = this as SessionPendingInputParamsDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SessionPendingInputParamsDto&&(identical(other.sessionId, _this.sessionId) || other.sessionId == _this.sessionId));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,sessionId);
+int get hashCode {
+  final _this = this as SessionPendingInputParamsDto;
+  return Object.hash(runtimeType,_this.sessionId);
+}
 
 @override
 String toString() {
-  return 'SessionPendingInputParamsDto(sessionId: $sessionId)';
+  final _this = this as SessionPendingInputParamsDto;
+  return 'SessionPendingInputParamsDto(sessionId: ${_this.sessionId})';
 }
 
 
@@ -12230,16 +12543,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SessionPendingInputParamsDto&&(identical(other.sessionId, sessionId) || other.sessionId == sessionId));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _SessionPendingInputParamsDto&&(identical(other.sessionId, sessionId) || other.sessionId == sessionId));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,sessionId);
+int get hashCode {
+    return Object.hash(runtimeType,sessionId);
+}
 
 @override
 String toString() {
-  return 'SessionPendingInputParamsDto(sessionId: $sessionId)';
+    return 'SessionPendingInputParamsDto(sessionId: $sessionId)';
 }
 
 
@@ -12294,16 +12609,21 @@ $UserQuestionAnswerParamsDtoCopyWith<UserQuestionAnswerParamsDto> get copyWith =
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserQuestionAnswerParamsDto&&(identical(other.requestId, requestId) || other.requestId == requestId)&&const DeepCollectionEquality().equals(other.answers, answers));
+  final _this = this as UserQuestionAnswerParamsDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserQuestionAnswerParamsDto&&(identical(other.requestId, _this.requestId) || other.requestId == _this.requestId)&&const DeepCollectionEquality().equals(other.answers, _this.answers));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,requestId,const DeepCollectionEquality().hash(answers));
+int get hashCode {
+  final _this = this as UserQuestionAnswerParamsDto;
+  return Object.hash(runtimeType,_this.requestId,const DeepCollectionEquality().hash(_this.answers));
+}
 
 @override
 String toString() {
-  return 'UserQuestionAnswerParamsDto(requestId: $requestId, answers: $answers)';
+  final _this = this as UserQuestionAnswerParamsDto;
+  return 'UserQuestionAnswerParamsDto(requestId: ${_this.requestId}, answers: ${_this.answers})';
 }
 
 
@@ -12501,16 +12821,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UserQuestionAnswerParamsDto&&(identical(other.requestId, requestId) || other.requestId == requestId)&&const DeepCollectionEquality().equals(other._answers, _answers));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _UserQuestionAnswerParamsDto&&(identical(other.requestId, requestId) || other.requestId == requestId)&&const DeepCollectionEquality().equals(other.answers, _answers));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,requestId,const DeepCollectionEquality().hash(_answers));
+int get hashCode {
+    return Object.hash(runtimeType,requestId,const DeepCollectionEquality().hash(_answers));
+}
 
 @override
 String toString() {
-  return 'UserQuestionAnswerParamsDto(requestId: $requestId, answers: $answers)';
+    return 'UserQuestionAnswerParamsDto(requestId: $requestId, answers: $answers)';
 }
 
 
@@ -12566,16 +12888,21 @@ $TimelineSubscribeParamsDtoCopyWith<TimelineSubscribeParamsDto> get copyWith => 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TimelineSubscribeParamsDto&&(identical(other.sessionId, sessionId) || other.sessionId == sessionId)&&(identical(other.afterSequence, afterSequence) || other.afterSequence == afterSequence)&&(identical(other.tailLimit, tailLimit) || other.tailLimit == tailLimit));
+  final _this = this as TimelineSubscribeParamsDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TimelineSubscribeParamsDto&&(identical(other.sessionId, _this.sessionId) || other.sessionId == _this.sessionId)&&(identical(other.afterSequence, _this.afterSequence) || other.afterSequence == _this.afterSequence)&&(identical(other.tailLimit, _this.tailLimit) || other.tailLimit == _this.tailLimit));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,sessionId,afterSequence,tailLimit);
+int get hashCode {
+  final _this = this as TimelineSubscribeParamsDto;
+  return Object.hash(runtimeType,_this.sessionId,_this.afterSequence,_this.tailLimit);
+}
 
 @override
 String toString() {
-  return 'TimelineSubscribeParamsDto(sessionId: $sessionId, afterSequence: $afterSequence, tailLimit: $tailLimit)';
+  final _this = this as TimelineSubscribeParamsDto;
+  return 'TimelineSubscribeParamsDto(sessionId: ${_this.sessionId}, afterSequence: ${_this.afterSequence}, tailLimit: ${_this.tailLimit})';
 }
 
 
@@ -12769,16 +13096,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TimelineSubscribeParamsDto&&(identical(other.sessionId, sessionId) || other.sessionId == sessionId)&&(identical(other.afterSequence, afterSequence) || other.afterSequence == afterSequence)&&(identical(other.tailLimit, tailLimit) || other.tailLimit == tailLimit));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _TimelineSubscribeParamsDto&&(identical(other.sessionId, sessionId) || other.sessionId == sessionId)&&(identical(other.afterSequence, afterSequence) || other.afterSequence == afterSequence)&&(identical(other.tailLimit, tailLimit) || other.tailLimit == tailLimit));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,sessionId,afterSequence,tailLimit);
+int get hashCode {
+    return Object.hash(runtimeType,sessionId,afterSequence,tailLimit);
+}
 
 @override
 String toString() {
-  return 'TimelineSubscribeParamsDto(sessionId: $sessionId, afterSequence: $afterSequence, tailLimit: $tailLimit)';
+    return 'TimelineSubscribeParamsDto(sessionId: $sessionId, afterSequence: $afterSequence, tailLimit: $tailLimit)';
 }
 
 
@@ -12835,16 +13164,21 @@ $TimelineHistoryParamsDtoCopyWith<TimelineHistoryParamsDto> get copyWith => _$Ti
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TimelineHistoryParamsDto&&(identical(other.sessionId, sessionId) || other.sessionId == sessionId)&&(identical(other.beforeSequence, beforeSequence) || other.beforeSequence == beforeSequence)&&(identical(other.limit, limit) || other.limit == limit));
+  final _this = this as TimelineHistoryParamsDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TimelineHistoryParamsDto&&(identical(other.sessionId, _this.sessionId) || other.sessionId == _this.sessionId)&&(identical(other.beforeSequence, _this.beforeSequence) || other.beforeSequence == _this.beforeSequence)&&(identical(other.limit, _this.limit) || other.limit == _this.limit));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,sessionId,beforeSequence,limit);
+int get hashCode {
+  final _this = this as TimelineHistoryParamsDto;
+  return Object.hash(runtimeType,_this.sessionId,_this.beforeSequence,_this.limit);
+}
 
 @override
 String toString() {
-  return 'TimelineHistoryParamsDto(sessionId: $sessionId, beforeSequence: $beforeSequence, limit: $limit)';
+  final _this = this as TimelineHistoryParamsDto;
+  return 'TimelineHistoryParamsDto(sessionId: ${_this.sessionId}, beforeSequence: ${_this.beforeSequence}, limit: ${_this.limit})';
 }
 
 
@@ -13038,16 +13372,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TimelineHistoryParamsDto&&(identical(other.sessionId, sessionId) || other.sessionId == sessionId)&&(identical(other.beforeSequence, beforeSequence) || other.beforeSequence == beforeSequence)&&(identical(other.limit, limit) || other.limit == limit));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _TimelineHistoryParamsDto&&(identical(other.sessionId, sessionId) || other.sessionId == sessionId)&&(identical(other.beforeSequence, beforeSequence) || other.beforeSequence == beforeSequence)&&(identical(other.limit, limit) || other.limit == limit));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,sessionId,beforeSequence,limit);
+int get hashCode {
+    return Object.hash(runtimeType,sessionId,beforeSequence,limit);
+}
 
 @override
 String toString() {
-  return 'TimelineHistoryParamsDto(sessionId: $sessionId, beforeSequence: $beforeSequence, limit: $limit)';
+    return 'TimelineHistoryParamsDto(sessionId: $sessionId, beforeSequence: $beforeSequence, limit: $limit)';
 }
 
 
@@ -13104,16 +13440,21 @@ $WorkspaceCatalogResultDtoCopyWith<WorkspaceCatalogResultDto> get copyWith => _$
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is WorkspaceCatalogResultDto&&(identical(other.catalog, catalog) || other.catalog == catalog));
+  final _this = this as WorkspaceCatalogResultDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is WorkspaceCatalogResultDto&&(identical(other.catalog, _this.catalog) || other.catalog == _this.catalog));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,catalog);
+int get hashCode {
+  final _this = this as WorkspaceCatalogResultDto;
+  return Object.hash(runtimeType,_this.catalog);
+}
 
 @override
 String toString() {
-  return 'WorkspaceCatalogResultDto(catalog: $catalog)';
+  final _this = this as WorkspaceCatalogResultDto;
+  return 'WorkspaceCatalogResultDto(catalog: ${_this.catalog})';
 }
 
 
@@ -13312,16 +13653,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WorkspaceCatalogResultDto&&(identical(other.catalog, catalog) || other.catalog == catalog));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _WorkspaceCatalogResultDto&&(identical(other.catalog, catalog) || other.catalog == catalog));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,catalog);
+int get hashCode {
+    return Object.hash(runtimeType,catalog);
+}
 
 @override
 String toString() {
-  return 'WorkspaceCatalogResultDto(catalog: $catalog)';
+    return 'WorkspaceCatalogResultDto(catalog: $catalog)';
 }
 
 
@@ -13385,16 +13728,21 @@ $WorkspaceRegisterResultDtoCopyWith<WorkspaceRegisterResultDto> get copyWith => 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is WorkspaceRegisterResultDto&&(identical(other.workspace, workspace) || other.workspace == workspace)&&const DeepCollectionEquality().equals(other.worktrees, worktrees));
+  final _this = this as WorkspaceRegisterResultDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is WorkspaceRegisterResultDto&&(identical(other.workspace, _this.workspace) || other.workspace == _this.workspace)&&const DeepCollectionEquality().equals(other.worktrees, _this.worktrees));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,workspace,const DeepCollectionEquality().hash(worktrees));
+int get hashCode {
+  final _this = this as WorkspaceRegisterResultDto;
+  return Object.hash(runtimeType,_this.workspace,const DeepCollectionEquality().hash(_this.worktrees));
+}
 
 @override
 String toString() {
-  return 'WorkspaceRegisterResultDto(workspace: $workspace, worktrees: $worktrees)';
+  final _this = this as WorkspaceRegisterResultDto;
+  return 'WorkspaceRegisterResultDto(workspace: ${_this.workspace}, worktrees: ${_this.worktrees})';
 }
 
 
@@ -13601,16 +13949,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WorkspaceRegisterResultDto&&(identical(other.workspace, workspace) || other.workspace == workspace)&&const DeepCollectionEquality().equals(other._worktrees, _worktrees));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _WorkspaceRegisterResultDto&&(identical(other.workspace, workspace) || other.workspace == workspace)&&const DeepCollectionEquality().equals(other.worktrees, _worktrees));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,workspace,const DeepCollectionEquality().hash(_worktrees));
+int get hashCode {
+    return Object.hash(runtimeType,workspace,const DeepCollectionEquality().hash(_worktrees));
+}
 
 @override
 String toString() {
-  return 'WorkspaceRegisterResultDto(workspace: $workspace, worktrees: $worktrees)';
+    return 'WorkspaceRegisterResultDto(workspace: $workspace, worktrees: $worktrees)';
 }
 
 
@@ -13675,16 +14025,21 @@ $WorkspaceUnregisterResultDtoCopyWith<WorkspaceUnregisterResultDto> get copyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is WorkspaceUnregisterResultDto&&(identical(other.unregistered, unregistered) || other.unregistered == unregistered));
+  final _this = this as WorkspaceUnregisterResultDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is WorkspaceUnregisterResultDto&&(identical(other.unregistered, _this.unregistered) || other.unregistered == _this.unregistered));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,unregistered);
+int get hashCode {
+  final _this = this as WorkspaceUnregisterResultDto;
+  return Object.hash(runtimeType,_this.unregistered);
+}
 
 @override
 String toString() {
-  return 'WorkspaceUnregisterResultDto(unregistered: $unregistered)';
+  final _this = this as WorkspaceUnregisterResultDto;
+  return 'WorkspaceUnregisterResultDto(unregistered: ${_this.unregistered})';
 }
 
 
@@ -13874,16 +14229,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WorkspaceUnregisterResultDto&&(identical(other.unregistered, unregistered) || other.unregistered == unregistered));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _WorkspaceUnregisterResultDto&&(identical(other.unregistered, unregistered) || other.unregistered == unregistered));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,unregistered);
+int get hashCode {
+    return Object.hash(runtimeType,unregistered);
+}
 
 @override
 String toString() {
-  return 'WorkspaceUnregisterResultDto(unregistered: $unregistered)';
+    return 'WorkspaceUnregisterResultDto(unregistered: $unregistered)';
 }
 
 
@@ -13938,16 +14295,21 @@ $DirectorySuggestResultDtoCopyWith<DirectorySuggestResultDto> get copyWith => _$
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is DirectorySuggestResultDto&&const DeepCollectionEquality().equals(other.suggestions, suggestions));
+  final _this = this as DirectorySuggestResultDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is DirectorySuggestResultDto&&const DeepCollectionEquality().equals(other.suggestions, _this.suggestions));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(suggestions));
+int get hashCode {
+  final _this = this as DirectorySuggestResultDto;
+  return Object.hash(runtimeType,const DeepCollectionEquality().hash(_this.suggestions));
+}
 
 @override
 String toString() {
-  return 'DirectorySuggestResultDto(suggestions: $suggestions)';
+  final _this = this as DirectorySuggestResultDto;
+  return 'DirectorySuggestResultDto(suggestions: ${_this.suggestions})';
 }
 
 
@@ -14143,16 +14505,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _DirectorySuggestResultDto&&const DeepCollectionEquality().equals(other._suggestions, _suggestions));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _DirectorySuggestResultDto&&const DeepCollectionEquality().equals(other.suggestions, _suggestions));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_suggestions));
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_suggestions));
+}
 
 @override
 String toString() {
-  return 'DirectorySuggestResultDto(suggestions: $suggestions)';
+    return 'DirectorySuggestResultDto(suggestions: $suggestions)';
 }
 
 
@@ -14207,16 +14571,21 @@ $FileSearchResultDtoCopyWith<FileSearchResultDto> get copyWith => _$FileSearchRe
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is FileSearchResultDto&&const DeepCollectionEquality().equals(other.matches, matches)&&(identical(other.truncated, truncated) || other.truncated == truncated));
+  final _this = this as FileSearchResultDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is FileSearchResultDto&&const DeepCollectionEquality().equals(other.matches, _this.matches)&&(identical(other.truncated, _this.truncated) || other.truncated == _this.truncated));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(matches),truncated);
+int get hashCode {
+  final _this = this as FileSearchResultDto;
+  return Object.hash(runtimeType,const DeepCollectionEquality().hash(_this.matches),_this.truncated);
+}
 
 @override
 String toString() {
-  return 'FileSearchResultDto(matches: $matches, truncated: $truncated)';
+  final _this = this as FileSearchResultDto;
+  return 'FileSearchResultDto(matches: ${_this.matches}, truncated: ${_this.truncated})';
 }
 
 
@@ -14414,16 +14783,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _FileSearchResultDto&&const DeepCollectionEquality().equals(other._matches, _matches)&&(identical(other.truncated, truncated) || other.truncated == truncated));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _FileSearchResultDto&&const DeepCollectionEquality().equals(other.matches, _matches)&&(identical(other.truncated, truncated) || other.truncated == truncated));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_matches),truncated);
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_matches),truncated);
+}
 
 @override
 String toString() {
-  return 'FileSearchResultDto(matches: $matches, truncated: $truncated)';
+    return 'FileSearchResultDto(matches: $matches, truncated: $truncated)';
 }
 
 
@@ -14479,16 +14850,21 @@ $GitBranchesListResultDtoCopyWith<GitBranchesListResultDto> get copyWith => _$Gi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is GitBranchesListResultDto&&const DeepCollectionEquality().equals(other.branches, branches));
+  final _this = this as GitBranchesListResultDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is GitBranchesListResultDto&&const DeepCollectionEquality().equals(other.branches, _this.branches));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(branches));
+int get hashCode {
+  final _this = this as GitBranchesListResultDto;
+  return Object.hash(runtimeType,const DeepCollectionEquality().hash(_this.branches));
+}
 
 @override
 String toString() {
-  return 'GitBranchesListResultDto(branches: $branches)';
+  final _this = this as GitBranchesListResultDto;
+  return 'GitBranchesListResultDto(branches: ${_this.branches})';
 }
 
 
@@ -14684,16 +15060,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _GitBranchesListResultDto&&const DeepCollectionEquality().equals(other._branches, _branches));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _GitBranchesListResultDto&&const DeepCollectionEquality().equals(other.branches, _branches));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_branches));
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_branches));
+}
 
 @override
 String toString() {
-  return 'GitBranchesListResultDto(branches: $branches)';
+    return 'GitBranchesListResultDto(branches: $branches)';
 }
 
 
@@ -14748,16 +15126,21 @@ $WorktreeResultDtoCopyWith<WorktreeResultDto> get copyWith => _$WorktreeResultDt
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is WorktreeResultDto&&(identical(other.worktree, worktree) || other.worktree == worktree)&&const DeepCollectionEquality().equals(other.hookRuns, hookRuns));
+  final _this = this as WorktreeResultDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is WorktreeResultDto&&(identical(other.worktree, _this.worktree) || other.worktree == _this.worktree)&&const DeepCollectionEquality().equals(other.hookRuns, _this.hookRuns));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,worktree,const DeepCollectionEquality().hash(hookRuns));
+int get hashCode {
+  final _this = this as WorktreeResultDto;
+  return Object.hash(runtimeType,_this.worktree,const DeepCollectionEquality().hash(_this.hookRuns));
+}
 
 @override
 String toString() {
-  return 'WorktreeResultDto(worktree: $worktree, hookRuns: $hookRuns)';
+  final _this = this as WorktreeResultDto;
+  return 'WorktreeResultDto(worktree: ${_this.worktree}, hookRuns: ${_this.hookRuns})';
 }
 
 
@@ -14964,16 +15347,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WorktreeResultDto&&(identical(other.worktree, worktree) || other.worktree == worktree)&&const DeepCollectionEquality().equals(other._hookRuns, _hookRuns));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _WorktreeResultDto&&(identical(other.worktree, worktree) || other.worktree == worktree)&&const DeepCollectionEquality().equals(other.hookRuns, _hookRuns));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,worktree,const DeepCollectionEquality().hash(_hookRuns));
+int get hashCode {
+    return Object.hash(runtimeType,worktree,const DeepCollectionEquality().hash(_hookRuns));
+}
 
 @override
 String toString() {
-  return 'WorktreeResultDto(worktree: $worktree, hookRuns: $hookRuns)';
+    return 'WorktreeResultDto(worktree: $worktree, hookRuns: $hookRuns)';
 }
 
 
@@ -15038,16 +15423,21 @@ $ProjectSettingsGetParamsDtoCopyWith<ProjectSettingsGetParamsDto> get copyWith =
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProjectSettingsGetParamsDto&&(identical(other.workspaceId, workspaceId) || other.workspaceId == workspaceId));
+  final _this = this as ProjectSettingsGetParamsDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProjectSettingsGetParamsDto&&(identical(other.workspaceId, _this.workspaceId) || other.workspaceId == _this.workspaceId));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,workspaceId);
+int get hashCode {
+  final _this = this as ProjectSettingsGetParamsDto;
+  return Object.hash(runtimeType,_this.workspaceId);
+}
 
 @override
 String toString() {
-  return 'ProjectSettingsGetParamsDto(workspaceId: $workspaceId)';
+  final _this = this as ProjectSettingsGetParamsDto;
+  return 'ProjectSettingsGetParamsDto(workspaceId: ${_this.workspaceId})';
 }
 
 
@@ -15237,16 +15627,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProjectSettingsGetParamsDto&&(identical(other.workspaceId, workspaceId) || other.workspaceId == workspaceId));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProjectSettingsGetParamsDto&&(identical(other.workspaceId, workspaceId) || other.workspaceId == workspaceId));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,workspaceId);
+int get hashCode {
+    return Object.hash(runtimeType,workspaceId);
+}
 
 @override
 String toString() {
-  return 'ProjectSettingsGetParamsDto(workspaceId: $workspaceId)';
+    return 'ProjectSettingsGetParamsDto(workspaceId: $workspaceId)';
 }
 
 
@@ -15301,16 +15693,21 @@ $ProjectSettingsSaveParamsDtoCopyWith<ProjectSettingsSaveParamsDto> get copyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProjectSettingsSaveParamsDto&&(identical(other.workspaceId, workspaceId) || other.workspaceId == workspaceId)&&(identical(other.settings, settings) || other.settings == settings));
+  final _this = this as ProjectSettingsSaveParamsDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProjectSettingsSaveParamsDto&&(identical(other.workspaceId, _this.workspaceId) || other.workspaceId == _this.workspaceId)&&(identical(other.settings, _this.settings) || other.settings == _this.settings));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,workspaceId,settings);
+int get hashCode {
+  final _this = this as ProjectSettingsSaveParamsDto;
+  return Object.hash(runtimeType,_this.workspaceId,_this.settings);
+}
 
 @override
 String toString() {
-  return 'ProjectSettingsSaveParamsDto(workspaceId: $workspaceId, settings: $settings)';
+  final _this = this as ProjectSettingsSaveParamsDto;
+  return 'ProjectSettingsSaveParamsDto(workspaceId: ${_this.workspaceId}, settings: ${_this.settings})';
 }
 
 
@@ -15511,16 +15908,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProjectSettingsSaveParamsDto&&(identical(other.workspaceId, workspaceId) || other.workspaceId == workspaceId)&&(identical(other.settings, settings) || other.settings == settings));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProjectSettingsSaveParamsDto&&(identical(other.workspaceId, workspaceId) || other.workspaceId == workspaceId)&&(identical(other.settings, settings) || other.settings == settings));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,workspaceId,settings);
+int get hashCode {
+    return Object.hash(runtimeType,workspaceId,settings);
+}
 
 @override
 String toString() {
-  return 'ProjectSettingsSaveParamsDto(workspaceId: $workspaceId, settings: $settings)';
+    return 'ProjectSettingsSaveParamsDto(workspaceId: $workspaceId, settings: $settings)';
 }
 
 
@@ -15585,16 +15984,21 @@ $ProjectSettingsResultDtoCopyWith<ProjectSettingsResultDto> get copyWith => _$Pr
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProjectSettingsResultDto&&(identical(other.settings, settings) || other.settings == settings)&&(identical(other.sourcePath, sourcePath) || other.sourcePath == sourcePath));
+  final _this = this as ProjectSettingsResultDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProjectSettingsResultDto&&(identical(other.settings, _this.settings) || other.settings == _this.settings)&&(identical(other.sourcePath, _this.sourcePath) || other.sourcePath == _this.sourcePath));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,settings,sourcePath);
+int get hashCode {
+  final _this = this as ProjectSettingsResultDto;
+  return Object.hash(runtimeType,_this.settings,_this.sourcePath);
+}
 
 @override
 String toString() {
-  return 'ProjectSettingsResultDto(settings: $settings, sourcePath: $sourcePath)';
+  final _this = this as ProjectSettingsResultDto;
+  return 'ProjectSettingsResultDto(settings: ${_this.settings}, sourcePath: ${_this.sourcePath})';
 }
 
 
@@ -15795,16 +16199,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProjectSettingsResultDto&&(identical(other.settings, settings) || other.settings == settings)&&(identical(other.sourcePath, sourcePath) || other.sourcePath == sourcePath));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProjectSettingsResultDto&&(identical(other.settings, settings) || other.settings == settings)&&(identical(other.sourcePath, sourcePath) || other.sourcePath == sourcePath));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,settings,sourcePath);
+int get hashCode {
+    return Object.hash(runtimeType,settings,sourcePath);
+}
 
 @override
 String toString() {
-  return 'ProjectSettingsResultDto(settings: $settings, sourcePath: $sourcePath)';
+    return 'ProjectSettingsResultDto(settings: $settings, sourcePath: $sourcePath)';
 }
 
 
@@ -15869,16 +16275,21 @@ $WorktreeArchivePreviewResultDtoCopyWith<WorktreeArchivePreviewResultDto> get co
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is WorktreeArchivePreviewResultDto&&(identical(other.preview, preview) || other.preview == preview));
+  final _this = this as WorktreeArchivePreviewResultDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is WorktreeArchivePreviewResultDto&&(identical(other.preview, _this.preview) || other.preview == _this.preview));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,preview);
+int get hashCode {
+  final _this = this as WorktreeArchivePreviewResultDto;
+  return Object.hash(runtimeType,_this.preview);
+}
 
 @override
 String toString() {
-  return 'WorktreeArchivePreviewResultDto(preview: $preview)';
+  final _this = this as WorktreeArchivePreviewResultDto;
+  return 'WorktreeArchivePreviewResultDto(preview: ${_this.preview})';
 }
 
 
@@ -16077,16 +16488,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WorktreeArchivePreviewResultDto&&(identical(other.preview, preview) || other.preview == preview));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _WorktreeArchivePreviewResultDto&&(identical(other.preview, preview) || other.preview == preview));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,preview);
+int get hashCode {
+    return Object.hash(runtimeType,preview);
+}
 
 @override
 String toString() {
-  return 'WorktreeArchivePreviewResultDto(preview: $preview)';
+    return 'WorktreeArchivePreviewResultDto(preview: $preview)';
 }
 
 
@@ -16150,16 +16563,21 @@ $SessionListResultDtoCopyWith<SessionListResultDto> get copyWith => _$SessionLis
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SessionListResultDto&&const DeepCollectionEquality().equals(other.sessions, sessions));
+  final _this = this as SessionListResultDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SessionListResultDto&&const DeepCollectionEquality().equals(other.sessions, _this.sessions));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(sessions));
+int get hashCode {
+  final _this = this as SessionListResultDto;
+  return Object.hash(runtimeType,const DeepCollectionEquality().hash(_this.sessions));
+}
 
 @override
 String toString() {
-  return 'SessionListResultDto(sessions: $sessions)';
+  final _this = this as SessionListResultDto;
+  return 'SessionListResultDto(sessions: ${_this.sessions})';
 }
 
 
@@ -16355,16 +16773,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SessionListResultDto&&const DeepCollectionEquality().equals(other._sessions, _sessions));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _SessionListResultDto&&const DeepCollectionEquality().equals(other.sessions, _sessions));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_sessions));
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_sessions));
+}
 
 @override
 String toString() {
-  return 'SessionListResultDto(sessions: $sessions)';
+    return 'SessionListResultDto(sessions: $sessions)';
 }
 
 
@@ -16419,16 +16839,21 @@ $SessionResultDtoCopyWith<SessionResultDto> get copyWith => _$SessionResultDtoCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SessionResultDto&&(identical(other.session, session) || other.session == session));
+  final _this = this as SessionResultDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SessionResultDto&&(identical(other.session, _this.session) || other.session == _this.session));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,session);
+int get hashCode {
+  final _this = this as SessionResultDto;
+  return Object.hash(runtimeType,_this.session);
+}
 
 @override
 String toString() {
-  return 'SessionResultDto(session: $session)';
+  final _this = this as SessionResultDto;
+  return 'SessionResultDto(session: ${_this.session})';
 }
 
 
@@ -16627,16 +17052,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SessionResultDto&&(identical(other.session, session) || other.session == session));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _SessionResultDto&&(identical(other.session, session) || other.session == session));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,session);
+int get hashCode {
+    return Object.hash(runtimeType,session);
+}
 
 @override
 String toString() {
-  return 'SessionResultDto(session: $session)';
+    return 'SessionResultDto(session: $session)';
 }
 
 
@@ -16700,16 +17127,21 @@ $TerminalListParamsDtoCopyWith<TerminalListParamsDto> get copyWith => _$Terminal
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TerminalListParamsDto&&(identical(other.worktreeId, worktreeId) || other.worktreeId == worktreeId));
+  final _this = this as TerminalListParamsDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TerminalListParamsDto&&(identical(other.worktreeId, _this.worktreeId) || other.worktreeId == _this.worktreeId));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,worktreeId);
+int get hashCode {
+  final _this = this as TerminalListParamsDto;
+  return Object.hash(runtimeType,_this.worktreeId);
+}
 
 @override
 String toString() {
-  return 'TerminalListParamsDto(worktreeId: $worktreeId)';
+  final _this = this as TerminalListParamsDto;
+  return 'TerminalListParamsDto(worktreeId: ${_this.worktreeId})';
 }
 
 
@@ -16899,16 +17331,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TerminalListParamsDto&&(identical(other.worktreeId, worktreeId) || other.worktreeId == worktreeId));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _TerminalListParamsDto&&(identical(other.worktreeId, worktreeId) || other.worktreeId == worktreeId));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,worktreeId);
+int get hashCode {
+    return Object.hash(runtimeType,worktreeId);
+}
 
 @override
 String toString() {
-  return 'TerminalListParamsDto(worktreeId: $worktreeId)';
+    return 'TerminalListParamsDto(worktreeId: $worktreeId)';
 }
 
 
@@ -16963,16 +17397,21 @@ $TerminalListResultDtoCopyWith<TerminalListResultDto> get copyWith => _$Terminal
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TerminalListResultDto&&const DeepCollectionEquality().equals(other.terminals, terminals));
+  final _this = this as TerminalListResultDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TerminalListResultDto&&const DeepCollectionEquality().equals(other.terminals, _this.terminals));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(terminals));
+int get hashCode {
+  final _this = this as TerminalListResultDto;
+  return Object.hash(runtimeType,const DeepCollectionEquality().hash(_this.terminals));
+}
 
 @override
 String toString() {
-  return 'TerminalListResultDto(terminals: $terminals)';
+  final _this = this as TerminalListResultDto;
+  return 'TerminalListResultDto(terminals: ${_this.terminals})';
 }
 
 
@@ -17168,16 +17607,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TerminalListResultDto&&const DeepCollectionEquality().equals(other._terminals, _terminals));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _TerminalListResultDto&&const DeepCollectionEquality().equals(other.terminals, _terminals));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_terminals));
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_terminals));
+}
 
 @override
 String toString() {
-  return 'TerminalListResultDto(terminals: $terminals)';
+    return 'TerminalListResultDto(terminals: $terminals)';
 }
 
 
@@ -17232,16 +17673,21 @@ $TerminalCreateParamsDtoCopyWith<TerminalCreateParamsDto> get copyWith => _$Term
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TerminalCreateParamsDto&&(identical(other.id, id) || other.id == id)&&(identical(other.worktreeId, worktreeId) || other.worktreeId == worktreeId)&&(identical(other.title, title) || other.title == title)&&(identical(other.columns, columns) || other.columns == columns)&&(identical(other.rows, rows) || other.rows == rows));
+  final _this = this as TerminalCreateParamsDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TerminalCreateParamsDto&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.worktreeId, _this.worktreeId) || other.worktreeId == _this.worktreeId)&&(identical(other.title, _this.title) || other.title == _this.title)&&(identical(other.columns, _this.columns) || other.columns == _this.columns)&&(identical(other.rows, _this.rows) || other.rows == _this.rows));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,worktreeId,title,columns,rows);
+int get hashCode {
+  final _this = this as TerminalCreateParamsDto;
+  return Object.hash(runtimeType,_this.id,_this.worktreeId,_this.title,_this.columns,_this.rows);
+}
 
 @override
 String toString() {
-  return 'TerminalCreateParamsDto(id: $id, worktreeId: $worktreeId, title: $title, columns: $columns, rows: $rows)';
+  final _this = this as TerminalCreateParamsDto;
+  return 'TerminalCreateParamsDto(id: ${_this.id}, worktreeId: ${_this.worktreeId}, title: ${_this.title}, columns: ${_this.columns}, rows: ${_this.rows})';
 }
 
 
@@ -17439,16 +17885,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TerminalCreateParamsDto&&(identical(other.id, id) || other.id == id)&&(identical(other.worktreeId, worktreeId) || other.worktreeId == worktreeId)&&(identical(other.title, title) || other.title == title)&&(identical(other.columns, columns) || other.columns == columns)&&(identical(other.rows, rows) || other.rows == rows));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _TerminalCreateParamsDto&&(identical(other.id, id) || other.id == id)&&(identical(other.worktreeId, worktreeId) || other.worktreeId == worktreeId)&&(identical(other.title, title) || other.title == title)&&(identical(other.columns, columns) || other.columns == columns)&&(identical(other.rows, rows) || other.rows == rows));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,worktreeId,title,columns,rows);
+int get hashCode {
+    return Object.hash(runtimeType,id,worktreeId,title,columns,rows);
+}
 
 @override
 String toString() {
-  return 'TerminalCreateParamsDto(id: $id, worktreeId: $worktreeId, title: $title, columns: $columns, rows: $rows)';
+    return 'TerminalCreateParamsDto(id: $id, worktreeId: $worktreeId, title: $title, columns: $columns, rows: $rows)';
 }
 
 
@@ -17507,16 +17955,21 @@ $TerminalIdParamsDtoCopyWith<TerminalIdParamsDto> get copyWith => _$TerminalIdPa
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TerminalIdParamsDto&&(identical(other.terminalId, terminalId) || other.terminalId == terminalId));
+  final _this = this as TerminalIdParamsDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TerminalIdParamsDto&&(identical(other.terminalId, _this.terminalId) || other.terminalId == _this.terminalId));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,terminalId);
+int get hashCode {
+  final _this = this as TerminalIdParamsDto;
+  return Object.hash(runtimeType,_this.terminalId);
+}
 
 @override
 String toString() {
-  return 'TerminalIdParamsDto(terminalId: $terminalId)';
+  final _this = this as TerminalIdParamsDto;
+  return 'TerminalIdParamsDto(terminalId: ${_this.terminalId})';
 }
 
 
@@ -17706,16 +18159,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TerminalIdParamsDto&&(identical(other.terminalId, terminalId) || other.terminalId == terminalId));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _TerminalIdParamsDto&&(identical(other.terminalId, terminalId) || other.terminalId == terminalId));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,terminalId);
+int get hashCode {
+    return Object.hash(runtimeType,terminalId);
+}
 
 @override
 String toString() {
-  return 'TerminalIdParamsDto(terminalId: $terminalId)';
+    return 'TerminalIdParamsDto(terminalId: $terminalId)';
 }
 
 
@@ -17770,16 +18225,21 @@ $TerminalViewportDtoCopyWith<TerminalViewportDto> get copyWith => _$TerminalView
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TerminalViewportDto&&(identical(other.columns, columns) || other.columns == columns)&&(identical(other.rows, rows) || other.rows == rows));
+  final _this = this as TerminalViewportDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TerminalViewportDto&&(identical(other.columns, _this.columns) || other.columns == _this.columns)&&(identical(other.rows, _this.rows) || other.rows == _this.rows));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,columns,rows);
+int get hashCode {
+  final _this = this as TerminalViewportDto;
+  return Object.hash(runtimeType,_this.columns,_this.rows);
+}
 
 @override
 String toString() {
-  return 'TerminalViewportDto(columns: $columns, rows: $rows)';
+  final _this = this as TerminalViewportDto;
+  return 'TerminalViewportDto(columns: ${_this.columns}, rows: ${_this.rows})';
 }
 
 
@@ -17971,16 +18431,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TerminalViewportDto&&(identical(other.columns, columns) || other.columns == columns)&&(identical(other.rows, rows) || other.rows == rows));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _TerminalViewportDto&&(identical(other.columns, columns) || other.columns == columns)&&(identical(other.rows, rows) || other.rows == rows));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,columns,rows);
+int get hashCode {
+    return Object.hash(runtimeType,columns,rows);
+}
 
 @override
 String toString() {
-  return 'TerminalViewportDto(columns: $columns, rows: $rows)';
+    return 'TerminalViewportDto(columns: $columns, rows: $rows)';
 }
 
 
@@ -18041,16 +18503,21 @@ $TerminalAttachParamsDtoCopyWith<TerminalAttachParamsDto> get copyWith => _$Term
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TerminalAttachParamsDto&&(identical(other.terminalId, terminalId) || other.terminalId == terminalId)&&(identical(other.mode, mode) || other.mode == mode)&&(identical(other.afterSequence, afterSequence) || other.afterSequence == afterSequence)&&(identical(other.scrollbackLines, scrollbackLines) || other.scrollbackLines == scrollbackLines)&&(identical(other.viewport, viewport) || other.viewport == viewport));
+  final _this = this as TerminalAttachParamsDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TerminalAttachParamsDto&&(identical(other.terminalId, _this.terminalId) || other.terminalId == _this.terminalId)&&(identical(other.mode, _this.mode) || other.mode == _this.mode)&&(identical(other.afterSequence, _this.afterSequence) || other.afterSequence == _this.afterSequence)&&(identical(other.scrollbackLines, _this.scrollbackLines) || other.scrollbackLines == _this.scrollbackLines)&&(identical(other.viewport, _this.viewport) || other.viewport == _this.viewport));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,terminalId,mode,afterSequence,scrollbackLines,viewport);
+int get hashCode {
+  final _this = this as TerminalAttachParamsDto;
+  return Object.hash(runtimeType,_this.terminalId,_this.mode,_this.afterSequence,_this.scrollbackLines,_this.viewport);
+}
 
 @override
 String toString() {
-  return 'TerminalAttachParamsDto(terminalId: $terminalId, mode: $mode, afterSequence: $afterSequence, scrollbackLines: $scrollbackLines, viewport: $viewport)';
+  final _this = this as TerminalAttachParamsDto;
+  return 'TerminalAttachParamsDto(terminalId: ${_this.terminalId}, mode: ${_this.mode}, afterSequence: ${_this.afterSequence}, scrollbackLines: ${_this.scrollbackLines}, viewport: ${_this.viewport})';
 }
 
 
@@ -18265,16 +18732,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TerminalAttachParamsDto&&(identical(other.terminalId, terminalId) || other.terminalId == terminalId)&&(identical(other.mode, mode) || other.mode == mode)&&(identical(other.afterSequence, afterSequence) || other.afterSequence == afterSequence)&&(identical(other.scrollbackLines, scrollbackLines) || other.scrollbackLines == scrollbackLines)&&(identical(other.viewport, viewport) || other.viewport == viewport));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _TerminalAttachParamsDto&&(identical(other.terminalId, terminalId) || other.terminalId == terminalId)&&(identical(other.mode, mode) || other.mode == mode)&&(identical(other.afterSequence, afterSequence) || other.afterSequence == afterSequence)&&(identical(other.scrollbackLines, scrollbackLines) || other.scrollbackLines == scrollbackLines)&&(identical(other.viewport, viewport) || other.viewport == viewport));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,terminalId,mode,afterSequence,scrollbackLines,viewport);
+int get hashCode {
+    return Object.hash(runtimeType,terminalId,mode,afterSequence,scrollbackLines,viewport);
+}
 
 @override
 String toString() {
-  return 'TerminalAttachParamsDto(terminalId: $terminalId, mode: $mode, afterSequence: $afterSequence, scrollbackLines: $scrollbackLines, viewport: $viewport)';
+    return 'TerminalAttachParamsDto(terminalId: $terminalId, mode: $mode, afterSequence: $afterSequence, scrollbackLines: $scrollbackLines, viewport: $viewport)';
 }
 
 
@@ -18363,7 +18832,7 @@ mixin _$TerminalRestoreDto {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TerminalRestoreDto);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is TerminalRestoreDto);
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -18372,7 +18841,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'TerminalRestoreDto()';
+    return 'TerminalRestoreDto()';
 }
 
 
@@ -18547,16 +19016,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TerminalDeltaRestoreDto&&(identical(other.afterSequence, afterSequence) || other.afterSequence == afterSequence)&&const DeepCollectionEquality().equals(other._chunks, _chunks));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is TerminalDeltaRestoreDto&&(identical(other.afterSequence, afterSequence) || other.afterSequence == afterSequence)&&const DeepCollectionEquality().equals(other.chunks, _chunks));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,afterSequence,const DeepCollectionEquality().hash(_chunks));
+int get hashCode {
+    return Object.hash(runtimeType,afterSequence,const DeepCollectionEquality().hash(_chunks));
+}
 
 @override
 String toString() {
-  return 'TerminalRestoreDto.delta(afterSequence: $afterSequence, chunks: $chunks)';
+    return 'TerminalRestoreDto.delta(afterSequence: $afterSequence, chunks: $chunks)';
 }
 
 
@@ -18622,16 +19093,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TerminalSnapshotRestoreDto&&(identical(other.throughSequence, throughSequence) || other.throughSequence == throughSequence)&&(identical(other.ansi, ansi) || other.ansi == ansi));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is TerminalSnapshotRestoreDto&&(identical(other.throughSequence, throughSequence) || other.throughSequence == throughSequence)&&(identical(other.ansi, ansi) || other.ansi == ansi));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,throughSequence,ansi);
+int get hashCode {
+    return Object.hash(runtimeType,throughSequence,ansi);
+}
 
 @override
 String toString() {
-  return 'TerminalRestoreDto.snapshot(throughSequence: $throughSequence, ansi: $ansi)';
+    return 'TerminalRestoreDto.snapshot(throughSequence: $throughSequence, ansi: $ansi)';
 }
 
 
@@ -18687,16 +19160,21 @@ $TerminalAttachResultDtoCopyWith<TerminalAttachResultDto> get copyWith => _$Term
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TerminalAttachResultDto&&(identical(other.terminal, terminal) || other.terminal == terminal)&&(identical(other.restore, restore) || other.restore == restore));
+  final _this = this as TerminalAttachResultDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TerminalAttachResultDto&&(identical(other.terminal, _this.terminal) || other.terminal == _this.terminal)&&(identical(other.restore, _this.restore) || other.restore == _this.restore));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,terminal,restore);
+int get hashCode {
+  final _this = this as TerminalAttachResultDto;
+  return Object.hash(runtimeType,_this.terminal,_this.restore);
+}
 
 @override
 String toString() {
-  return 'TerminalAttachResultDto(terminal: $terminal, restore: $restore)';
+  final _this = this as TerminalAttachResultDto;
+  return 'TerminalAttachResultDto(terminal: ${_this.terminal}, restore: ${_this.restore})';
 }
 
 
@@ -18906,16 +19384,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TerminalAttachResultDto&&(identical(other.terminal, terminal) || other.terminal == terminal)&&(identical(other.restore, restore) || other.restore == restore));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _TerminalAttachResultDto&&(identical(other.terminal, terminal) || other.terminal == terminal)&&(identical(other.restore, restore) || other.restore == restore));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,terminal,restore);
+int get hashCode {
+    return Object.hash(runtimeType,terminal,restore);
+}
 
 @override
 String toString() {
-  return 'TerminalAttachResultDto(terminal: $terminal, restore: $restore)';
+    return 'TerminalAttachResultDto(terminal: $terminal, restore: $restore)';
 }
 
 
@@ -18989,16 +19469,21 @@ $TerminalResultDtoCopyWith<TerminalResultDto> get copyWith => _$TerminalResultDt
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TerminalResultDto&&(identical(other.terminal, terminal) || other.terminal == terminal));
+  final _this = this as TerminalResultDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TerminalResultDto&&(identical(other.terminal, _this.terminal) || other.terminal == _this.terminal));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,terminal);
+int get hashCode {
+  final _this = this as TerminalResultDto;
+  return Object.hash(runtimeType,_this.terminal);
+}
 
 @override
 String toString() {
-  return 'TerminalResultDto(terminal: $terminal)';
+  final _this = this as TerminalResultDto;
+  return 'TerminalResultDto(terminal: ${_this.terminal})';
 }
 
 
@@ -19197,16 +19682,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TerminalResultDto&&(identical(other.terminal, terminal) || other.terminal == terminal));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _TerminalResultDto&&(identical(other.terminal, terminal) || other.terminal == terminal));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,terminal);
+int get hashCode {
+    return Object.hash(runtimeType,terminal);
+}
 
 @override
 String toString() {
-  return 'TerminalResultDto(terminal: $terminal)';
+    return 'TerminalResultDto(terminal: $terminal)';
 }
 
 
@@ -19270,16 +19757,21 @@ $TerminalWriteParamsDtoCopyWith<TerminalWriteParamsDto> get copyWith => _$Termin
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TerminalWriteParamsDto&&(identical(other.terminalId, terminalId) || other.terminalId == terminalId)&&(identical(other.data, data) || other.data == data));
+  final _this = this as TerminalWriteParamsDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TerminalWriteParamsDto&&(identical(other.terminalId, _this.terminalId) || other.terminalId == _this.terminalId)&&(identical(other.data, _this.data) || other.data == _this.data));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,terminalId,data);
+int get hashCode {
+  final _this = this as TerminalWriteParamsDto;
+  return Object.hash(runtimeType,_this.terminalId,_this.data);
+}
 
 @override
 String toString() {
-  return 'TerminalWriteParamsDto(terminalId: $terminalId, data: $data)';
+  final _this = this as TerminalWriteParamsDto;
+  return 'TerminalWriteParamsDto(terminalId: ${_this.terminalId}, data: ${_this.data})';
 }
 
 
@@ -19471,16 +19963,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TerminalWriteParamsDto&&(identical(other.terminalId, terminalId) || other.terminalId == terminalId)&&(identical(other.data, data) || other.data == data));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _TerminalWriteParamsDto&&(identical(other.terminalId, terminalId) || other.terminalId == terminalId)&&(identical(other.data, data) || other.data == data));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,terminalId,data);
+int get hashCode {
+    return Object.hash(runtimeType,terminalId,data);
+}
 
 @override
 String toString() {
-  return 'TerminalWriteParamsDto(terminalId: $terminalId, data: $data)';
+    return 'TerminalWriteParamsDto(terminalId: $terminalId, data: $data)';
 }
 
 
@@ -19536,16 +20030,21 @@ $TerminalResizeParamsDtoCopyWith<TerminalResizeParamsDto> get copyWith => _$Term
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TerminalResizeParamsDto&&(identical(other.terminalId, terminalId) || other.terminalId == terminalId)&&(identical(other.columns, columns) || other.columns == columns)&&(identical(other.rows, rows) || other.rows == rows));
+  final _this = this as TerminalResizeParamsDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TerminalResizeParamsDto&&(identical(other.terminalId, _this.terminalId) || other.terminalId == _this.terminalId)&&(identical(other.columns, _this.columns) || other.columns == _this.columns)&&(identical(other.rows, _this.rows) || other.rows == _this.rows));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,terminalId,columns,rows);
+int get hashCode {
+  final _this = this as TerminalResizeParamsDto;
+  return Object.hash(runtimeType,_this.terminalId,_this.columns,_this.rows);
+}
 
 @override
 String toString() {
-  return 'TerminalResizeParamsDto(terminalId: $terminalId, columns: $columns, rows: $rows)';
+  final _this = this as TerminalResizeParamsDto;
+  return 'TerminalResizeParamsDto(terminalId: ${_this.terminalId}, columns: ${_this.columns}, rows: ${_this.rows})';
 }
 
 
@@ -19739,16 +20238,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TerminalResizeParamsDto&&(identical(other.terminalId, terminalId) || other.terminalId == terminalId)&&(identical(other.columns, columns) || other.columns == columns)&&(identical(other.rows, rows) || other.rows == rows));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _TerminalResizeParamsDto&&(identical(other.terminalId, terminalId) || other.terminalId == terminalId)&&(identical(other.columns, columns) || other.columns == columns)&&(identical(other.rows, rows) || other.rows == rows));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,terminalId,columns,rows);
+int get hashCode {
+    return Object.hash(runtimeType,terminalId,columns,rows);
+}
 
 @override
 String toString() {
-  return 'TerminalResizeParamsDto(terminalId: $terminalId, columns: $columns, rows: $rows)';
+    return 'TerminalResizeParamsDto(terminalId: $terminalId, columns: $columns, rows: $rows)';
 }
 
 
@@ -19805,16 +20306,21 @@ $TerminalShellDtoCopyWith<TerminalShellDto> get copyWith => _$TerminalShellDtoCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TerminalShellDto&&(identical(other.shell, shell) || other.shell == shell));
+  final _this = this as TerminalShellDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TerminalShellDto&&(identical(other.shell, _this.shell) || other.shell == _this.shell));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,shell);
+int get hashCode {
+  final _this = this as TerminalShellDto;
+  return Object.hash(runtimeType,_this.shell);
+}
 
 @override
 String toString() {
-  return 'TerminalShellDto(shell: $shell)';
+  final _this = this as TerminalShellDto;
+  return 'TerminalShellDto(shell: ${_this.shell})';
 }
 
 
@@ -20016,16 +20522,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TerminalShellDto&&(identical(other.shell, shell) || other.shell == shell));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _TerminalShellDto&&(identical(other.shell, shell) || other.shell == shell));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,shell);
+int get hashCode {
+    return Object.hash(runtimeType,shell);
+}
 
 @override
 String toString() {
-  return 'TerminalShellDto(shell: $shell)';
+    return 'TerminalShellDto(shell: $shell)';
 }
 
 
@@ -20092,16 +20600,21 @@ $PermissionSettingsDtoCopyWith<PermissionSettingsDto> get copyWith => _$Permissi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PermissionSettingsDto&&(identical(other.defaultMode, defaultMode) || other.defaultMode == defaultMode));
+  final _this = this as PermissionSettingsDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PermissionSettingsDto&&(identical(other.defaultMode, _this.defaultMode) || other.defaultMode == _this.defaultMode));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,defaultMode);
+int get hashCode {
+  final _this = this as PermissionSettingsDto;
+  return Object.hash(runtimeType,_this.defaultMode);
+}
 
 @override
 String toString() {
-  return 'PermissionSettingsDto(defaultMode: $defaultMode)';
+  final _this = this as PermissionSettingsDto;
+  return 'PermissionSettingsDto(defaultMode: ${_this.defaultMode})';
 }
 
 
@@ -20291,16 +20804,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PermissionSettingsDto&&(identical(other.defaultMode, defaultMode) || other.defaultMode == defaultMode));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _PermissionSettingsDto&&(identical(other.defaultMode, defaultMode) || other.defaultMode == defaultMode));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,defaultMode);
+int get hashCode {
+    return Object.hash(runtimeType,defaultMode);
+}
 
 @override
 String toString() {
-  return 'PermissionSettingsDto(defaultMode: $defaultMode)';
+    return 'PermissionSettingsDto(defaultMode: $defaultMode)';
 }
 
 
@@ -20355,16 +20870,21 @@ $DaemonModelSettingsDtoCopyWith<DaemonModelSettingsDto> get copyWith => _$Daemon
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is DaemonModelSettingsDto&&(identical(other.defaultModel, defaultModel) || other.defaultModel == defaultModel));
+  final _this = this as DaemonModelSettingsDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is DaemonModelSettingsDto&&(identical(other.defaultModel, _this.defaultModel) || other.defaultModel == _this.defaultModel));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,defaultModel);
+int get hashCode {
+  final _this = this as DaemonModelSettingsDto;
+  return Object.hash(runtimeType,_this.defaultModel);
+}
 
 @override
 String toString() {
-  return 'DaemonModelSettingsDto(defaultModel: $defaultModel)';
+  final _this = this as DaemonModelSettingsDto;
+  return 'DaemonModelSettingsDto(defaultModel: ${_this.defaultModel})';
 }
 
 
@@ -20566,16 +21086,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _DaemonModelSettingsDto&&(identical(other.defaultModel, defaultModel) || other.defaultModel == defaultModel));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _DaemonModelSettingsDto&&(identical(other.defaultModel, defaultModel) || other.defaultModel == defaultModel));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,defaultModel);
+int get hashCode {
+    return Object.hash(runtimeType,defaultModel);
+}
 
 @override
 String toString() {
-  return 'DaemonModelSettingsDto(defaultModel: $defaultModel)';
+    return 'DaemonModelSettingsDto(defaultModel: $defaultModel)';
 }
 
 
@@ -20642,16 +21164,21 @@ $SetDaemonDefaultModelParamsDtoCopyWith<SetDaemonDefaultModelParamsDto> get copy
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SetDaemonDefaultModelParamsDto&&(identical(other.model, model) || other.model == model));
+  final _this = this as SetDaemonDefaultModelParamsDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SetDaemonDefaultModelParamsDto&&(identical(other.model, _this.model) || other.model == _this.model));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,model);
+int get hashCode {
+  final _this = this as SetDaemonDefaultModelParamsDto;
+  return Object.hash(runtimeType,_this.model);
+}
 
 @override
 String toString() {
-  return 'SetDaemonDefaultModelParamsDto(model: $model)';
+  final _this = this as SetDaemonDefaultModelParamsDto;
+  return 'SetDaemonDefaultModelParamsDto(model: ${_this.model})';
 }
 
 
@@ -20850,16 +21377,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SetDaemonDefaultModelParamsDto&&(identical(other.model, model) || other.model == model));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _SetDaemonDefaultModelParamsDto&&(identical(other.model, model) || other.model == model));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,model);
+int get hashCode {
+    return Object.hash(runtimeType,model);
+}
 
 @override
 String toString() {
-  return 'SetDaemonDefaultModelParamsDto(model: $model)';
+    return 'SetDaemonDefaultModelParamsDto(model: $model)';
 }
 
 
@@ -20923,16 +21452,21 @@ $AgentDefinitionListResultDtoCopyWith<AgentDefinitionListResultDto> get copyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AgentDefinitionListResultDto&&const DeepCollectionEquality().equals(other.definitions, definitions));
+  final _this = this as AgentDefinitionListResultDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AgentDefinitionListResultDto&&const DeepCollectionEquality().equals(other.definitions, _this.definitions));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(definitions));
+int get hashCode {
+  final _this = this as AgentDefinitionListResultDto;
+  return Object.hash(runtimeType,const DeepCollectionEquality().hash(_this.definitions));
+}
 
 @override
 String toString() {
-  return 'AgentDefinitionListResultDto(definitions: $definitions)';
+  final _this = this as AgentDefinitionListResultDto;
+  return 'AgentDefinitionListResultDto(definitions: ${_this.definitions})';
 }
 
 
@@ -21128,16 +21662,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AgentDefinitionListResultDto&&const DeepCollectionEquality().equals(other._definitions, _definitions));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _AgentDefinitionListResultDto&&const DeepCollectionEquality().equals(other.definitions, _definitions));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_definitions));
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_definitions));
+}
 
 @override
 String toString() {
-  return 'AgentDefinitionListResultDto(definitions: $definitions)';
+    return 'AgentDefinitionListResultDto(definitions: $definitions)';
 }
 
 
@@ -21192,16 +21728,21 @@ $AgentDefinitionResultDtoCopyWith<AgentDefinitionResultDto> get copyWith => _$Ag
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AgentDefinitionResultDto&&(identical(other.definition, definition) || other.definition == definition));
+  final _this = this as AgentDefinitionResultDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AgentDefinitionResultDto&&(identical(other.definition, _this.definition) || other.definition == _this.definition));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,definition);
+int get hashCode {
+  final _this = this as AgentDefinitionResultDto;
+  return Object.hash(runtimeType,_this.definition);
+}
 
 @override
 String toString() {
-  return 'AgentDefinitionResultDto(definition: $definition)';
+  final _this = this as AgentDefinitionResultDto;
+  return 'AgentDefinitionResultDto(definition: ${_this.definition})';
 }
 
 
@@ -21400,16 +21941,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AgentDefinitionResultDto&&(identical(other.definition, definition) || other.definition == definition));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _AgentDefinitionResultDto&&(identical(other.definition, definition) || other.definition == definition));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,definition);
+int get hashCode {
+    return Object.hash(runtimeType,definition);
+}
 
 @override
 String toString() {
-  return 'AgentDefinitionResultDto(definition: $definition)';
+    return 'AgentDefinitionResultDto(definition: $definition)';
 }
 
 
@@ -21473,16 +22016,21 @@ $PluginListResultDtoCopyWith<PluginListResultDto> get copyWith => _$PluginListRe
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PluginListResultDto&&const DeepCollectionEquality().equals(other.plugins, plugins));
+  final _this = this as PluginListResultDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PluginListResultDto&&const DeepCollectionEquality().equals(other.plugins, _this.plugins));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(plugins));
+int get hashCode {
+  final _this = this as PluginListResultDto;
+  return Object.hash(runtimeType,const DeepCollectionEquality().hash(_this.plugins));
+}
 
 @override
 String toString() {
-  return 'PluginListResultDto(plugins: $plugins)';
+  final _this = this as PluginListResultDto;
+  return 'PluginListResultDto(plugins: ${_this.plugins})';
 }
 
 
@@ -21678,16 +22226,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PluginListResultDto&&const DeepCollectionEquality().equals(other._plugins, _plugins));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _PluginListResultDto&&const DeepCollectionEquality().equals(other.plugins, _plugins));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_plugins));
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_plugins));
+}
 
 @override
 String toString() {
-  return 'PluginListResultDto(plugins: $plugins)';
+    return 'PluginListResultDto(plugins: $plugins)';
 }
 
 
@@ -21742,16 +22292,21 @@ $PluginResultDtoCopyWith<PluginResultDto> get copyWith => _$PluginResultDtoCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PluginResultDto&&(identical(other.plugin, plugin) || other.plugin == plugin));
+  final _this = this as PluginResultDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PluginResultDto&&(identical(other.plugin, _this.plugin) || other.plugin == _this.plugin));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,plugin);
+int get hashCode {
+  final _this = this as PluginResultDto;
+  return Object.hash(runtimeType,_this.plugin);
+}
 
 @override
 String toString() {
-  return 'PluginResultDto(plugin: $plugin)';
+  final _this = this as PluginResultDto;
+  return 'PluginResultDto(plugin: ${_this.plugin})';
 }
 
 
@@ -21950,16 +22505,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PluginResultDto&&(identical(other.plugin, plugin) || other.plugin == plugin));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _PluginResultDto&&(identical(other.plugin, plugin) || other.plugin == plugin));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,plugin);
+int get hashCode {
+    return Object.hash(runtimeType,plugin);
+}
 
 @override
 String toString() {
-  return 'PluginResultDto(plugin: $plugin)';
+    return 'PluginResultDto(plugin: $plugin)';
 }
 
 
@@ -22023,16 +22580,21 @@ $PluginAuthoringEnvironmentResultDtoCopyWith<PluginAuthoringEnvironmentResultDto
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PluginAuthoringEnvironmentResultDto&&(identical(other.environment, environment) || other.environment == environment));
+  final _this = this as PluginAuthoringEnvironmentResultDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PluginAuthoringEnvironmentResultDto&&(identical(other.environment, _this.environment) || other.environment == _this.environment));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,environment);
+int get hashCode {
+  final _this = this as PluginAuthoringEnvironmentResultDto;
+  return Object.hash(runtimeType,_this.environment);
+}
 
 @override
 String toString() {
-  return 'PluginAuthoringEnvironmentResultDto(environment: $environment)';
+  final _this = this as PluginAuthoringEnvironmentResultDto;
+  return 'PluginAuthoringEnvironmentResultDto(environment: ${_this.environment})';
 }
 
 
@@ -22231,16 +22793,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PluginAuthoringEnvironmentResultDto&&(identical(other.environment, environment) || other.environment == environment));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _PluginAuthoringEnvironmentResultDto&&(identical(other.environment, environment) || other.environment == environment));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,environment);
+int get hashCode {
+    return Object.hash(runtimeType,environment);
+}
 
 @override
 String toString() {
-  return 'PluginAuthoringEnvironmentResultDto(environment: $environment)';
+    return 'PluginAuthoringEnvironmentResultDto(environment: $environment)';
 }
 
 
@@ -22304,16 +22868,21 @@ $PluginGrantListResultDtoCopyWith<PluginGrantListResultDto> get copyWith => _$Pl
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PluginGrantListResultDto&&const DeepCollectionEquality().equals(other.grants, grants));
+  final _this = this as PluginGrantListResultDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PluginGrantListResultDto&&const DeepCollectionEquality().equals(other.grants, _this.grants));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(grants));
+int get hashCode {
+  final _this = this as PluginGrantListResultDto;
+  return Object.hash(runtimeType,const DeepCollectionEquality().hash(_this.grants));
+}
 
 @override
 String toString() {
-  return 'PluginGrantListResultDto(grants: $grants)';
+  final _this = this as PluginGrantListResultDto;
+  return 'PluginGrantListResultDto(grants: ${_this.grants})';
 }
 
 
@@ -22509,16 +23078,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PluginGrantListResultDto&&const DeepCollectionEquality().equals(other._grants, _grants));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _PluginGrantListResultDto&&const DeepCollectionEquality().equals(other.grants, _grants));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_grants));
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_grants));
+}
 
 @override
 String toString() {
-  return 'PluginGrantListResultDto(grants: $grants)';
+    return 'PluginGrantListResultDto(grants: $grants)';
 }
 
 
@@ -22573,16 +23144,21 @@ $PluginSessionControlResultDtoCopyWith<PluginSessionControlResultDto> get copyWi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PluginSessionControlResultDto&&(identical(other.control, control) || other.control == control));
+  final _this = this as PluginSessionControlResultDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PluginSessionControlResultDto&&(identical(other.control, _this.control) || other.control == _this.control));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,control);
+int get hashCode {
+  final _this = this as PluginSessionControlResultDto;
+  return Object.hash(runtimeType,_this.control);
+}
 
 @override
 String toString() {
-  return 'PluginSessionControlResultDto(control: $control)';
+  final _this = this as PluginSessionControlResultDto;
+  return 'PluginSessionControlResultDto(control: ${_this.control})';
 }
 
 
@@ -22781,16 +23357,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PluginSessionControlResultDto&&(identical(other.control, control) || other.control == control));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _PluginSessionControlResultDto&&(identical(other.control, control) || other.control == control));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,control);
+int get hashCode {
+    return Object.hash(runtimeType,control);
+}
 
 @override
 String toString() {
-  return 'PluginSessionControlResultDto(control: $control)';
+    return 'PluginSessionControlResultDto(control: $control)';
 }
 
 
@@ -22854,16 +23432,21 @@ $PluginUiDocumentResultDtoCopyWith<PluginUiDocumentResultDto> get copyWith => _$
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PluginUiDocumentResultDto&&(identical(other.document, document) || other.document == document));
+  final _this = this as PluginUiDocumentResultDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PluginUiDocumentResultDto&&(identical(other.document, _this.document) || other.document == _this.document));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,document);
+int get hashCode {
+  final _this = this as PluginUiDocumentResultDto;
+  return Object.hash(runtimeType,_this.document);
+}
 
 @override
 String toString() {
-  return 'PluginUiDocumentResultDto(document: $document)';
+  final _this = this as PluginUiDocumentResultDto;
+  return 'PluginUiDocumentResultDto(document: ${_this.document})';
 }
 
 
@@ -23062,16 +23645,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PluginUiDocumentResultDto&&(identical(other.document, document) || other.document == document));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _PluginUiDocumentResultDto&&(identical(other.document, document) || other.document == document));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,document);
+int get hashCode {
+    return Object.hash(runtimeType,document);
+}
 
 @override
 String toString() {
-  return 'PluginUiDocumentResultDto(document: $document)';
+    return 'PluginUiDocumentResultDto(document: $document)';
 }
 
 
@@ -23135,16 +23720,21 @@ $AgentToolCatalogParamsDtoCopyWith<AgentToolCatalogParamsDto> get copyWith => _$
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AgentToolCatalogParamsDto&&(identical(other.worktreeId, worktreeId) || other.worktreeId == worktreeId));
+  final _this = this as AgentToolCatalogParamsDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AgentToolCatalogParamsDto&&(identical(other.worktreeId, _this.worktreeId) || other.worktreeId == _this.worktreeId));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,worktreeId);
+int get hashCode {
+  final _this = this as AgentToolCatalogParamsDto;
+  return Object.hash(runtimeType,_this.worktreeId);
+}
 
 @override
 String toString() {
-  return 'AgentToolCatalogParamsDto(worktreeId: $worktreeId)';
+  final _this = this as AgentToolCatalogParamsDto;
+  return 'AgentToolCatalogParamsDto(worktreeId: ${_this.worktreeId})';
 }
 
 
@@ -23334,16 +23924,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AgentToolCatalogParamsDto&&(identical(other.worktreeId, worktreeId) || other.worktreeId == worktreeId));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _AgentToolCatalogParamsDto&&(identical(other.worktreeId, worktreeId) || other.worktreeId == worktreeId));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,worktreeId);
+int get hashCode {
+    return Object.hash(runtimeType,worktreeId);
+}
 
 @override
 String toString() {
-  return 'AgentToolCatalogParamsDto(worktreeId: $worktreeId)';
+    return 'AgentToolCatalogParamsDto(worktreeId: $worktreeId)';
 }
 
 
@@ -23398,16 +23990,21 @@ $McpServersParamsDtoCopyWith<McpServersParamsDto> get copyWith => _$McpServersPa
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is McpServersParamsDto&&(identical(other.worktreeId, worktreeId) || other.worktreeId == worktreeId));
+  final _this = this as McpServersParamsDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is McpServersParamsDto&&(identical(other.worktreeId, _this.worktreeId) || other.worktreeId == _this.worktreeId));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,worktreeId);
+int get hashCode {
+  final _this = this as McpServersParamsDto;
+  return Object.hash(runtimeType,_this.worktreeId);
+}
 
 @override
 String toString() {
-  return 'McpServersParamsDto(worktreeId: $worktreeId)';
+  final _this = this as McpServersParamsDto;
+  return 'McpServersParamsDto(worktreeId: ${_this.worktreeId})';
 }
 
 
@@ -23597,16 +24194,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _McpServersParamsDto&&(identical(other.worktreeId, worktreeId) || other.worktreeId == worktreeId));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _McpServersParamsDto&&(identical(other.worktreeId, worktreeId) || other.worktreeId == worktreeId));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,worktreeId);
+int get hashCode {
+    return Object.hash(runtimeType,worktreeId);
+}
 
 @override
 String toString() {
-  return 'McpServersParamsDto(worktreeId: $worktreeId)';
+    return 'McpServersParamsDto(worktreeId: $worktreeId)';
 }
 
 
@@ -23661,16 +24260,21 @@ $McpServersResultDtoCopyWith<McpServersResultDto> get copyWith => _$McpServersRe
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is McpServersResultDto&&const DeepCollectionEquality().equals(other.servers, servers));
+  final _this = this as McpServersResultDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is McpServersResultDto&&const DeepCollectionEquality().equals(other.servers, _this.servers));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(servers));
+int get hashCode {
+  final _this = this as McpServersResultDto;
+  return Object.hash(runtimeType,const DeepCollectionEquality().hash(_this.servers));
+}
 
 @override
 String toString() {
-  return 'McpServersResultDto(servers: $servers)';
+  final _this = this as McpServersResultDto;
+  return 'McpServersResultDto(servers: ${_this.servers})';
 }
 
 
@@ -23866,16 +24470,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _McpServersResultDto&&const DeepCollectionEquality().equals(other._servers, _servers));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _McpServersResultDto&&const DeepCollectionEquality().equals(other.servers, _servers));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_servers));
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_servers));
+}
 
 @override
 String toString() {
-  return 'McpServersResultDto(servers: $servers)';
+    return 'McpServersResultDto(servers: $servers)';
 }
 
 
@@ -23930,16 +24536,21 @@ $McpServerParamsDtoCopyWith<McpServerParamsDto> get copyWith => _$McpServerParam
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is McpServerParamsDto&&(identical(other.server, server) || other.server == server));
+  final _this = this as McpServerParamsDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is McpServerParamsDto&&(identical(other.server, _this.server) || other.server == _this.server));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,server);
+int get hashCode {
+  final _this = this as McpServerParamsDto;
+  return Object.hash(runtimeType,_this.server);
+}
 
 @override
 String toString() {
-  return 'McpServerParamsDto(server: $server)';
+  final _this = this as McpServerParamsDto;
+  return 'McpServerParamsDto(server: ${_this.server})';
 }
 
 
@@ -24138,16 +24749,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _McpServerParamsDto&&(identical(other.server, server) || other.server == server));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _McpServerParamsDto&&(identical(other.server, server) || other.server == server));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,server);
+int get hashCode {
+    return Object.hash(runtimeType,server);
+}
 
 @override
 String toString() {
-  return 'McpServerParamsDto(server: $server)';
+    return 'McpServerParamsDto(server: $server)';
 }
 
 
@@ -24211,16 +24824,21 @@ $McpServerIdParamsDtoCopyWith<McpServerIdParamsDto> get copyWith => _$McpServerI
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is McpServerIdParamsDto&&(identical(other.id, id) || other.id == id));
+  final _this = this as McpServerIdParamsDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is McpServerIdParamsDto&&(identical(other.id, _this.id) || other.id == _this.id));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id);
+int get hashCode {
+  final _this = this as McpServerIdParamsDto;
+  return Object.hash(runtimeType,_this.id);
+}
 
 @override
 String toString() {
-  return 'McpServerIdParamsDto(id: $id)';
+  final _this = this as McpServerIdParamsDto;
+  return 'McpServerIdParamsDto(id: ${_this.id})';
 }
 
 
@@ -24410,16 +25028,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _McpServerIdParamsDto&&(identical(other.id, id) || other.id == id));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _McpServerIdParamsDto&&(identical(other.id, id) || other.id == id));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id);
+int get hashCode {
+    return Object.hash(runtimeType,id);
+}
 
 @override
 String toString() {
-  return 'McpServerIdParamsDto(id: $id)';
+    return 'McpServerIdParamsDto(id: $id)';
 }
 
 
@@ -24474,16 +25094,21 @@ $McpServerStateResultDtoCopyWith<McpServerStateResultDto> get copyWith => _$McpS
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is McpServerStateResultDto&&(identical(other.state, state) || other.state == state));
+  final _this = this as McpServerStateResultDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is McpServerStateResultDto&&(identical(other.state, _this.state) || other.state == _this.state));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,state);
+int get hashCode {
+  final _this = this as McpServerStateResultDto;
+  return Object.hash(runtimeType,_this.state);
+}
 
 @override
 String toString() {
-  return 'McpServerStateResultDto(state: $state)';
+  final _this = this as McpServerStateResultDto;
+  return 'McpServerStateResultDto(state: ${_this.state})';
 }
 
 
@@ -24682,16 +25307,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _McpServerStateResultDto&&(identical(other.state, state) || other.state == state));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _McpServerStateResultDto&&(identical(other.state, state) || other.state == state));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,state);
+int get hashCode {
+    return Object.hash(runtimeType,state);
+}
 
 @override
 String toString() {
-  return 'McpServerStateResultDto(state: $state)';
+    return 'McpServerStateResultDto(state: $state)';
 }
 
 
@@ -24755,16 +25382,21 @@ $McpSecretParamsDtoCopyWith<McpSecretParamsDto> get copyWith => _$McpSecretParam
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is McpSecretParamsDto&&(identical(other.key, key) || other.key == key)&&(identical(other.value, value) || other.value == value));
+  final _this = this as McpSecretParamsDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is McpSecretParamsDto&&(identical(other.key, _this.key) || other.key == _this.key)&&(identical(other.value, _this.value) || other.value == _this.value));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,key,value);
+int get hashCode {
+  final _this = this as McpSecretParamsDto;
+  return Object.hash(runtimeType,_this.key,_this.value);
+}
 
 @override
 String toString() {
-  return 'McpSecretParamsDto(key: $key, value: $value)';
+  final _this = this as McpSecretParamsDto;
+  return 'McpSecretParamsDto(key: ${_this.key}, value: ${_this.value})';
 }
 
 
@@ -24956,16 +25588,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _McpSecretParamsDto&&(identical(other.key, key) || other.key == key)&&(identical(other.value, value) || other.value == value));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _McpSecretParamsDto&&(identical(other.key, key) || other.key == key)&&(identical(other.value, value) || other.value == value));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,key,value);
+int get hashCode {
+    return Object.hash(runtimeType,key,value);
+}
 
 @override
 String toString() {
-  return 'McpSecretParamsDto(key: $key, value: $value)';
+    return 'McpSecretParamsDto(key: $key, value: $value)';
 }
 
 
@@ -25021,16 +25655,21 @@ $AgentToolCatalogResultDtoCopyWith<AgentToolCatalogResultDto> get copyWith => _$
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AgentToolCatalogResultDto&&const DeepCollectionEquality().equals(other.tools, tools));
+  final _this = this as AgentToolCatalogResultDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AgentToolCatalogResultDto&&const DeepCollectionEquality().equals(other.tools, _this.tools));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(tools));
+int get hashCode {
+  final _this = this as AgentToolCatalogResultDto;
+  return Object.hash(runtimeType,const DeepCollectionEquality().hash(_this.tools));
+}
 
 @override
 String toString() {
-  return 'AgentToolCatalogResultDto(tools: $tools)';
+  final _this = this as AgentToolCatalogResultDto;
+  return 'AgentToolCatalogResultDto(tools: ${_this.tools})';
 }
 
 
@@ -25226,16 +25865,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AgentToolCatalogResultDto&&const DeepCollectionEquality().equals(other._tools, _tools));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _AgentToolCatalogResultDto&&const DeepCollectionEquality().equals(other.tools, _tools));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_tools));
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_tools));
+}
 
 @override
 String toString() {
-  return 'AgentToolCatalogResultDto(tools: $tools)';
+    return 'AgentToolCatalogResultDto(tools: $tools)';
 }
 
 
@@ -25290,16 +25931,21 @@ $SkillListResultDtoCopyWith<SkillListResultDto> get copyWith => _$SkillListResul
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SkillListResultDto&&const DeepCollectionEquality().equals(other.skills, skills));
+  final _this = this as SkillListResultDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SkillListResultDto&&const DeepCollectionEquality().equals(other.skills, _this.skills));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(skills));
+int get hashCode {
+  final _this = this as SkillListResultDto;
+  return Object.hash(runtimeType,const DeepCollectionEquality().hash(_this.skills));
+}
 
 @override
 String toString() {
-  return 'SkillListResultDto(skills: $skills)';
+  final _this = this as SkillListResultDto;
+  return 'SkillListResultDto(skills: ${_this.skills})';
 }
 
 
@@ -25495,16 +26141,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SkillListResultDto&&const DeepCollectionEquality().equals(other._skills, _skills));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _SkillListResultDto&&const DeepCollectionEquality().equals(other.skills, _skills));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_skills));
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_skills));
+}
 
 @override
 String toString() {
-  return 'SkillListResultDto(skills: $skills)';
+    return 'SkillListResultDto(skills: $skills)';
 }
 
 
@@ -25559,16 +26207,21 @@ $CommandListResultDtoCopyWith<CommandListResultDto> get copyWith => _$CommandLis
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CommandListResultDto&&const DeepCollectionEquality().equals(other.commands, commands));
+  final _this = this as CommandListResultDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CommandListResultDto&&const DeepCollectionEquality().equals(other.commands, _this.commands));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(commands));
+int get hashCode {
+  final _this = this as CommandListResultDto;
+  return Object.hash(runtimeType,const DeepCollectionEquality().hash(_this.commands));
+}
 
 @override
 String toString() {
-  return 'CommandListResultDto(commands: $commands)';
+  final _this = this as CommandListResultDto;
+  return 'CommandListResultDto(commands: ${_this.commands})';
 }
 
 
@@ -25764,16 +26417,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CommandListResultDto&&const DeepCollectionEquality().equals(other._commands, _commands));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _CommandListResultDto&&const DeepCollectionEquality().equals(other.commands, _commands));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_commands));
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_commands));
+}
 
 @override
 String toString() {
-  return 'CommandListResultDto(commands: $commands)';
+    return 'CommandListResultDto(commands: $commands)';
 }
 
 
@@ -25828,16 +26483,21 @@ $ProviderCatalogResultDtoCopyWith<ProviderCatalogResultDto> get copyWith => _$Pr
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProviderCatalogResultDto&&(identical(other.catalog, catalog) || other.catalog == catalog));
+  final _this = this as ProviderCatalogResultDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProviderCatalogResultDto&&(identical(other.catalog, _this.catalog) || other.catalog == _this.catalog));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,catalog);
+int get hashCode {
+  final _this = this as ProviderCatalogResultDto;
+  return Object.hash(runtimeType,_this.catalog);
+}
 
 @override
 String toString() {
-  return 'ProviderCatalogResultDto(catalog: $catalog)';
+  final _this = this as ProviderCatalogResultDto;
+  return 'ProviderCatalogResultDto(catalog: ${_this.catalog})';
 }
 
 
@@ -26036,16 +26696,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProviderCatalogResultDto&&(identical(other.catalog, catalog) || other.catalog == catalog));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProviderCatalogResultDto&&(identical(other.catalog, catalog) || other.catalog == catalog));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,catalog);
+int get hashCode {
+    return Object.hash(runtimeType,catalog);
+}
 
 @override
 String toString() {
-  return 'ProviderCatalogResultDto(catalog: $catalog)';
+    return 'ProviderCatalogResultDto(catalog: $catalog)';
 }
 
 
@@ -26109,16 +26771,21 @@ $ProviderConnectionsResultDtoCopyWith<ProviderConnectionsResultDto> get copyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProviderConnectionsResultDto&&const DeepCollectionEquality().equals(other.connections, connections));
+  final _this = this as ProviderConnectionsResultDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProviderConnectionsResultDto&&const DeepCollectionEquality().equals(other.connections, _this.connections));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(connections));
+int get hashCode {
+  final _this = this as ProviderConnectionsResultDto;
+  return Object.hash(runtimeType,const DeepCollectionEquality().hash(_this.connections));
+}
 
 @override
 String toString() {
-  return 'ProviderConnectionsResultDto(connections: $connections)';
+  final _this = this as ProviderConnectionsResultDto;
+  return 'ProviderConnectionsResultDto(connections: ${_this.connections})';
 }
 
 
@@ -26314,16 +26981,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProviderConnectionsResultDto&&const DeepCollectionEquality().equals(other._connections, _connections));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProviderConnectionsResultDto&&const DeepCollectionEquality().equals(other.connections, _connections));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_connections));
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_connections));
+}
 
 @override
 String toString() {
-  return 'ProviderConnectionsResultDto(connections: $connections)';
+    return 'ProviderConnectionsResultDto(connections: $connections)';
 }
 
 
@@ -26378,16 +27047,21 @@ $ProviderUsageResultDtoCopyWith<ProviderUsageResultDto> get copyWith => _$Provid
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProviderUsageResultDto&&const DeepCollectionEquality().equals(other.usage, usage));
+  final _this = this as ProviderUsageResultDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProviderUsageResultDto&&const DeepCollectionEquality().equals(other.usage, _this.usage));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(usage));
+int get hashCode {
+  final _this = this as ProviderUsageResultDto;
+  return Object.hash(runtimeType,const DeepCollectionEquality().hash(_this.usage));
+}
 
 @override
 String toString() {
-  return 'ProviderUsageResultDto(usage: $usage)';
+  final _this = this as ProviderUsageResultDto;
+  return 'ProviderUsageResultDto(usage: ${_this.usage})';
 }
 
 
@@ -26583,16 +27257,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProviderUsageResultDto&&const DeepCollectionEquality().equals(other._usage, _usage));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProviderUsageResultDto&&const DeepCollectionEquality().equals(other.usage, _usage));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_usage));
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_usage));
+}
 
 @override
 String toString() {
-  return 'ProviderUsageResultDto(usage: $usage)';
+    return 'ProviderUsageResultDto(usage: $usage)';
 }
 
 
@@ -26647,16 +27323,21 @@ $ProviderConnectionResultDtoCopyWith<ProviderConnectionResultDto> get copyWith =
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProviderConnectionResultDto&&(identical(other.connection, connection) || other.connection == connection));
+  final _this = this as ProviderConnectionResultDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProviderConnectionResultDto&&(identical(other.connection, _this.connection) || other.connection == _this.connection));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,connection);
+int get hashCode {
+  final _this = this as ProviderConnectionResultDto;
+  return Object.hash(runtimeType,_this.connection);
+}
 
 @override
 String toString() {
-  return 'ProviderConnectionResultDto(connection: $connection)';
+  final _this = this as ProviderConnectionResultDto;
+  return 'ProviderConnectionResultDto(connection: ${_this.connection})';
 }
 
 
@@ -26855,16 +27536,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProviderConnectionResultDto&&(identical(other.connection, connection) || other.connection == connection));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProviderConnectionResultDto&&(identical(other.connection, connection) || other.connection == connection));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,connection);
+int get hashCode {
+    return Object.hash(runtimeType,connection);
+}
 
 @override
 String toString() {
-  return 'ProviderConnectionResultDto(connection: $connection)';
+    return 'ProviderConnectionResultDto(connection: $connection)';
 }
 
 
@@ -26928,16 +27611,21 @@ $ProviderModelsResultDtoCopyWith<ProviderModelsResultDto> get copyWith => _$Prov
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProviderModelsResultDto&&const DeepCollectionEquality().equals(other.models, models));
+  final _this = this as ProviderModelsResultDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProviderModelsResultDto&&const DeepCollectionEquality().equals(other.models, _this.models));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(models));
+int get hashCode {
+  final _this = this as ProviderModelsResultDto;
+  return Object.hash(runtimeType,const DeepCollectionEquality().hash(_this.models));
+}
 
 @override
 String toString() {
-  return 'ProviderModelsResultDto(models: $models)';
+  final _this = this as ProviderModelsResultDto;
+  return 'ProviderModelsResultDto(models: ${_this.models})';
 }
 
 
@@ -27133,16 +27821,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProviderModelsResultDto&&const DeepCollectionEquality().equals(other._models, _models));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProviderModelsResultDto&&const DeepCollectionEquality().equals(other.models, _models));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_models));
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_models));
+}
 
 @override
 String toString() {
-  return 'ProviderModelsResultDto(models: $models)';
+    return 'ProviderModelsResultDto(models: $models)';
 }
 
 
@@ -27197,16 +27887,21 @@ $ProviderAuthAttemptResultDtoCopyWith<ProviderAuthAttemptResultDto> get copyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProviderAuthAttemptResultDto&&(identical(other.attempt, attempt) || other.attempt == attempt));
+  final _this = this as ProviderAuthAttemptResultDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProviderAuthAttemptResultDto&&(identical(other.attempt, _this.attempt) || other.attempt == _this.attempt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,attempt);
+int get hashCode {
+  final _this = this as ProviderAuthAttemptResultDto;
+  return Object.hash(runtimeType,_this.attempt);
+}
 
 @override
 String toString() {
-  return 'ProviderAuthAttemptResultDto(attempt: $attempt)';
+  final _this = this as ProviderAuthAttemptResultDto;
+  return 'ProviderAuthAttemptResultDto(attempt: ${_this.attempt})';
 }
 
 
@@ -27405,16 +28100,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProviderAuthAttemptResultDto&&(identical(other.attempt, attempt) || other.attempt == attempt));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProviderAuthAttemptResultDto&&(identical(other.attempt, attempt) || other.attempt == attempt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,attempt);
+int get hashCode {
+    return Object.hash(runtimeType,attempt);
+}
 
 @override
 String toString() {
-  return 'ProviderAuthAttemptResultDto(attempt: $attempt)';
+    return 'ProviderAuthAttemptResultDto(attempt: $attempt)';
 }
 
 
@@ -27478,16 +28175,21 @@ $ProviderDiagnosticResultDtoCopyWith<ProviderDiagnosticResultDto> get copyWith =
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProviderDiagnosticResultDto&&(identical(other.diagnostic, diagnostic) || other.diagnostic == diagnostic));
+  final _this = this as ProviderDiagnosticResultDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProviderDiagnosticResultDto&&(identical(other.diagnostic, _this.diagnostic) || other.diagnostic == _this.diagnostic));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,diagnostic);
+int get hashCode {
+  final _this = this as ProviderDiagnosticResultDto;
+  return Object.hash(runtimeType,_this.diagnostic);
+}
 
 @override
 String toString() {
-  return 'ProviderDiagnosticResultDto(diagnostic: $diagnostic)';
+  final _this = this as ProviderDiagnosticResultDto;
+  return 'ProviderDiagnosticResultDto(diagnostic: ${_this.diagnostic})';
 }
 
 
@@ -27686,16 +28388,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProviderDiagnosticResultDto&&(identical(other.diagnostic, diagnostic) || other.diagnostic == diagnostic));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProviderDiagnosticResultDto&&(identical(other.diagnostic, diagnostic) || other.diagnostic == diagnostic));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,diagnostic);
+int get hashCode {
+    return Object.hash(runtimeType,diagnostic);
+}
 
 @override
 String toString() {
-  return 'ProviderDiagnosticResultDto(diagnostic: $diagnostic)';
+    return 'ProviderDiagnosticResultDto(diagnostic: $diagnostic)';
 }
 
 
@@ -27759,16 +28463,21 @@ $TurnStartResultDtoCopyWith<TurnStartResultDto> get copyWith => _$TurnStartResul
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TurnStartResultDto&&(identical(other.created, created) || other.created == created));
+  final _this = this as TurnStartResultDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TurnStartResultDto&&(identical(other.created, _this.created) || other.created == _this.created));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,created);
+int get hashCode {
+  final _this = this as TurnStartResultDto;
+  return Object.hash(runtimeType,_this.created);
+}
 
 @override
 String toString() {
-  return 'TurnStartResultDto(created: $created)';
+  final _this = this as TurnStartResultDto;
+  return 'TurnStartResultDto(created: ${_this.created})';
 }
 
 
@@ -27958,16 +28667,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TurnStartResultDto&&(identical(other.created, created) || other.created == created));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _TurnStartResultDto&&(identical(other.created, created) || other.created == created));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,created);
+int get hashCode {
+    return Object.hash(runtimeType,created);
+}
 
 @override
 String toString() {
-  return 'TurnStartResultDto(created: $created)';
+    return 'TurnStartResultDto(created: $created)';
 }
 
 
@@ -28022,16 +28733,21 @@ $ApprovalResultDtoCopyWith<ApprovalResultDto> get copyWith => _$ApprovalResultDt
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ApprovalResultDto&&(identical(other.approval, approval) || other.approval == approval));
+  final _this = this as ApprovalResultDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ApprovalResultDto&&(identical(other.approval, _this.approval) || other.approval == _this.approval));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,approval);
+int get hashCode {
+  final _this = this as ApprovalResultDto;
+  return Object.hash(runtimeType,_this.approval);
+}
 
 @override
 String toString() {
-  return 'ApprovalResultDto(approval: $approval)';
+  final _this = this as ApprovalResultDto;
+  return 'ApprovalResultDto(approval: ${_this.approval})';
 }
 
 
@@ -28230,16 +28946,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ApprovalResultDto&&(identical(other.approval, approval) || other.approval == approval));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ApprovalResultDto&&(identical(other.approval, approval) || other.approval == approval));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,approval);
+int get hashCode {
+    return Object.hash(runtimeType,approval);
+}
 
 @override
 String toString() {
-  return 'ApprovalResultDto(approval: $approval)';
+    return 'ApprovalResultDto(approval: $approval)';
 }
 
 
@@ -28303,16 +29021,21 @@ $UserQuestionResultDtoCopyWith<UserQuestionResultDto> get copyWith => _$UserQues
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserQuestionResultDto&&(identical(other.request, request) || other.request == request));
+  final _this = this as UserQuestionResultDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserQuestionResultDto&&(identical(other.request, _this.request) || other.request == _this.request));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,request);
+int get hashCode {
+  final _this = this as UserQuestionResultDto;
+  return Object.hash(runtimeType,_this.request);
+}
 
 @override
 String toString() {
-  return 'UserQuestionResultDto(request: $request)';
+  final _this = this as UserQuestionResultDto;
+  return 'UserQuestionResultDto(request: ${_this.request})';
 }
 
 
@@ -28511,16 +29234,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UserQuestionResultDto&&(identical(other.request, request) || other.request == request));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _UserQuestionResultDto&&(identical(other.request, request) || other.request == request));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,request);
+int get hashCode {
+    return Object.hash(runtimeType,request);
+}
 
 @override
 String toString() {
-  return 'UserQuestionResultDto(request: $request)';
+    return 'UserQuestionResultDto(request: $request)';
 }
 
 
@@ -28584,16 +29309,21 @@ $TimelineResultDtoCopyWith<TimelineResultDto> get copyWith => _$TimelineResultDt
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TimelineResultDto&&const DeepCollectionEquality().equals(other.events, events));
+  final _this = this as TimelineResultDto;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TimelineResultDto&&const DeepCollectionEquality().equals(other.events, _this.events));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(events));
+int get hashCode {
+  final _this = this as TimelineResultDto;
+  return Object.hash(runtimeType,const DeepCollectionEquality().hash(_this.events));
+}
 
 @override
 String toString() {
-  return 'TimelineResultDto(events: $events)';
+  final _this = this as TimelineResultDto;
+  return 'TimelineResultDto(events: ${_this.events})';
 }
 
 
@@ -28789,16 +29519,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TimelineResultDto&&const DeepCollectionEquality().equals(other._events, _events));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _TimelineResultDto&&const DeepCollectionEquality().equals(other.events, _events));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_events));
+int get hashCode {
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(_events));
+}
 
 @override
 String toString() {
-  return 'TimelineResultDto(events: $events)';
+    return 'TimelineResultDto(events: $events)';
 }
 
 

@@ -45,9 +45,8 @@ void main() {
 
   test('package tests own app static contracts and suite dispatch', () {
     expect(
-      File(
-        'packages/app/test/devtools/embedded_port_verifier_test.dart',
-      ).existsSync(),
+      File('packages/app/test/devtools/embedded_port_verifier_test.dart')
+          .existsSync(),
       isTrue,
     );
     final commands = <String>[
@@ -78,9 +77,8 @@ void main() {
   });
 
   test('generate command uses the ordered immutable-source plan', () {
-    final application = File(
-      'packages/tinest_quality/bin/src/application.dart',
-    ).readAsStringSync();
+    final application = File('packages/tinest_quality/bin/src/application.dart')
+        .readAsStringSync();
     expect(
       application,
       contains('.run(WorkspaceGenerationPlans.generate(jobs: jobs))'),
@@ -88,18 +86,15 @@ void main() {
     final plan = WorkspaceGenerationPlans.generate(jobs: 4);
     expect(
       plan.phases.first.tasks.map((task) => task.arguments.join(' ')),
-      contains(
-        'run packages/daemon/tool/generate_builtin_plugins.dart',
-      ),
+      contains('run packages/daemon/tool/generate_builtin_plugins.dart'),
     );
     expect(plan.phases[1].tasks.single.name, 'build_runner');
     expect(plan.phases.last.tasks.single.name, 'generated source whitespace');
   });
 
   test('coverage uses one kernel runner per package cache', () {
-    final application = File(
-      'packages/tinest_quality/bin/src/application.dart',
-    ).readAsStringSync();
+    final application = File('packages/tinest_quality/bin/src/application.dart')
+        .readAsStringSync();
 
     expect(application, contains('incremental_kernel'));
     expect(application, isNot(contains("'--total-shards='")));
@@ -107,16 +102,12 @@ void main() {
   });
 
   test('Windows coverage serializes workspace-native assets', () {
-    final application = File(
-      'packages/tinest_quality/bin/src/application.dart',
-    ).readAsStringSync();
+    final application = File('packages/tinest_quality/bin/src/application.dart')
+        .readAsStringSync();
 
     expect(application, contains("const <String>{'native-assets'}"));
     expect(application, contains('Platform.isWindows'));
-    expect(
-      application,
-      contains('serializeCoverage: Platform.isWindows'),
-    );
+    expect(application, contains('serializeCoverage: Platform.isWindows'));
   });
 
   test('generation normalizes generated sources after build_runner', () {
@@ -127,9 +118,8 @@ void main() {
   });
 
   test('coverage merges share one exclusive workspace resource', () {
-    final application = File(
-      'packages/tinest_quality/bin/src/application.dart',
-    ).readAsStringSync();
+    final application = File('packages/tinest_quality/bin/src/application.dart')
+        .readAsStringSync();
 
     expect(
       application,

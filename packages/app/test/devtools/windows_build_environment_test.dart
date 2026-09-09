@@ -66,7 +66,7 @@ void main() {
 }
 
 final class _FakeDiscovery implements WindowsBuildEnvironmentDiscovery {
-  _FakeDiscovery({
+  new({
     this.isWindows = true,
     this.executables = const <String>{},
     this.visualStudioInstallation,

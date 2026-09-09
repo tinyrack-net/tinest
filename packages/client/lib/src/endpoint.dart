@@ -1,10 +1,10 @@
 /// HostEndpoint defines a public contract.
 class HostEndpoint {
   /// Creates a [HostEndpoint].
-  const HostEndpoint({required this.websocketUri});
+  const new({required this.websocketUri});
 
   /// Creates a [HostEndpoint].
-  factory HostEndpoint.parse(String address) {
+  factory parse(String address) {
     final normalized = address.trim();
     if (normalized.isEmpty) {
       throw const FormatException('Endpoint address must not be empty.');
@@ -19,9 +19,7 @@ class HostEndpoint {
       '^wss?://',
       caseSensitive: false,
     ).hasMatch(normalized);
-    var uri = Uri.parse(
-      hasWebSocketScheme ? normalized : 'ws://$normalized',
-    );
+    var uri = Uri.parse(hasWebSocketScheme ? normalized : 'ws://$normalized');
     if (uri.path.isEmpty || uri.path == '/') {
       uri = uri.replace(path: '/v5/ws');
     }
@@ -52,7 +50,7 @@ class HostEndpoint {
 /// Secret credentials sent while opening a daemon transport.
 final class DaemonCredentials {
   /// Creates daemon connection credentials.
-  const DaemonCredentials({required this.bearerToken});
+  const new({required this.bearerToken});
 
   /// Token authenticating full daemon API access.
   final String bearerToken;

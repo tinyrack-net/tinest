@@ -47,9 +47,7 @@ void main() {
         .listSync(recursive: true)
         .whereType<File>()
         .where((file) => file.path.endsWith('.dart'))
-        .where(
-          (file) => file.readAsStringSync().contains('package:daemon/'),
-        )
+        .where((file) => file.readAsStringSync().contains('package:daemon/'))
         .map((file) => file.path.replaceAll(r'\', '/'))
         .toList(growable: false);
 
@@ -135,11 +133,10 @@ void main() {
       final desktopFile = workspaceFile('packages/desktop_app/$relativePath');
       expect(mobileFile.existsSync(), isTrue, reason: relativePath);
       expect(desktopFile.existsSync(), isTrue, reason: relativePath);
-      expect(
-        _pngDimensions(mobileFile),
-        const (width: 1024, height: 1024),
-        reason: relativePath,
-      );
+      expect(_pngDimensions(mobileFile), const (
+        width: 1024,
+        height: 1024,
+      ), reason: relativePath);
       expect(
         desktopFile.readAsBytesSync(),
         mobileFile.readAsBytesSync(),

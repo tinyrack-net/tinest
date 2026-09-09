@@ -20,7 +20,7 @@ class SkillsController extends _$SkillsController {
     final api = await watchHostApi(ref, hostId);
     _events = api.prompts.skillChanges.listen((_) => unawaited(refresh()));
     ref.onDispose(() => unawaited(_events?.cancel()));
-    return api.prompts.listSkills(view: view, workspaceId: workspaceId);
+    return await api.prompts.listSkills(view: view, workspaceId: workspaceId);
   }
 
   /// Reloads the catalog from the daemon.

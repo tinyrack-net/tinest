@@ -12,7 +12,7 @@ part 'provider_settings_controller.g.dart';
 /// ProviderSettingsState defines a public contract.
 final class ProviderSettingsState {
   /// Creates a [ProviderSettingsState].
-  const ProviderSettingsState({
+  const new({
     required this.catalog,
     required this.connections,
     this.models = const <String, List<ProviderModelDto>>{},
@@ -88,9 +88,8 @@ class ProviderSettingsController extends _$ProviderSettingsController {
 
   /// The loadModels public API member.
   Future<void> loadModels(String connectionId) async {
-    final runtime = (await ref.read(
-      hostRegistryControllerProvider.future,
-    )).runtimes[hostId];
+    final runtime = (await ref.read(hostRegistryControllerProvider.future))
+        .runtimes[hostId];
     if (runtime?.connected != true || state.asData?.value == null) return;
     final models = await runtime!.api!.providers.listProviderModels(
       connectionId,
@@ -110,7 +109,7 @@ class ProviderSettingsController extends _$ProviderSettingsController {
   /// Lazily reads subscription quota when the context preview opens.
   Future<List<ProviderUsageDto>> loadUsage() async {
     final api = await _requireConnection();
-    return api.providers.listProviderUsage();
+    return await api.providers.listProviderUsage();
   }
 
   /// Connects a hosted built-in provider with an API key.

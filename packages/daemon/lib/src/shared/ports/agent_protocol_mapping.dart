@@ -22,21 +22,18 @@ AgentProviderAuthKind agentAuthKind(ProviderAuthKind value) =>
     AgentProviderAuthKind.values.byName(value.name);
 
 /// Converts model capabilities to the agent domain.
-AgentModelCapabilities agentCapabilities(ModelCapabilitiesDto value) =>
-    AgentModelCapabilities(
-      streaming: AgentCapabilitySupport.values.byName(value.streaming.name),
-      toolCalling: AgentCapabilitySupport.values.byName(value.toolCalling.name),
-      functionTools: AgentCapabilitySupport.values.byName(
-        value.functionTools.name,
-      ),
-      deferredTools: AgentCapabilitySupport.values.byName(
-        value.deferredTools.name,
-      ),
-      imageInput: AgentCapabilitySupport.values.byName(value.imageInput.name),
-      fileInput: AgentCapabilitySupport.values.byName(value.fileInput.name),
-      controls: value.controls.map(agentControlDescriptor).toList(),
-      source: AgentCapabilitySource.values.byName(value.source.name),
-    );
+AgentModelCapabilities agentCapabilities(
+  ModelCapabilitiesDto value,
+) => AgentModelCapabilities(
+  streaming: AgentCapabilitySupport.values.byName(value.streaming.name),
+  toolCalling: AgentCapabilitySupport.values.byName(value.toolCalling.name),
+  functionTools: AgentCapabilitySupport.values.byName(value.functionTools.name),
+  deferredTools: AgentCapabilitySupport.values.byName(value.deferredTools.name),
+  imageInput: AgentCapabilitySupport.values.byName(value.imageInput.name),
+  fileInput: AgentCapabilitySupport.values.byName(value.fileInput.name),
+  controls: value.controls.map(agentControlDescriptor).toList(),
+  source: AgentCapabilitySource.values.byName(value.source.name),
+);
 
 /// Converts model capabilities to the protocol contract.
 ModelCapabilitiesDto protocolCapabilities(AgentModelCapabilities value) =>

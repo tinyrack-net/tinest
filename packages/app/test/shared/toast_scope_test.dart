@@ -35,49 +35,45 @@ Future<ToastMessenger> _pumpScope(WidgetTester tester) async {
 }
 
 void main() {
-  testWidgets(
-    'a reported result is shown over the page and can be dismissed',
-    (tester) async {
-      final messenger = await _pumpScope(tester);
+  testWidgets('a reported result is shown over the page and can be dismissed', (
+    tester,
+  ) async {
+    final messenger = await _pumpScope(tester);
 
-      messenger.success(testL10n.commonSaved);
-      await tester.pumpAndSettle();
-      expect(find.text(testL10n.commonSaved), findsOneWidget);
+    messenger.success(testL10n.commonSaved);
+    await tester.pumpAndSettle();
+    expect(find.text(testL10n.commonSaved), findsOneWidget);
 
-      await tester.tap(
-        find.descendant(
-          of: find.byType(TRToastRegion),
-          matching: find.byType(TRIconButton),
-        ),
-      );
-      await tester.pumpAndSettle();
-      expect(find.text(testL10n.commonSaved), findsNothing);
-    },
-    tags: const <String>['feature_test__app_toast__widget'],
-  );
+    await tester.tap(
+      find.descendant(
+        of: find.byType(TRToastRegion),
+        matching: find.byType(TRIconButton),
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(find.text(testL10n.commonSaved), findsNothing);
+  }, tags: const <String>['feature_test__app_toast__widget']);
 
-  testWidgets(
-    'a failure names what happened and describes why',
-    (tester) async {
-      final messenger = await _pumpScope(tester);
+  testWidgets('a failure names what happened and describes why', (
+    tester,
+  ) async {
+    final messenger = await _pumpScope(tester);
 
-      messenger.failure(
-        testL10n.commonActionFailed,
-        error: StateError('no host selected'),
-      );
-      await tester.pumpAndSettle();
+    messenger.failure(
+      testL10n.commonActionFailed,
+      error: StateError('no host selected'),
+    );
+    await tester.pumpAndSettle();
 
-      expect(find.text(testL10n.commonActionFailed), findsOneWidget);
-      expect(find.textContaining('no host selected'), findsOneWidget);
+    expect(find.text(testL10n.commonActionFailed), findsOneWidget);
+    expect(find.textContaining('no host selected'), findsOneWidget);
 
-      // Left to time out rather than dismissed, which is the path a real
-      // report takes and the one that leaves a timer behind.
-      await tester.pump(TRMotion.toast);
-      await tester.pumpAndSettle();
-      expect(find.text(testL10n.commonActionFailed), findsNothing);
-    },
-    tags: const <String>['feature_test__app_toast__widget'],
-  );
+    // Left to time out rather than dismissed, which is the path a real
+    // report takes and the one that leaves a timer behind.
+    await tester.pump(TRMotion.toast);
+    await tester.pumpAndSettle();
+    expect(find.text(testL10n.commonActionFailed), findsNothing);
+  }, tags: const <String>['feature_test__app_toast__widget']);
 
   testWidgets(
     'the region is disposed with the tree, leaving no timer pending',
@@ -126,38 +122,34 @@ void main() {
     tags: const <String>['feature_test__app_toast__widget'],
   );
 
-  testWidgets(
-    'the running app mounts the region above its routes',
-    (tester) async {
-      await pumpRoutedApp(tester, FakeTinestApi(), initialLocation: '/');
+  testWidgets('the running app mounts the region above its routes', (
+    tester,
+  ) async {
+    await pumpRoutedApp(tester, FakeTinestApi(), initialLocation: '/');
 
-      expect(find.byType(TRToastRegion), findsOneWidget);
-    },
-    tags: const <String>['feature_test__app_toast__widget'],
-  );
+    expect(find.byType(TRToastRegion), findsOneWidget);
+  }, tags: const <String>['feature_test__app_toast__widget']);
 
-  testWidgets(
-    'a report keeps clear of the controls that raise it',
-    (tester) async {
-      await tester.binding.setSurfaceSize(const Size(1200, 900));
-      addTearDown(() => tester.binding.setSurfaceSize(null));
-      final messenger = await _pumpScope(tester);
+  testWidgets('a report keeps clear of the controls that raise it', (
+    tester,
+  ) async {
+    await tester.binding.setSurfaceSize(const Size(1200, 900));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    final messenger = await _pumpScope(tester);
 
-      messenger.success(testL10n.commonSaved);
-      await tester.pumpAndSettle();
+    messenger.success(testL10n.commonSaved);
+    await tester.pumpAndSettle();
 
-      // The bottom-end corner is where this app puts the control a report
-      // follows: a settings form's Save, the composer's send. A toast placed
-      // there covers the button that raised it, and the next press lands on
-      // the report. Reports therefore sit at the top of the window.
-      final report = tester.getRect(find.text(testL10n.commonSaved));
-      final page = tester.getRect(find.byType(TRToastRegion));
-      expect(report.bottom, lessThan(page.center.dy));
-      expect(
-        tester.widget<TRToastRegion>(find.byType(TRToastRegion)).placement,
-        TRToastPlacement.topEnd,
-      );
-    },
-    tags: const <String>['feature_test__app_toast__widget'],
-  );
+    // The bottom-end corner is where this app puts the control a report
+    // follows: a settings form's Save, the composer's send. A toast placed
+    // there covers the button that raised it, and the next press lands on
+    // the report. Reports therefore sit at the top of the window.
+    final report = tester.getRect(find.text(testL10n.commonSaved));
+    final page = tester.getRect(find.byType(TRToastRegion));
+    expect(report.bottom, lessThan(page.center.dy));
+    expect(
+      tester.widget<TRToastRegion>(find.byType(TRToastRegion)).placement,
+      TRToastPlacement.topEnd,
+    );
+  }, tags: const <String>['feature_test__app_toast__widget']);
 }

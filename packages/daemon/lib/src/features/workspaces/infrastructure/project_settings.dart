@@ -28,7 +28,7 @@ abstract interface class ProjectSettingsStore {
 /// Reads and writes `<workspace root>/.tinest/config.json`.
 final class FileProjectSettingsStore implements ProjectSettingsStore {
   /// Creates the production project settings adapter.
-  const FileProjectSettingsStore();
+  const new();
 
   @override
   String sourcePath(String rootPath) => _projectSettingsPath(rootPath);

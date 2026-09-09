@@ -135,11 +135,7 @@ void main() {
       );
 
       await _openProjectDirectoryBrowser(tester);
-      await _replaceFieldText(
-        tester,
-        'directory-browser-path',
-        workspace.path,
-      );
+      await _replaceFieldText(tester, 'directory-browser-path', workspace.path);
       await tester.pump(directoryBrowserDebounce);
       await tester.pumpAndSettle();
       await tester.tap(find.widgetWithText(TRButton, '이 폴더 선택'));
@@ -234,9 +230,7 @@ void main() {
         ),
       );
       final store = MemoryAppStore(
-        settings: const AppSettings(
-          embeddedDaemonPort: testEmbeddedDaemonPort,
-        ),
+        settings: const AppSettings(embeddedDaemonPort: testEmbeddedDaemonPort),
       );
       await tester.pumpWidget(
         TinestApp(
@@ -334,13 +328,8 @@ Finder _field(String key) => find.descendant(
   matching: find.byType(EditableText),
 );
 
-Future<void> _openSettingsCategory(
-  WidgetTester tester,
-  String category,
-) async {
-  final row = find.byKey(
-    ValueKey<String>('settings-category-row-$category'),
-  );
+Future<void> _openSettingsCategory(WidgetTester tester, String category) async {
+  final row = find.byKey(ValueKey<String>('settings-category-row-$category'));
   await _pumpUntil(tester, row);
   await tester.tap(row);
   await tester.pumpAndSettle();
@@ -351,9 +340,7 @@ Future<void> _replaceFieldText(
   String key,
   String value,
 ) async {
-  final field = tester.widget<TRTextField>(
-    find.byKey(ValueKey<String>(key)),
-  );
+  final field = tester.widget<TRTextField>(find.byKey(ValueKey<String>(key)));
   field.controller!.text = value;
   field.onChanged!(value);
   await tester.pump();
@@ -384,7 +371,7 @@ Future<void> _pumpUntil(
 }
 
 final class _ControlledEmbeddedLauncher implements EmbeddedDaemonLauncher {
-  _ControlledEmbeddedLauncher(this.delegate);
+  new(this.delegate);
 
   final EmbeddedDaemonLauncher delegate;
   bool failNext = false;
@@ -409,7 +396,7 @@ final class _ControlledEmbeddedLauncher implements EmbeddedDaemonLauncher {
 }
 
 final class _CountingSession implements EmbeddedDaemonSession {
-  const _CountingSession(this.delegate, {required this.onStop});
+  const new(this.delegate, {required this.onStop});
 
   final EmbeddedDaemonSession delegate;
   final void Function() onStop;

@@ -7,7 +7,7 @@ import 'package:daemon/src/shared/ports/request_cancellation.dart';
 /// Worktree-scoped raw MCP transport used by the Lua host primitive registry.
 final class SessionMcpHostPrimitiveGateway implements McpHostPrimitiveGateway {
   /// Creates a gateway that can see user servers and this project's servers.
-  const SessionMcpHostPrimitiveGateway(this._runtime, this._workspaceRoot);
+  const new(this._runtime, this._workspaceRoot);
 
   final McpRuntime _runtime;
   final String _workspaceRoot;
@@ -15,37 +15,36 @@ final class SessionMcpHostPrimitiveGateway implements McpHostPrimitiveGateway {
   Future<void> _prepare() => _runtime.ensureProject(_workspaceRoot);
 
   @override
-  Future<Map<String, Object?>> listResources(
-    Map<String, Object?> arguments,
-  ) => _translate(() async {
-    await _prepare();
-    final server = _optionalString(arguments, 'server');
-    final cursor = _optionalString(arguments, 'cursor');
-    if (server == null && cursor != null) {
-      throw const FormatException(
-        'cursor is only valid together with a server.',
-      );
-    }
-    final page = server == null
-        ? McpListPage<McpServerResource>(
-            items: _runtime.resources(workspaceRoot: _workspaceRoot),
-          )
-        : await _runtime.resourcePage(
-            server: server,
-            cursor: cursor,
-            workspaceRoot: _workspaceRoot,
+  Future<Map<String, Object?>> listResources(Map<String, Object?> arguments) =>
+      _translate(() async {
+        await _prepare();
+        final server = _optionalString(arguments, 'server');
+        final cursor = _optionalString(arguments, 'cursor');
+        if (server == null && cursor != null) {
+          throw const FormatException(
+            'cursor is only valid together with a server.',
           );
-    return <String, Object?>{
-      'resources': <Map<String, Object?>>[
-        for (final item in page.items)
-          <String, Object?>{
-            'server': item.server,
-            ..._resource(item.descriptor),
-          },
-      ],
-      if (page.nextCursor != null) 'nextCursor': page.nextCursor,
-    };
-  });
+        }
+        final page = server == null
+            ? McpListPage<McpServerResource>(
+                items: _runtime.resources(workspaceRoot: _workspaceRoot),
+              )
+            : await _runtime.resourcePage(
+                server: server,
+                cursor: cursor,
+                workspaceRoot: _workspaceRoot,
+              );
+        return <String, Object?>{
+          'resources': <Map<String, Object?>>[
+            for (final item in page.items)
+              <String, Object?>{
+                'server': item.server,
+                ..._resource(item.descriptor),
+              },
+          ],
+          if (page.nextCursor != null) 'nextCursor': page.nextCursor,
+        };
+      });
 
   @override
   Future<Map<String, Object?>> listResourceTemplates(
@@ -81,41 +80,39 @@ final class SessionMcpHostPrimitiveGateway implements McpHostPrimitiveGateway {
   });
 
   @override
-  Future<Map<String, Object?>> readResource(
-    Map<String, Object?> arguments,
-  ) => _translate(() async {
-    await _prepare();
-    final result = await _runtime.readResource(
-      server: _requiredString(arguments, 'server'),
-      uri: _requiredString(arguments, 'uri'),
-      workspaceRoot: _workspaceRoot,
-    );
-    return <String, Object?>{
-      'contents': <Map<String, Object?>>[
-        for (final content in result.contents) _resourceContents(content),
-      ],
-    };
-  });
+  Future<Map<String, Object?>> readResource(Map<String, Object?> arguments) =>
+      _translate(() async {
+        await _prepare();
+        final result = await _runtime.readResource(
+          server: _requiredString(arguments, 'server'),
+          uri: _requiredString(arguments, 'uri'),
+          workspaceRoot: _workspaceRoot,
+        );
+        return <String, Object?>{
+          'contents': <Map<String, Object?>>[
+            for (final content in result.contents) _resourceContents(content),
+          ],
+        };
+      });
 
   @override
-  Future<Map<String, Object?>> catalogTools(
-    Map<String, Object?> arguments,
-  ) => _translate(() async {
-    await _prepare();
-    final server = _optionalString(arguments, 'server');
-    return <String, Object?>{
-      'tools': <Map<String, Object?>>[
-        for (final item in _runtime.availableTools(
-          workspaceRoot: _workspaceRoot,
-        ))
-          if (server == null || item.server == server)
-            <String, Object?>{
-              'server': item.server,
-              ..._tool(item.descriptor),
-            },
-      ],
-    };
-  });
+  Future<Map<String, Object?>> catalogTools(Map<String, Object?> arguments) =>
+      _translate(() async {
+        await _prepare();
+        final server = _optionalString(arguments, 'server');
+        return <String, Object?>{
+          'tools': <Map<String, Object?>>[
+            for (final item in _runtime.availableTools(
+              workspaceRoot: _workspaceRoot,
+            ))
+              if (server == null || item.server == server)
+                <String, Object?>{
+                  'server': item.server,
+                  ..._tool(item.descriptor),
+                },
+          ],
+        };
+      });
 
   @override
   Future<Map<String, Object?>> invokeTool(

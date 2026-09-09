@@ -24,10 +24,7 @@ abstract interface class ProviderCredentialRefresher {
 }
 
 /// Identity reserved before an OAuth browser or device flow starts.
-typedef ProviderOAuthReservation = ({
-  String connectionId,
-  String modelPrefix,
-});
+typedef ProviderOAuthReservation = ({String connectionId, String modelPrefix});
 
 /// Connects a successfully authorized OAuth credential to a provider.
 abstract interface class ProviderOAuthConnector {
@@ -53,7 +50,7 @@ abstract interface class ProviderOAuthConnector {
 /// Coordinates transient OAuth state without persisting authorization attempts.
 final class ProviderAuthCoordinator {
   /// Creates an authorization coordinator from typed ports.
-  factory ProviderAuthCoordinator({
+  factory({
     required ProviderRegistry registry,
     required ProviderOAuthConnector connector,
     required IdGenerator ids,
@@ -63,7 +60,7 @@ final class ProviderAuthCoordinator {
     ids: ids,
   );
 
-  ProviderAuthCoordinator._({
+  new _({
     required this._registry,
     required this._connector,
     required this._ids,
@@ -125,10 +122,7 @@ final class ProviderAuthCoordinator {
       instructions: session.instructions,
       expiresAt: session.expiresAt,
     );
-    final pending = _PendingAuth(
-      attempt: attempt,
-      session: session,
-    );
+    final pending = _PendingAuth(attempt: attempt, session: session);
     _attempts[attempt.id] = pending;
     _events.add(attempt);
     unawaited(_complete(pending));
@@ -215,10 +209,10 @@ final class ProviderAuthCoordinator {
 /// Deduplicates concurrent refreshes because vendors rotate refresh tokens.
 final class OAuthCredentialRefresher implements ProviderCredentialRefresher {
   /// Creates a single-flight token refresher over the registered vendors.
-  factory OAuthCredentialRefresher({required ProviderRegistry registry}) =>
+  factory({required ProviderRegistry registry}) =>
       OAuthCredentialRefresher._(registry);
 
-  OAuthCredentialRefresher._(this._registry);
+  new _(this._registry);
 
   final ProviderRegistry _registry;
   final Map<String, Future<OAuthCredential>> _inFlight =
@@ -256,10 +250,7 @@ final class OAuthCredentialRefresher implements ProviderCredentialRefresher {
 }
 
 final class _PendingAuth {
-  _PendingAuth({
-    required this.attempt,
-    required this.session,
-  });
+  new({required this.attempt, required this.session});
 
   ProviderAuthAttemptDto attempt;
   final ProviderOAuthSession session;

@@ -55,7 +55,7 @@ abstract interface class PluginUiRuntime {
 /// a runtime adapter with the same port instead of a separate RPC path.
 final class ManifestPluginUiRuntime implements PluginUiRuntime {
   /// Creates the effect-free manifest runtime.
-  const ManifestPluginUiRuntime();
+  const new();
 
   @override
   Future<Map<String, dynamic>> render({
@@ -96,7 +96,7 @@ final class ManifestPluginUiRuntime implements PluginUiRuntime {
 /// discarding historical presentation data.
 final class LuaPluginUiRuntime<T extends Object> implements PluginUiRuntime {
   /// Creates the Lua-backed native UI adapter.
-  LuaPluginUiRuntime({
+  new({
     required this.runtime,
     required this.grants,
     required this.state,
@@ -139,7 +139,7 @@ final class LuaPluginUiRuntime<T extends Object> implements PluginUiRuntime {
       path: r'$.input',
       label: 'Plugin UI input',
     );
-    return _invoke(
+    return await _invoke(
       session,
       plugin: plugin,
       contribution: contribution,
@@ -169,7 +169,7 @@ final class LuaPluginUiRuntime<T extends Object> implements PluginUiRuntime {
       document: document,
       action: action,
     );
-    return _invoke(
+    return await _invoke(
       session,
       plugin: plugin,
       contribution: contribution,
@@ -527,7 +527,7 @@ final class LuaPluginUiRuntime<T extends Object> implements PluginUiRuntime {
 /// Validates UI contribution ownership, pins snapshots, and serializes actions.
 final class PluginUiService {
   /// Creates the native declarative UI host.
-  PluginUiService({required this.descriptors, required this.runtime});
+  new({required this.descriptors, required this.runtime});
 
   /// Active plugin descriptor source.
   final PluginDescriptorReader descriptors;
@@ -662,9 +662,8 @@ final class PluginUiService {
         'Plugin UI action does not belong to this Agent and plugin.',
       );
     }
-    if (!_uiActionIds(snapshot.document.root).contains(
-      request.action.actionId,
-    )) {
+    if (!_uiActionIds(snapshot.document.root)
+        .contains(request.action.actionId)) {
       throw PluginUiException(
         'Plugin UI action is not referenced by this document: '
         '${request.action.actionId}',
@@ -725,7 +724,7 @@ final class PluginUiService {
 /// Safe, expected rejection from the declarative UI host.
 final class PluginUiException implements Exception {
   /// Creates a plugin UI rejection.
-  const PluginUiException(this.message);
+  const new(this.message);
 
   /// User-safe failure description.
   final String message;
@@ -735,7 +734,7 @@ final class PluginUiException implements Exception {
 }
 
 final class _PluginUiSnapshot {
-  const _PluginUiSnapshot({
+  const new({
     required this.plugin,
     required this.contribution,
     required this.request,
@@ -855,7 +854,7 @@ String _pluginId(String contributionId) {
 }
 
 final class _LuaPluginUiSession<T extends Object> {
-  const _LuaPluginUiSession({
+  const new({
     required this.runtime,
     required this.router,
     required this.contribution,
@@ -896,7 +895,7 @@ final class _PluginUiCancellation implements PluginCancellationSignal {
 }
 
 final class _PluginUiHostCancellation implements HostPrimitiveCancellation {
-  const _PluginUiHostCancellation(this.source);
+  const new(this.source);
 
   final PluginInvocationCancellation source;
 
@@ -909,7 +908,7 @@ final class _PluginUiHostCancellation implements HostPrimitiveCancellation {
 
 final class _PluginUiCallbackRouter<T extends Object>
     implements PluginCallbackRouter<T> {
-  const _PluginUiCallbackRouter({
+  const new({
     required this.grants,
     required this.state,
     required this.hostPrimitives,
@@ -971,9 +970,9 @@ final class _PluginUiCallbackRouter<T extends Object>
       );
     }
     final builtIn = _callBuiltIn(context, name, arguments);
-    if (builtIn != null) return builtIn;
+    if (builtIn != null) return await builtIn;
     if (hostPrimitives.descriptor(name) != null) {
-      return _invokeHostPrimitive(context, name, arguments, cancellation);
+      return await _invokeHostPrimitive(context, name, arguments, cancellation);
     }
     return PluginCallbackResult<T>(
       value: 'UI host operation is not configured: $name',
@@ -1048,9 +1047,7 @@ final class _PluginUiCallbackRouter<T extends Object>
         _requiredString(arguments, 'key'),
       ),
     );
-    return PluginCallbackResult<T>(
-      value: pluginStateReadEnvelope(entry),
-    );
+    return PluginCallbackResult<T>(value: pluginStateReadEnvelope(entry));
   }
 
   Future<PluginCallbackResult<T>> _compareAndSet(
@@ -1105,10 +1102,7 @@ final class _PluginUiCallbackRouter<T extends Object>
       final expected = _integer(mutation['expected_revision']) ?? 0;
       mutations.add(
         mutation['remove'] == true
-            ? PluginStateMutation.remove(
-                key: key,
-                expectedRevision: expected,
-              )
+            ? PluginStateMutation.remove(key: key, expectedRevision: expected)
             : PluginStateMutation.put(
                 key: key,
                 expectedRevision: expected,

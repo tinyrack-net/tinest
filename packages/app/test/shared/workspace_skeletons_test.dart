@@ -91,49 +91,43 @@ void main() {
     tags: const <String>['feature_test__workspace_async_loading__widget'],
   );
 
-  testWidgets(
-    'SidebarTreeSkeleton indents worktree rows under project rows',
-    (tester) async {
-      await tester.pumpWidget(
-        _host(
-          const SidebarTreeSkeleton(semanticLabel: 'Loading workspaces'),
-          width: 320,
-        ),
-      );
+  testWidgets('SidebarTreeSkeleton indents worktree rows under project rows', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      _host(
+        const SidebarTreeSkeleton(semanticLabel: 'Loading workspaces'),
+        width: 320,
+      ),
+    );
 
-      expect(
-        find.byKey(const ValueKey<String>('workspace-sidebar-skeleton')),
-        findsOneWidget,
-      );
-      expect(find.bySemanticsLabel('Loading workspaces'), findsOneWidget);
+    expect(
+      find.byKey(const ValueKey<String>('workspace-sidebar-skeleton')),
+      findsOneWidget,
+    );
+    expect(find.bySemanticsLabel('Loading workspaces'), findsOneWidget);
 
-      // Child rows sit deeper than their project heading, matching the tree.
-      final skeletons = find.byType(TRSkeleton);
-      final lefts = <double>[
-        for (var i = 0; i < tester.widgetList(skeletons).length; i++)
-          tester.getRect(skeletons.at(i)).left,
-      ];
-      expect(lefts.toSet().length, greaterThan(1));
-    },
-    tags: const <String>['feature_test__workspace_async_loading__widget'],
-  );
+    // Child rows sit deeper than their project heading, matching the tree.
+    final skeletons = find.byType(TRSkeleton);
+    final lefts = <double>[
+      for (var i = 0; i < tester.widgetList(skeletons).length; i++)
+        tester.getRect(skeletons.at(i)).left,
+    ];
+    expect(lefts.toSet().length, greaterThan(1));
+  }, tags: const <String>['feature_test__workspace_async_loading__widget']);
 
-  testWidgets(
-    'ListRowsSkeleton renders the requested number of rows',
-    (tester) async {
-      await tester.pumpWidget(
-        _host(
-          const ListRowsSkeleton(semanticLabel: 'Loading entries', rows: 5),
-        ),
-      );
+  testWidgets('ListRowsSkeleton renders the requested number of rows', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      _host(const ListRowsSkeleton(semanticLabel: 'Loading entries', rows: 5)),
+    );
 
-      expect(
-        find.byKey(const ValueKey<String>('list-rows-skeleton')),
-        findsOneWidget,
-      );
-      expect(find.bySemanticsLabel('Loading entries'), findsOneWidget);
-      expect(find.byType(TRSkeleton), findsNWidgets(5));
-    },
-    tags: const <String>['feature_test__workspace_async_loading__widget'],
-  );
+    expect(
+      find.byKey(const ValueKey<String>('list-rows-skeleton')),
+      findsOneWidget,
+    );
+    expect(find.bySemanticsLabel('Loading entries'), findsOneWidget);
+    expect(find.byType(TRSkeleton), findsNWidgets(5));
+  }, tags: const <String>['feature_test__workspace_async_loading__widget']);
 }

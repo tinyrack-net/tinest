@@ -80,10 +80,9 @@ void main() {
     expect(published.server, 'github');
     expect(published.descriptor.name, 'echo');
     expect(published.descriptor.inputSchema?['type'], 'object');
-    expect(
-      published.descriptor.outputSchema,
-      <String, dynamic>{'type': 'string'},
-    );
+    expect(published.descriptor.outputSchema, <String, dynamic>{
+      'type': 'string',
+    });
 
     final state = service.states().single;
     expect(state.status, McpServerStatus.ready);
@@ -159,13 +158,10 @@ void main() {
       expect(result['content'], <Map<String, Object?>>[
         <String, Object?>{'type': 'text', 'text': 'pong'},
       ]);
-      expect(
-        server.requests.last['params'],
-        <String, dynamic>{
-          'name': 'echo',
-          'arguments': <String, Object?>{'value': 'ping'},
-        },
-      );
+      expect(server.requests.last['params'], <String, dynamic>{
+        'name': 'echo',
+        'arguments': <String, Object?>{'value': 'ping'},
+      });
     },
   );
 
@@ -182,14 +178,11 @@ void main() {
       final gateway = SessionMcpHostPrimitiveGateway(service, '/workspace');
       final cancellation = _TestRequestCancellation();
 
-      final pending = gateway.invokeTool(
-        const <String, Object?>{
-          'server': 'github',
-          'name': 'echo',
-          'arguments': <String, Object?>{},
-        },
-        cancellation: cancellation,
-      );
+      final pending = gateway.invokeTool(const <String, Object?>{
+        'server': 'github',
+        'name': 'echo',
+        'arguments': <String, Object?>{},
+      }, cancellation: cancellation);
       await pumpEventQueue();
       cancellation.cancel();
 
@@ -228,18 +221,16 @@ void main() {
       await pumpEventQueue();
       final gateway = SessionMcpHostPrimitiveGateway(service, '/workspace');
 
-      final resources = await gateway.listResources(
-        const <String, Object?>{'server': 'github'},
-      );
+      final resources = await gateway.listResources(const <String, Object?>{
+        'server': 'github',
+      });
       final templates = await gateway.listResourceTemplates(
         const <String, Object?>{'server': 'github'},
       );
-      final content = await gateway.readResource(
-        const <String, Object?>{
-          'server': 'github',
-          'uri': 'file:///guide.md',
-        },
-      );
+      final content = await gateway.readResource(const <String, Object?>{
+        'server': 'github',
+        'uri': 'file:///guide.md',
+      });
 
       expect(resources['resources'], <Map<String, Object?>>[
         <String, Object?>{
@@ -249,10 +240,7 @@ void main() {
         },
       ]);
       expect(templates['resourceTemplates'], <Map<String, Object?>>[
-        <String, Object?>{
-          'server': 'github',
-          'uriTemplate': 'file:///{path}',
-        },
+        <String, Object?>{'server': 'github', 'uriTemplate': 'file:///{path}'},
       ]);
       expect(content['contents'], <Map<String, Object?>>[
         <String, Object?>{
@@ -295,10 +283,10 @@ void main() {
       ]);
       expect(state.resourceTemplates.single.uriTemplate, 'file:///{path}');
 
-      expect(
-        service.resources().map((item) => item.descriptor.uri),
-        <String>['file:///b.txt', 'file:///a.txt'],
-      );
+      expect(service.resources().map((item) => item.descriptor.uri), <String>[
+        'file:///b.txt',
+        'file:///a.txt',
+      ]);
       expect(
         service.resources().every((item) => item.server == 'github'),
         isTrue,
@@ -634,7 +622,7 @@ final class _TestRequestCancellation implements RequestCancellation {
 }
 
 final class _ScheduledRetry {
-  const _ScheduledRetry(this.delay, this.run);
+  const new(this.delay, this.run);
 
   final Duration delay;
   final void Function() run;

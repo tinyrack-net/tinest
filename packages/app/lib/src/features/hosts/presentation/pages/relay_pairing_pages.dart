@@ -29,7 +29,7 @@ import 'package:tinyrack_ui/tinyrack_ui.dart';
 /// Chooses a relay-first or advanced direct daemon connection.
 class ConnectDaemonPage extends StatelessWidget {
   /// Creates the connection method page.
-  const ConnectDaemonPage({super.key});
+  const new({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -72,7 +72,7 @@ class ConnectDaemonPage extends StatelessWidget {
 }
 
 class _ConnectionMethod extends StatelessWidget {
-  const _ConnectionMethod({
+  const new({
     required this.icon,
     required this.title,
     required this.description,
@@ -97,7 +97,7 @@ class _ConnectionMethod extends StatelessWidget {
 /// Accepts a connection link and opens the shared offer review page.
 class PairingLinkPage extends ConsumerStatefulWidget {
   /// Creates the link entry page.
-  const PairingLinkPage({super.key});
+  const new({super.key});
 
   @override
   ConsumerState<PairingLinkPage> createState() => _PairingLinkPageState();
@@ -157,9 +157,9 @@ class _PairingLinkPageState extends ConsumerState<PairingLinkPage> {
       unawaited(context.push<void>(uri.toString()));
     } on FormatException {
       setState(
-        () => _error = AppLocalizations.of(
-          context,
-        ).relayPairInvalid(AppIdentity.displayName),
+        () =>
+            _error = AppLocalizations.of(context)
+                .relayPairInvalid(AppIdentity.displayName),
       );
     }
   }
@@ -168,7 +168,7 @@ class _PairingLinkPageState extends ConsumerState<PairingLinkPage> {
 /// Scans a daemon's one-time connection QR code with the native camera.
 class PairingScanPage extends ConsumerStatefulWidget {
   /// Creates the camera scanner page.
-  const PairingScanPage({super.key});
+  const new({super.key});
 
   @override
   ConsumerState<PairingScanPage> createState() => _PairingScanPageState();
@@ -252,9 +252,9 @@ class _PairingScanPageState extends ConsumerState<PairingScanPage> {
     } on MobileScannerException {
       if (mounted) {
         setState(
-          () => _scanError = AppLocalizations.of(
-            context,
-          ).relayPairCameraError(AppIdentity.displayName),
+          () =>
+              _scanError = AppLocalizations.of(context)
+                  .relayPairCameraError(AppIdentity.displayName),
         );
       }
     }
@@ -271,9 +271,9 @@ class _PairingScanPageState extends ConsumerState<PairingScanPage> {
       context.replace(uri.toString());
     } on FormatException {
       setState(
-        () => _scanError = AppLocalizations.of(
-          context,
-        ).relayPairInvalid(AppIdentity.displayName),
+        () =>
+            _scanError = AppLocalizations.of(context)
+                .relayPairInvalid(AppIdentity.displayName),
       );
     }
   }
@@ -282,7 +282,7 @@ class _PairingScanPageState extends ConsumerState<PairingScanPage> {
 /// Reviews a locally validated offer before consuming its capability.
 class PairOfferPage extends ConsumerStatefulWidget {
   /// Creates the review page for [pairingUrl].
-  const PairOfferPage({required this.pairingUrl, super.key});
+  const new({required this.pairingUrl, super.key});
 
   /// Canonical URL including its fragment-only pairing capability.
   final Uri pairingUrl;
@@ -310,9 +310,8 @@ class _PairOfferPageState extends ConsumerState<PairOfferPage> {
           nowUtc: ref.read(appClockProvider).nowUtc(),
         );
       } on FormatException {
-        _error = AppLocalizations.of(
-          context,
-        ).relayPairInvalid(AppIdentity.displayName);
+        _error = AppLocalizations.of(context)
+            .relayPairInvalid(AppIdentity.displayName);
       }
     }
   }
@@ -413,7 +412,7 @@ class _PairOfferPageState extends ConsumerState<PairOfferPage> {
 }
 
 class _PairingFact extends StatelessWidget {
-  const _PairingFact({required this.label, required this.value});
+  const new({required this.label, required this.value});
 
   final String label;
   final String value;
@@ -430,7 +429,7 @@ class _PairingFact extends StatelessWidget {
 }
 
 class _PairingTaskShell extends StatelessWidget {
-  const _PairingTaskShell({required this.title, required this.child});
+  const new({required this.title, required this.child});
 
   final String title;
   final Widget child;
@@ -442,10 +441,8 @@ class _PairingTaskShell extends StatelessWidget {
         key: const ValueKey<String>('remote-host-back-button'),
         appearance: TRAppearance.ghost,
         label: MaterialLocalizations.of(context).backButtonTooltip,
-        onPressed: () => closeTask(
-          context,
-          () => const DaemonSettingsRoute().go(context),
-        ),
+        onPressed: () =>
+            closeTask(context, () => const DaemonSettingsRoute().go(context)),
         icon: Icon(TinestIcons.backFor(context)),
       ),
       title: TRText.inherit(title),
@@ -457,11 +454,7 @@ class _PairingTaskShell extends StatelessWidget {
 /// Shows one daemon's transport, share offer, and approved relay devices.
 class DaemonConnectionsPage extends ConsumerStatefulWidget {
   /// Creates the page for [hostId].
-  const DaemonConnectionsPage({
-    required this.hostId,
-    this.embedded = false,
-    super.key,
-  });
+  const new({required this.hostId, this.embedded = false, super.key});
 
   /// App-local daemon identifier.
   final String hostId;
@@ -532,9 +525,9 @@ class _DaemonConnectionsPageState extends ConsumerState<DaemonConnectionsPage> {
                         if (profile != null)
                           TRButton(
                             appearance: TRAppearance.ghost,
-                            onPressed: () => EditHostRoute(
-                              hostId: profile.id,
-                            ).push<void>(context),
+                            onPressed: () =>
+                                EditHostRoute(hostId: profile.id)
+                                    .push<void>(context),
                             child: TRText.inherit(
                               l10n.appSettingsEditConnection,
                             ),
@@ -559,9 +552,7 @@ class _DaemonConnectionsPageState extends ConsumerState<DaemonConnectionsPage> {
             TRNavigationRow(
               key: const ValueKey<String>('relay-pair-device'),
               label: TRText.inherit(l10n.relayPairTitle),
-              description: TRText.inherit(
-                l10n.relayPairDeviceDescription,
-              ),
+              description: TRText.inherit(l10n.relayPairDeviceDescription),
               trailing: _busy ? const TRSpinner() : null,
               onPressed: _busy ? null : _openPairDialog,
             ),
@@ -583,9 +574,7 @@ class _DaemonConnectionsPageState extends ConsumerState<DaemonConnectionsPage> {
               key: const ValueKey<String>('relay-advanced-direct'),
               leading: const Icon(TinestIcons.link),
               label: TRText.inherit(l10n.relayAdvancedDirect),
-              description: TRText.inherit(
-                l10n.relayConnectDirectDescription,
-              ),
+              description: TRText.inherit(l10n.relayConnectDirectDescription),
               onPressed: () => const AdvancedNewHostRoute().push<void>(context),
             ),
           ],
@@ -599,10 +588,8 @@ class _DaemonConnectionsPageState extends ConsumerState<DaemonConnectionsPage> {
         leading: TRIconButton(
           appearance: TRAppearance.ghost,
           label: MaterialLocalizations.of(context).backButtonTooltip,
-          onPressed: () => closeTask(
-            context,
-            () => const DaemonSettingsRoute().go(context),
-          ),
+          onPressed: () =>
+              closeTask(context, () => const DaemonSettingsRoute().go(context)),
           icon: Icon(TinestIcons.backFor(context)),
         ),
         title: TRText.inherit(l10n.settingsCategoryConnection),
@@ -770,9 +757,8 @@ class _DaemonConnectionsPageState extends ConsumerState<DaemonConnectionsPage> {
               Center(
                 child: TRQrCode(
                   data: offer.url,
-                  semanticLabel: AppLocalizations.of(
-                    context,
-                  ).relayPairQrSemantics,
+                  semanticLabel: AppLocalizations.of(context)
+                      .relayPairQrSemantics,
                   uiSize: TRUiSize.lg,
                 ),
               ),
@@ -838,7 +824,7 @@ class _DaemonConnectionsPageState extends ConsumerState<DaemonConnectionsPage> {
     final revoked = await ref
         .read(toastMessengerProvider)
         .run(
-          () async => (await _relay()).revokeRelayDevice(device.id),
+          () async => await (await _relay()).revokeRelayDevice(device.id),
           failure: l10n.relayRevokeFailed,
           success: l10n.commonDeleted,
           id: 'relay-revoke',
@@ -849,7 +835,7 @@ class _DaemonConnectionsPageState extends ConsumerState<DaemonConnectionsPage> {
 }
 
 class _RelayEndpointEditor extends StatefulWidget {
-  const _RelayEndpointEditor({
+  const new({
     required this.initialValue,
     required this.fieldLabel,
     required this.saveLabel,

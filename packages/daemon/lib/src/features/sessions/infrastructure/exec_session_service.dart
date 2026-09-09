@@ -24,7 +24,7 @@ const int maxExecSessionOutputBytes = 1024 * 1024;
 /// tested against the same fake gateway the interactive terminals use.
 class ExecSessionService {
   /// Creates an [ExecSessionService].
-  ExecSessionService({
+  new({
     required this._gateway,
     required this._pipes,
     required this._clock,
@@ -139,9 +139,7 @@ class ExecSessionService {
   /// Terminates every session this service owns.
   Future<void> close() async {
     await Future.wait(
-      List<_LiveExecSession>.of(_sessions.values).map(
-        _terminate,
-      ),
+      List<_LiveExecSession>.of(_sessions.values).map(_terminate),
     );
   }
 
@@ -158,7 +156,7 @@ class ExecSessionService {
 /// session's pseudo-terminals.
 class SessionExecHost implements ExecSessionHost {
   /// Creates a [SessionExecHost].
-  const SessionExecHost(this._service, this._sessionId);
+  const new(this._service, this._sessionId);
 
   final ExecSessionService _service;
   final String _sessionId;
@@ -194,7 +192,7 @@ class SessionExecHost implements ExecSessionHost {
 }
 
 class _LiveExecSession implements ExecSession {
-  _LiveExecSession({
+  new({
     required this.id,
     required this.owner,
     required ExecProcess process,
@@ -277,10 +275,8 @@ class _LiveExecSession implements ExecSession {
   ///
   /// A server left running between reads would otherwise grow this without
   /// bound, and its recent output is the part worth keeping.
-  void _append(String data) => _buffer = truncateTailToBytes(
-    '$_buffer$data',
-    maxExecSessionOutputBytes,
-  );
+  void _append(String data) =>
+      _buffer = truncateTailToBytes('$_buffer$data', maxExecSessionOutputBytes);
 
   /// Stops reading and terminates the pseudo-terminal.
   Future<void> close() async {

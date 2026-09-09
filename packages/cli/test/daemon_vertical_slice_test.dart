@@ -90,47 +90,43 @@ void main() {
     timeout: const Timeout(Duration(minutes: 2)),
   );
 
-  test(
-    'a client rejects a daemon it cannot authenticate against',
-    () async {
-      final home = await Directory.systemTemp.createTemp('tinest-cli-daemon-');
-      addTearDown(() => home.delete(recursive: true));
+  test('a client rejects a daemon it cannot authenticate against', () async {
+    final home = await Directory.systemTemp.createTemp('tinest-cli-daemon-');
+    addTearDown(() => home.delete(recursive: true));
 
-      final handle = await DaemonApplication.start(
-        DaemonConfig(
-          homeDirectory: home.path,
-          osHomeDirectory: home.path,
-          port: 0,
-          bearerToken: _token,
-          useEnvironmentCredentials: false,
-        ),
-      );
-      addTearDown(handle.stop);
+    final handle = await DaemonApplication.start(
+      DaemonConfig(
+        homeDirectory: home.path,
+        osHomeDirectory: home.path,
+        port: 0,
+        bearerToken: _token,
+        useEnvironmentCredentials: false,
+      ),
+    );
+    addTearDown(handle.stop);
 
-      final err = CaptureStream();
-      final code = await runCli(
-        <String>[
-          'provider',
-          'list',
-          '--listen',
-          '127.0.0.1:${handle.boundEndpoint.port}',
-          '--token',
-          'wrong-token-0123456789abcdef01234567',
-        ],
-        stdout: CaptureStream(),
-        stderr: err,
-        environment: const <String, String>{},
-        directories: LocalDaemonDirectories(
-          configDirectory: home.path,
-          stateDirectory: home.path,
-          userHomeDirectory: home.path,
-          osHomeDirectory: home.path,
-        ),
-      );
+    final err = CaptureStream();
+    final code = await runCli(
+      <String>[
+        'provider',
+        'list',
+        '--listen',
+        '127.0.0.1:${handle.boundEndpoint.port}',
+        '--token',
+        'wrong-token-0123456789abcdef01234567',
+      ],
+      stdout: CaptureStream(),
+      stderr: err,
+      environment: const <String, String>{},
+      directories: LocalDaemonDirectories(
+        configDirectory: home.path,
+        stateDirectory: home.path,
+        userHomeDirectory: home.path,
+        osHomeDirectory: home.path,
+      ),
+    );
 
-      expect(code, isNot(0));
-      expect(err.text, isNotEmpty);
-    },
-    timeout: const Timeout(Duration(minutes: 2)),
-  );
+    expect(code, isNot(0));
+    expect(err.text, isNotEmpty);
+  }, timeout: const Timeout(Duration(minutes: 2)));
 }

@@ -68,7 +68,7 @@ final class AgentCommandsControllerProvider
 }
 
 String _$agentCommandsControllerHash() =>
-    r'a3558d2b3a927ce8bf83946f080ee0382cdd85d7';
+    r'bbd459c72e03ba765e32d3edcbb6e7a3833fc162';
 
 /// Loads the agent commands one daemon offers, optionally for one project.
 ///

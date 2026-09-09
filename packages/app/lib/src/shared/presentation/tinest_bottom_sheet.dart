@@ -26,7 +26,7 @@ Future<T?> showTinestBottomSheet<T>({
 /// A content-sized Tinest bottom sheet capped at 70% of the screen height.
 class TinestBottomSheet extends StatelessWidget {
   /// Creates a Tinest bottom sheet.
-  const TinestBottomSheet({
+  const new({
     required this.content,
     this.actions,
     this.description,

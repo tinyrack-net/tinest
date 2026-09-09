@@ -1,7 +1,7 @@
 /// Transport-neutral attachment metadata exposed to relay infrastructure.
 final class RelayAttachment {
   /// Creates immutable attachment metadata.
-  const RelayAttachment({
+  const new({
     required this.id,
     required this.fileName,
     required this.mimeType,

@@ -43,7 +43,7 @@ import 'package:tinyrack_ui/tinyrack_ui.dart';
 /// Turn settings shown in the composer toolbar row.
 class SessionComposerBar extends ConsumerStatefulWidget {
   /// Creates a [SessionComposerBar].
-  const SessionComposerBar({
+  const new({
     required this.hostId,
     required this.definitions,
     required this.agentDefinitionId,
@@ -177,9 +177,7 @@ class _SessionComposerBarState extends ConsumerState<SessionComposerBar> {
     final connection = connections
         .where(
           (item) =>
-              selection?.qualifiedModelId.startsWith(
-                '${item.modelPrefix}/',
-              ) ??
+              selection?.qualifiedModelId.startsWith('${item.modelPrefix}/') ??
               false,
         )
         .firstOrNull;
@@ -304,9 +302,7 @@ class _SessionComposerBarState extends ConsumerState<SessionComposerBar> {
         items: <TRSelectItem<String>>[
           for (final definition in widget.definitions)
             TRSelectItem<String>(
-              key: ValueKey<String>(
-                'session-composer-agent-${definition.id}',
-              ),
+              key: ValueKey<String>('session-composer-agent-${definition.id}'),
               value: definition.id,
               label: definition.name,
             ),
@@ -386,9 +382,8 @@ class _SessionComposerBarState extends ConsumerState<SessionComposerBar> {
         leading: const Icon(TinestIcons.permission),
         appearance: appearance,
         uiSize: uiSize,
-        onValueChange: (mode) => unawaited(
-          _setPermission(mode).then((_) => onValueChanged?.call()),
-        ),
+        onValueChange: (mode) =>
+            unawaited(_setPermission(mode).then((_) => onValueChanged?.call())),
       );
     });
   }
@@ -481,9 +476,7 @@ class _SessionComposerBarState extends ConsumerState<SessionComposerBar> {
                           l10n.composerAgentLocked,
                           id: 'session-composer-agent-locked',
                         ),
-                    onValueChanged: () => unawaited(
-                      _refreshSettings(refresh),
-                    ),
+                    onValueChanged: () => unawaited(_refreshSettings(refresh)),
                   ),
                 ),
                 SettingsRow(
@@ -518,9 +511,7 @@ class _SessionComposerBarState extends ConsumerState<SessionComposerBar> {
                         snapshot.model?.label ??
                         widget.selection?.modelId ??
                         l10n.composerModel,
-                    onValueChanged: () => unawaited(
-                      _refreshSettings(refresh),
-                    ),
+                    onValueChanged: () => unawaited(_refreshSettings(refresh)),
                   ),
                 ),
                 for (final descriptor in snapshot.capabilities.controls)
@@ -544,9 +535,8 @@ class _SessionComposerBarState extends ConsumerState<SessionComposerBar> {
                         widget.enabled &&
                         widget.onPermissionModeChanged != null,
                     onValueChange: (mode) => unawaited(
-                      _setPermission(mode).then(
-                        (_) => _refreshSettings(refresh),
-                      ),
+                      _setPermission(mode)
+                          .then((_) => _refreshSettings(refresh)),
                     ),
                   ),
                 ),
@@ -605,10 +595,7 @@ class _SessionComposerBarState extends ConsumerState<SessionComposerBar> {
       key: key,
       enabled: enabled,
       leading: Icon(icon),
-      title: TRText.inherit(
-        title,
-        color: locked ? TRTextColor.muted : null,
-      ),
+      title: TRText.inherit(title, color: locked ? TRTextColor.muted : null),
       subtitle: TRText.inherit(value),
       trailing: Icon(
         locked ? TinestIcons.lock : TinestIcons.expand,
@@ -827,18 +814,13 @@ class _SessionComposerBarState extends ConsumerState<SessionComposerBar> {
     _ => l10n.composerUseDefault,
   };
 
-  Widget _controlChip(
-    ModelControlDescriptorDto descriptor,
-    bool enabled,
-  ) {
+  Widget _controlChip(ModelControlDescriptorDto descriptor, bool enabled) {
     final value = widget.modelControls[descriptor.id];
     final canChange = enabled && widget.onModelControlsChanged != null;
     return switch (descriptor.kind) {
       ModelControlKind.choice => _choiceControlSelect(
         descriptor,
-        key: ValueKey<String>(
-          'session-composer-control-${descriptor.id}',
-        ),
+        key: ValueKey<String>('session-composer-control-${descriptor.id}'),
         enabled: canChange,
         appearance: TRFieldAppearance.ghost,
         uiSize: TRUiSize.sm,
@@ -871,9 +853,8 @@ class _SessionComposerBarState extends ConsumerState<SessionComposerBar> {
         tooltip: descriptor.description ?? descriptor.label,
         uiSize: TRUiSize.sm,
         onPressed: canChange
-            ? (chipContext) => unawaited(
-                _chooseInteger(chipContext, descriptor, value),
-              )
+            ? (chipContext) =>
+                  unawaited(_chooseInteger(chipContext, descriptor, value))
             : null,
       ),
     };
@@ -897,7 +878,7 @@ class _SessionComposerBarState extends ConsumerState<SessionComposerBar> {
     if (value != null) updated[descriptor.id] = value;
     final callback = widget.onModelControlsChanged;
     if (callback != null) {
-      unawaited(Future<void>.sync(() async => callback(updated)));
+      unawaited(Future<void>.sync(() async => await callback(updated)));
     }
   }
 
@@ -945,16 +926,13 @@ class _SessionComposerBarState extends ConsumerState<SessionComposerBar> {
 
 @immutable
 final class _ComposerSheetChoice<T> {
-  const _ComposerSheetChoice(this.value);
+  const new(this.value);
 
   final T value;
 }
 
 class _IntegerControlDrawer extends StatefulWidget {
-  const _IntegerControlDrawer({
-    required this.descriptor,
-    required this.initialValue,
-  });
+  const new({required this.descriptor, required this.initialValue});
 
   final ModelControlDescriptorDto descriptor;
   final int? initialValue;
@@ -1009,10 +987,8 @@ class _IntegerControlDrawerState extends State<_IntegerControlDrawer> {
             trailing: widget.initialValue == null
                 ? const Icon(TinestIcons.check)
                 : null,
-            onTap: () => Navigator.pop(
-              context,
-              const _ComposerSheetChoice<int?>(null),
-            ),
+            onTap: () =>
+                Navigator.pop(context, const _ComposerSheetChoice<int?>(null)),
           ),
           TRTextField(
             key: ValueKey<String>(
@@ -1045,10 +1021,8 @@ class _IntegerControlDrawerState extends State<_IntegerControlDrawer> {
             ),
             intent: TRIntent.primary,
             onPressed: _valid
-                ? () => Navigator.pop(
-                    context,
-                    _ComposerSheetChoice<int?>(_value),
-                  )
+                ? () =>
+                      Navigator.pop(context, _ComposerSheetChoice<int?>(_value))
                 : null,
             child: TRText.inherit(l10n.commonSave),
           ),
@@ -1059,10 +1033,7 @@ class _IntegerControlDrawerState extends State<_IntegerControlDrawer> {
 }
 
 class _IntegerControlDialog extends StatefulWidget {
-  const _IntegerControlDialog({
-    required this.descriptor,
-    required this.initialValue,
-  });
+  const new({required this.descriptor, required this.initialValue});
 
   final ModelControlDescriptorDto descriptor;
   final int? initialValue;
@@ -1130,10 +1101,7 @@ class _IntegerControlDialogState extends State<_IntegerControlDialog> {
 /// Labelled settings toolbar shown at standard application density.
 class ComposerChipBar extends StatelessWidget {
   /// Creates a [ComposerChipBar].
-  const ComposerChipBar({
-    required this.children,
-    super.key,
-  });
+  const new({required this.children, super.key});
 
   /// Typed controls shown in the composer settings row.
   final List<Widget> children;
@@ -1162,7 +1130,7 @@ class ComposerChipBar extends StatelessWidget {
 /// Labelled selector chip shared by the composers.
 class ComposerChip extends StatelessWidget {
   /// Creates a composer chip.
-  const ComposerChip({
+  const new({
     required this.valueKey,
     required this.icon,
     required this.label,
@@ -1252,7 +1220,7 @@ class ComposerChip extends StatelessWidget {
 /// Composer shown when no session is selected; the first prompt creates one.
 class DraftSessionPane extends ConsumerStatefulWidget {
   /// Creates a [DraftSessionPane].
-  const DraftSessionPane({
+  const new({
     required this.selection,
     required this.draftId,
     required this.onCreated,
@@ -1504,11 +1472,7 @@ class SessionComposerController extends ChangeNotifier {
 /// A whole-pane native drop target connected to its descendant composer.
 class ComposerDropPane extends StatefulWidget {
   /// Creates a pane-wide composer drop target.
-  const ComposerDropPane({
-    required this.controller,
-    required this.child,
-    super.key,
-  });
+  const new({required this.controller, required this.child, super.key});
 
   /// Composer accepting files for this pane.
   final SessionComposerController controller;
@@ -1574,7 +1538,7 @@ class _ComposerDropPaneState extends State<ComposerDropPane> {
 /// Chat input with the agent and model selectors above it.
 class SessionComposer extends StatefulWidget {
   /// Creates a [SessionComposer].
-  const SessionComposer({
+  const new({
     required this.bar,
     required this.onSubmit,
     required this.enabled,
@@ -1871,7 +1835,7 @@ class _SessionComposerState extends State<SessionComposer> {
       return true;
     }
     _clear();
-    return handler(invocation);
+    return await handler(invocation);
   }
 
   /// The trailing action: stop a running turn, queue ahead of it, or send.
@@ -1919,10 +1883,7 @@ class _SessionComposerState extends State<SessionComposer> {
     compactSettings: TRUiDensityScope.of(context) == TRUiDensity.comfortable,
   );
 
-  Widget _buildContent(
-    BuildContext context, {
-    required bool compactSettings,
-  }) {
+  Widget _buildContent(BuildContext context, {required bool compactSettings}) {
     final l10n = AppLocalizations.of(context);
     // Attaching is about composing the next prompt, so it stays available
     // while a turn runs; only the upload of this prompt takes it away.
@@ -2306,7 +2267,7 @@ class _SessionComposerState extends State<SessionComposer> {
 /// The number is the last response's own total, not a running sum, so it drops
 /// back to zero whenever the agent starts a new window.
 class _ContextMeter extends StatefulWidget {
-  const _ContextMeter({
+  const new({
     required this.used,
     required this.window,
     this.totalCostUsd,
@@ -2410,7 +2371,7 @@ class _ContextMeterState extends State<_ContextMeter> {
 }
 
 class _ContextUsageDetails extends StatelessWidget {
-  const _ContextUsageDetails({
+  const new({
     required this.used,
     required this.window,
     required this.percent,
@@ -2483,7 +2444,7 @@ class _ContextUsageDetails extends StatelessWidget {
 }
 
 class _ProviderUsageLoading extends StatelessWidget {
-  const _ProviderUsageLoading({required this.label});
+  const new({required this.label});
   final String label;
 
   @override
@@ -2498,7 +2459,7 @@ class _ProviderUsageLoading extends StatelessWidget {
 }
 
 class _ProviderUsageMessage extends StatelessWidget {
-  const _ProviderUsageMessage({required this.label});
+  const new({required this.label});
   final String label;
 
   @override
@@ -2513,7 +2474,7 @@ class _ProviderUsageMessage extends StatelessWidget {
 }
 
 class _ProviderUsageDetails extends StatelessWidget {
-  const _ProviderUsageDetails({required this.value});
+  const new({required this.value});
   final ProviderUsageDto value;
 
   @override
@@ -2532,10 +2493,7 @@ class _ProviderUsageDetails extends StatelessWidget {
           weight: TRTextWeight.strong,
         ),
         for (final quota in value.windows) ...<Widget>[
-          TRText(
-            _quotaLabel(l10n, quota.kind),
-            variant: TRTextVariant.bodySm,
-          ),
+          TRText(_quotaLabel(l10n, quota.kind), variant: TRTextVariant.bodySm),
           TRProgress(
             value: quota.usedPercent,
             variant: quota.usedPercent > 90
@@ -2562,14 +2520,12 @@ class _ProviderUsageDetails extends StatelessWidget {
   }
 }
 
-String _quotaLabel(
-  AppLocalizations l10n,
-  ProviderUsageWindowKind kind,
-) => switch (kind) {
-  ProviderUsageWindowKind.session => l10n.sessionQuotaWindowSession,
-  ProviderUsageWindowKind.weekly => l10n.sessionQuotaWindowWeekly,
-  ProviderUsageWindowKind.codeReview => l10n.sessionQuotaWindowCodeReview,
-};
+String _quotaLabel(AppLocalizations l10n, ProviderUsageWindowKind kind) =>
+    switch (kind) {
+      ProviderUsageWindowKind.session => l10n.sessionQuotaWindowSession,
+      ProviderUsageWindowKind.weekly => l10n.sessionQuotaWindowWeekly,
+      ProviderUsageWindowKind.codeReview => l10n.sessionQuotaWindowCodeReview,
+    };
 
 String _compactNumber(int value) {
   if (value >= 1000000) return '${_compactDecimal(value / 1000000)}M';
@@ -2592,7 +2548,7 @@ String _formatReset(BuildContext context, DateTime value) {
 }
 
 class _QueuedTurnRow extends StatelessWidget {
-  const _QueuedTurnRow({
+  const new({
     required this.slotKey,
     required this.turn,
     required this.onEdit,
@@ -2680,7 +2636,7 @@ class _QueuedTurnRow extends StatelessWidget {
 }
 
 class _PendingAttachmentPill extends StatelessWidget {
-  const _PendingAttachmentPill({
+  const new({
     required this.attachment,
     required this.uploading,
     required this.onRemove,
@@ -2729,7 +2685,7 @@ class _PendingAttachmentPill extends StatelessWidget {
 }
 
 class _PendingAttachmentPreview extends StatefulWidget {
-  const _PendingAttachmentPreview({required this.attachment});
+  const new({required this.attachment});
 
   final PendingAttachment attachment;
 

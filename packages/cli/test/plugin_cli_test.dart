@@ -56,15 +56,14 @@ void main() {
       'secret-remove',
     ]);
     expect(api.scaffoldArguments, ('example.review', 'Review tools'));
-    expect(
-      api.forkArguments,
-      ('tinest.files', 'example.files', 'Files fork'),
-    );
+    expect(api.forkArguments, ('tinest.files', 'example.files', 'Files fork'));
     expect(api.reloadArguments, ('example.review', 'tinest'));
-    expect(
-      api.secretSetArguments,
-      ('example.review', 'tinest', 'API_TOKEN', 'do-not-print'),
-    );
+    expect(api.secretSetArguments, (
+      'example.review',
+      'tinest',
+      'API_TOKEN',
+      'do-not-print',
+    ));
   });
 
   test('plugin commands preserve daemon-owned package paths', () async {
@@ -115,9 +114,7 @@ void main() {
       ('tinest.files', 'example.files', 'Files fork'),
     ]);
     expect(backend.validated, <String>['example.review']);
-    expect(backend.reloaded, <(String, String)>[
-      ('example.review', 'tinest'),
-    ]);
+    expect(backend.reloaded, <(String, String)>[('example.review', 'tinest')]);
     expect(output.toString(), contains('/config/v5/plugins/example.review'));
   });
 
@@ -150,9 +147,7 @@ void main() {
     expect(backend.secrets, <String, String>{
       'example.review/tinest/API_TOKEN': 'top-secret-value',
     });
-    expect(backend.removedSecrets, <String>[
-      'example.review/tinest/API_TOKEN',
-    ]);
+    expect(backend.removedSecrets, <String>['example.review/tinest/API_TOKEN']);
     expect(output.toString(), contains('API_TOKEN'));
     expect(output.toString(), isNot(contains('top-secret-value')));
   });

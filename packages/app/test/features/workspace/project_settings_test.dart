@@ -26,10 +26,10 @@ void main() {
   );
 
   test('hook commands round-trip one command per non-blank line', () {
-    expect(
-      parseHookCommands(' npm ci \n\n  \nnpm run build\n'),
-      <String>['npm ci', 'npm run build'],
-    );
+    expect(parseHookCommands(' npm ci \n\n  \nnpm run build\n'), <String>[
+      'npm ci',
+      'npm run build',
+    ]);
     expect(parseHookCommands('   '), isEmpty);
     expect(
       formatHookCommands(const <String>['npm ci', 'npm run build']),
@@ -193,10 +193,7 @@ void main() {
       );
       expect(
         api.terminalShell,
-        const ShellSpecDto(
-          executable: '/bin/bash',
-          arguments: <String>['-l'],
-        ),
+        const ShellSpecDto(executable: '/bin/bash', arguments: <String>['-l']),
       );
 
       await tester.enterText(_keyedTextInput('project-shell-executable'), '');
@@ -259,9 +256,7 @@ void main() {
 
   testWidgets(
     'project settings exposes load errors until an explicit retry',
-    (
-      tester,
-    ) async {
+    (tester) async {
       await tester.binding.setSurfaceSize(const Size(1200, 900));
       addTearDown(() => tester.binding.setSurfaceSize(null));
       final api = FakeTinestApi(
@@ -347,9 +342,7 @@ Future<GoRouter> _pumpRoute(
   final router = GoRouter(initialLocation: location, routes: $appRoutes);
   await tester.pumpWidget(
     ProviderScope(
-      overrides: [
-        appServicesProvider.overrideWithValue(fakeAppServices(api)),
-      ],
+      overrides: [appServicesProvider.overrideWithValue(fakeAppServices(api))],
       child: MaterialApp.router(
         theme: testLightTheme,
         darkTheme: testDarkTheme,

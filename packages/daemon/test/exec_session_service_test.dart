@@ -393,7 +393,7 @@ final class _FakePipeGateway implements PipeGateway {
 }
 
 final class _StartedPipe {
-  _StartedPipe({
+  new({
     required this.shell,
     required this.workingDirectory,
     required this.process,
@@ -461,7 +461,7 @@ final class _FakeGateway implements TerminalGateway {
 }
 
 final class _StartedTerminal {
-  _StartedTerminal({
+  new({
     required this.shell,
     required this.workingDirectory,
     required this.process,

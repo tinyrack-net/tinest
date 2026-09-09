@@ -64,9 +64,7 @@ void main() {
     expect(tray.installs, 1);
 
     final mobileApi = FakeTinestApi();
-    await mobile_entry.runMobileApp(
-      services: fakeAppServices(mobileApi),
-    );
+    await mobile_entry.runMobileApp(services: fakeAppServices(mobileApi));
     // The gate paints its splash first, so the app arrives a frame after the
     // bootstrap future resolves rather than in the first pump.
     await tester.pumpAndSettle();
@@ -93,34 +91,32 @@ void main() {
     );
   });
 
-  testWidgets(
-    'the login-item argument starts the desktop runner hidden',
-    (tester) async {
-      final store = MemoryAppStore(
-        settings: const AppSettings(embeddedDaemonEnabled: false),
-      );
-      final window = FakeDesktopWindow();
-      final tray = FakeTrayIcon();
-      await desktop_entry.runDesktopApp(
-        services: fakeAppServices(FakeTinestApi(), store: store),
-        arguments: const <String>[startMinimizedFlag],
-        window: window,
-        tray: tray,
-        autostart: FakeAutostartRegistration(),
-      );
-      await tester.pumpAndSettle();
+  testWidgets('the login-item argument starts the desktop runner hidden', (
+    tester,
+  ) async {
+    final store = MemoryAppStore(
+      settings: const AppSettings(embeddedDaemonEnabled: false),
+    );
+    final window = FakeDesktopWindow();
+    final tray = FakeTrayIcon();
+    await desktop_entry.runDesktopApp(
+      services: fakeAppServices(FakeTinestApi(), store: store),
+      arguments: const <String>[startMinimizedFlag],
+      window: window,
+      tray: tray,
+      autostart: FakeAutostartRegistration(),
+    );
+    await tester.pumpAndSettle();
 
-      expect(window.preparedHidden, isTrue);
-      expect(window.visible.value, isFalse);
-      expect(window.shows, 0);
-      // Preparing the window is what tells the tray which label to start with.
-      expect(
-        tray.menu.entries
-            .firstWhere((entry) => entry.key == trayItemToggleWindow)
-            .label,
-        testL10n.trayShowWindow,
-      );
-    },
-    tags: const <String>['feature_test__settings_startup__widget'],
-  );
+    expect(window.preparedHidden, isTrue);
+    expect(window.visible.value, isFalse);
+    expect(window.shows, 0);
+    // Preparing the window is what tells the tray which label to start with.
+    expect(
+      tray.menu.entries
+          .firstWhere((entry) => entry.key == trayItemToggleWindow)
+          .label,
+      testL10n.trayShowWindow,
+    );
+  }, tags: const <String>['feature_test__settings_startup__widget']);
 }

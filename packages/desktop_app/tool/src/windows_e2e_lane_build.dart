@@ -11,9 +11,7 @@ import 'package:app/testing/devtools/desktop_e2e_runner.dart';
 /// delete shared wrapper sources and then skip the target that restores them.
 /// The first E2E lane invalidates the cache under the project build lease;
 /// later lanes must retain the fresh cache created by that transition.
-Future<void> resetWindowsE2eProjectBuildCache(
-  String projectDirectory,
-) async {
+Future<void> resetWindowsE2eProjectBuildCache(String projectDirectory) async {
   final project = Directory(projectDirectory).absolute;
   final target = _validatedGeneratedDirectory(
     project,
@@ -64,10 +62,7 @@ Directory? _validatedGeneratedDirectory(
       ..write(Platform.pathSeparator)
       ..write(segment);
     final path = candidatePath.toString();
-    final type = FileSystemEntity.typeSync(
-      path,
-      followLinks: false,
-    );
+    final type = FileSystemEntity.typeSync(path, followLinks: false);
     if (type == FileSystemEntityType.notFound) return null;
     if (type == FileSystemEntityType.link) {
       throw StateError(

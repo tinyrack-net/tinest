@@ -12,11 +12,7 @@ part 'conversation_timeline_controller.g.dart';
 /// Queue edits and other conversation state updates retain the same collection
 /// identities, so they do not reparse every Markdown and tool row.
 @riverpod
-List<ChatItem> conversationTimeline(
-  Ref ref,
-  String hostId,
-  String sessionId,
-) {
+List<ChatItem> conversationTimeline(Ref ref, String hostId, String sessionId) {
   final source = ref.watch(
     conversationControllerProvider(hostId, sessionId).select((value) {
       final state = value.asData?.value;

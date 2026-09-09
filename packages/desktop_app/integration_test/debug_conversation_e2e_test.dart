@@ -46,9 +46,7 @@ void main() {
       // testWidgets does not create its own semantics handle. Force it off for
       // this visual interaction test to avoid flutter/flutter#189902.
       tester.platformDispatcher.semanticsEnabledTestValue = false;
-      addTearDown(
-        tester.platformDispatcher.clearSemanticsEnabledTestValue,
-      );
+      addTearDown(tester.platformDispatcher.clearSemanticsEnabledTestValue);
       expect(tester.binding.semanticsEnabled, isFalse);
       await tester.binding.setSurfaceSize(const Size(1400, 1000));
       addTearDown(() => tester.binding.setSurfaceSize(null));
@@ -63,9 +61,8 @@ void main() {
       // Stands in for the machine home the daemon turns into the implicit home
       // workspace, so the run never touches the home of whoever runs it.
       final userHome = Directory(
-        await (await Directory.systemTemp.createTemp(
-          'tinest-e2e-user-home-',
-        )).resolveSymbolicLinks(),
+        await (await Directory.systemTemp.createTemp('tinest-e2e-user-home-'))
+            .resolveSymbolicLinks(),
       );
       final remoteHome = await Directory.systemTemp.createTemp(
         'tinest-e2e-remote-home-',
@@ -137,10 +134,7 @@ void main() {
             'object': 'list',
             'data': <Map<String, dynamic>>[
               <String, dynamic>{'id': 'e2e-model', 'owned_by': 'test'},
-              <String, dynamic>{
-                'id': selectedModelId,
-                'owned_by': 'test',
-              },
+              <String, dynamic>{'id': selectedModelId, 'owned_by': 'test'},
             ],
           }),
         );
@@ -195,14 +189,10 @@ void main() {
         ]);
         await modelServer.close(force: true);
       });
-      final endpoint = HostEndpoint(
-        websocketUri: handle.boundEndpoint,
-      );
+      final endpoint = HostEndpoint(websocketUri: handle.boundEndpoint);
       var setupClient = await TinestClient.connect(
         endpoint: endpoint,
-        credentials: DaemonCredentials(
-          bearerToken: handle.bearerToken,
-        ),
+        credentials: DaemonCredentials(bearerToken: handle.bearerToken),
         clientId: 'e2e-setup',
         clientKind: 'integration-test',
       );
@@ -263,9 +253,7 @@ void main() {
 
       final now = DateTime.utc(2026, 8, 3);
       final appStore = MemoryAppStore(
-        settings: AppSettings(
-          embeddedDaemonPort: handle.boundEndpoint.port,
-        ),
+        settings: AppSettings(embeddedDaemonPort: handle.boundEndpoint.port),
         profiles: <RemoteDaemonProfile>[
           RemoteDaemonProfile(
             id: 'remote',
@@ -356,9 +344,7 @@ void main() {
         );
         await tester.pumpAndSettle();
       }
-      final projectChip = find.byKey(
-        const ValueKey('new-workspace-project'),
-      );
+      final projectChip = find.byKey(const ValueKey('new-workspace-project'));
       // The hover-dismiss contract has focused widget coverage. Repeating a
       // Tooltip OverlayPortal lifecycle in this long-lived desktop test also
       // triggers Flutter 3.44's stale semantics-child bug
@@ -395,13 +381,10 @@ void main() {
         () => tester.widget<TinestSwitchRow>(exposureToggle).onChanged != null,
         'all-interface daemon to reconnect',
       );
-      expect(
-        embeddedLauncher.exposures,
-        <EmbeddedDaemonExposure>[
-          EmbeddedDaemonExposure.loopback,
-          EmbeddedDaemonExposure.allInterfaces,
-        ],
-      );
+      expect(embeddedLauncher.exposures, <EmbeddedDaemonExposure>[
+        EmbeddedDaemonExposure.loopback,
+        EmbeddedDaemonExposure.allInterfaces,
+      ]);
       await tester.tap(exposureToggle);
       await pumpUntilCondition(
         tester,
@@ -413,15 +396,10 @@ void main() {
         () => tester.widget<TinestSwitchRow>(exposureToggle).onChanged != null,
         'loopback daemon to reconnect',
       );
-      expect(
-        embeddedLauncher.exposures.last,
-        EmbeddedDaemonExposure.loopback,
-      );
+      expect(embeddedLauncher.exposures.last, EmbeddedDaemonExposure.loopback);
       setupClient = await TinestClient.connect(
         endpoint: endpoint,
-        credentials: DaemonCredentials(
-          bearerToken: handle.bearerToken,
-        ),
+        credentials: DaemonCredentials(bearerToken: handle.bearerToken),
         clientId: 'e2e-setup-reconnected',
         clientKind: 'integration-test',
       );
@@ -431,14 +409,8 @@ void main() {
       await pumpUntil(tester, addAgent);
       await tester.tap(addAgent);
       await tester.pumpAndSettle();
-      await tester.enterText(
-        _trTextInput('ID (파일명)'),
-        'remote-agent',
-      );
-      await tester.enterText(
-        _trTextInput('이름').last,
-        'Remote Agent',
-      );
+      await tester.enterText(_trTextInput('ID (파일명)'), 'remote-agent');
+      await tester.enterText(_trTextInput('이름').last, 'Remote Agent');
       FocusManager.instance.primaryFocus?.unfocus();
       final createRemoteAgent = find.widgetWithText(TRButton, '생성');
       await tester.ensureVisible(createRemoteAgent);
@@ -454,17 +426,9 @@ void main() {
       await pumpUntil(tester, addAgent);
       await tester.tap(addAgent);
       await tester.pumpAndSettle();
-      await tester.enterText(
-        _trTextInput('ID (파일명)'),
-        'reviewer',
-      );
-      await tester.enterText(
-        _trTextInput('이름').last,
-        'Reviewer',
-      );
-      await tester.tap(
-        find.widgetWithText(TRSelectFormField<AgentMode>, '유형'),
-      );
+      await tester.enterText(_trTextInput('ID (파일명)'), 'reviewer');
+      await tester.enterText(_trTextInput('이름').last, 'Reviewer');
+      await tester.tap(find.widgetWithText(TRSelectFormField<AgentMode>, '유형'));
       await tester.pumpAndSettle();
       await tester.tap(find.text('subagent').last);
       await tester.pumpAndSettle();
@@ -478,9 +442,7 @@ void main() {
       final reviewerFile = File(reviewer.sourcePath);
       expect(reviewerFile.existsSync(), isTrue);
 
-      final promptField = _trTextInput(
-        '시스템 프롬프트 (Markdown)',
-      ).hitTestable();
+      final promptField = _trTextInput('시스템 프롬프트 (Markdown)').hitTestable();
       await tester.enterText(promptField, 'Review the current change.');
       final saveAgent = find.widgetWithText(TRButton, '저장').hitTestable();
       final currentReviewer = await setupClient.agents.getAgentDefinition(
@@ -549,14 +511,8 @@ void main() {
       await pumpUntil(tester, addAgent);
       await tester.tap(addAgent);
       await tester.pumpAndSettle();
-      await tester.enterText(
-        _trTextInput('ID (파일명)'),
-        'temporary',
-      );
-      await tester.enterText(
-        _trTextInput('이름').last,
-        'Temporary',
-      );
+      await tester.enterText(_trTextInput('ID (파일명)'), 'temporary');
+      await tester.enterText(_trTextInput('이름').last, 'Temporary');
       FocusManager.instance.primaryFocus?.unfocus();
       final createTemporary = find.widgetWithText(TRButton, '생성');
       await tester.ensureVisible(createTemporary);
@@ -566,9 +522,7 @@ void main() {
       await _waitForAgentDefinition(setupClient, 'temporary');
       final archiveAgent = await _centerSettingsAction(
         tester,
-        find.byKey(
-          const ValueKey('agent-archive-button'),
-        ),
+        find.byKey(const ValueKey('agent-archive-button')),
         settingsOwner: find.byKey(
           const ValueKey<String>('agent-settings-editor-temporary'),
         ),
@@ -609,9 +563,7 @@ void main() {
       // closed, so its tools are not in the tree until someone opens it.
       final collaborationGroup = await _centerSettingsAction(
         tester,
-        find.byKey(
-          const ValueKey<String>('agent-tool-group-collaboration'),
-        ),
+        find.byKey(const ValueKey<String>('agent-tool-group-collaboration')),
         settingsOwner: tinestEditor,
       );
       // Opening it proves the group really does carry the tool the reset
@@ -641,9 +593,7 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(reviewerSubagent);
       await tester.pumpAndSettle();
-      await tester.tap(
-        find.widgetWithText(TRButton, '저장').hitTestable(),
-      );
+      await tester.tap(find.widgetWithText(TRButton, '저장').hitTestable());
       await tester.pumpAndSettle();
       final collaboratingTinest = await setupClient.agents.getAgentDefinition(
         'tinest',
@@ -748,9 +698,8 @@ void main() {
         instructions: 'Observe the updated external skill.',
       );
       await pumpUntil(tester, find.text('Updated outside Tinest.'));
-      await Directory('$projectSkillsRoot/external-e2e').delete(
-        recursive: true,
-      );
+      await Directory('$projectSkillsRoot/external-e2e')
+          .delete(recursive: true);
       await pumpUntilGone(
         tester,
         find.byKey(const ValueKey<String>('skill-row-external-e2e')),
@@ -848,10 +797,9 @@ void main() {
       await tester.tap(newWorkspaceSendButton);
       await pumpUntilCondition(
         tester,
-        () async =>
-            (await setupClient.workspaces.getWorkspaceCatalog()).worktrees.any(
-              (worktree) => worktree.branch == 'feature-e2e',
-            ),
+        () async => (await setupClient.workspaces.getWorkspaceCatalog())
+            .worktrees
+            .any((worktree) => worktree.branch == 'feature-e2e'),
         'the composer to create a worktree',
       );
       // The session route keeps the sidebar, so the new worktree is listed.
@@ -997,9 +945,8 @@ void main() {
       expect(spawnedChild.taskName, 'review_task');
       expect(spawnedChild.agentPath, '/root/review_task');
       expect(
-        (await setupClient.sessions.listSubagents(spawnedChild.id)).map(
-          (session) => session.id,
-        ),
+        (await setupClient.sessions.listSubagents(spawnedChild.id))
+            .map((session) => session.id),
         contains(spawnedChild.id),
       );
 
@@ -1099,9 +1046,8 @@ void main() {
         isEmpty,
       );
       expect(
-        (await setupClient.sessions.listSessions(
-          worktreeId: 'checkout-e2e',
-        )).length,
+        (await setupClient.sessions.listSessions(worktreeId: 'checkout-e2e'))
+            .length,
         sessionsBefore,
       );
 
@@ -1113,28 +1059,24 @@ void main() {
         send,
         '/e2e-review lib/app.dart',
       );
-      await pumpUntilCondition(
-        tester,
-        () async {
-          for (final session in await setupClient.sessions.listSessions(
-            worktreeId: 'checkout-e2e',
-          )) {
-            final timeline = await setupClient.sessions.subscribeTimeline(
-              session.id,
-            );
-            final expanded = timeline
-                .where((event) => event.type == 'user.message')
-                .any(
-                  (event) =>
-                      '${event.data['text']}' ==
-                      'Review lib/app.dart for the E2E fixture.',
-                );
-            if (expanded) return true;
-          }
-          return false;
-        },
-        'the expanded agent command prompt to reach the daemon',
-      );
+      await pumpUntilCondition(tester, () async {
+        for (final session in await setupClient.sessions.listSessions(
+          worktreeId: 'checkout-e2e',
+        )) {
+          final timeline = await setupClient.sessions.subscribeTimeline(
+            session.id,
+          );
+          final expanded = timeline
+              .where((event) => event.type == 'user.message')
+              .any(
+                (event) =>
+                    '${event.data['text']}' ==
+                    'Review lib/app.dart for the E2E fixture.',
+              );
+          if (expanded) return true;
+        }
+        return false;
+      }, 'the expanded agent command prompt to reach the daemon');
       await _waitForComposerReady(tester, send);
       // Sending moved focus to the send button; the flow below types straight
       // into the field, so hand it back.
@@ -1145,10 +1087,7 @@ void main() {
         'the composer to take focus',
       );
 
-      await tester.enterText(
-        find.byKey(composer),
-        'Disallowed delegation',
-      );
+      await tester.enterText(find.byKey(composer), 'Disallowed delegation');
       await tester.pump();
       expect(
         tester.widget<TRTextField>(find.byKey(composer)).controller?.text,
@@ -1164,9 +1103,8 @@ void main() {
         (widget) =>
             widget is PluginUiDocumentView &&
             widget.document.pluginId == 'tinest.collaboration' &&
-            jsonEncode(
-              widget.document.root,
-            ).contains('Agent type is not allowed: not-allowed'),
+            jsonEncode(widget.document.root)
+                .contains('Agent type is not allowed: not-allowed'),
       );
       await _pumpUntilWithSessionDiagnostics(
         tester,
@@ -1178,25 +1116,20 @@ void main() {
         worktreeId: 'checkout-e2e',
       )).singleWhere((session) => session.origin == SessionOrigin.manual);
       final failedToolEvent =
-          (await setupClient.sessions.subscribeTimeline(
-            rootSession.id,
-          )).singleWhere(
-            (event) =>
-                event.type == 'tool.completed' &&
-                event.data['callId'] == 'disallowed-delegate-call',
-          );
+          (await setupClient.sessions.subscribeTimeline(rootSession.id))
+              .singleWhere(
+                (event) =>
+                    event.type == 'tool.completed' &&
+                    event.data['callId'] == 'disallowed-delegate-call',
+              );
       expect(failedToolEvent.data['isError'], isTrue);
       // Expansion and the structured error body are owned by the focused
       // chat-view widget test. This real-daemon slice pins the failed card and
       // the exact tool event below without depending on virtual-list details.
-      await pumpUntilCondition(
-        tester,
-        () {
-          final button = find.byKey(send).evaluate().singleOrNull?.widget;
-          return button is TRIconButton && button.onPressed != null;
-        },
-        'the failed delegation turn to release the composer',
-      );
+      await pumpUntilCondition(tester, () {
+        final button = find.byKey(send).evaluate().singleOrNull?.widget;
+        return button is TRIconButton && button.onPressed != null;
+      }, 'the failed delegation turn to release the composer');
 
       await _submitComposerPrompt(tester, composer, send, 'Create result.txt');
       final patchApproval = _approvalForCall('patch-call');
@@ -1259,20 +1192,18 @@ void main() {
       );
       expect(patchSnapshot, findsOneWidget);
       final patchEvent =
-          (await setupClient.sessions.subscribeTimeline(
-            rootSession.id,
-          )).singleWhere(
-            (event) =>
-                event.type == 'tool.completed' &&
-                event.data['callId'] == 'patch-call',
-          );
+          (await setupClient.sessions.subscribeTimeline(rootSession.id))
+              .singleWhere(
+                (event) =>
+                    event.type == 'tool.completed' &&
+                    event.data['callId'] == 'patch-call',
+              );
       expect(patchEvent.data['isError'], isFalse);
       expect(tester.takeException(), isNull);
       // Attachments use the authenticated HTTP transport even though the turn
       // and timeline continue to use the WebSocket API.
-      await File('${workspace.path}/agent-output.txt').writeAsString(
-        'agent attachment\n',
-      );
+      await File('${workspace.path}/agent-output.txt')
+          .writeAsString('agent attachment\n');
       final attachmentSession = (await setupClient.sessions.listSessions(
         worktreeId: 'checkout-e2e',
       )).singleWhere((session) => session.origin == SessionOrigin.manual);
@@ -1348,15 +1279,12 @@ void main() {
       );
       await pumpUntilCondition(
         tester,
-        () async => (await setupClient.sessions.subscribeTimeline(
-          attachmentSession.id,
-        )).any((event) => event.type == 'assistant.attachment'),
+        () async =>
+            (await setupClient.sessions.subscribeTimeline(attachmentSession.id))
+                .any((event) => event.type == 'assistant.attachment'),
         'the agent to publish its outbound attachment',
       );
-      await pumpUntil(
-        tester,
-        find.textContaining('agent-output.txt'),
-      );
+      await pumpUntil(tester, find.textContaining('agent-output.txt'));
       final outboundTimeline = await setupClient.sessions.subscribeTimeline(
         attachmentSession.id,
       );
@@ -1385,10 +1313,7 @@ void main() {
           matching: find.widgetWithText(TRButton, '거부'),
         ),
       );
-      await pumpUntil(
-        tester,
-        find.text('Rejected safely', findRichText: true),
-      );
+      await pumpUntil(tester, find.text('Rejected safely', findRichText: true));
       expect(File('${workspace.path}/rejected.txt').existsSync(), isFalse);
 
       final liveMcpServer = (await setupClient.mcp.listMcpServers()).single;
@@ -1407,21 +1332,14 @@ void main() {
       );
       await _submitComposerPrompt(tester, composer, send, 'MCP echo');
       final mcpApproval = _approvalForCall('mcp-call');
-      await _pumpUntilWithSessionDiagnostics(
-        tester,
-        mcpApproval,
-        setupClient,
-      );
+      await _pumpUntilWithSessionDiagnostics(tester, mcpApproval, setupClient);
       await tester.tap(
         find.descendant(
           of: mcpApproval,
           matching: find.widgetWithText(TRButton, '승인'),
         ),
       );
-      await pumpUntil(
-        tester,
-        find.text('MCP completed', findRichText: true),
-      );
+      await pumpUntil(tester, find.text('MCP completed', findRichText: true));
 
       await _submitComposerPrompt(tester, composer, send, 'Reject MCP');
       final rejectedMcpApproval = _approvalForCall('reject-mcp-call');
@@ -1455,10 +1373,7 @@ void main() {
       );
 
       await _submitComposerPrompt(tester, composer, send, 'Use E2E skill');
-      await pumpUntil(
-        tester,
-        find.text('Skill loaded', findRichText: true),
-      );
+      await pumpUntil(tester, find.text('Skill loaded', findRichText: true));
       await _submitComposerPrompt(
         tester,
         composer,
@@ -1491,9 +1406,9 @@ void main() {
       );
 
       final turnBranches = await setupClient.sessions.subscribeTimeline(
-        (await setupClient.sessions.listSessions(
-          worktreeId: 'checkout-e2e',
-        )).singleWhere((session) => session.origin == SessionOrigin.manual).id,
+        (await setupClient.sessions.listSessions(worktreeId: 'checkout-e2e'))
+            .singleWhere((session) => session.origin == SessionOrigin.manual)
+            .id,
       );
       expect(
         turnBranches.map((event) => event.type),
@@ -1633,16 +1548,11 @@ void main() {
       expect(find.text('생각함', findRichText: true), findsWidgets);
       await tester.tap(latestReasoning);
       await tester.pump();
-      expect(
-        find.text('복원 가능한 사고 요약입니다.', findRichText: true),
-        findsOneWidget,
-      );
+      expect(find.text('복원 가능한 사고 요약입니다.', findRichText: true), findsOneWidget);
 
       final reconnected = await TinestClient.connect(
         endpoint: endpoint,
-        credentials: DaemonCredentials(
-          bearerToken: handle.bearerToken,
-        ),
+        credentials: DaemonCredentials(bearerToken: handle.bearerToken),
         clientId: 'e2e-reconnect',
         clientKind: 'integration-test',
       );
@@ -1670,9 +1580,7 @@ void main() {
         ]),
       );
       final restoredAttachmentTimeline = await reconnected.sessions
-          .subscribeTimeline(
-            parent.id,
-          );
+          .subscribeTimeline(parent.id);
       expect(
         restoredAttachmentTimeline.map((event) => event.type),
         contains('assistant.attachment'),
@@ -1707,9 +1615,8 @@ void main() {
         find.byKey(ValueKey<String>('tr-tabs-close-${parent.id}')),
       );
       expect(
-        (await setupClient.sessions.listSessions(
-          worktreeId: 'checkout-e2e',
-        )).map((session) => session.id),
+        (await setupClient.sessions.listSessions(worktreeId: 'checkout-e2e'))
+            .map((session) => session.id),
         contains(parent.id),
       );
       // Closing the last tab returns to the checkout, and the tab strip shows
@@ -1784,9 +1691,7 @@ void main() {
         tester,
         find.descendant(
           of: targetPane,
-          matching: find.byKey(
-            ValueKey<String>('tr-tabs-tab-${parent.id}'),
-          ),
+          matching: find.byKey(ValueKey<String>('tr-tabs-tab-${parent.id}')),
         ),
       );
       for (var moved = 0; moved < 10; moved++) {
@@ -1848,10 +1753,7 @@ void main() {
       );
       await tester.pumpAndSettle();
       expect(find.text('이름과 Base URL을 입력하세요.'), findsOneWidget);
-      await tester.enterText(
-        _trTextInput('이름'),
-        'E2E Provider',
-      );
+      await tester.enterText(_trTextInput('이름'), 'E2E Provider');
       await tester.enterText(
         _trTextInput('기본 URL'),
         'http://127.0.0.1:${modelServer.port}/unavailable/v1',
@@ -1861,26 +1763,20 @@ void main() {
         find.byKey(const ValueKey<String>('provider-custom-save')),
       );
       ProviderConnectionDto? degradedProvider;
-      await pumpUntilCondition(
-        tester,
-        () async {
-          final matches =
-              (await remoteClient.providers.listProviderConnections()).where(
-                (item) =>
-                    item.displayName == 'E2E Provider' &&
-                    item.status == ProviderConnectionStatus.degraded,
-              );
-          if (matches.length != 1) return false;
-          degradedProvider = matches.single;
-          return true;
-        },
-        'the custom provider to be persisted',
-      );
+      await pumpUntilCondition(tester, () async {
+        final matches = (await remoteClient.providers.listProviderConnections())
+            .where(
+              (item) =>
+                  item.displayName == 'E2E Provider' &&
+                  item.status == ProviderConnectionStatus.degraded,
+            );
+        if (matches.length != 1) return false;
+        degradedProvider = matches.single;
+        return true;
+      }, 'the custom provider to be persisted');
       expect(degradedProvider!.status, ProviderConnectionStatus.degraded);
       final activeProviderDetail = find
-          .byKey(
-            ValueKey<String>('provider-detail-${degradedProvider!.id}'),
-          )
+          .byKey(ValueKey<String>('provider-detail-${degradedProvider!.id}'))
           .hitTestable();
       await pumpUntil(tester, activeProviderDetail);
 
@@ -1909,9 +1805,8 @@ void main() {
         'E2E Provider Edited',
       );
       expect(
-        (await remoteClient.providers.listProviderModels(
-          providerConnection.id,
-        )).map((model) => model.id),
+        (await remoteClient.providers.listProviderModels(providerConnection.id))
+            .map((model) => model.id),
         containsAll(<String>[
           '${providerConnection.modelPrefix}/e2e-model',
           '${providerConnection.modelPrefix}/$selectedModelId',
@@ -1960,10 +1855,8 @@ void main() {
       );
       await pumpUntilCondition(
         tester,
-        () async =>
-            (await remoteClient.providers.listProviderConnections()).every(
-              (item) => item.id != providerConnection.id,
-            ),
+        () async => (await remoteClient.providers.listProviderConnections())
+            .every((item) => item.id != providerConnection.id),
         'custom provider to be deleted',
       );
       await pumpUntilGone(
@@ -1988,23 +1881,18 @@ void main() {
         find.byKey(const ValueKey<String>('provider-connect-submit')),
       );
       ProviderConnectionDto? connectedDeepSeek;
-      await pumpUntilCondition(
-        tester,
-        () async {
-          final matches =
-              (await remoteClient.providers.listProviderConnections())
-                  .where(
-                    (item) =>
-                        item.definitionId == 'deepseek' &&
-                        item.status == ProviderConnectionStatus.connected,
-                  )
-                  .toList();
-          if (matches.length != 1) return false;
-          connectedDeepSeek = matches.single;
-          return true;
-        },
-        'provider credential to connect',
-      );
+      await pumpUntilCondition(tester, () async {
+        final matches = (await remoteClient.providers.listProviderConnections())
+            .where(
+              (item) =>
+                  item.definitionId == 'deepseek' &&
+                  item.status == ProviderConnectionStatus.connected,
+            )
+            .toList();
+        if (matches.length != 1) return false;
+        connectedDeepSeek = matches.single;
+        return true;
+      }, 'provider credential to connect');
       await pumpUntil(
         tester,
         find.byKey(
@@ -2026,27 +1914,21 @@ void main() {
         find.byKey(const ValueKey<String>('provider-connect-submit')),
       );
       ProviderConnectionDto? connectedOllama;
-      await pumpUntilCondition(
-        tester,
-        () async {
-          final matches =
-              (await remoteClient.providers.listProviderConnections())
-                  .where(
-                    (item) =>
-                        item.definitionId == 'ollama' &&
-                        item.status == ProviderConnectionStatus.connected,
-                  )
-                  .toList();
-          if (matches.length != 1 ||
-              matches.single.credentialOrigin !=
-                  ProviderCredentialOrigin.none) {
-            return false;
-          }
-          connectedOllama = matches.single;
-          return true;
-        },
-        'no-auth provider to connect',
-      );
+      await pumpUntilCondition(tester, () async {
+        final matches = (await remoteClient.providers.listProviderConnections())
+            .where(
+              (item) =>
+                  item.definitionId == 'ollama' &&
+                  item.status == ProviderConnectionStatus.connected,
+            )
+            .toList();
+        if (matches.length != 1 ||
+            matches.single.credentialOrigin != ProviderCredentialOrigin.none) {
+          return false;
+        }
+        connectedOllama = matches.single;
+        return true;
+      }, 'no-auth provider to connect');
       await _disconnectProviderConnection(tester, connectedOllama!.id);
       await pumpUntilCondition(
         tester,
@@ -2103,10 +1985,7 @@ void main() {
         find.byKey(const ValueKey('new-workspace-worktree')),
         findsNothing,
       );
-      expect(
-        find.byKey(const ValueKey('new-workspace-branch')),
-        findsNothing,
-      );
+      expect(find.byKey(const ValueKey('new-workspace-branch')), findsNothing);
       // The send button is disabled until a model resolves, so tapping before
       // that does nothing and no session is ever created.
       await _waitForComposerReady(
@@ -2133,9 +2012,7 @@ void main() {
       )).singleWhere((session) => session.title == 'Directory e2e');
       // The new-workspace draft intentionally keeps its explicit chat model
       // across sessions, and that override must outrank the daemon default.
-      const retainedChatOverride = ModelSelectionDto(
-        modelId: 'openai/gpt-5.2',
-      );
+      const retainedChatOverride = ModelSelectionDto(modelId: 'openai/gpt-5.2');
       expect(daemonDefaultModel, isNot(retainedChatOverride));
       expect(directorySession.model, retainedChatOverride);
       final directoryWorktrees =
@@ -2279,10 +2156,7 @@ void main() {
 }
 
 final class _E2eAttachmentInput implements AttachmentInputPort {
-  _E2eAttachmentInput({
-    required this.imageBytes,
-    required this.documentBytes,
-  });
+  new({required this.imageBytes, required this.documentBytes});
 
   final Uint8List imageBytes;
   final List<int> documentBytes;
@@ -2333,38 +2207,28 @@ Future<ProviderConnectionDto> _waitForProviderModels(
   return models.isEmpty ? null : connection;
 }, '$displayName to discover models');
 
-Future<void> _waitForAgentPrompt(
-  TinestApi api,
-  String id,
-  String prompt,
-) => awaitCondition(
-  () async => (await api.agents.getAgentDefinition(id)).prompt == prompt,
-  'the external agent file to reload',
-);
+Future<void> _waitForAgentPrompt(TinestApi api, String id, String prompt) =>
+    awaitCondition(
+      () async => (await api.agents.getAgentDefinition(id)).prompt == prompt,
+      'the external agent file to reload',
+    );
 
-Future<AgentDefinitionDto> _waitForAgentDefinition(
-  TinestApi api,
-  String id,
-) => awaitValue(() async {
-  try {
-    return await api.agents.getAgentDefinition(id);
-  } on TinestClientException catch (error) {
-    if (error.code != 'request_failed') rethrow;
-    return null;
-  }
-}, 'Agent definition $id');
+Future<AgentDefinitionDto> _waitForAgentDefinition(TinestApi api, String id) =>
+    awaitValue(() async {
+      try {
+        return await api.agents.getAgentDefinition(id);
+      } on TinestClientException catch (error) {
+        if (error.code != 'request_failed') rethrow;
+        return null;
+      }
+    }, 'Agent definition $id');
 
-Future<void> _selectDaemon(
-  WidgetTester tester,
-  String label,
-) async {
+Future<void> _selectDaemon(WidgetTester tester, String label) async {
   // The picker now lives in the sidebar, so a settings route still animating
   // out carries its own copy. Settle it away before selecting the incoming
   // route and wait for the host-scoped content to finish replacing afterward.
   await tester.pumpAndSettle();
-  final dropdown = find.byKey(
-    const ValueKey<String>('settings-daemon-select'),
-  );
+  final dropdown = find.byKey(const ValueKey<String>('settings-daemon-select'));
   await tester.tap(dropdown.last);
   await tester.pumpAndSettle();
   await tester.tap(find.text(label).last);
@@ -2375,9 +2239,7 @@ Future<void> _disconnectProviderConnection(
   WidgetTester tester,
   String connectionId,
 ) async {
-  final detail = find.byKey(
-    ValueKey<String>('provider-detail-$connectionId'),
-  );
+  final detail = find.byKey(ValueKey<String>('provider-detail-$connectionId'));
   await pumpUntil(tester, detail.hitTestable());
   final disconnect = find
       .byKey(const ValueKey<String>('provider-connection-disconnect'))
@@ -2414,13 +2276,8 @@ Finder _trTextInput(String label) => find.descendant(
   matching: find.byType(EditableText),
 );
 
-Future<void> _openSettingsCategory(
-  WidgetTester tester,
-  String category,
-) async {
-  final row = find.byKey(
-    ValueKey<String>('settings-category-row-$category'),
-  );
+Future<void> _openSettingsCategory(WidgetTester tester, String category) async {
+  final row = find.byKey(ValueKey<String>('settings-category-row-$category'));
   await pumpUntil(tester, row.hitTestable());
   await tester.tap(row.hitTestable());
   await tester.pumpAndSettle();
@@ -2461,10 +2318,7 @@ Future<Finder> _centerSettingsAction(
     );
     await pumpUntil(tester, settingsLists);
     final settingsScrollable = find
-        .descendant(
-          of: settingsLists.first,
-          matching: find.byType(Scrollable),
-        )
+        .descendant(of: settingsLists.first, matching: find.byType(Scrollable))
         .first;
     await pumpUntil(tester, settingsScrollable);
     final position = tester.state<ScrollableState>(settingsScrollable).position;
@@ -2489,10 +2343,7 @@ Future<Finder> _centerSettingsAction(
     findsOneWidget,
     reason: 'the exact settings editor owns one actionable control',
   );
-  await Scrollable.ensureVisible(
-    tester.element(ownedAction),
-    alignment: 0.5,
-  );
+  await Scrollable.ensureVisible(tester.element(ownedAction), alignment: 0.5);
   await tester.pumpAndSettle();
   return ownedAction;
 }
@@ -2557,9 +2408,9 @@ Future<void> _writeSkill(
 Future<void> _writeInvalidSkill(String root, {required String id}) async {
   final directory = Directory('$root/$id');
   await directory.create(recursive: true);
-  await File('${directory.path}/SKILL.md').writeAsString(
-    '---\nname: $id\n---\n\nMissing the required description.\n',
-  );
+  await File(
+    '${directory.path}/SKILL.md',
+  ).writeAsString('---\nname: $id\n---\n\nMissing the required description.\n');
 }
 
 Future<void> _runGit(String path, List<String> arguments) async {
@@ -2609,9 +2460,7 @@ String _dartExecutable() {
   }
   final lookup = Process.runSync(
     Platform.isWindows ? 'where' : 'which',
-    <String>[
-      'dart',
-    ],
+    <String>['dart'],
   );
   if (lookup.exitCode == 0) {
     return (lookup.stdout as String).split(RegExp(r'\r?\n')).first.trim();
@@ -2629,24 +2478,18 @@ String _dartExecutable() {
 Future<void> _waitForComposerReady(
   WidgetTester tester,
   ValueKey<String> sendKey,
-) => pumpUntilCondition(
-  tester,
-  () {
-    final sendButton = find.byKey(sendKey);
-    if (sendButton.evaluate().length != 1) return false;
-    return tester.widget<TRIconButton>(sendButton).onPressed != null;
-  },
-  'the composer to have a model selected',
-);
+) => pumpUntilCondition(tester, () {
+  final sendButton = find.byKey(sendKey);
+  if (sendButton.evaluate().length != 1) return false;
+  return tester.widget<TRIconButton>(sendButton).onPressed != null;
+}, 'the composer to have a model selected');
 
 Future<void> _selectComposerModel(
   WidgetTester tester, {
   required String search,
   required String modelId,
 }) async {
-  final direct = find.byKey(
-    const ValueKey<String>('session-composer-model'),
-  );
+  final direct = find.byKey(const ValueKey<String>('session-composer-model'));
   if (direct.evaluate().isNotEmpty) {
     await tester.ensureVisible(direct);
     await tester.pumpAndSettle();
@@ -2657,22 +2500,15 @@ Future<void> _selectComposerModel(
     );
     await tester.pumpAndSettle();
     await tester.tap(
-      find.byKey(
-        const ValueKey<String>('session-composer-settings-model'),
-      ),
+      find.byKey(const ValueKey<String>('session-composer-settings-model')),
     );
   }
   await tester.pumpAndSettle();
   final searchField = find.byType(TRTextField).last;
-  await tester.enterText(
-    searchField,
-    search,
-  );
+  await tester.enterText(searchField, search);
   await tester.pumpAndSettle();
   final option = find.byKey(ValueKey<String>('model-option-$modelId'));
-  await tester.tap(
-    option,
-  );
+  await tester.tap(option);
   await tester.pumpAndSettle();
   await pumpUntilGone(tester, option);
   if (find
@@ -2812,12 +2648,7 @@ Future<void> _pumpUntilConditionWithSessionDiagnostics(
   Duration budget = e2eWaitBudget,
 }) async {
   try {
-    await pumpUntilCondition(
-      tester,
-      condition,
-      description,
-      budget: budget,
-    );
+    await pumpUntilCondition(tester, condition, description, budget: budget);
   } on TestFailure catch (failure) {
     final sessions = await api.sessions.listSessions(
       worktreeId: 'checkout-e2e',
@@ -2848,7 +2679,7 @@ Future<void> _pumpUntilConditionWithSessionDiagnostics(
 }
 
 final class _RestartableLauncher implements EmbeddedDaemonLauncher {
-  _RestartableLauncher({
+  new({
     required EmbeddedDaemonHandle initialHandle,
     required this.homeDirectory,
     required this.userHomeDirectory,
@@ -2903,20 +2734,17 @@ final class _RestartableLauncher implements EmbeddedDaemonLauncher {
 }
 
 final class _ExistingSession implements EmbeddedDaemonSession {
-  const _ExistingSession(this.handle, {required this.onStopped});
+  const new(this.handle, {required this.onStopped});
 
   final EmbeddedDaemonHandle handle;
   final void Function() onStopped;
 
   @override
-  DaemonCredentials get credentials => DaemonCredentials(
-    bearerToken: handle.bearerToken,
-  );
+  DaemonCredentials get credentials =>
+      DaemonCredentials(bearerToken: handle.bearerToken);
 
   @override
-  HostEndpoint get endpoint => HostEndpoint(
-    websocketUri: handle.boundEndpoint,
-  );
+  HostEndpoint get endpoint => HostEndpoint(websocketUri: handle.boundEndpoint);
 
   @override
   String get serverId => handle.serverId;
@@ -2973,7 +2801,7 @@ final class _PatchProvider implements ModelGateway {
 }
 
 final class _E2eModelDiscovery implements ProviderModelDiscovery {
-  const _E2eModelDiscovery();
+  const new();
 
   @override
   Future<List<String>> fetchModelIds(
@@ -3000,7 +2828,7 @@ final class _E2eModelDiscovery implements ProviderModelDiscovery {
 }
 
 final class _AgentE2eProvider implements ModelGateway {
-  _AgentE2eProvider(this.attachmentCapturePath);
+  new(this.attachmentCapturePath);
 
   final String attachmentCapturePath;
   int _providerFailures = 0;
@@ -3430,9 +3258,7 @@ final class _AgentE2eProvider implements ModelGateway {
       }
       yield const ModelTextDelta('MCP unavailable safely');
       yield const ModelResponseCompleted(
-        assistant: AssistantConversationItem(
-          text: 'MCP unavailable safely',
-        ),
+        assistant: AssistantConversationItem(text: 'MCP unavailable safely'),
       );
       return;
     }

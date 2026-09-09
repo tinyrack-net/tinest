@@ -20,7 +20,7 @@ const String mcpSecretSyntax = r'${secret:name}   ${env:NAME}';
 /// Two-pane editor for one daemon's MCP servers.
 class McpSettingsPage extends ConsumerWidget {
   /// Creates the MCP settings page.
-  const McpSettingsPage({
+  const new({
     required this.hostId,
     required this.paneController,
     required this.slot,
@@ -43,10 +43,7 @@ class McpSettingsPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
-    final provider = mcpServersControllerProvider(
-      hostId,
-      worktreeId,
-    );
+    final provider = mcpServersControllerProvider(hostId, worktreeId);
     final state = ref.watch(provider);
     return ListenableBuilder(
       listenable: paneController,
@@ -211,7 +208,7 @@ class McpSettingsPaneController extends SettingsPaneCoordinatorBase {
 enum _McpPaneDestination { create, existing }
 
 class _ServerList extends StatelessWidget {
-  const _ServerList({
+  const new({
     required this.state,
     required this.selectedId,
     required this.onSelected,
@@ -277,10 +274,7 @@ class _ServerList extends StatelessWidget {
   }
 }
 
-String _serverListDescription(
-  AppLocalizations l10n,
-  McpServerStateDto server,
-) {
+String _serverListDescription(AppLocalizations l10n, McpServerStateDto server) {
   if (server.shadowed) return l10n.mcpSettingsShadowed;
   return <String>[
     mcpStatusLabel(l10n, server.status),
@@ -290,7 +284,7 @@ String _serverListDescription(
 }
 
 class _StatusDot extends StatelessWidget {
-  const _StatusDot({required this.server});
+  const new({required this.server});
 
   final McpServerStateDto server;
 
@@ -329,7 +323,7 @@ String mcpStatusLabel(AppLocalizations l10n, McpServerStatus status) =>
     };
 
 class _ServerEditor extends ConsumerStatefulWidget {
-  const _ServerEditor({
+  const new({
     required this.hostId,
     required this.worktreeId,
     required this.existingIds,
@@ -440,13 +434,9 @@ class _ServerEditorState extends ConsumerState<_ServerEditor> {
                     children: <Widget>[
                       if (_readOnly)
                         TRAlert(
-                          key: const ValueKey<String>(
-                            'mcp-server-readonly',
-                          ),
+                          key: const ValueKey<String>('mcp-server-readonly'),
                           title: TRText.inherit(
-                            l10n.mcpSettingsProjectReadOnly(
-                              AppIdentity.name,
-                            ),
+                            l10n.mcpSettingsProjectReadOnly(AppIdentity.name),
                           ),
                           description: TRText.inherit(
                             l10n.mcpSettingsSource(server.sourcePath),
@@ -491,9 +481,8 @@ class _ServerEditorState extends ConsumerState<_ServerEditor> {
                   ),
                 ],
                 onValueChange: (value) => setState(
-                  () => _transport = McpTransportKind.values.byName(
-                    value.first,
-                  ),
+                  () =>
+                      _transport = McpTransportKind.values.byName(value.first),
                 ),
               ),
               const SizedBox(height: TRSpacing.large),
@@ -680,9 +669,7 @@ class _ServerEditorState extends ConsumerState<_ServerEditor> {
                                     flush: true,
                                   ),
                                   dense: true,
-                                  title: TRText.inherit(
-                                    template.uriTemplate,
-                                  ),
+                                  title: TRText.inherit(template.uriTemplate),
                                   subtitle: TRText.inherit(
                                     template.description ?? template.name ?? '',
                                   ),
@@ -693,9 +680,7 @@ class _ServerEditorState extends ConsumerState<_ServerEditor> {
                       if (server.diagnostics.isNotEmpty) ...<Widget>[
                         const SizedBox(height: TRSpacing.small),
                         TRCollapsible(
-                          key: const ValueKey<String>(
-                            'mcp-server-diagnostics',
-                          ),
+                          key: const ValueKey<String>('mcp-server-diagnostics'),
                           trigger: TRText(l10n.mcpSettingsDiagnostics),
                           content: Column(
                             children: <Widget>[
@@ -908,7 +893,7 @@ class _ServerEditorState extends ConsumerState<_ServerEditor> {
 
 /// Collects one secret, owning the controllers for as long as it is shown.
 class _SecretDialog extends StatefulWidget {
-  const _SecretDialog();
+  const new();
 
   @override
   State<_SecretDialog> createState() => _SecretDialogState();

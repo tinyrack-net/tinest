@@ -36,27 +36,24 @@ void main() {
     );
   });
 
-  test(
-    'Freezed outputs remove only trailing horizontal whitespace',
-    () {
-      const source = 'alpha  \r\nbeta\t\n  inner gap  \r\nomega\t';
+  test('Freezed outputs remove only trailing horizontal whitespace', () {
+    const source = 'alpha  \r\nbeta\t\n  inner gap  \r\nomega\t';
 
-      expect(
-        GeneratedSources.normalizeWhitespace(
-          path: r'packages\protocol\lib\src\models.freezed.dart',
-          source: source,
-        ),
-        'alpha\r\nbeta\n  inner gap\r\nomega',
-      );
-      expect(
-        GeneratedSources.normalizeWhitespace(
-          path: r'packages\protocol\lib\src\models.g.dart',
-          source: source,
-        ),
-        source,
-      );
-    },
-  );
+    expect(
+      GeneratedSources.normalizeWhitespace(
+        path: r'packages\protocol\lib\src\models.freezed.dart',
+        source: source,
+      ),
+      'alpha\r\nbeta\n  inner gap\r\nomega',
+    );
+    expect(
+      GeneratedSources.normalizeWhitespace(
+        path: r'packages\protocol\lib\src\models.g.dart',
+        source: source,
+      ),
+      source,
+    );
+  });
 
   test('every generated Dart family is sent through the formatter', () {
     expect(
@@ -94,9 +91,6 @@ end_of_record
     expect(filtered, isNot(contains('database.g.dart')));
     expect(filtered, contains('plugin_service.dart'));
     expect(filtered, contains('DA:1,1'));
-    expect(
-      'end_of_record'.allMatches(filtered),
-      hasLength(1),
-    );
+    expect('end_of_record'.allMatches(filtered), hasLength(1));
   });
 }

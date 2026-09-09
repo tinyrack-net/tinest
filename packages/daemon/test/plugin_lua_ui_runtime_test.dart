@@ -126,13 +126,11 @@ void main() {
           hostPrimitives: _collaborationUiPrimitives(
             calls: collaborationHostCalls,
           ),
-          definitions: (_) async => _definition(
-            const <String>[
-              'tinest.plan',
-              'tinest.goal',
-              'tinest.collaboration',
-            ],
-          ),
+          definitions: (_) async => _definition(const <String>[
+            'tinest.plan',
+            'tinest.goal',
+            'tinest.collaboration',
+          ]),
         ),
       );
 
@@ -185,10 +183,7 @@ void main() {
 
       expect(plan.root, containsPair('type', 'section'));
       final planChildren = plan.root['children']! as List<Object?>;
-      expect(
-        planChildren.first,
-        containsPair('text', contains('Ship it')),
-      );
+      expect(planChildren.first, containsPair('text', contains('Ship it')));
       expect(goal.root, containsPair('type', 'badge'));
       expect(goal.root, containsPair('text', 'active'));
       expect(goalDialog.root, containsPair('type', 'section'));
@@ -373,7 +368,7 @@ void main() {
             definitions: (_) async => _definition(const <String>[]),
           ),
         );
-        return service.render(
+        return await service.render(
           PluginUiRenderParamsDto(
             agentId: 'agent',
             pluginId: bundle.descriptor.id,
@@ -1097,9 +1092,8 @@ return tinest.plugin.define({ui = {card}, actions = {wait}})
         grants: grants,
         state: MemoryPluginStateStore(),
         hostPrimitives: host.primitives,
-        definitions: (_) async => _definition(
-          const <String>['acme.first', 'acme.second'],
-        ),
+        definitions: (_) async =>
+            _definition(const <String>['acme.first', 'acme.second']),
       ),
     );
     final rendered = await service.render(
@@ -1308,7 +1302,7 @@ PluginBundle _pluginBundle({
 }
 
 final class _RevisionDescriptorReader implements PluginDescriptorReader {
-  const _RevisionDescriptorReader(this.revisions);
+  const new(this.revisions);
   final PluginRevisionCatalog revisions;
 
   @override
@@ -1340,33 +1334,30 @@ HostPrimitiveRegistry _collaborationUiPrimitives({
       'parent_session_id': 'root-session',
     },
   ],
-}) => HostPrimitiveRegistry(
-  <HostPrimitive<Object?, Object?>>[
-    HostPrimitiveContracts.collaborationListAgents
-        .bind(
-          decode: _object,
-          invoke: (arguments, _) {
-            calls?.add(Map<String, Object?>.unmodifiable(arguments));
-            return <String, Object?>{'agents': agents};
-          },
-        )
-        .erased,
-  ],
-);
+}) => HostPrimitiveRegistry(<HostPrimitive<Object?, Object?>>[
+  HostPrimitiveContracts.collaborationListAgents
+      .bind(
+        decode: _object,
+        invoke: (arguments, _) {
+          calls?.add(Map<String, Object?>.unmodifiable(arguments));
+          return <String, Object?>{'agents': agents};
+        },
+      )
+      .erased,
+]);
 
-HostPrimitiveRegistry _immediateClockUiPrimitives() => HostPrimitiveRegistry(
-  <HostPrimitive<Object?, Object?>>[
-    HostPrimitiveContracts.clockSleep
-        .bind(
-          decode: _object,
-          invoke: (_, _) => const <String, Object?>{'completed': true},
-        )
-        .erased,
-  ],
-);
+HostPrimitiveRegistry _immediateClockUiPrimitives() =>
+    HostPrimitiveRegistry(<HostPrimitive<Object?, Object?>>[
+      HostPrimitiveContracts.clockSleep
+          .bind(
+            decode: _object,
+            invoke: (_, _) => const <String, Object?>{'completed': true},
+          )
+          .erased,
+    ]);
 
 final class _BlockingClockUiHost {
-  _BlockingClockUiHost() {
+  new() {
     primitives = HostPrimitiveRegistry(<HostPrimitive<Object?, Object?>>[
       HostPrimitiveContracts.clockSleep
           .bind(decode: _object, invoke: _sleep)
@@ -1403,7 +1394,7 @@ final class _BlockingClockUiHost {
 }
 
 final class _OrderedUiHost {
-  _OrderedUiHost() {
+  new() {
     primitives = HostPrimitiveRegistry(<HostPrimitive<Object?, Object?>>[
       HostPrimitiveContracts.clockSleep
           .bind(decode: _object, invoke: _sleep)
@@ -1433,7 +1424,7 @@ Map<String, Object?> _object(Object? value) {
 }
 
 final class _MapLoader implements PluginBundleLoader {
-  const _MapLoader(this.bundles);
+  const new(this.bundles);
   final Map<String, PluginBundle> bundles;
 
   @override
@@ -1441,7 +1432,7 @@ final class _MapLoader implements PluginBundleLoader {
 }
 
 final class _MutableLoader implements PluginBundleLoader {
-  _MutableLoader(this.bundle);
+  new(this.bundle);
   PluginBundle bundle;
 
   @override

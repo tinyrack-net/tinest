@@ -45,9 +45,7 @@ List<RpcBindingDescriptor> sessionRpcBindings({
           message:
               'New sessions require an active primary agent definition, and '
               '"${definition.name}" is not one.',
-          details: <String, dynamic>{
-            'agentDefinitionId': definition.id,
-          },
+          details: <String, dynamic>{'agentDefinitionId': definition.id},
         );
       }
       if (request.model case final selected?) {

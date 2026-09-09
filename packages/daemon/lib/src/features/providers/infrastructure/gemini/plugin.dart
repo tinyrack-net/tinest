@@ -59,7 +59,7 @@ const List<ProviderCatalogModel> googleBundledModels = <ProviderCatalogModel>[
 /// Built-in Google public Gemini API adapter.
 final class GoogleGeminiAdapter extends ProviderAdapter {
   /// Creates the adapter.
-  const GoogleGeminiAdapter({this.wire = const GeminiInteractionsWire()});
+  const new({this.wire = const GeminiInteractionsWire()});
 
   /// Interactions wire shared with custom connections.
   final GeminiInteractionsWire wire;

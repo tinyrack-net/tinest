@@ -12,12 +12,12 @@ import 'package:daemon/src/shared/ports/daemon_ports.dart';
 import 'package:daemon/src/transport/rpc/binding.dart';
 import 'package:drift/native.dart';
 import 'package:file/memory.dart';
-import 'package:platform/platform.dart';
+import 'package:platform/testing.dart';
 import 'package:protocol/protocol.dart';
 import 'package:test/test.dart';
 
 final class _FixedClock implements Clock {
-  const _FixedClock(this.now);
+  const new(this.now);
 
   final DateTime now;
 
@@ -131,11 +131,7 @@ void main() {
     rootSessionId: rootSessionId,
     lifecycle: lifecycle,
     permissionMode: permissionMode,
-    model:
-        model ??
-        const ModelSelectionDto(
-          modelId: 'openai/gpt-test',
-        ),
+    model: model ?? const ModelSelectionDto(modelId: 'openai/gpt-test'),
     createdAt: now,
     updatedAt: now,
   );
@@ -157,7 +153,7 @@ void main() {
         skills: _EmptySkills(),
         callId: 'turn-1',
         fileSystem: fileSystem,
-        platform: FakePlatform(operatingSystem: 'linux'),
+        platform: TestPlatform.native(operatingSystem: 'linux'),
         session: caller,
         definition: definition,
         collaboration: service,
@@ -211,9 +207,8 @@ void main() {
         'reviewer' => _reviewerDefinition,
         _ => throw const FormatException('Unknown agent definition.'),
       },
-      defaultModel: () async => const ModelSelectionDto(
-        modelId: 'openai/gpt-default',
-      ),
+      defaultModel: () async =>
+          const ModelSelectionDto(modelId: 'openai/gpt-default'),
       validateModel: (modelId) async {
         validatedModels.add(('', modelId));
         if (modelId == 'missing-model') {
@@ -440,21 +435,15 @@ void main() {
         'root',
         '/root/controlled',
       ))!;
-      expect(
-        child.model,
-        const ModelSelectionDto(modelId: 'openai/gpt-test'),
-      );
-      expect(
-        child.modelControls,
-        <String, ModelControlValueDto>{
-          'reasoning_effort': const ModelControlValueDto.stringValue(
-            value: 'high',
-          ),
-          'service_tier': const ModelControlValueDto.stringValue(
-            value: 'priority',
-          ),
-        },
-      );
+      expect(child.model, const ModelSelectionDto(modelId: 'openai/gpt-test'));
+      expect(child.modelControls, <String, ModelControlValueDto>{
+        'reasoning_effort': const ModelControlValueDto.stringValue(
+          value: 'high',
+        ),
+        'service_tier': const ModelControlValueDto.stringValue(
+          value: 'priority',
+        ),
+      });
     });
 
     test('rejects agent types outside the caller allowlist', () async {
@@ -1256,9 +1245,8 @@ void main() {
       expect(
         registry.descriptors
             .where(
-              (descriptor) => descriptor.operation.startsWith(
-                'host.collaboration.',
-              ),
+              (descriptor) =>
+                  descriptor.operation.startsWith('host.collaboration.'),
             )
             .map((descriptor) => descriptor.toJson()),
         <Map<String, Object?>>[
@@ -1328,10 +1316,7 @@ void main() {
 
       final invalid = await registry.invoke(
         'host.collaboration.spawn_agent',
-        const <String, Object?>{
-          'task_name': 'BAD NAME',
-          'message': 'x',
-        },
+        const <String, Object?>{'task_name': 'BAD NAME', 'message': 'x'},
         collaborationContext(const <String>{'collaboration.spawn'}),
       );
       expect(invalid.ok, isFalse);
@@ -1518,7 +1503,7 @@ final class _UnusedAttachmentReader implements AttachmentReader {
 }
 
 final class _PrimitiveClock implements AgentClock {
-  const _PrimitiveClock(this.now);
+  const new(this.now);
 
   final DateTime now;
 

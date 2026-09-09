@@ -16,9 +16,7 @@ List<RpcBindingDescriptor> mcpRpcBindings({
         : await worktrees.getById(request.worktreeId!);
     final root = worktree?.path;
     if (root != null) await runtime.ensureProject(root);
-    return McpServersResultDto(
-      servers: runtime.states(workspaceRoot: root),
-    );
+    return McpServersResultDto(servers: runtime.states(workspaceRoot: root));
   }),
   RpcBinding(mcpAddServerProcedure, (request, _) async {
     return McpServerStateResultDto(state: await servers.add(request.server));

@@ -11,11 +11,7 @@ import 'package:cliweave/cliweave.dart';
 /// them.
 final class DaemonConnectionFlags {
   /// Creates one resolved flag set.
-  const DaemonConnectionFlags({
-    required this.home,
-    required this.listen,
-    required this.token,
-  });
+  const new({required this.home, required this.listen, required this.token});
 
   /// Configuration directory whose `v5/secrets.json` holds credentials.
   final String? home;
@@ -68,7 +64,7 @@ FlagSet<DaemonConnectionFlags, TinestCliContext> daemonConnectionFlagSet() {
 /// so it is reported as a message and mapped to a connection exit code.
 final class DaemonConnectionException implements Exception {
   /// Creates a connection failure carrying [message].
-  const DaemonConnectionException(this.message);
+  const new(this.message);
 
   /// Human-readable explanation.
   final String message;
@@ -102,7 +98,7 @@ Future<TinestClient> connectDaemon(
       'first, or pass --token.',
     );
   }
-  return context.connectClient(
+  return await context.connectClient(
     // A daemon bound to every interface is still reached over loopback.
     host: host == '0.0.0.0' ? '127.0.0.1' : host,
     port: port,

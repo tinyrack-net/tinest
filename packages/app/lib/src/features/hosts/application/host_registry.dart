@@ -6,7 +6,7 @@ import 'package:app/src/features/hosts/domain/host_ports.dart';
 import 'package:client/client.dart';
 
 final class _RuntimeResource {
-  _RuntimeResource({required this.generation});
+  new({required this.generation});
 
   int generation;
   int retryAttempt = 0;
@@ -46,7 +46,7 @@ final class _CleanupFailures {
 /// Owns every daemon runtime while keeping connection failures independent.
 final class HostRegistry {
   /// Creates a host registry from typed persistence and transport ports.
-  factory HostRegistry({
+  factory({
     required AppSettingsRepository store,
     required HostClientFactory clientFactory,
     required AppIdGenerator ids,
@@ -76,7 +76,7 @@ final class HostRegistry {
     relayPairer: relayPairer,
   );
 
-  HostRegistry._({
+  new _({
     required this._settings,
     required this._profiles,
     required this._credentials,
@@ -388,10 +388,7 @@ final class HostRegistry {
   }
 
   /// Enables or disables startup connection for one remote profile.
-  Future<void> setAutoConnect(
-    String profileId, {
-    required bool enabled,
-  }) async {
+  Future<void> setAutoConnect(String profileId, {required bool enabled}) async {
     final profile = _profile(profileId);
     final updated = profile.copyWith(
       autoConnect: enabled,
@@ -704,11 +701,7 @@ final class HostRegistry {
     for (final hostId in List<String>.of(_resources.keys)) {
       await _stopRuntime(hostId);
     }
-    _emit(
-      value.copyWith(
-        runtimes: const <String, HostRuntimeSnapshot>{},
-      ),
-    );
+    _emit(value.copyWith(runtimes: const <String, HostRuntimeSnapshot>{}));
 
     final previous = value.settings;
     try {
@@ -772,10 +765,7 @@ final class HostRegistry {
     );
   }
 
-  Future<void> _startEmbedded(
-    EmbeddedDaemonExposure exposure,
-    int port,
-  ) async {
+  Future<void> _startEmbedded(EmbeddedDaemonExposure exposure, int port) async {
     final launcher = _embeddedLauncher;
     if (launcher == null || _closed) return;
     try {
@@ -1117,9 +1107,7 @@ final class HostRegistry {
               if (completer.isCompleted) {
                 await api.close();
               } else {
-                completer.complete(
-                  _ConnectedPath(connection, credential, api),
-                );
+                completer.complete(_ConnectedPath(connection, credential, api));
               }
             })
             .catchError((Object error) {
@@ -1214,9 +1202,7 @@ final class HostRegistry {
     failures.throwFirst();
   }
 
-  Future<void> _serializeEmbedded(
-    Future<void> Function() operation,
-  ) {
+  Future<void> _serializeEmbedded(Future<void> Function() operation) {
     final result = _embeddedLifecycle.then<void>((_) => operation());
     _embeddedLifecycle = result.then<void>(
       (_) {},
@@ -1330,7 +1316,7 @@ String _defaultRelayLabel(String serverId) =>
     serverId.length <= 12 ? serverId : serverId.substring(0, 12);
 
 final class _ConnectedPath {
-  const _ConnectedPath(this.connection, this.credential, this.api);
+  const new(this.connection, this.credential, this.api);
 
   final HostConnection connection;
   final HostConnectionCredential credential;

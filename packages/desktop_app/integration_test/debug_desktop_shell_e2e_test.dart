@@ -77,20 +77,15 @@ void main() {
 Future<void> _waitForWindowVisibility(
   DesktopWindow window, {
   required bool visible,
-}) => awaitCondition(
-  () async {
-    // Both the native window and the app-level notifier must agree: bare
-    // Xvfb runs without a window manager, which can drop a map-state
-    // request outright, and a stale native event can flip the notifier
-    // after the command settled. Show and hide are idempotent and republish
-    // the app-level state, so reissue instead of waiting on a lost edge.
-    if (await window.isVisible() == visible &&
-        window.visible.value == visible) {
-      return true;
-    }
-    await (visible ? window.show() : window.hide());
-    return await window.isVisible() == visible &&
-        window.visible.value == visible;
-  },
-  'the window to become ${visible ? 'visible' : 'hidden'}',
-);
+}) => awaitCondition(() async {
+  // Both the native window and the app-level notifier must agree: bare
+  // Xvfb runs without a window manager, which can drop a map-state
+  // request outright, and a stale native event can flip the notifier
+  // after the command settled. Show and hide are idempotent and republish
+  // the app-level state, so reissue instead of waiting on a lost edge.
+  if (await window.isVisible() == visible && window.visible.value == visible) {
+    return true;
+  }
+  await (visible ? window.show() : window.hide());
+  return await window.isVisible() == visible && window.visible.value == visible;
+}, 'the window to become ${visible ? 'visible' : 'hidden'}');

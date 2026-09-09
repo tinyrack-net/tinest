@@ -15,7 +15,7 @@ const String openAIChatCompletionsWireId = 'openai-chat-completions';
 /// differ only in the streaming endpoint the adapter speaks.
 abstract base class OpenAICompatibleWire implements ProviderWireProtocol {
   /// Allows subclasses to be const.
-  const OpenAICompatibleWire({this.dioFactory});
+  const new({this.dioFactory});
 
   /// Injectable HTTP client factory used by deterministic contract tests.
   final Dio Function(ProviderEndpoint endpoint)? dioFactory;
@@ -145,7 +145,7 @@ abstract base class OpenAICompatibleWire implements ProviderWireProtocol {
 /// The OpenAI Responses streaming API.
 final class OpenAIResponsesWire extends OpenAICompatibleWire {
   /// Creates the Responses wire protocol.
-  const OpenAIResponsesWire({super.dioFactory});
+  const new({super.dioFactory});
 
   @override
   String get id => openAIResponsesWireId;
@@ -175,7 +175,7 @@ final class OpenAIResponsesWire extends OpenAICompatibleWire {
 /// The OpenAI Chat Completions streaming API.
 final class OpenAIChatCompletionsWire extends OpenAICompatibleWire {
   /// Creates the Chat Completions wire protocol.
-  const OpenAIChatCompletionsWire({super.dioFactory});
+  const new({super.dioFactory});
 
   @override
   String get id => openAIChatCompletionsWireId;

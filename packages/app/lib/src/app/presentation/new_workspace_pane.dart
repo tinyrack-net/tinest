@@ -39,7 +39,7 @@ import 'package:tinyrack_ui/tinyrack_ui.dart';
 /// One registered repository together with the daemon that owns it.
 final class NewWorkspaceProject {
   /// Creates a selectable project.
-  const NewWorkspaceProject({
+  const new({
     required this.hostId,
     required this.hostLabel,
     required this.workspace,
@@ -104,10 +104,7 @@ List<NewWorkspaceProject> collectProjects(
 /// Centered composer that starts a session on a new or existing worktree.
 class NewWorkspacePane extends ConsumerStatefulWidget {
   /// Creates the new-workspace composer.
-  const NewWorkspacePane({
-    required this.onStarted,
-    super.key,
-  });
+  const new({required this.onStarted, super.key});
 
   /// Called with the selection and session created by the first prompt.
   final void Function(WorkspaceSelection selection, SessionDto session)
@@ -175,9 +172,7 @@ class _NewWorkspacePaneState extends ConsumerState<NewWorkspacePane> {
     final showGitTargets = project != null && isGitProject;
     final branchesAsync = project == null || !isGitProject
         ? const AsyncValue<List<GitBranchDto>>.data(<GitBranchDto>[])
-        : ref.watch(
-            gitBranchesProvider(project.hostId, project.workspace.id),
-          );
+        : ref.watch(gitBranchesProvider(project.hostId, project.workspace.id));
     final branches = branchesAsync.value ?? const <GitBranchDto>[];
     // Remote refs win by default so a new branch starts from the latest push.
     final baseBranch = _baseBranch ?? defaultBaseBranch(branches);
@@ -395,12 +390,8 @@ class _NewWorkspacePaneState extends ConsumerState<NewWorkspacePane> {
                   const SizedBox(width: TRSpacing.small),
                   TRText(
                     _stage == _NewWorkspaceStage.creatingWorktree
-                        ? AppLocalizations.of(
-                            context,
-                          ).workspaceCreatingWorktree
-                        : AppLocalizations.of(
-                            context,
-                          ).workspaceStartingSession,
+                        ? AppLocalizations.of(context).workspaceCreatingWorktree
+                        : AppLocalizations.of(context).workspaceStartingSession,
                     variant: TRTextVariant.bodySm,
                     color: TRTextColor.muted,
                   ),
@@ -922,9 +913,9 @@ class _NewWorkspacePaneState extends ConsumerState<NewWorkspacePane> {
   /// sees branches left behind by archived checkouts.
   Iterable<String> _takenBranchNames(NewWorkspaceProject project) => <String>[
     ...project.worktrees.map((item) => item.branch ?? item.name),
-    ..._branches(
-      project,
-    ).where((branch) => !branch.isRemote).map((branch) => branch.name),
+    ..._branches(project)
+        .where((branch) => !branch.isRemote)
+        .map((branch) => branch.name),
   ];
 
   /// Creates the session on [selection] and hands it to the caller.

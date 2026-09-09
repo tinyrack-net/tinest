@@ -64,11 +64,7 @@ void main() {
     final backend = _AgentBackend();
 
     await expectLater(
-      agentReset(
-        backend: backend,
-        output: StringBuffer(),
-        id: 'reviewer',
-      ),
+      agentReset(backend: backend, output: StringBuffer(), id: 'reviewer'),
       throwsA(isA<FormatException>()),
     );
     expect(backend.resetIds, isEmpty);
@@ -103,7 +99,7 @@ void main() {
 }
 
 final class _AgentBackend implements AgentCliBackend {
-  _AgentBackend({this.includeStale = false});
+  new({this.includeStale = false});
 
   final bool includeStale;
   final List<String> applied = <String>[];
@@ -116,9 +112,7 @@ final class _AgentBackend implements AgentCliBackend {
     name: id,
     description: '',
     mode: id == 'tinest' ? AgentMode.primary : AgentMode.subagent,
-    model: const AgentModelSelectionDto(
-      source: AgentModelSource.session,
-    ),
+    model: const AgentModelSelectionDto(source: AgentModelSource.session),
     driverId: 'tinest.standard/driver',
     extensionIds: const <String>[],
     toolIds: const <String>[],

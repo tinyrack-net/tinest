@@ -20,7 +20,7 @@ const int maxTurnAttachmentCount = 10;
 /// Result of streaming bytes into a temporary attachment object.
 final class StagedAttachment {
   /// Creates a staged payload description.
-  const StagedAttachment({
+  const new({
     required this.id,
     required this.byteSize,
     required this.sha256,
@@ -72,7 +72,7 @@ abstract interface class AttachmentBlobStore {
 /// Native atomic attachment payload storage.
 final class NativeAttachmentBlobStore implements AttachmentBlobStore {
   /// Creates storage rooted at [rootPath].
-  NativeAttachmentBlobStore(this.rootPath);
+  new(this.rootPath);
 
   /// Directory containing opaque payload names.
   final String rootPath;
@@ -167,7 +167,7 @@ final class _DigestSink implements Sink<Digest> {
 }
 
 final class _BytePatternScanner {
-  _BytePatternScanner(this.pattern);
+  new(this.pattern);
 
   final List<int> pattern;
   var _matchedBytes = 0;
@@ -192,19 +192,14 @@ final class _BytePatternScanner {
 /// Validates, persists, resolves, and cleans daemon-owned attachments.
 final class AttachmentService {
   /// Creates the attachment application service.
-  factory AttachmentService({
+  factory({
     required AttachmentRepository repository,
     required AttachmentBlobStore blobs,
     required Clock clock,
     required IdGenerator ids,
   }) => AttachmentService._(repository, blobs, clock, ids);
 
-  const AttachmentService._(
-    this._repository,
-    this._blobs,
-    this._clock,
-    this._ids,
-  );
+  const new _(this._repository, this._blobs, this._clock, this._ids);
 
   final AttachmentRepository _repository;
   final AttachmentBlobStore _blobs;
@@ -266,10 +261,7 @@ final class AttachmentService {
   }
 
   /// Copies a workspace-produced file into the immutable store.
-  Future<ConversationAttachment> publishFile(
-    String turnId,
-    String path,
-  ) async {
+  Future<ConversationAttachment> publishFile(String turnId, String path) async {
     final file = File(path);
     final size = await file.length();
     final attachment = await upload(
@@ -291,7 +283,7 @@ final class AttachmentService {
       throw const FormatException('A turn accepts at most 10 attachments.');
     }
     final metadata = await _repository.getByIds(ids);
-    return Future.wait(
+    return await Future.wait(
       metadata.map((item) async {
         if (!hydrate) return _conversationAttachment(item);
         final builder = BytesBuilder(copy: false);
@@ -354,7 +346,7 @@ final class AttachmentService {
 /// Session-scoped adapter exposed to the `read_attachment` tool.
 final class SessionAttachmentReader implements AttachmentReader {
   /// Creates a reader constrained to one session.
-  const SessionAttachmentReader(this._service, this._sessionId);
+  const new(this._service, this._sessionId);
 
   final AttachmentService _service;
   final String _sessionId;
@@ -367,7 +359,7 @@ final class SessionAttachmentReader implements AttachmentReader {
 /// Turn-bound adapter exposed to the `attach_file` agent tool.
 final class TurnAttachmentPublisher implements AttachmentPublisher {
   /// Creates a publisher scoped to one turn identifier.
-  const TurnAttachmentPublisher(this._service, this._turnId);
+  const new(this._service, this._turnId);
 
   final AttachmentService _service;
   final String _turnId;
@@ -380,7 +372,7 @@ final class TurnAttachmentPublisher implements AttachmentPublisher {
 /// Signals that an attachment identifier has no persisted metadata.
 final class AttachmentNotFoundException implements Exception {
   /// Creates an attachment-not-found error.
-  const AttachmentNotFoundException(this.id);
+  const new(this.id);
 
   /// Missing attachment identifier.
   final String id;
@@ -428,9 +420,8 @@ String _validatedMediaType(
     }
     return detected;
   }
-  if (!RegExp(
-    r'^[a-z0-9][a-z0-9!#$&^_.+-]*/[a-z0-9][a-z0-9!#$&^_.+-]*$',
-  ).hasMatch(declared)) {
+  if (!RegExp(r'^[a-z0-9][a-z0-9!#$&^_.+-]*/[a-z0-9][a-z0-9!#$&^_.+-]*$')
+      .hasMatch(declared)) {
     return 'application/octet-stream';
   }
   return declared;
@@ -439,9 +430,8 @@ String _validatedMediaType(
 String? _imageMime(Uint8List bytes) {
   bool begins(List<int> signature) =>
       bytes.length >= signature.length &&
-      Iterable<int>.generate(signature.length).every(
-        (index) => bytes[index] == signature[index],
-      );
+      Iterable<int>.generate(signature.length)
+          .every((index) => bytes[index] == signature[index]);
   if (begins(<int>[0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a])) {
     return 'image/png';
   }

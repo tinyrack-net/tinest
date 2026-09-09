@@ -68,7 +68,7 @@ const List<ProviderCatalogModel> anthropicBundledModels =
 /// Built-in Anthropic public API adapter.
 final class AnthropicAdapter extends ProviderAdapter {
   /// Creates the adapter.
-  const AnthropicAdapter({this.wire = const AnthropicMessagesWire()});
+  const new({this.wire = const AnthropicMessagesWire()});
 
   /// Messages wire shared with custom connections.
   final AnthropicMessagesWire wire;

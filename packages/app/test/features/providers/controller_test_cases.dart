@@ -27,9 +27,7 @@ void _registerProvidersControllerTests() {
       await Future<void>.delayed(Duration.zero);
       final provider = providerSettingsControllerProvider('server');
       final notifier = container.read(provider.notifier);
-      final initial = await container.read(
-        provider.future,
-      );
+      final initial = await container.read(provider.future);
       expect(initial!.catalog.definitions.first.id, 'openai');
       expect(initial.connections.single.id, 'openai');
 
@@ -38,16 +36,10 @@ void _registerProvidersControllerTests() {
         container.read(provider).value!.models['openai'],
         <ProviderModelDto>[model],
       );
-      final connected = await notifier.connectApiKey(
-        'deepseek',
-        'secret',
-      );
+      final connected = await notifier.connectApiKey('deepseek', 'secret');
       expect(connected.definitionId, 'deepseek');
       expect(api.credentials['deepseek'], 'secret');
-      final attempt = await notifier.startAuth(
-        'openai',
-        'chatgpt-browser',
-      );
+      final attempt = await notifier.startAuth('openai', 'chatgpt-browser');
       expect(attempt.status, ProviderAuthAttemptStatus.awaitingUser);
       await notifier.cancelAuth(attempt.id);
       await notifier.refreshCatalog();
@@ -134,54 +126,50 @@ void _registerProvidersControllerTests() {
     tags: const <String>['feature_test__provider_catalog__unit'],
   );
 
-  test(
-    'MCP reload ignores an older response that completes last',
-    () async {
-      const config = McpServerConfigDto(
-        id: 'e2e',
-        transport: McpTransportKind.stdio,
-        command: '/missing',
-      );
-      const connecting = McpServerStateDto(
-        config: config,
-        scope: McpConfigScope.user,
-        sourcePath: '/config/mcp.json',
-        status: McpServerStatus.connecting,
-      );
-      const failed = McpServerStateDto(
-        config: config,
-        scope: McpConfigScope.user,
-        sourcePath: '/config/mcp.json',
-        status: McpServerStatus.failed,
-        error: 'planned process failure',
-      );
-      final api = FakeTinestApi();
-      final container = _container(api);
-      addTearDown(container.dispose);
-      await container.read(hostRegistryControllerProvider.future);
-      await Future<void>.delayed(Duration.zero);
-      final provider = mcpServersControllerProvider('server', null);
-      await container.read(provider.future);
+  test('MCP reload ignores an older response that completes last', () async {
+    const config = McpServerConfigDto(
+      id: 'e2e',
+      transport: McpTransportKind.stdio,
+      command: '/missing',
+    );
+    const connecting = McpServerStateDto(
+      config: config,
+      scope: McpConfigScope.user,
+      sourcePath: '/config/mcp.json',
+      status: McpServerStatus.connecting,
+    );
+    const failed = McpServerStateDto(
+      config: config,
+      scope: McpConfigScope.user,
+      sourcePath: '/config/mcp.json',
+      status: McpServerStatus.failed,
+      error: 'planned process failure',
+    );
+    final api = FakeTinestApi();
+    final container = _container(api);
+    addTearDown(container.dispose);
+    await container.read(hostRegistryControllerProvider.future);
+    await Future<void>.delayed(Duration.zero);
+    final provider = mcpServersControllerProvider('server', null);
+    await container.read(provider.future);
 
-      final older = Completer<List<McpServerStateDto>>();
-      final newer = Completer<List<McpServerStateDto>>();
-      api.mcpListResponses.addAll(<Future<List<McpServerStateDto>>>[
-        older.future,
-        newer.future,
-      ]);
-      final first = container.read(provider.notifier).refresh();
-      final second = container.read(provider.notifier).refresh();
-      newer.complete(const <McpServerStateDto>[failed]);
-      await second;
-      older.complete(const <McpServerStateDto>[connecting]);
-      await first;
+    final older = Completer<List<McpServerStateDto>>();
+    final newer = Completer<List<McpServerStateDto>>();
+    api.mcpListResponses.addAll(<Future<List<McpServerStateDto>>>[
+      older.future,
+      newer.future,
+    ]);
+    final first = container.read(provider.notifier).refresh();
+    final second = container.read(provider.notifier).refresh();
+    newer.complete(const <McpServerStateDto>[failed]);
+    await second;
+    older.complete(const <McpServerStateDto>[connecting]);
+    await first;
 
-      expect(container.read(provider).value!.servers, <McpServerStateDto>[
-        failed,
-      ]);
-    },
-    tags: const <String>['feature_test__mcp_server_management__unit'],
-  );
+    expect(container.read(provider).value!.servers, <McpServerStateDto>[
+      failed,
+    ]);
+  }, tags: const <String>['feature_test__mcp_server_management__unit']);
 
   test(
     'MCP add exposes the created server before a newer reload finishes',

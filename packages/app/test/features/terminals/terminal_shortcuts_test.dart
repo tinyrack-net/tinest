@@ -274,9 +274,7 @@ void main() {
       ),
     );
     await tester.pumpAndSettle();
-    await tester.tap(
-      find.byKey(const ValueKey<String>('tr-terminal-surface')),
-    );
+    await tester.tap(find.byKey(const ValueKey<String>('tr-terminal-surface')));
     await tester.pump(kDoubleTapTimeout);
 
     // Ctrl+Shift+C with nothing selected copies nothing and sends nothing.
@@ -335,9 +333,7 @@ void main() {
       ),
     );
     await tester.pumpAndSettle();
-    await tester.tap(
-      find.byKey(const ValueKey<String>('tr-terminal-surface')),
-    );
+    await tester.tap(find.byKey(const ValueKey<String>('tr-terminal-surface')));
     await tester.pump(kDoubleTapTimeout);
 
     for (final value in <TextEditingValue>[
@@ -501,10 +497,7 @@ void main() {
         await tester.pump();
       }
 
-      expect(
-        api.terminalWrites.map((write) => write.data).join(),
-        '안녕하세요. ',
-      );
+      expect(api.terminalWrites.map((write) => write.data).join(), '안녕하세요. ');
       expect(
         tester.testTextInput.log.where(
           (call) => call.method == 'TextInput.setEditingState',

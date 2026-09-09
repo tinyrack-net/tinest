@@ -24,31 +24,28 @@ void main() {
     final errors = <Object?>[];
 
     expect(
-      await runTinestQuality(
-        const <String>['missing'],
-        error: errors.add,
-      ),
+      await runTinestQuality(const <String>['missing'], error: errors.add),
       64,
     );
     expect(
-      await runTinestQuality(
-        const <String>['verify', '--unknown'],
-        error: errors.add,
-      ),
+      await runTinestQuality(const <String>[
+        'verify',
+        '--unknown',
+      ], error: errors.add),
       64,
     );
     expect(
-      await runTinestQuality(
-        const <String>['verify', '--jobs=0'],
-        error: errors.add,
-      ),
+      await runTinestQuality(const <String>[
+        'verify',
+        '--jobs=0',
+      ], error: errors.add),
       64,
     );
     expect(
-      await runTinestQuality(
-        const <String>['verify', '--report='],
-        error: errors.add,
-      ),
+      await runTinestQuality(const <String>[
+        'verify',
+        '--report=',
+      ], error: errors.add),
       64,
     );
     expect(errors.join(), isNotEmpty);
@@ -58,20 +55,20 @@ void main() {
     final output = <Object?>[];
 
     expect(
-      await runTinestQuality(
-        const <String>['_test-dart', '--help'],
-        out: output.add,
-      ),
+      await runTinestQuality(const <String>[
+        '_test-dart',
+        '--help',
+      ], out: output.add),
       0,
     );
     expect(output.join(), contains('--scope'));
 
     output.clear();
     expect(
-      await runTinestQuality(
-        const <String>['_test-flutter', '--help'],
-        out: output.add,
-      ),
+      await runTinestQuality(const <String>[
+        '_test-flutter',
+        '--help',
+      ], out: output.add),
       0,
     );
     expect(output.join(), contains('--scope'));

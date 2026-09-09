@@ -20,7 +20,7 @@ import 'package:tinyrack_ui/tinyrack_ui.dart';
 /// loading/error boundary and all native widgets; plugins only provide data.
 class AgentPluginUiSlot extends ConsumerStatefulWidget {
   /// Creates an Agent-scoped plugin surface.
-  const AgentPluginUiSlot({
+  const new({
     required this.hostId,
     required this.agent,
     required this.slot,
@@ -71,9 +71,7 @@ class _AgentPluginUiSlotState extends ConsumerState<AgentPluginUiSlot> {
       ...widget.context,
       'locale': Localizations.localeOf(context).toLanguageTag(),
     };
-    final state = ref.watch(
-      pluginSettingsControllerProvider(widget.hostId),
-    );
+    final state = ref.watch(pluginSettingsControllerProvider(widget.hostId));
     return state.when(
       skipLoadingOnRefresh: true,
       data: (catalog) {
@@ -82,10 +80,7 @@ class _AgentPluginUiSlotState extends ConsumerState<AgentPluginUiSlot> {
         };
         final contributions =
             <
-              ({
-                PluginDescriptorDto plugin,
-                PluginContributionDto contribution,
-              })
+              ({PluginDescriptorDto plugin, PluginContributionDto contribution})
             >[];
         for (final pluginId in _orderedPluginIds(widget.agent)) {
           final plugin = pluginsById[pluginId];
@@ -218,7 +213,7 @@ bool _isExpectedAbsence(Object error) =>
 /// Loads and renders one declared UI contribution through the public RPC.
 class PluginUiContributionSurface extends ConsumerStatefulWidget {
   /// Creates one pinned plugin UI contribution surface.
-  const PluginUiContributionSurface({
+  const new({
     required this.hostId,
     required this.agentId,
     required this.plugin,
@@ -444,9 +439,7 @@ String _sessionTreeRevisionOf(List<SessionDto> sessions, String? sessionId) {
   final rootId = current?.rootSessionId ?? sessionId;
   final members =
       sessions
-          .where(
-            (item) => item.id == rootId || item.rootSessionId == rootId,
-          )
+          .where((item) => item.id == rootId || item.rootSessionId == rootId)
           .map(
             (item) => <String?>[
               item.id,

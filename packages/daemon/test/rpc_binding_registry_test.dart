@@ -25,20 +25,17 @@ void main() {
       throwsStateError,
     );
     expect(
-      () => RpcBindingRegistry(
-        <RpcBindingDescriptor>[
-          ...daemonRpcProcedures.map(_StubBinding.new),
-          _StubBinding(daemonRpcProcedures.first),
-        ],
-        procedures: daemonRpcProcedures,
-      ),
+      () => RpcBindingRegistry(<RpcBindingDescriptor>[
+        ...daemonRpcProcedures.map(_StubBinding.new),
+        _StubBinding(daemonRpcProcedures.first),
+      ], procedures: daemonRpcProcedures),
       throwsStateError,
     );
   });
 }
 
 final class _StubBinding implements RpcBindingDescriptor {
-  const _StubBinding(this.procedure);
+  const new(this.procedure);
 
   @override
   final RpcProcedureDescriptor procedure;

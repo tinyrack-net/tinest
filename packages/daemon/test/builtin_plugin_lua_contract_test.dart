@@ -29,14 +29,8 @@ void main() {
         RegExp(r'\bhandler\s*='),
         'declares a handler binding instead of supplying a closure',
       );
-      reject(
-        RegExp(r'\.call\s*\('),
-        'dispatches a host operation by string',
-      );
-      reject(
-        RegExp(r'\bactionId\s*='),
-        'links a UI action by string',
-      );
+      reject(RegExp(r'\.call\s*\('), 'dispatches a host operation by string');
+      reject(RegExp(r'\bactionId\s*='), 'links a UI action by string');
       reject(
         RegExp(
           r'tinest\.ui\.(?:document|timeline|status|dialog)\s*\(\s*\{[^}]*\bcontribution_id\s*=',
@@ -53,9 +47,7 @@ void main() {
         'declares raw JSON Schema instead of using tinest.schema',
       );
       reject(
-        RegExp(
-          r'\bS\.(?:object|enum|literal_enum|raw)\s*\(\s*(?!T\.)',
-        ),
+        RegExp(r'\bS\.(?:object|enum|literal_enum|raw)\s*\(\s*(?!T\.)'),
         'declares an untyped schema instead of a tinest.types token',
       );
       for (final field in const <String>[
@@ -85,9 +77,8 @@ void main() {
         RegExp(r'\.status\s*(?:[~=]=|=)\s*""'),
         'links a status variant by string instead of enum constants',
       );
-      if (RegExp(
-        r'''["']tinest\.[a-z0-9.-]+/[a-z0-9_-]+["']''',
-      ).hasMatch(source)) {
+      if (RegExp(r'''["']tinest\.[a-z0-9.-]+/[a-z0-9_-]+["']''')
+          .hasMatch(source)) {
         violations.add(
           '$relative: retypes a built-in contribution ID instead of using '
           'its opaque reference',

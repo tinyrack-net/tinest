@@ -133,11 +133,7 @@ abstract final class AgentModelControlIds {
 /// One permitted value for a choice control.
 final class AgentModelControlChoice {
   /// Creates a choice.
-  const AgentModelControlChoice({
-    required this.id,
-    required this.label,
-    this.description,
-  });
+  const new({required this.id, required this.label, this.description});
 
   /// Stable provider value.
   final String id;
@@ -152,7 +148,7 @@ final class AgentModelControlChoice {
 /// Describes a model-specific request control.
 final class AgentModelControlDescriptor {
   /// Creates a descriptor.
-  const AgentModelControlDescriptor({
+  const new({
     required this.id,
     required this.label,
     required this.kind,
@@ -198,13 +194,13 @@ final class AgentModelControlDescriptor {
 
 /// A typed provider-control value.
 sealed class AgentModelControlValue {
-  const AgentModelControlValue();
+  const new();
 }
 
 /// A closed-set string value.
 final class AgentModelControlStringValue extends AgentModelControlValue {
   /// Creates a string value.
-  const AgentModelControlStringValue({required this.value});
+  const new({required this.value});
 
   /// Provider value.
   final String value;
@@ -213,7 +209,7 @@ final class AgentModelControlStringValue extends AgentModelControlValue {
 /// A boolean value.
 final class AgentModelControlBoolValue extends AgentModelControlValue {
   /// Creates a boolean value.
-  const AgentModelControlBoolValue({required this.value});
+  const new({required this.value});
 
   /// Provider value.
   final bool value;
@@ -222,7 +218,7 @@ final class AgentModelControlBoolValue extends AgentModelControlValue {
 /// An integer value.
 final class AgentModelControlIntValue extends AgentModelControlValue {
   /// Creates an integer value.
-  const AgentModelControlIntValue({required this.value});
+  const new({required this.value});
 
   /// Provider value.
   final int value;
@@ -258,7 +254,7 @@ enum AgentProviderAuthFlow {
 /// Provider-neutral model capabilities consumed by the runtime.
 final class AgentModelCapabilities {
   /// Creates provider-neutral capability metadata.
-  const AgentModelCapabilities({
+  const new({
     this.streaming = AgentCapabilitySupport.unknown,
     this.toolCalling = AgentCapabilitySupport.unknown,
     this.functionTools = AgentCapabilitySupport.unknown,
@@ -318,12 +314,7 @@ final class AgentModelCapabilities {
 /// Optional model pricing metadata.
 final class AgentModelPricing {
   /// Creates optional pricing metadata.
-  const AgentModelPricing({
-    this.input,
-    this.output,
-    this.cacheRead,
-    this.cacheWrite,
-  });
+  const new({this.input, this.output, this.cacheRead, this.cacheWrite});
 
   /// Input-token price.
   final double? input;
@@ -341,7 +332,7 @@ final class AgentModelPricing {
 /// Optional model token limits.
 final class AgentModelLimits {
   /// Creates optional token limits.
-  const AgentModelLimits({this.context, this.input, this.output});
+  const new({this.context, this.input, this.output});
 
   /// Context-window limit.
   final int? context;
@@ -356,7 +347,7 @@ final class AgentModelLimits {
 /// One public authentication choice of a provider adapter.
 final class AgentProviderAuthMethod {
   /// Creates an authentication method.
-  const AgentProviderAuthMethod({
+  const new({
     required this.id,
     required this.label,
     required this.kind,
@@ -383,7 +374,7 @@ final class AgentProviderAuthMethod {
 /// Provider metadata owned by the provider-neutral agent boundary.
 final class AgentProviderDefinition {
   /// Creates provider metadata.
-  const AgentProviderDefinition({
+  const new({
     required this.id,
     required this.name,
     required this.description,

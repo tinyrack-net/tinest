@@ -94,54 +94,50 @@ void main() {
     },
   );
 
-  test(
-    'daemon permission default survives a restart',
-    () async {
-      final home = await Directory.systemTemp.createTemp(
-        'tinest-permission-home-',
+  test('daemon permission default survives a restart', () async {
+    final home = await Directory.systemTemp.createTemp(
+      'tinest-permission-home-',
+    );
+    const token = 'permission-token-0123456789abcdef012345';
+    final config = DaemonConfig(
+      homeDirectory: home.path,
+      port: 0,
+      bearerToken: token,
+      useEnvironmentCredentials: false,
+    );
+    try {
+      final firstHandle = await DaemonApplication.start(config);
+      final firstClient = await TinestClient.connect(
+        endpoint: HostEndpoint(websocketUri: firstHandle.boundEndpoint),
+        credentials: const DaemonCredentials(bearerToken: token),
+        clientId: 'permission-first',
+        clientKind: 'test',
       );
-      const token = 'permission-token-0123456789abcdef012345';
-      final config = DaemonConfig(
-        homeDirectory: home.path,
-        port: 0,
-        bearerToken: token,
-        useEnvironmentCredentials: false,
+      expect(
+        (await firstClient.getDefaultPermissionMode()).defaultMode,
+        PermissionMode.ask,
       );
-      try {
-        final firstHandle = await DaemonApplication.start(config);
-        final firstClient = await TinestClient.connect(
-          endpoint: HostEndpoint(websocketUri: firstHandle.boundEndpoint),
-          credentials: const DaemonCredentials(bearerToken: token),
-          clientId: 'permission-first',
-          clientKind: 'test',
-        );
-        expect(
-          (await firstClient.getDefaultPermissionMode()).defaultMode,
-          PermissionMode.ask,
-        );
-        await firstClient.setDefaultPermissionMode(PermissionMode.fullAccess);
-        await firstClient.close();
-        await firstHandle.stop();
+      await firstClient.setDefaultPermissionMode(PermissionMode.fullAccess);
+      await firstClient.close();
+      await firstHandle.stop();
 
-        final secondHandle = await DaemonApplication.start(config);
-        final secondClient = await TinestClient.connect(
-          endpoint: HostEndpoint(websocketUri: secondHandle.boundEndpoint),
-          credentials: const DaemonCredentials(bearerToken: token),
-          clientId: 'permission-second',
-          clientKind: 'test',
-        );
-        expect(
-          (await secondClient.getDefaultPermissionMode()).defaultMode,
-          PermissionMode.fullAccess,
-        );
-        await secondClient.close();
-        await secondHandle.stop();
-      } finally {
-        await home.delete(recursive: true);
-      }
-    },
-    tags: const <String>['feature_test__permission_settings__verticalSlice'],
-  );
+      final secondHandle = await DaemonApplication.start(config);
+      final secondClient = await TinestClient.connect(
+        endpoint: HostEndpoint(websocketUri: secondHandle.boundEndpoint),
+        credentials: const DaemonCredentials(bearerToken: token),
+        clientId: 'permission-second',
+        clientKind: 'test',
+      );
+      expect(
+        (await secondClient.getDefaultPermissionMode()).defaultMode,
+        PermissionMode.fullAccess,
+      );
+      await secondClient.close();
+      await secondHandle.stop();
+    } finally {
+      await home.delete(recursive: true);
+    }
+  }, tags: const <String>['feature_test__permission_settings__verticalSlice']);
 
   test(
     'standalone application serves authenticated workspace and agent RPCs',
@@ -391,9 +387,7 @@ void main() {
 
       await client.terminateTerminal(terminal.id);
 
-      const wireDefault = ModelSelectionDto(
-        modelId: 'local-test/test-model',
-      );
+      const wireDefault = ModelSelectionDto(modelId: 'local-test/test-model');
       expect(
         (await client.models.getSettings()).defaultModel,
         const ModelSelectionDto(modelId: 'openai/gpt-4'),
@@ -444,21 +438,17 @@ void main() {
         worktreeId: checkout.id,
         title: 'Session',
         agentDefinitionId: 'tinest',
-        model: const ModelSelectionDto(
-          modelId: 'local-test/test-model',
-        ),
+        model: const ModelSelectionDto(modelId: 'local-test/test-model'),
       );
       expect(agent.status, SessionStatus.idle);
       expect(
         agent.model,
-        const ModelSelectionDto(
-          modelId: 'local-test/test-model',
-        ),
+        const ModelSelectionDto(modelId: 'local-test/test-model'),
       );
       expect(
-        (await client.sessions.listSessions(
-          worktreeId: checkout.id,
-        )).singleWhere((session) => session.id == agent.id).model,
+        (await client.sessions.listSessions(worktreeId: checkout.id))
+            .singleWhere((session) => session.id == agent.id)
+            .model,
         agent.model,
       );
       final tinest = (await client.listAgentDefinitions()).single;
@@ -532,14 +522,10 @@ void main() {
           agent.id,
           const SessionSettingsPatchDto(
             hasModel: true,
-            model: ModelSelectionDto(
-              modelId: 'local-test/test-model',
-            ),
+            model: ModelSelectionDto(modelId: 'local-test/test-model'),
           ),
         )).model,
-        const ModelSelectionDto(
-          modelId: 'local-test/test-model',
-        ),
+        const ModelSelectionDto(modelId: 'local-test/test-model'),
       );
       expect(
         (await client.sessions.updateSettings(
@@ -556,9 +542,9 @@ void main() {
         agent.model,
       );
       expect(
-        (await client.sessions.listSessions(
-          worktreeId: checkout.id,
-        )).singleWhere((session) => session.id == agent.id).model,
+        (await client.sessions.listSessions(worktreeId: checkout.id))
+            .singleWhere((session) => session.id == agent.id)
+            .model,
         agent.model,
       );
       await expectLater(
@@ -566,9 +552,7 @@ void main() {
           agent.id,
           const SessionSettingsPatchDto(
             hasModel: true,
-            model: ModelSelectionDto(
-              modelId: 'local-test/missing-model',
-            ),
+            model: ModelSelectionDto(modelId: 'local-test/missing-model'),
           ),
         ),
         throwsA(
@@ -596,9 +580,7 @@ void main() {
       );
       final withControls = await client.sessions.updateSettings(
         agent.id,
-        const SessionSettingsPatchDto(
-          hasModelControls: true,
-        ),
+        const SessionSettingsPatchDto(hasModelControls: true),
       );
       expect(withControls.modelControls, isEmpty);
       final overridden = (await client.sessions.listSessions(
@@ -672,10 +654,7 @@ void main() {
         expectedContentHash: invalidAgentDefinition.contentHash,
       );
       await client.disconnectProvider(custom.id);
-      expect(
-        (await client.models.getSettings()).defaultModel,
-        wireDefault,
-      );
+      expect((await client.models.getSettings()).defaultModel, wireDefault);
       await expectLater(
         client.startTurn(
           sessionId: agent.id,
@@ -691,16 +670,14 @@ void main() {
         ),
       );
       expect(
-        (await client.sessions.listSessions(
-          worktreeId: checkout.id,
-        )).singleWhere((session) => session.id == agent.id).status,
+        (await client.sessions.listSessions(worktreeId: checkout.id))
+            .singleWhere((session) => session.id == agent.id)
+            .status,
         SessionStatus.idle,
       );
       final withoutAgentModel = await client.updateAgentDefinition(
         restoredAgentDefinition.copyWith(
-          model: const AgentModelSelectionDto(
-            source: AgentModelSource.session,
-          ),
+          model: const AgentModelSelectionDto(source: AgentModelSource.session),
         ),
         expectedContentHash: restoredAgentDefinition.contentHash,
       );
@@ -817,9 +794,7 @@ void main() {
         ),
       );
       await client.updateAgentDefinition(
-        tinest.copyWith(
-          callableAgentIds: <String>[reviewer.id],
-        ),
+        tinest.copyWith(callableAgentIds: <String>[reviewer.id]),
         expectedContentHash: tinest.contentHash,
       );
       final registered = await client.registerWorkspace(
@@ -841,9 +816,7 @@ void main() {
       );
       await client.sessions.updateSettings(
         parent.id,
-        const SessionSettingsPatchDto(
-          permissionMode: PermissionMode.readOnly,
-        ),
+        const SessionSettingsPatchDto(permissionMode: PermissionMode.readOnly),
       );
       final timelineEvents = client.sessions.timelineEvents;
       final parentTurns = timelineEvents.where(
@@ -990,9 +963,7 @@ void main() {
         ),
       );
       await client.updateAgentDefinition(
-        tinest.copyWith(
-          callableAgentIds: <String>[reviewer.id],
-        ),
+        tinest.copyWith(callableAgentIds: <String>[reviewer.id]),
         expectedContentHash: tinest.contentHash,
       );
       final registered = await client.registerWorkspace(
@@ -1032,9 +1003,8 @@ void main() {
       expect(provider.waitOutputs.single, contains('/root/review_task'));
       expect(provider.waitOutputs.single, contains('Review completed.'));
 
-      final child = (await client.listSubagents(parent.id)).singleWhere(
-        (session) => session.origin == SessionOrigin.delegated,
-      );
+      final child = (await client.listSubagents(parent.id))
+          .singleWhere((session) => session.origin == SessionOrigin.delegated);
       expect(child.lifecycle, AgentLifecycle.completed);
 
       final worktreeId = registered.worktrees.single.id;
@@ -1095,9 +1065,7 @@ void main() {
         ),
       );
       await client.updateAgentDefinition(
-        tinest.copyWith(
-          callableAgentIds: <String>[reviewer.id],
-        ),
+        tinest.copyWith(callableAgentIds: <String>[reviewer.id]),
         expectedContentHash: tinest.contentHash,
       );
       final registered = await client.registerWorkspace(
@@ -1163,9 +1131,8 @@ void main() {
       // daemon waits on an unbounded completer until someone does.
       await client.resolveApproval(approvalId: approval.id, approved: true);
       await finalAnswerMailed;
-      final child = (await client.listSubagents(parent.id)).singleWhere(
-        (session) => session.origin == SessionOrigin.delegated,
-      );
+      final child = (await client.listSubagents(parent.id))
+          .singleWhere((session) => session.origin == SessionOrigin.delegated);
       expect(child.lifecycle, AgentLifecycle.completed);
       expect(
         File(p.join(workspace.path, 'forbidden.txt')).existsSync(),
@@ -1227,9 +1194,7 @@ void main() {
         ),
       );
       await client.updateAgentDefinition(
-        tinest.copyWith(
-          callableAgentIds: <String>[reviewer.id],
-        ),
+        tinest.copyWith(callableAgentIds: <String>[reviewer.id]),
         expectedContentHash: tinest.contentHash,
       );
       final registered = await client.registerWorkspace(
@@ -1273,9 +1238,8 @@ void main() {
       // Nobody answers an approval here: the child writes under the parent's
       // full access and reports back on its own.
       await finalAnswerMailed;
-      final child = (await client.listSubagents(parent.id)).singleWhere(
-        (session) => session.origin == SessionOrigin.delegated,
-      );
+      final child = (await client.listSubagents(parent.id))
+          .singleWhere((session) => session.origin == SessionOrigin.delegated);
       expect(child.permissionMode, PermissionMode.fullAccess);
       expect(child.lifecycle, AgentLifecycle.completed);
       expect(
@@ -1345,9 +1309,7 @@ void main() {
         worktreeId: registered.worktrees.single.id,
         title: 'Parent',
         agentDefinitionId: 'tinest',
-        model: const ModelSelectionDto(
-          modelId: _testModelId,
-        ),
+        model: const ModelSelectionDto(modelId: _testModelId),
       );
       final completed = client.sessions.timelineEvents
           .firstWhere(
@@ -1519,9 +1481,7 @@ void main() {
         worktreeId: registered.worktrees.single.id,
         title: 'MCP',
         agentDefinitionId: 'tinest',
-        model: const ModelSelectionDto(
-          modelId: _testModelId,
-        ),
+        model: const ModelSelectionDto(modelId: _testModelId),
       );
       await client.sessions.updateSettings(
         session.id,
@@ -1776,9 +1736,7 @@ void main() {
           worktreeId: registered.worktrees.single.id,
           title: 'Exec',
           agentDefinitionId: 'tinest',
-          model: const ModelSelectionDto(
-            modelId: _testModelId,
-          ),
+          model: const ModelSelectionDto(modelId: _testModelId),
         );
         await client.sessions.updateSettings(
           session.id,
@@ -1801,10 +1759,7 @@ void main() {
           approvals.add(approval.toolName);
           unawaited(
             client
-                .resolveApproval(
-                  approvalId: approval.id,
-                  approved: true,
-                )
+                .resolveApproval(approvalId: approval.id, approved: true)
                 .onError((error, stackTrace) {
                   if (!approvalFailure.isCompleted) {
                     approvalFailure.completeError(
@@ -1899,9 +1854,7 @@ void main() {
         worktreeId: registered.worktrees.single.id,
         title: 'Image',
         agentDefinitionId: 'tinest',
-        model: const ModelSelectionDto(
-          modelId: _testModelId,
-        ),
+        model: const ModelSelectionDto(modelId: _testModelId),
       );
       await client.subscribeTimeline(session.id);
       await client.startTurn(
@@ -1938,75 +1891,69 @@ void main() {
     tags: const <String>['feature_test__tool_image_context__verticalSlice'],
   );
 
-  test(
-    'a sleeping agent wakes early when the client queues input',
-    () async {
-      final home = await Directory.systemTemp.createTemp('tinest-sleep-home-');
-      final workspace = await Directory.systemTemp.createTemp(
-        'tinest-sleep-workspace-',
-      );
-      const bearerToken = 'sleep-tool-token-0123456789abcdef01234';
-      final provider = _SleepProvider();
-      final handle = await DaemonApplication.start(
-        DaemonConfig(
-          homeDirectory: home.path,
-          port: 0,
-          bearerToken: bearerToken,
-          useEnvironmentCredentials: false,
-        ),
-        provider: provider,
-      );
-      addTearDown(() async {
-        await handle.stop();
-        await home.delete(recursive: true);
-        await workspace.delete(recursive: true);
-      });
-      final client = await TinestClient.connect(
-        endpoint: HostEndpoint(websocketUri: handle.boundEndpoint),
-        credentials: const DaemonCredentials(bearerToken: bearerToken),
-        clientId: 'sleep-tool-test',
-        clientKind: 'test',
-      );
-      addTearDown(client.close);
-      await _selectTinestTools(client, const <String>['tinest.time/sleep']);
+  test('a sleeping agent wakes early when the client queues input', () async {
+    final home = await Directory.systemTemp.createTemp('tinest-sleep-home-');
+    final workspace = await Directory.systemTemp.createTemp(
+      'tinest-sleep-workspace-',
+    );
+    const bearerToken = 'sleep-tool-token-0123456789abcdef01234';
+    final provider = _SleepProvider();
+    final handle = await DaemonApplication.start(
+      DaemonConfig(
+        homeDirectory: home.path,
+        port: 0,
+        bearerToken: bearerToken,
+        useEnvironmentCredentials: false,
+      ),
+      provider: provider,
+    );
+    addTearDown(() async {
+      await handle.stop();
+      await home.delete(recursive: true);
+      await workspace.delete(recursive: true);
+    });
+    final client = await TinestClient.connect(
+      endpoint: HostEndpoint(websocketUri: handle.boundEndpoint),
+      credentials: const DaemonCredentials(bearerToken: bearerToken),
+      clientId: 'sleep-tool-test',
+      clientKind: 'test',
+    );
+    addTearDown(client.close);
+    await _selectTinestTools(client, const <String>['tinest.time/sleep']);
 
-      final registered = await client.registerWorkspace(
-        workspaceId: 'workspace',
-        checkoutId: 'checkout',
-        rootPath: workspace.path,
-        name: 'Workspace',
-      );
-      final session = await client.createSession(
-        id: 'sleep-session',
-        worktreeId: registered.worktrees.single.id,
-        title: 'Sleep',
-        agentDefinitionId: 'tinest',
-        model: const ModelSelectionDto(
-          modelId: _testModelId,
-        ),
-      );
-      await client.subscribeTimeline(session.id);
-      await client.startTurn(
-        sessionId: session.id,
-        turnId: 'sleep-turn',
-        prompt: 'Wait for the build',
-      );
+    final registered = await client.registerWorkspace(
+      workspaceId: 'workspace',
+      checkoutId: 'checkout',
+      rootPath: workspace.path,
+      name: 'Workspace',
+    );
+    final session = await client.createSession(
+      id: 'sleep-session',
+      worktreeId: registered.worktrees.single.id,
+      title: 'Sleep',
+      agentDefinitionId: 'tinest',
+      model: const ModelSelectionDto(modelId: _testModelId),
+    );
+    await client.subscribeTimeline(session.id);
+    await client.startTurn(
+      sessionId: session.id,
+      turnId: 'sleep-turn',
+      prompt: 'Wait for the build',
+    );
 
-      // The agent asked to wait five minutes; the queued prompt must cut it
-      // short, so the turn finishing at all proves the signal arrived.
-      await provider.sleeping.future.timeout(_eventTimeout);
-      await client.notePendingInput(session.id);
+    // The agent asked to wait five minutes; the queued prompt must cut it
+    // short, so the turn finishing at all proves the signal arrived.
+    await provider.sleeping.future.timeout(_eventTimeout);
+    await client.notePendingInput(session.id);
 
-      final outcome = await provider.outcome.future.timeout(_eventTimeout);
-      expect(outcome, 'interrupted');
-      await _waitForIdleSession(
-        client,
-        registered.worktrees.single.id,
-        session.id,
-      );
-    },
-    tags: const <String>['feature_test__tool_clock__verticalSlice'],
-  );
+    final outcome = await provider.outcome.future.timeout(_eventTimeout);
+    expect(outcome, 'interrupted');
+    await _waitForIdleSession(
+      client,
+      registered.worktrees.single.id,
+      session.id,
+    );
+  }, tags: const <String>['feature_test__tool_clock__verticalSlice']);
 
   test(
     'settings refused during a turn report a code the client can translate',
@@ -2124,9 +2071,7 @@ void main() {
           p.joinAll(<String>[workspace.path, ...directory.split('/')]),
         ).create(recursive: true);
       }
-      await File(
-        p.join(workspace.path, '.gitignore'),
-      ).writeAsString(r'''
+      await File(p.join(workspace.path, '.gitignore')).writeAsString(r'''
 generated/
 *.log
 !keep.log
@@ -2137,12 +2082,10 @@ escaped\[.txt
 *.cache
 blocked/
 ''');
-      await File(p.join(workspace.path, 'nested', '.gitignore')).writeAsString(
-        '!keep.cache\n',
-      );
-      await File(p.join(workspace.path, 'blocked', '.gitignore')).writeAsString(
-        '!resurrect.dart\n',
-      );
+      await File(p.join(workspace.path, 'nested', '.gitignore'))
+          .writeAsString('!keep.cache\n');
+      await File(p.join(workspace.path, 'blocked', '.gitignore'))
+          .writeAsString('!resurrect.dart\n');
       final files = <String, String>{
         'main.dart': 'const marker = 1;\n',
         'keep.log': 'marker\n',
@@ -2159,9 +2102,8 @@ blocked/
         'blocked/resurrect.dart': 'const marker = 7;\n',
       };
       for (final entry in files.entries) {
-        await File(
-          p.joinAll(<String>[workspace.path, ...entry.key.split('/')]),
-        ).writeAsString(entry.value);
+        await File(p.joinAll(<String>[workspace.path, ...entry.key.split('/')]))
+            .writeAsString(entry.value);
       }
       const bearerToken = 'search-tool-token-0123456789abcdef0123';
       final provider = _SearchProvider();
@@ -2202,9 +2144,7 @@ blocked/
         worktreeId: registered.worktrees.single.id,
         title: 'Search',
         agentDefinitionId: 'tinest',
-        model: const ModelSelectionDto(
-          modelId: _testModelId,
-        ),
+        model: const ModelSelectionDto(modelId: _testModelId),
       );
       await client.subscribeTimeline(session.id);
       final failed = client.sessions.timelineEvents.firstWhere(
@@ -2311,9 +2251,7 @@ blocked/
         worktreeId: registered.worktrees.single.id,
         title: 'Ask',
         agentDefinitionId: 'tinest',
-        model: const ModelSelectionDto(
-          modelId: _testModelId,
-        ),
+        model: const ModelSelectionDto(modelId: _testModelId),
       );
       await client.subscribeTimeline(session.id);
 
@@ -2466,9 +2404,7 @@ blocked/
         worktreeId: registered.worktrees.single.id,
         title: 'Broken',
         agentDefinitionId: 'tinest',
-        model: const ModelSelectionDto(
-          modelId: _testModelId,
-        ),
+        model: const ModelSelectionDto(modelId: _testModelId),
       );
       await client.sessions.updateSettings(
         session.id,
@@ -2502,10 +2438,7 @@ blocked/
       );
 
       // The turn succeeded on built-in tools alone.
-      expect(
-        File(p.join(workspace.path, 'result.txt')).existsSync(),
-        isTrue,
-      );
+      expect(File(p.join(workspace.path, 'result.txt')).existsSync(), isTrue);
       final broken = (await client.mcp.listMcpServers()).single;
       expect(broken.status, McpServerStatus.failed);
       expect(broken.error, isNotNull);
@@ -2601,10 +2534,7 @@ blocked/
         name: 'Workspace',
       );
       await expectLater(
-        client.listSkills(
-          view: SkillListView.global,
-          workspaceId: 'workspace',
-        ),
+        client.listSkills(view: SkillListView.global, workspaceId: 'workspace'),
         throwsA(
           isA<TinestClientException>().having(
             (error) => error.code,
@@ -2631,10 +2561,7 @@ blocked/
         (skill) => skill.id == 'shared',
       );
       expect(projectSkill.description, 'From the project.');
-      expect(
-        projectSkills.map((skill) => skill.id),
-        isNot(contains('commit')),
-      );
+      expect(projectSkills.map((skill) => skill.id), isNot(contains('commit')));
 
       final effective = await client.listSkills(
         view: SkillListView.effective,
@@ -2656,9 +2583,8 @@ blocked/
       );
       await changed.timeout(_eventTimeout);
       expect(
-        (await client.listSkills(view: SkillListView.global)).map(
-          (skill) => skill.id,
-        ),
+        (await client.listSkills(view: SkillListView.global))
+            .map((skill) => skill.id),
         contains('release'),
       );
 
@@ -2667,9 +2593,7 @@ blocked/
         worktreeId: registered.worktrees.single.id,
         title: 'Skills',
         agentDefinitionId: 'tinest',
-        model: const ModelSelectionDto(
-          modelId: _testModelId,
-        ),
+        model: const ModelSelectionDto(modelId: _testModelId),
       );
       final terminal = client.sessions.timelineEvents
           .firstWhere(
@@ -2771,10 +2695,7 @@ blocked/
         (await firstClient.listAgentDefinitions()).map((item) => item.id),
         contains('reviewer'),
       );
-      expect(
-        File('${home.path}/v5/agents/reviewer.md').existsSync(),
-        isTrue,
-      );
+      expect(File('${home.path}/v5/agents/reviewer.md').existsSync(), isTrue);
       await firstClient.close();
       await firstHandle.stop();
 
@@ -2825,10 +2746,7 @@ blocked/
         const <String, dynamic>{'Authorization': 'Bearer incorrect'},
       ]) {
         await expectLater(
-          WebSocket.connect(
-            handle.boundEndpoint.toString(),
-            headers: headers,
-          ),
+          WebSocket.connect(handle.boundEndpoint.toString(), headers: headers),
           throwsA(isA<WebSocketException>()),
         );
       }
@@ -2916,9 +2834,7 @@ blocked/
       );
       expect(updated.name, 'Bearer managed Tinest');
     },
-    tags: const <String>[
-      'feature_test__daemon_authentication__verticalSlice',
-    ],
+    tags: const <String>['feature_test__daemon_authentication__verticalSlice'],
   );
 
   test(
@@ -2929,9 +2845,8 @@ blocked/
       // temporary directory through a /var symlink, so the fixture starts from
       // the resolved path the daemon will report back.
       final userHome = Directory(
-        await (await Directory.systemTemp.createTemp(
-          'tinest-user-home-',
-        )).resolveSymbolicLinks(),
+        await (await Directory.systemTemp.createTemp('tinest-user-home-'))
+            .resolveSymbolicLinks(),
       );
       final modelServer = await HttpServer.bind(
         InternetAddress.loopbackIPv4,
@@ -3027,15 +2942,13 @@ blocked/
         worktreeId: homeCheckout.id,
         title: 'No project',
         agentDefinitionId: 'tinest',
-        model: const ModelSelectionDto(
-          modelId: 'local-test/test-model',
-        ),
+        model: const ModelSelectionDto(modelId: 'local-test/test-model'),
       );
       expect(session.worktreeId, homeCheckout.id);
       expect(
-        (await client.sessions.listSessions(
-          worktreeId: homeCheckout.id,
-        )).single.id,
+        (await client.sessions.listSessions(worktreeId: homeCheckout.id))
+            .single
+            .id,
         'home-session',
       );
 
@@ -3055,9 +2968,9 @@ blocked/
       expect(restarted.workspaces.single.id, homeWorkspace.id);
       expect(restarted.worktrees.single.id, homeCheckout.id);
       expect(
-        (await client.sessions.listSessions(
-          worktreeId: homeCheckout.id,
-        )).single.id,
+        (await client.sessions.listSessions(worktreeId: homeCheckout.id))
+            .single
+            .id,
         'home-session',
       );
     },
@@ -3072,9 +2985,8 @@ blocked/
       // temporary directory through a /var symlink to /private/var, so the
       // fixture starts from the resolved path the daemon will report back.
       final repository = Directory(
-        await (await Directory.systemTemp.createTemp(
-          'tinest-git-repository-',
-        )).resolveSymbolicLinks(),
+        await (await Directory.systemTemp.createTemp('tinest-git-repository-'))
+            .resolveSymbolicLinks(),
       );
       await _runGit(repository.path, <String>['init', '-b', 'main']);
       await File('${repository.path}/README.md').writeAsString('# fixture\n');
@@ -3167,9 +3079,8 @@ blocked/
         'external-race',
         externalPath,
       ]);
-      final canonicalExternalPath = await Directory(
-        externalPath,
-      ).resolveSymbolicLinks();
+      final canonicalExternalPath = await Directory(externalPath)
+          .resolveSymbolicLinks();
       final refreshed = await client.refreshWorkspace('git-workspace');
       expect(
         refreshed.worktrees.map((worktree) => worktree.path),
@@ -3226,17 +3137,15 @@ blocked/
       );
       expect(archivedExternal.kind, WorktreeKind.linked);
       expect(
-        (await client.previewWorktreeArchive(
-          archivedExternal.id,
-        )).removesDirectory,
+        (await client.previewWorktreeArchive(archivedExternal.id))
+            .removesDirectory,
         isTrue,
       );
       await client.archiveWorktree(archivedExternal.id);
       expect(Directory(archivedExternalPath).existsSync(), isFalse);
       expect(
-        (await client.listGitBranches('git-workspace')).map(
-          (branch) => branch.name,
-        ),
+        (await client.listGitBranches('git-workspace'))
+            .map((branch) => branch.name),
         contains('external-archive'),
       );
       expect(
@@ -3267,9 +3176,7 @@ blocked/
         (await client.refreshWorkspace('git-workspace')).worktrees,
         isNotEmpty,
       );
-      final preview = await client.previewWorktreeArchive(
-        managed.worktree.id,
-      );
+      final preview = await client.previewWorktreeArchive(managed.worktree.id);
       expect(preview.removesDirectory, isTrue);
       final archived = await client.archiveWorktree(
         managed.worktree.id,
@@ -3328,11 +3235,7 @@ blocked/
                 'code',
                 RpcErrorCodes.gitCommandFailed,
               )
-              .having(
-                (error) => error.details['stderr'],
-                'stderr',
-                isNotEmpty,
-              ),
+              .having((error) => error.details['stderr'], 'stderr', isNotEmpty),
         ),
       );
       await client.unregisterWorkspace('git-workspace');
@@ -3411,9 +3314,8 @@ blocked/
       // settle on the bundled catalog instead of degrading on a discovery 400.
       expect(connected.status, ProviderConnectionStatus.connected);
       expect(connected.error, isNull);
-      final oauthModels = (await client.listProviderModels(
-        connected.id,
-      )).map((model) => model.id);
+      final oauthModels = (await client.listProviderModels(connected.id))
+          .map((model) => model.id);
       expect(oauthModels, contains('openai/gpt-5.6-sol'));
       expect(oauthModels, isNot(contains('gpt-test')));
 
@@ -3468,9 +3370,8 @@ blocked/
       final workspace = await Directory.systemTemp.createTemp(
         'tinest-attachment-workspace-',
       );
-      await File(p.join(workspace.path, 'agent-result.txt')).writeAsString(
-        'agent bytes',
-      );
+      await File(p.join(workspace.path, 'agent-result.txt'))
+          .writeAsString('agent bytes');
       const token = 'attachment-token-0123456789abcdef0123456789';
       final provider = _AttachmentProvider();
       final config = DaemonConfig(
@@ -3503,10 +3404,7 @@ blocked/
           path: '/v5/attachments/missing',
         ),
       );
-      expect(
-        (await unauthorized.close()).statusCode,
-        HttpStatus.unauthorized,
-      );
+      expect((await unauthorized.close()).statusCode, HttpStatus.unauthorized);
       unauthorizedClient.close(force: true);
 
       final imageBytes = <int>[
@@ -3796,9 +3694,8 @@ blocked/
       }
     }
     expect(persisted.toString(), isNot(contains(token)));
-    final credentials = await File(
-      '${config.path}/v5/secrets.json',
-    ).readAsString();
+    final credentials = await File('${config.path}/v5/secrets.json')
+        .readAsString();
     expect(credentials, contains(token));
     expect(File('${config.path}/auth.json').existsSync(), isFalse);
     if (!Platform.isWindows) {
@@ -3857,9 +3754,7 @@ blocked/
       await firstStop;
       await home.delete(recursive: true);
     },
-    tags: const <String>[
-      'feature_test__daemon_management__contract',
-    ],
+    tags: const <String>['feature_test__daemon_management__contract'],
   );
 
   test('embedded daemon reports a typed port conflict', () async {
@@ -3954,9 +3849,7 @@ blocked/
         worktreeId: catalog.worktrees.single.id,
         title: 'Queue session',
         agentDefinitionId: 'tinest',
-        model: const ModelSelectionDto(
-          modelId: _testModelId,
-        ),
+        model: const ModelSelectionDto(modelId: _testModelId),
       );
       await client.subscribeTimeline(session.id);
 
@@ -3990,12 +3883,13 @@ blocked/
           worktreeId: catalog.worktrees.single.id,
         )).singleWhere((item) => item.id == session.id);
         final timeline = await client.subscribeTimeline(session.id);
+        final timelineDescription = timeline
+            .map((event) => '${event.type}: ${event.data}')
+            .join('\n');
         throw TestFailure(
           '$error while waiting for the idle queue drain; '
           'status=${current.status}, error=${current.lastError}\n'
-          '${timeline.map(
-            (event) => '${event.type}: ${event.data}',
-          ).join('\n')}',
+          '$timelineDescription',
         );
       }
 
@@ -4026,16 +3920,13 @@ blocked/
         )).resolveSymbolicLinks(),
       );
       await _runGit(repository.path, <String>['init', '-b', 'main']);
-      await File(p.join(repository.path, '.gitignore')).writeAsString(
-        'secrets.env\n',
-      );
+      await File(p.join(repository.path, '.gitignore'))
+          .writeAsString('secrets.env\n');
       await Directory(p.join(repository.path, 'lib')).create(recursive: true);
-      await File(
-        p.join(repository.path, 'lib', 'composer.dart'),
-      ).writeAsString('// composer\n');
-      await File(
-        p.join(repository.path, 'secrets.env'),
-      ).writeAsString('TOKEN=nope\n');
+      await File(p.join(repository.path, 'lib', 'composer.dart'))
+          .writeAsString('// composer\n');
+      await File(p.join(repository.path, 'secrets.env'))
+          .writeAsString('TOKEN=nope\n');
 
       final handle = await DaemonApplication.start(
         DaemonConfig(
@@ -4193,9 +4084,8 @@ Future<void> _waitForProviderStartOrTurnFailure({
 }) async {
   for (var attempt = 0; attempt < 600; attempt += 1) {
     if (started.isCompleted) return;
-    final current = (await client.sessions.listSessions(
-      worktreeId: worktreeId,
-    )).singleWhere((item) => item.id == sessionId);
+    final current = (await client.sessions.listSessions(worktreeId: worktreeId))
+        .singleWhere((item) => item.id == sessionId);
     if (current.status == SessionStatus.failed) {
       throw StateError(
         'Turn failed before the provider started: '
@@ -4249,9 +4139,8 @@ Future<T> _waitForProviderResultOrTurnFailure<T>({
     attempt < 1200 && !completed.isCompleted;
     attempt += 1
   ) {
-    final current = (await client.sessions.listSessions(
-      worktreeId: worktreeId,
-    )).singleWhere((item) => item.id == sessionId);
+    final current = (await client.sessions.listSessions(worktreeId: worktreeId))
+        .singleWhere((item) => item.id == sessionId);
     if (current.status == SessionStatus.failed) {
       throw StateError(
         'Turn failed before the provider result: '
@@ -4262,9 +4151,8 @@ Future<T> _waitForProviderResultOrTurnFailure<T>({
     await Future<void>.delayed(const Duration(milliseconds: 100));
   }
   if (!completed.isCompleted) {
-    final current = (await client.sessions.listSessions(
-      worktreeId: worktreeId,
-    )).singleWhere((item) => item.id == sessionId);
+    final current = (await client.sessions.listSessions(worktreeId: worktreeId))
+        .singleWhere((item) => item.id == sessionId);
     throw StateError(
       'Timed out waiting for provider result: status=${current.status}, '
       'error=${current.lastError}, ${progress?.call() ?? 'no progress'}',
@@ -4346,9 +4234,8 @@ Future<SessionDto> _waitForSubagentStatus(
   int attempts = 100,
 }) async {
   for (var attempt = 0; attempt < attempts; attempt += 1) {
-    final delegated = (await client.sessions.listSubagents(parentId)).where(
-      (session) => session.origin == SessionOrigin.delegated,
-    );
+    final delegated = (await client.sessions.listSubagents(parentId))
+        .where((session) => session.origin == SessionOrigin.delegated);
     for (final session in delegated) {
       if (session.status == status) return session;
     }
@@ -4402,9 +4289,8 @@ Future<void> _waitForIdleSession(
   int attempts = 50,
 }) async {
   for (var attempt = 0; attempt < attempts; attempt += 1) {
-    final session = (await client.sessions.listSessions(
-      worktreeId: worktreeId,
-    )).singleWhere((item) => item.id == sessionId);
+    final session = (await client.sessions.listSessions(worktreeId: worktreeId))
+        .singleWhere((item) => item.id == sessionId);
     if (session.status != SessionStatus.running) return;
     await Future<void>.delayed(const Duration(milliseconds: 100));
   }
@@ -4452,7 +4338,7 @@ final class _IntegrationOAuthGateway implements ProviderOAuthGateway {
 }
 
 final class _IntegrationOAuthSession implements ProviderOAuthSession {
-  _IntegrationOAuthSession(this.flow);
+  new(this.flow);
 
   final AgentProviderAuthFlow flow;
   final Completer<OAuthCredential> completer = Completer<OAuthCredential>();
@@ -4482,7 +4368,7 @@ final class _IntegrationOAuthSession implements ProviderOAuthSession {
 }
 
 final class _StaticDiscovery implements ProviderModelDiscovery {
-  const _StaticDiscovery(this.modelIds);
+  const new(this.modelIds);
 
   final List<String> modelIds;
 
@@ -4494,7 +4380,7 @@ final class _StaticDiscovery implements ProviderModelDiscovery {
 }
 
 final class _CredentialAwareDiscovery implements ProviderModelDiscovery {
-  const _CredentialAwareDiscovery();
+  const new();
 
   @override
   Future<List<String>> fetchModelIds(
@@ -4573,15 +4459,9 @@ class _EchoingMcpProvider implements ModelGateway {
     if (searchResult == null) {
       expect(
         request.tools.map((tool) => tool.name),
-        allOf(
-          contains('tool_search_mcp'),
-          isNot(contains('mcp__fake__echo')),
-        ),
+        allOf(contains('tool_search_mcp'), isNot(contains('mcp__fake__echo'))),
       );
-      const arguments = <String, dynamic>{
-        'query': 'echo',
-        'limit': 8,
-      };
+      const arguments = <String, dynamic>{'query': 'echo', 'limit': 8};
       yield const ModelDeferredSearchCall(
         callId: 'mcp-search-call',
         name: 'tool_search_mcp',
@@ -4697,9 +4577,7 @@ class _SleepProvider implements ModelGateway {
     CancellationToken cancellation,
   ) async* {
     if (_round++ == 0) {
-      const arguments = <String, dynamic>{
-        'duration_ms': 300000,
-      };
+      const arguments = <String, dynamic>{'duration_ms': 300000};
       yield const ModelFunctionCall(
         callId: 'sleep-call',
         name: 'clock__sleep',
@@ -4840,7 +4718,7 @@ final class _AttachmentProvider implements ModelGateway {
 }
 
 class _ExecProvider implements ModelGateway {
-  _ExecProvider({required this.tty});
+  new({required this.tty});
 
   /// Whether the command is asked for a pseudo-terminal or plain pipes.
   final bool tty;
@@ -4952,10 +4830,7 @@ final class _ViewImageProvider implements ModelGateway {
       (item) => item.callId == 'view-call',
     );
     if (!viewed) {
-      const arguments = <String, dynamic>{
-        'path': 'shot.png',
-        'detail': 'high',
-      };
+      const arguments = <String, dynamic>{'path': 'shot.png', 'detail': 'high'};
       yield const ModelFunctionCall(
         callId: 'view-call',
         name: 'view_image',
@@ -4985,7 +4860,7 @@ final class _ViewImageProvider implements ModelGateway {
 
 /// The two tool results the search vertical slice inspects.
 final class _SearchResults {
-  const _SearchResults({
+  const new({
     required this.search,
     required this.glob,
     required this.searchIgnored,
@@ -5029,9 +4904,7 @@ final class _SearchProvider implements ModelGateway {
 
     final search = resultFor('search-call');
     if (search == null) {
-      const arguments = <String, dynamic>{
-        'query': 'marker',
-      };
+      const arguments = <String, dynamic>{'query': 'marker'};
       yield const ModelFunctionCall(
         callId: 'search-call',
         name: 'search_text',
@@ -5053,9 +4926,7 @@ final class _SearchProvider implements ModelGateway {
     }
     final glob = resultFor('glob-call');
     if (glob == null) {
-      const arguments = <String, dynamic>{
-        'pattern': '**/*.dart',
-      };
+      const arguments = <String, dynamic>{'pattern': '**/*.dart'};
       yield const ModelFunctionCall(
         callId: 'glob-call',
         name: 'glob',
@@ -5143,7 +5014,7 @@ final class _SearchProvider implements ModelGateway {
 }
 
 final class _CollaboratingProvider implements ModelGateway {
-  _CollaboratingProvider({this.agentType = 'reviewer'});
+  new({this.agentType = 'reviewer'});
 
   /// The `agent_type` the scripted root passes to `spawn_agent`.
   final String agentType;
@@ -5342,9 +5213,7 @@ final class _SkillProvider implements ModelGateway {
     cancellation.throwIfCancelled();
     final instructions = request.blocks
         .map((block) => block.content)
-        .join(
-          '\n\n',
-        );
+        .join('\n\n');
     expect(instructions, contains('## Implicit skills'));
     expect(instructions, contains('Before writing code'));
     expect(instructions, isNot(contains('Project instructions.')));
@@ -5361,11 +5230,7 @@ final class _SkillProvider implements ModelGateway {
       String name,
       Map<String, dynamic> arguments,
     ) async* {
-      yield ModelFunctionCall(
-        callId: callId,
-        name: name,
-        arguments: arguments,
-      );
+      yield ModelFunctionCall(callId: callId, name: name, arguments: arguments);
       yield ModelResponseCompleted(
         assistant: AssistantConversationItem(
           text: '',
@@ -5402,9 +5267,7 @@ final class _SkillProvider implements ModelGateway {
       expect(names, contains('shared'));
       expect(names, contains('commit'));
       expect(page['total'], names.length);
-      yield* call('skill-call', 'skill', <String, dynamic>{
-        'name': 'shared',
-      });
+      yield* call('skill-call', 'skill', <String, dynamic>{'name': 'shared'});
       return;
     }
     yield const ModelTextDelta('Loaded the skill.');

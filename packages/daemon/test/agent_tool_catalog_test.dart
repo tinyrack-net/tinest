@@ -182,7 +182,7 @@ PluginDescriptorDto _descriptor({
 );
 
 final class _FakeContributionCatalog implements AgentContributionCatalog {
-  _FakeContributionCatalog(this.descriptors);
+  new(this.descriptors);
 
   List<PluginDescriptorDto> descriptors;
   final StreamController<void> _changes = StreamController<void>.broadcast();

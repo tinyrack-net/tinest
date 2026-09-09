@@ -85,10 +85,7 @@ void main() {
     });
 
     test('--token is carried into the config', () {
-      final config = resolveDaemonConfig(
-        defaults: defaults,
-        token: 'a' * 32,
-      );
+      final config = resolveDaemonConfig(defaults: defaults, token: 'a' * 32);
 
       expect(config.bearerToken, 'a' * 32);
     });

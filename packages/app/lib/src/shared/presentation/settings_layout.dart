@@ -37,11 +37,7 @@ bool settingsListDetailIsSplit(TRAdaptiveWidthClass widthClass) =>
 /// never reimplement it.
 class SettingsShellScope extends InheritedWidget {
   /// Publishes the shell's up action to its destinations.
-  const SettingsShellScope({
-    required this.onBack,
-    required super.child,
-    super.key,
-  });
+  const new({required this.onBack, required super.child, super.key});
 
   /// Moves one step up the Settings stack.
   final VoidCallback onBack;
@@ -75,7 +71,7 @@ class SettingsShellScope extends InheritedWidget {
 /// destination, or `SettingsSection.action` when it acts on one section.
 class SettingsDestinationScaffold extends StatelessWidget {
   /// Creates a destination whose header adapts to the shell's width class.
-  const SettingsDestinationScaffold({
+  const new({
     required this.title,
     required this.child,
     this.actions = const <TRIconButton>[],
@@ -125,9 +121,8 @@ class SettingsDestinationScaffold extends StatelessWidget {
                           ? const ValueKey<String>('settings-back-button')
                           : null,
                       appearance: TRAppearance.ghost,
-                      label: MaterialLocalizations.of(
-                        context,
-                      ).backButtonTooltip,
+                      label: MaterialLocalizations.of(context)
+                          .backButtonTooltip,
                       onPressed: onBack,
                       icon: Icon(TinestIcons.backFor(context)),
                     ),
@@ -162,11 +157,7 @@ class SettingsDestinationScaffold extends StatelessWidget {
 /// keyboard, so this needs no inset handling of its own.
 class SettingsFormActions extends StatelessWidget {
   /// Creates a destination action bar showing [children] trailing.
-  const SettingsFormActions({
-    required this.children,
-    this.contentMaxWidth,
-    super.key,
-  });
+  const new({required this.children, this.contentMaxWidth, super.key});
 
   /// Actions in reading order, primary last.
   final List<Widget> children;
@@ -314,7 +305,7 @@ abstract class SettingsPaneCoordinatorBase extends ChangeNotifier
 class SettingsPaneController<T extends Object>
     extends SettingsPaneCoordinatorBase {
   /// Creates a typed settings pane controller.
-  SettingsPaneController();
+  new();
 
   T? _destination;
 
@@ -369,11 +360,7 @@ class SettingsPaneController<T extends Object>
 /// feature tells "no destination" from one of its own.
 class SettingsDetailScope extends InheritedWidget {
   /// Publishes one detail destination to the page rendering it.
-  const SettingsDetailScope({
-    required this.destination,
-    required super.child,
-    super.key,
-  });
+  const new({required this.destination, required super.child, super.key});
 
   /// The route identity this subtree renders.
   final Object destination;
@@ -399,7 +386,7 @@ class SettingsDetailScope extends InheritedWidget {
 /// opened from another is pushed over it and leaving it is an ordinary pop.
 class SettingsListDetailHost extends StatefulWidget {
   /// Creates a routed list-detail host.
-  const SettingsListDetailHost({
+  const new({
     required this.coordinator,
     required this.collection,
     required this.detail,
@@ -487,7 +474,7 @@ class _SettingsListDetailHostState extends State<SettingsListDetailHost> {
 /// Applies one loading, stale-data, and error policy to settings reads.
 class SettingsAsyncContent<T> extends StatelessWidget {
   /// Creates a settings data boundary.
-  const SettingsAsyncContent({
+  const new({
     required this.state,
     required this.loading,
     required this.data,
@@ -525,9 +512,8 @@ class SettingsAsyncContent<T> extends StatelessWidget {
               key: const ValueKey<String>('settings-refresh-error'),
               variant: TRStatusVariant.danger,
               title: TRText.inherit(
-                AppLocalizations.of(
-                  context,
-                ).settingsRefreshFailed('${state.error}'),
+                AppLocalizations.of(context)
+                    .settingsRefreshFailed('${state.error}'),
               ),
             ),
           ),
@@ -548,26 +534,20 @@ enum _SettingsSkeletonKind { form, collection, detail, overlay }
 /// so an unavailable daemon or catalog never blocks category navigation.
 class SettingsSkeletonLayout extends StatelessWidget {
   /// Creates a settings form placeholder.
-  const SettingsSkeletonLayout.form({required this.semanticLabel, super.key})
+  const new form({required this.semanticLabel, super.key})
     : _kind = _SettingsSkeletonKind.form;
 
   /// Creates a collection-pane placeholder.
-  const SettingsSkeletonLayout.collection({
-    required this.semanticLabel,
-    super.key,
-  }) : _kind = _SettingsSkeletonKind.collection;
+  const new collection({required this.semanticLabel, super.key})
+    : _kind = _SettingsSkeletonKind.collection;
 
   /// Creates a detail-pane placeholder.
-  const SettingsSkeletonLayout.detail({
-    required this.semanticLabel,
-    super.key,
-  }) : _kind = _SettingsSkeletonKind.detail;
+  const new detail({required this.semanticLabel, super.key})
+    : _kind = _SettingsSkeletonKind.detail;
 
   /// Creates a compact overlay placeholder.
-  const SettingsSkeletonLayout.overlay({
-    required this.semanticLabel,
-    super.key,
-  }) : _kind = _SettingsSkeletonKind.overlay;
+  const new overlay({required this.semanticLabel, super.key})
+    : _kind = _SettingsSkeletonKind.overlay;
 
   /// Accessible description announced once for the complete placeholder.
   final String semanticLabel;
@@ -604,7 +584,7 @@ SettingsSkeletonLayout settingsPaneSkeleton(
 };
 
 class _SettingsFormSkeleton extends StatelessWidget {
-  const _SettingsFormSkeleton();
+  const new();
 
   @override
   Widget build(BuildContext context) => const SettingsScaffold(
@@ -617,7 +597,7 @@ class _SettingsFormSkeleton extends StatelessWidget {
 }
 
 class _SettingsSkeletonListPane extends StatelessWidget {
-  const _SettingsSkeletonListPane()
+  const new()
     : super(key: const ValueKey<String>('settings-skeleton-list-pane'));
 
   @override
@@ -635,7 +615,7 @@ class _SettingsSkeletonListPane extends StatelessWidget {
 }
 
 class _SettingsSkeletonListRow extends StatelessWidget {
-  const _SettingsSkeletonListRow();
+  const new();
 
   @override
   Widget build(BuildContext context) => Padding(
@@ -659,7 +639,7 @@ class _SettingsSkeletonListRow extends StatelessWidget {
 /// aligning their content with the collection header.
 class SettingsCollectionList extends StatelessWidget {
   /// Creates an inset collection with token-based spacing between [children].
-  const SettingsCollectionList({required this.children, super.key});
+  const new({required this.children, super.key});
 
   /// Rows and collection-local headings shown in display order.
   final List<Widget> children;
@@ -678,7 +658,7 @@ class SettingsCollectionList extends StatelessWidget {
 }
 
 class _SettingsSkeletonDetailPane extends StatelessWidget {
-  const _SettingsSkeletonDetailPane()
+  const new()
     : super(key: const ValueKey<String>('settings-skeleton-detail-pane'));
 
   @override
@@ -690,7 +670,7 @@ class _SettingsSkeletonDetailPane extends StatelessWidget {
 }
 
 class _SettingsSkeletonSection extends StatelessWidget {
-  const _SettingsSkeletonSection({required this.rowCount});
+  const new({required this.rowCount});
 
   final int rowCount;
 
@@ -706,9 +686,9 @@ class _SettingsSkeletonSection extends StatelessWidget {
         Padding(
           padding: compact
               ? EdgeInsets.symmetric(
-                  horizontal: SettingsRow.resolvedPadding(
-                    context,
-                  ).resolve(Directionality.of(context)).left,
+                  horizontal: SettingsRow.resolvedPadding(context)
+                      .resolve(Directionality.of(context))
+                      .left,
                 )
               : EdgeInsets.zero,
           child: const TRSkeleton(width: TRMeasurements.measureSm),
@@ -727,7 +707,7 @@ class _SettingsSkeletonSection extends StatelessWidget {
 }
 
 class _SettingsOverlaySkeleton extends StatelessWidget {
-  const _SettingsOverlaySkeleton();
+  const new();
 
   @override
   Widget build(BuildContext context) => const SizedBox(
@@ -756,7 +736,7 @@ class _SettingsOverlaySkeleton extends StatelessWidget {
 /// free to drift apart, and every one of them did.
 class SettingsScaffold extends StatefulWidget {
   /// Creates a settings pane showing [children] as its sections.
-  const SettingsScaffold({required this.children, super.key});
+  const new({required this.children, super.key});
 
   /// Sections shown in order.
   final List<Widget> children;
@@ -860,7 +840,7 @@ class _SettingsScaffoldState extends State<SettingsScaffold> {
 /// card per setting is what made a short list of preferences scroll.
 class SettingsSection extends StatelessWidget {
   /// Creates a section whose [children] are [SettingsRow]s sharing one group.
-  const SettingsSection({
+  const new({
     required this.children,
     this.title,
     this.description,
@@ -876,7 +856,7 @@ class SettingsSection extends StatelessWidget {
   /// A multi-line editor cannot sit in a trailing rail, so it keeps the
   /// stacked label-above-control shape `TRField` defines instead of being
   /// forced into a row.
-  const SettingsSection.form({
+  const new form({
     required this.children,
     this.title,
     this.description,
@@ -932,9 +912,9 @@ class SettingsSection extends StatelessWidget {
     // heading, the rows, and the note under them each start somewhere else.
     final rail = compact
         ? EdgeInsets.symmetric(
-            horizontal: SettingsRow.resolvedPadding(
-              context,
-            ).resolve(Directionality.of(context)).left,
+            horizontal: SettingsRow.resolvedPadding(context)
+                .resolve(Directionality.of(context))
+                .left,
           )
         : EdgeInsets.zero;
     return Column(
@@ -1025,7 +1005,7 @@ class SettingsSection extends StatelessWidget {
 /// the shape that tells a reader the rows belong together without spending
 /// width on a border.
 class _SettingsGroup extends StatelessWidget {
-  const _SettingsGroup({required this.boxed, required this.children});
+  const new({required this.boxed, required this.children});
 
   final bool boxed;
   final List<Widget> children;
@@ -1051,9 +1031,9 @@ class _SettingsGroup extends StatelessWidget {
     if (boxed) return separator;
     return Padding(
       padding: EdgeInsetsDirectional.only(
-        start: SettingsRow.resolvedPadding(
-          context,
-        ).resolve(Directionality.of(context)).left,
+        start: SettingsRow.resolvedPadding(context)
+            .resolve(Directionality.of(context))
+            .left,
       ),
       child: separator,
     );
@@ -1087,7 +1067,7 @@ enum SettingsControlLayout {
 /// how one card ended up with two alignment lines.
 class SettingsRow extends StatelessWidget {
   /// Creates a settings row.
-  const SettingsRow({
+  const new({
     required this.title,
     this.control,
     this.controlLayout = SettingsControlLayout.inline,
@@ -1107,7 +1087,7 @@ class SettingsRow extends StatelessWidget {
   ///
   /// Its selected, hover, and focus surface is inset by the surrounding list,
   /// while its content remains aligned with [TRPaneHeader].
-  const SettingsRow.collection({
+  const new collection({
     required this.title,
     this.control,
     this.controlLayout = SettingsControlLayout.inline,
@@ -1205,11 +1185,8 @@ class SettingsRow extends StatelessWidget {
     );
   }
 
-  EdgeInsetsGeometry _padding(BuildContext context) => resolvedPadding(
-    context,
-    flush: flush,
-    collection: _collection,
-  );
+  EdgeInsetsGeometry _padding(BuildContext context) =>
+      resolvedPadding(context, flush: flush, collection: _collection);
 
   @override
   Widget build(BuildContext context) => TinestListRow(
@@ -1245,7 +1222,7 @@ class SettingsRow extends StatelessWidget {
 /// each other as pages added icons or actions independently.
 class SettingsEmptyState extends StatelessWidget {
   /// Creates a settings empty state.
-  const SettingsEmptyState({
+  const new({
     required this.title,
     this.description,
     this.icon,
@@ -1312,11 +1289,7 @@ class SettingsEmptyState extends StatelessWidget {
 /// different. This state keeps the failure visible until the user retries.
 class SettingsErrorState extends StatelessWidget {
   /// Creates a shared Settings error state.
-  const SettingsErrorState({
-    required this.error,
-    required this.onRetry,
-    super.key,
-  });
+  const new({required this.error, required this.onRetry, super.key});
 
   /// Failure reported by the Settings provider.
   final Object error;
@@ -1346,7 +1319,7 @@ class SettingsErrorState extends StatelessWidget {
 /// the destination with no way back.
 class SettingsCollectionErrorState extends StatelessWidget {
   /// Creates a collection header followed by a shared error state.
-  const SettingsCollectionErrorState({
+  const new({
     required this.title,
     required this.error,
     required this.onRetry,
@@ -1372,7 +1345,7 @@ class SettingsCollectionErrorState extends StatelessWidget {
 /// The shared field rhythm and width for settings dialogs.
 class SettingsDialogForm extends StatelessWidget {
   /// Creates a settings dialog form.
-  const SettingsDialogForm({
+  const new({
     required this.children,
     this.width = TRMeasurements.overlayWidthMd,
     super.key,
@@ -1410,7 +1383,7 @@ class SettingsDialogForm extends StatelessWidget {
 /// trigger sitting in a wide empty field.
 class SettingsCompactToolbar extends StatelessWidget {
   /// Creates a compact settings toolbar whose controls fill the given width.
-  const SettingsCompactToolbar({required this.builder, super.key});
+  const new({required this.builder, super.key});
 
   /// Builds the controls, in order, for the width available to them.
   final List<Widget> Function(double width) builder;

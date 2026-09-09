@@ -17,7 +17,7 @@ Future<List<RelayDeviceDto>> relayDevices(Ref ref, String hostId) async {
   if (api == null) {
     // The connection watch re-runs this build on every connection change, so
     // the pending future is discarded as soon as the daemon connects.
-    return Completer<List<RelayDeviceDto>>().future;
+    return await Completer<List<RelayDeviceDto>>().future;
   }
-  return api.relay.listRelayDevices();
+  return await api.relay.listRelayDevices();
 }

@@ -62,18 +62,7 @@ void main() {
         clock: const _Clock(),
         ids: _Ids(),
       );
-      final bytes = <int>[
-        0x89,
-        0x50,
-        0x4e,
-        0x47,
-        0x0d,
-        0x0a,
-        0x1a,
-        0x0a,
-        1,
-        2,
-      ];
+      final bytes = <int>[0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 1, 2];
       final uploaded = await service.upload(
         fileName: 'fixture.png',
         mimeType: 'image/png',
@@ -142,7 +131,7 @@ void main() {
 }
 
 final class _Clock implements Clock {
-  const _Clock();
+  const new();
 
   @override
   DateTime nowUtc() => DateTime.utc(2026, 8, 5);

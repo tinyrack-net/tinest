@@ -41,9 +41,7 @@ List<ProviderConnectionDto> usableConnections(
 /// Returns null only when the definition delegates to the daemon default.
 /// An unavailable explicit selection is preserved so the UI can show its raw
 /// ID and block execution instead of silently falling through.
-ModelSelectionDto? agentSelectionFor(
-  AgentDefinitionDto definition,
-) {
+ModelSelectionDto? agentSelectionFor(AgentDefinitionDto definition) {
   final model = definition.model;
   final modelId = model.modelId;
   return model.source == AgentModelSource.fixed && modelId != null

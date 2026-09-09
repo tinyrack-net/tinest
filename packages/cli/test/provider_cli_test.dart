@@ -86,10 +86,7 @@ void main() {
       0,
     );
     expect(backend.disconnected, <String>['openai']);
-    expect(
-      await providerCatalogRefresh(backend: backend, output: output),
-      0,
-    );
+    expect(await providerCatalogRefresh(backend: backend, output: output), 0);
     expect(backend.refreshes, 1);
   });
 
@@ -219,7 +216,7 @@ final class _RecordingProgress implements CliProgress {
 }
 
 final class _Backend implements ProviderCliBackend {
-  _Backend(this.now);
+  new(this.now);
 
   final DateTime now;
   final Map<String, String> apiKeys = <String, String>{};
@@ -336,7 +333,7 @@ final class _Backend implements ProviderCliBackend {
   @override
   Future<ProviderCatalogDto> refreshCatalog() async {
     refreshes += 1;
-    return catalog();
+    return await catalog();
   }
 
   @override
@@ -371,7 +368,6 @@ final class _Backend implements ProviderCliBackend {
   Future<ProviderConnectionDto> updateModelPrefix(
     String connectionId,
     String modelPrefix,
-  ) async => connection(connectionId, connectionId).copyWith(
-    modelPrefix: modelPrefix,
-  );
+  ) async =>
+      connection(connectionId, connectionId).copyWith(modelPrefix: modelPrefix);
 }

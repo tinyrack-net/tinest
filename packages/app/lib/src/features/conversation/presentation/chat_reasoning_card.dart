@@ -10,7 +10,7 @@ import 'package:tinyrack_ui/tinyrack_ui.dart';
 /// Expandable provider reasoning shown in the conversation timeline.
 class ChatReasoningCard extends ConsumerWidget {
   /// Creates a reasoning disclosure.
-  const ChatReasoningCard({
+  const new({
     required this.activity,
     this.expanded = false,
     this.onToggle,
@@ -46,10 +46,8 @@ class ChatReasoningCard extends ConsumerWidget {
               )
             : ChatMarkdownBody(
                 data: activity.markdown,
-                onTapLink: (text, href, title) => openChatLink(
-                  ref.read(externalUrlOpenerProvider),
-                  href,
-                ),
+                onTapLink: (text, href, title) =>
+                    openChatLink(ref.read(externalUrlOpenerProvider), href),
               ),
       ),
     );

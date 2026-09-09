@@ -4,24 +4,21 @@ import 'package:protocol/protocol.dart';
 /// Git CLI adapter that never invokes a shell.
 final class ProcessGitWorkspaceGateway implements GitWorkspaceGateway {
   /// Creates a Git adapter using the injected process boundary.
-  const ProcessGitWorkspaceGateway(this._commands);
+  const new(this._commands);
 
   final CommandRunner _commands;
 
   @override
   Future<String?> repositoryRoot(String path) async {
-    final result = await _commands.run(
-      'git',
-      const <String>['rev-parse', '--show-toplevel'],
-      workingDirectory: path,
-    );
+    final result = await _commands.run('git', const <String>[
+      'rev-parse',
+      '--show-toplevel',
+    ], workingDirectory: path);
     return result.exitCode == 0 ? result.stdout.trim() : null;
   }
 
   @override
-  Future<List<GitWorktreeSnapshot>> listWorktrees(
-    String repositoryRoot,
-  ) async {
+  Future<List<GitWorktreeSnapshot>> listWorktrees(String repositoryRoot) async {
     const arguments = <String>['worktree', 'list', '--porcelain'];
     final result = await _commands.run(
       'git',
@@ -66,9 +63,10 @@ final class ProcessGitWorkspaceGateway implements GitWorkspaceGateway {
       workingDirectory: repositoryRoot,
     );
     _requireSuccess(result, arguments, repositoryRoot);
-    final checkedOut = (await listWorktrees(
-      repositoryRoot,
-    )).map((item) => item.branch).nonNulls.toSet();
+    final checkedOut = (await listWorktrees(repositoryRoot))
+        .map((item) => item.branch)
+        .nonNulls
+        .toSet();
     final branches = <GitBranchDto>[];
     final defaults = <String>{};
     for (final line in result.stdout.split('\n')) {
@@ -120,11 +118,10 @@ final class ProcessGitWorkspaceGateway implements GitWorkspaceGateway {
 
   @override
   Future<bool> fetchRemote(String repositoryRoot, String remote) async {
-    final result = await _commands.run(
-      'git',
-      <String>['fetch', remote],
-      workingDirectory: repositoryRoot,
-    );
+    final result = await _commands.run('git', <String>[
+      'fetch',
+      remote,
+    ], workingDirectory: repositoryRoot);
     return result.exitCode == 0;
   }
 
@@ -159,11 +156,11 @@ final class ProcessGitWorkspaceGateway implements GitWorkspaceGateway {
       workingDirectory: path,
     );
     _requireSuccess(status, statusArguments, path);
-    final upstream = await _commands.run(
-      'git',
-      const <String>['rev-parse', '--abbrev-ref', '@{upstream}'],
-      workingDirectory: path,
-    );
+    final upstream = await _commands.run('git', const <String>[
+      'rev-parse',
+      '--abbrev-ref',
+      '@{upstream}',
+    ], workingDirectory: path);
     var unpushed = 0;
     if (upstream.exitCode == 0) {
       const countArguments = <String>[

@@ -12,7 +12,7 @@ import 'package:yaml_edit/yaml_edit.dart';
 /// Raised when a GUI update races an external editor update.
 final class AgentFileConflict implements Exception {
   /// Creates a conflict containing the current content hash.
-  const AgentFileConflict(this.currentContentHash);
+  const new(this.currentContentHash);
 
   /// Hash the client must reload before trying another guarded update.
   final String currentContentHash;
@@ -42,10 +42,7 @@ abstract interface class AgentDefinitionStore {
   Future<AgentDefinitionDto?> resolve(String id);
 
   /// Creates one custom definition.
-  Future<AgentDefinitionDto> create(
-    String id,
-    AgentDefinitionDto definition,
-  );
+  Future<AgentDefinitionDto> create(String id, AgentDefinitionDto definition);
 
   /// Updates one definition using optimistic concurrency.
   Future<AgentDefinitionDto> update(
@@ -73,11 +70,7 @@ abstract interface class AgentDefinitionStore {
 /// One Markdown document read from the agent definition filesystem boundary.
 final class AgentDefinitionDocument {
   /// Creates an immutable document snapshot.
-  const AgentDefinitionDocument({
-    required this.id,
-    required this.sourcePath,
-    required this.source,
-  });
+  const new({required this.id, required this.sourcePath, required this.source});
 
   /// Filename-derived stable agent ID.
   final String id;
@@ -125,7 +118,7 @@ abstract interface class AgentDefinitionFiles {
 /// Native atomic filesystem adapter for `<configDirectory>/agents/*.md`.
 final class NativeAgentDefinitionFiles implements AgentDefinitionFiles {
   /// Creates a native adapter rooted at the daemon config directory.
-  NativeAgentDefinitionFiles(String configDirectory)
+  new(String configDirectory)
     : _directory = Directory(p.join(configDirectory, 'agents')),
       _archiveDirectory = Directory(
         p.join(configDirectory, 'agents', '.archive'),
@@ -249,7 +242,7 @@ final class NativeAgentDefinitionFiles implements AgentDefinitionFiles {
 /// Serialized source-of-truth catalog for Markdown agent definitions.
 final class FileAgentDefinitionStore implements AgentDefinitionStore {
   /// Creates a production store rooted at the daemon config directory.
-  FileAgentDefinitionStore(
+  new(
     String configDirectory, {
     AgentMarkdownCodec codec = const AgentMarkdownCodec(),
     Duration watchDebounce = const Duration(milliseconds: 200),
@@ -260,7 +253,7 @@ final class FileAgentDefinitionStore implements AgentDefinitionStore {
        );
 
   /// Creates a store with an injected deterministic filesystem boundary.
-  FileAgentDefinitionStore.withFiles(
+  new withFiles(
     this._files, {
     this.codec = const AgentMarkdownCodec(),
     this.watchDebounce = const Duration(milliseconds: 200),
@@ -304,7 +297,7 @@ final class FileAgentDefinitionStore implements AgentDefinitionStore {
   @override
   Future<List<AgentDefinitionDto>> list() async {
     await initialize();
-    return _serialize(() async {
+    return await _serialize(() async {
       final definitions = _active.values.toList(growable: false)
         ..sort((left, right) {
           if (left.id == 'tinest') return -1;
@@ -318,7 +311,7 @@ final class FileAgentDefinitionStore implements AgentDefinitionStore {
   @override
   Future<List<AgentDefinitionDto>> listArchived() async {
     await initialize();
-    return _serialize(
+    return await _serialize(
       () async => List<AgentDefinitionDto>.unmodifiable(_archived.values),
     );
   }
@@ -326,13 +319,13 @@ final class FileAgentDefinitionStore implements AgentDefinitionStore {
   @override
   Future<AgentDefinitionDto?> get(String id) async {
     await initialize();
-    return _serialize(() async => _active[id]);
+    return await _serialize(() async => _active[id]);
   }
 
   @override
   Future<AgentDefinitionDto?> resolve(String id) async {
     await initialize();
-    return _serialize(() async => _active[id] ?? _archived[id]);
+    return await _serialize(() async => _active[id] ?? _archived[id]);
   }
 
   @override
@@ -341,7 +334,7 @@ final class FileAgentDefinitionStore implements AgentDefinitionStore {
     AgentDefinitionDto definition,
   ) async {
     await initialize();
-    return _serialize(() async {
+    return await _serialize(() async {
       _validateId(id);
       if (id == 'tinest' ||
           _active.containsKey(id) ||
@@ -354,11 +347,7 @@ final class FileAgentDefinitionStore implements AgentDefinitionStore {
         );
       }
       final source = codec.encodeNew(definition);
-      codec.decode(
-        id: id,
-        sourcePath: _files.activePath(id),
-        source: source,
-      );
+      codec.decode(id: id, sourcePath: _files.activePath(id), source: source);
       await _files.writeActive(id, source);
       await _reloadLocked();
       return _active[id]!;
@@ -372,7 +361,7 @@ final class FileAgentDefinitionStore implements AgentDefinitionStore {
     bool force = false,
   }) async {
     await initialize();
-    return _serialize(() async {
+    return await _serialize(() async {
       final current = _active[definition.id];
       if (current == null) {
         throw StateError('Agent definition not found: ${definition.id}');
@@ -441,14 +430,12 @@ final class FileAgentDefinitionStore implements AgentDefinitionStore {
           source: after,
           isArchived: entry.archived,
         );
-        writes.add(
-          (
-            id: definition.id,
-            before: before,
-            after: after,
-            archived: entry.archived,
-          ),
-        );
+        writes.add((
+          id: definition.id,
+          before: before,
+          after: after,
+          archived: entry.archived,
+        ));
       }
       final completed = <({String id, String before, bool archived})>[];
       try {
@@ -458,9 +445,11 @@ final class FileAgentDefinitionStore implements AgentDefinitionStore {
           } else {
             await _files.writeActive(write.id, write.after);
           }
-          completed.add(
-            (id: write.id, before: write.before, archived: write.archived),
-          );
+          completed.add((
+            id: write.id,
+            before: write.before,
+            archived: write.archived,
+          ));
         }
       } catch (_) {
         for (final write in completed.reversed) {
@@ -494,7 +483,7 @@ final class FileAgentDefinitionStore implements AgentDefinitionStore {
   @override
   Future<AgentDefinitionDto> resetTinest() async {
     await initialize();
-    return _serialize(() async {
+    return await _serialize(() async {
       final source = codec.encodeNew(
         _defaultTinest(_files.activePath('tinest')),
       );
@@ -540,10 +529,7 @@ final class FileAgentDefinitionStore implements AgentDefinitionStore {
     final active = <String, AgentDefinitionDto>{};
     final archived = <String, AgentDefinitionDto>{};
     final sources = <String, String>{};
-    void parse(
-      AgentDefinitionDocument document, {
-      required bool isArchived,
-    }) {
+    void parse(AgentDefinitionDocument document, {required bool isArchived}) {
       final previous = (isArchived ? _archived : _active)[document.id];
       try {
         _validateId(document.id);
@@ -649,7 +635,7 @@ final class FileAgentDefinitionStore implements AgentDefinitionStore {
 }
 
 final class _AgentCatalogSnapshot {
-  const _AgentCatalogSnapshot({
+  const new({
     required this.active,
     required this.archived,
     required this.sources,
@@ -677,10 +663,7 @@ AgentDefinitionDto _defaultTinest(String sourcePath) => AgentDefinitionDto(
   mode: AgentMode.primary,
   model: const AgentModelSelectionDto(source: AgentModelSource.session),
   driverId: 'tinest.standard/driver',
-  extensionIds: const <String>[
-    'tinest.skills',
-    'tinest.collaboration',
-  ],
+  extensionIds: const <String>['tinest.skills', 'tinest.collaboration'],
   toolIds: const <String>[
     'tinest.edit/apply_patch',
     'tinest.mcp/list_resources',
@@ -724,13 +707,12 @@ abstract interface class AgentContributionCatalog {
 /// failure the user cannot act on.
 final class AgentDefinitionLookupFailure implements Exception {
   /// Reports a definition that no longer exists.
-  const AgentDefinitionLookupFailure.notFound(this.id)
+  const new notFound(this.id)
     : message = 'Agent definition not found: $id',
       isMissing = true;
 
   /// Reports a definition that exists but cannot start a session.
-  const AgentDefinitionLookupFailure.unusable(this.id, this.message)
-    : isMissing = false;
+  const new unusable(this.id, this.message) : isMissing = false;
 
   /// Identifier the caller referenced.
   final String id;
@@ -748,7 +730,7 @@ final class AgentDefinitionLookupFailure implements Exception {
 /// Validates domain relationships independently of filesystem mechanics.
 final class AgentDefinitionService {
   /// Creates an agent definition application service.
-  AgentDefinitionService({
+  new({
     required this._store,
     required this._contributions,
     this.codec = const AgentMarkdownCodec(),
@@ -768,15 +750,14 @@ final class AgentDefinitionService {
   Future<void> initialize() => _store.initialize();
 
   /// Returns definitions with source diagnostics preserved.
-  Future<List<AgentDefinitionDto>> list() async => Future.wait(
-    (await _store.list()).map(_decorate),
-  );
+  Future<List<AgentDefinitionDto>> list() async =>
+      await Future.wait((await _store.list()).map(_decorate));
 
   /// Returns one visible definition.
   Future<AgentDefinitionDto> get(String id) async {
     final definition = await _store.get(id);
     if (definition == null) throw AgentDefinitionLookupFailure.notFound(id);
-    return _decorate(definition);
+    return await _decorate(definition);
   }
 
   /// Resolves active or archived configuration for a turn snapshot.
@@ -789,7 +770,7 @@ final class AgentDefinitionService {
         'Agent definition is invalid: $id',
       );
     }
-    return _decorate(definition);
+    return await _decorate(definition);
   }
 
   /// Returns model tools exactly as validated Lua registrations declared them.
@@ -828,7 +809,7 @@ final class AgentDefinitionService {
     AgentDefinitionDto definition,
   ) async {
     await _validateReferences(definition);
-    return _decorate(await _store.create(id, definition));
+    return await _decorate(await _store.create(id, definition));
   }
 
   /// Updates a definition after validating immutable and cross-file rules.
@@ -838,7 +819,7 @@ final class AgentDefinitionService {
     bool force = false,
   }) async {
     await _validateReferences(definition);
-    return _decorate(
+    return await _decorate(
       await _store.update(
         definition,
         expectedContentHash: expectedContentHash,
@@ -868,7 +849,7 @@ final class AgentDefinitionService {
     if (id != 'tinest') {
       throw StateError('Only the built-in Tinest agent can be reset.');
     }
-    return _decorate(await _store.resetTinest());
+    return await _decorate(await _store.resetTinest());
   }
 
   /// Parses and validates one unsaved Markdown document.
@@ -879,7 +860,7 @@ final class AgentDefinitionService {
       source: markdown,
     );
     await _validateReferences(parsed);
-    return _decorate(parsed);
+    return await _decorate(parsed);
   }
 
   Future<void> _validateReferences(AgentDefinitionDto definition) async {
@@ -896,9 +877,7 @@ final class AgentDefinitionService {
           target.isArchived ||
           target.isStale ||
           target.mode != AgentMode.subagent) {
-        throw FormatException(
-          'Callable agent must be an active subagent: $id',
-        );
+        throw FormatException('Callable agent must be an active subagent: $id');
       }
     }
   }
@@ -921,7 +900,7 @@ final class AgentDefinitionService {
 /// Parses and updates the Tinest agent Markdown format.
 final class AgentMarkdownCodec {
   /// Creates the stateless Markdown codec.
-  const AgentMarkdownCodec();
+  const new();
 
   /// Parses one Markdown document into a typed definition.
   AgentDefinitionDto decode({
@@ -997,10 +976,7 @@ final class AgentMarkdownCodec {
       name: _requiredString(frontmatter, 'name'),
       description: _requiredStringAllowEmpty(frontmatter, 'description'),
       mode: mode,
-      model: AgentModelSelectionDto(
-        source: modelSource,
-        modelId: modelId,
-      ),
+      model: AgentModelSelectionDto(source: modelSource, modelId: modelId),
       driverId: driverId,
       extensionIds: extensionIds,
       toolIds: toolIds,
@@ -1053,19 +1029,13 @@ final class AgentMarkdownCodec {
   }
 
   static Map<String, Object?> _modelMap(AgentModelSelectionDto model) =>
-      <String, Object?>{
-        'source': model.source.name,
-        'modelId': ?model.modelId,
-      };
+      <String, Object?>{'source': model.source.name, 'modelId': ?model.modelId};
 }
 
 final class _AgentMarkdownDocument {
-  const _AgentMarkdownDocument({
-    required this.frontmatter,
-    required this.body,
-  });
+  const new({required this.frontmatter, required this.body});
 
-  factory _AgentMarkdownDocument.parse(String source) {
+  factory parse(String source) {
     final normalized = source.replaceAll('\r\n', '\n');
     final lines = normalized.split('\n');
     var start = 0;

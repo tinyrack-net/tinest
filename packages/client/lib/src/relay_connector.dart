@@ -14,7 +14,7 @@ import 'package:stream_channel/stream_channel.dart';
 final class RelayWebSocketConnector
     implements WebSocketConnector, AttachmentTransport {
   /// Creates a connector for one daemon-scoped device identity.
-  RelayWebSocketConnector({
+  new({
     required this.connection,
     required this.credential,
     WebSocketConnector? socketConnector,
@@ -116,16 +116,13 @@ final class RelayWebSocketConnector
 }
 
 final class _RelayClientChannel {
-  _RelayClientChannel._({
+  new _({
     required this._raw,
     required this._iterator,
     required this._incoming,
     required this._outgoing,
   }) {
-    channel = StreamChannel<dynamic>(
-      _incomingMessages.stream,
-      _outbound.sink,
-    );
+    channel = StreamChannel<dynamic>(_incomingMessages.stream, _outbound.sink);
     _outgoingSubscription = _outbound.stream.listen(
       _queueSend,
       onDone: () => unawaited(_close()),
@@ -345,9 +342,7 @@ final class _RelayClientChannel {
       RelayRecord(
         type: RelayRecordType.attachmentCredit,
         streamId: streamId,
-        payload: encodeRelayAttachmentCredit(
-          relayAttachmentCreditWindowBytes,
-        ),
+        payload: encodeRelayAttachmentCredit(relayAttachmentCreditWindowBytes),
       ),
     );
     final opened = await _next(iterator);

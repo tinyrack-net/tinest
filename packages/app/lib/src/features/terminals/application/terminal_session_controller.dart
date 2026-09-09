@@ -36,7 +36,7 @@ enum TerminalSessionStatus {
 /// One terminal's emulator plus the state of its daemon attachment.
 final class TerminalSessionState {
   /// Creates a session snapshot.
-  const TerminalSessionState({
+  const new({
     required this.terminal,
     required this.status,
     required this.hasContent,

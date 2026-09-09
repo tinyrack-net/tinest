@@ -9,47 +9,39 @@ import 'package:tinyrack_ui/tinyrack_ui.dart';
 import '../support/localization.dart';
 
 void main() {
-  test(
-    'every daemon failure code has wording of its own',
-    () {
-      // The daemon writes its messages in English for a maintainer. A code
-      // this app knows but forgot to translate would leak that sentence to a
-      // Korean or Japanese user, which is exactly the bug being fixed.
-      const daemonSentence = 'Internal daemon error.';
-      for (final code in RpcErrorCodes.all) {
-        final text = clientErrorText(
-          testL10n,
-          const TinestClientException(daemonSentence).copyWithCode(code),
-        );
-        expect(
-          text,
-          isNot(daemonSentence),
-          reason: 'The code "$code" has no localized wording.',
-        );
-      }
-    },
-    tags: const <String>['feature_test__worktree_lifecycle__unit'],
-  );
+  test('every daemon failure code has wording of its own', () {
+    // The daemon writes its messages in English for a maintainer. A code
+    // this app knows but forgot to translate would leak that sentence to a
+    // Korean or Japanese user, which is exactly the bug being fixed.
+    const daemonSentence = 'Internal daemon error.';
+    for (final code in RpcErrorCodes.all) {
+      final text = clientErrorText(
+        testL10n,
+        const TinestClientException(daemonSentence).copyWithCode(code),
+      );
+      expect(
+        text,
+        isNot(daemonSentence),
+        reason: 'The code "$code" has no localized wording.',
+      );
+    }
+  }, tags: const <String>['feature_test__worktree_lifecycle__unit']);
 
-  test(
-    'an unknown code falls back to the daemon message',
-    () {
-      // Only the daemon knows what a code this app has never heard of means,
-      // so its own text beats inventing a generic apology.
-      expect(
-        clientErrorText(
-          testL10n,
-          const TinestClientException('Something specific.', code: 'from_v5'),
-        ),
-        'Something specific.',
-      );
-      expect(
-        clientErrorText(testL10n, const TinestClientException('No code.')),
-        'No code.',
-      );
-    },
-    tags: const <String>['feature_test__worktree_lifecycle__unit'],
-  );
+  test('an unknown code falls back to the daemon message', () {
+    // Only the daemon knows what a code this app has never heard of means,
+    // so its own text beats inventing a generic apology.
+    expect(
+      clientErrorText(
+        testL10n,
+        const TinestClientException('Something specific.', code: 'from_v5'),
+      ),
+      'Something specific.',
+    );
+    expect(
+      clientErrorText(testL10n, const TinestClientException('No code.')),
+      'No code.',
+    );
+  }, tags: const <String>['feature_test__worktree_lifecycle__unit']);
 
   test(
     'diagnostics carry the trace id and Git output, and nothing when empty',
@@ -147,9 +139,7 @@ void main() {
       await tester.pump();
       expect(retried, 1);
 
-      await tester.tap(
-        find.byKey(const ValueKey<String>('client-error-copy')),
-      );
+      await tester.tap(find.byKey(const ValueKey<String>('client-error-copy')));
       await tester.pump();
       expect(
         copied.single,

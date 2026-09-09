@@ -14,7 +14,7 @@ import 'package:protocol/protocol.dart';
 @immutable
 final class ComposerCompletion {
   /// Creates a completion bundle.
-  const ComposerCompletion({
+  const new({
     required this.commands,
     required this.suggestions,
     required this.onQueryChanged,
@@ -36,7 +36,7 @@ final class ComposerCompletion {
 /// and the provider reads in one place rather than in each host screen.
 class ComposerCompletionScope extends ConsumerStatefulWidget {
   /// Creates a completion scope.
-  const ComposerCompletionScope({
+  const new({
     required this.hostId,
     required this.builder,
     this.workspaceId,

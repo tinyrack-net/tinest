@@ -110,10 +110,7 @@ void main() {
       expect(files.activeSource('active'), activeBefore);
       expect(files.archivedSource('archived'), archivedBefore);
       await store.reload();
-      expect(
-        (await store.get('active'))!.model.modelId,
-        'openai/model/active',
-      );
+      expect((await store.get('active'))!.model.modelId, 'openai/model/active');
       expect(
         (await store.resolve('archived'))!.model.modelId,
         'openai/model/archived',

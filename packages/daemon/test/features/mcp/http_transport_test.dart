@@ -316,22 +316,22 @@ void main() {
 }
 
 final class _Reply {
-  const _Reply({
+  const new({
     required this.status,
     required this.body,
     required this.contentType,
   });
 
-  factory _Reply.json(Map<String, dynamic> payload) => _Reply(
+  factory json(Map<String, dynamic> payload) => _Reply(
     status: 200,
     body: jsonEncode(payload),
     contentType: 'application/json',
   );
 
-  factory _Reply.sse(String body) =>
+  factory sse(String body) =>
       _Reply(status: 200, body: body, contentType: 'text/event-stream');
 
-  factory _Reply.accepted() =>
+  factory accepted() =>
       const _Reply(status: 202, body: '', contentType: 'text/plain');
 
   final int status;
@@ -340,11 +340,7 @@ final class _Reply {
 }
 
 final class _RecordedRequest {
-  const _RecordedRequest({
-    required this.method,
-    required this.headers,
-    required this.body,
-  });
+  const new({required this.method, required this.headers, required this.body});
 
   final String method;
   final Map<String, String> headers;
@@ -352,7 +348,7 @@ final class _RecordedRequest {
 }
 
 final class _FakeHttpServer {
-  _FakeHttpServer(this._server) {
+  new(this._server) {
     unawaited(_serve());
   }
 
@@ -370,9 +366,8 @@ final class _FakeHttpServer {
 
   Uri get url => Uri.parse('http://127.0.0.1:${_server.port}/mcp');
 
-  void respondJson(Map<String, dynamic> payload) => _reply = _Reply.json(
-    payload,
-  );
+  void respondJson(Map<String, dynamic> payload) =>
+      _reply = _Reply.json(payload);
 
   void respondSse(String body) => _reply = _Reply.sse(body);
 
@@ -389,11 +384,7 @@ final class _FakeHttpServer {
       final headers = <String, String>{};
       request.headers.forEach((name, values) => headers[name] = values.first);
       requests.add(
-        _RecordedRequest(
-          method: request.method,
-          headers: headers,
-          body: body,
-        ),
+        _RecordedRequest(method: request.method, headers: headers, body: body),
       );
 
       if (request.method == 'DELETE') {

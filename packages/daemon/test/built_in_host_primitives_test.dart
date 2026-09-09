@@ -15,7 +15,7 @@ import 'package:daemon/src/shared/ports/mcp_host_primitives.dart';
 import 'package:daemon/src/shared/ports/request_cancellation.dart';
 import 'package:file/file.dart';
 import 'package:file/memory.dart';
-import 'package:platform/platform.dart';
+import 'package:platform/testing.dart';
 import 'package:protocol/protocol.dart';
 import 'package:test/test.dart';
 
@@ -35,11 +35,7 @@ void main() {
     final registry = _registry(factory);
     const arguments = <String, Object?>{
       'operations': <Map<String, Object?>>[
-        <String, Object?>{
-          'kind': 'write',
-          'path': 'a.txt',
-          'content': 'new',
-        },
+        <String, Object?>{'kind': 'write', 'path': 'a.txt', 'content': 'new'},
         <String, Object?>{
           'kind': 'write',
           'path': 'created.txt',
@@ -121,14 +117,11 @@ void main() {
       0x0a,
     ]);
 
-    final result = await _registry(factory).invoke(
-      'host.workspace.read_blob',
-      const <String, Object?>{
-        'path': 'preview.png',
-        'image_detail': 'original',
-      },
-      _context(const <String>{'workspace.read'}),
-    );
+    final result = await _registry(factory)
+        .invoke('host.workspace.read_blob', const <String, Object?>{
+          'path': 'preview.png',
+          'image_detail': 'original',
+        }, _context(const <String>{'workspace.read'}));
 
     expect(result.ok, isTrue);
     final attachment = result.resources.single.value as ConversationAttachment;
@@ -278,11 +271,9 @@ void main() {
         await _registry(
           factory,
           attachments: const _FixedAttachmentPublisher(attachment),
-        ).invoke(
-          'host.attachment.publish',
-          const <String, Object?>{'path': 'a.txt'},
-          _context(const <String>{'attachment.publish'}),
-        );
+        ).invoke('host.attachment.publish', const <String, Object?>{
+          'path': 'a.txt',
+        }, _context(const <String>{'attachment.publish'}));
 
     expect(result.ok, isTrue);
     expect(result.value, containsPair('id', attachment.id));
@@ -303,11 +294,9 @@ void main() {
         await _registry(
           factory,
           attachmentReader: const _FixedAttachmentReader(attachment),
-        ).invoke(
-          'host.attachment.read',
-          const <String, Object?>{'id': 'stored-1'},
-          _context(const <String>{'attachment.read'}),
-        );
+        ).invoke('host.attachment.read', const <String, Object?>{
+          'id': 'stored-1',
+        }, _context(const <String>{'attachment.read'}));
 
     expect(result.value, containsPair('sha256', 'digest'));
     expect(result.resources.single.value, same(attachment));
@@ -384,10 +373,7 @@ void main() {
     final pending = _registry(factory, processes: processes).invoke(
       'host.process.read',
       const <String, Object?>{'handle': 7, 'yield_time_ms': 300000},
-      _context(
-        const <String>{'process.execute'},
-        cancellation: cancellation,
-      ),
+      _context(const <String>{'process.execute'}, cancellation: cancellation),
     );
 
     await session.readStarted.future;
@@ -436,10 +422,7 @@ void main() {
     final listedValue = listed.value! as Map<String, Object?>;
     expect(listedValue['skills'], hasLength(1));
     expect(listedValue['implicit_skills'], <Map<String, Object?>>[
-      <String, Object?>{
-        'name': 'sample',
-        'instructions': '# Instructions',
-      },
+      <String, Object?>{'name': 'sample', 'instructions': '# Instructions'},
     ]);
     expect(document.value, containsPair('instructions', '# Instructions'));
     expect(
@@ -473,7 +456,7 @@ void main() {
             definition: _definition,
             luaCodeMode: _RecordingLuaCodeModeHost(),
             fileSystem: fileSystem,
-            platform: FakePlatform(operatingSystem: 'linux'),
+            platform: TestPlatform.native(operatingSystem: 'linux'),
           ),
         ),
         throwsA(anyOf(isA<AssertionError>(), isA<StateError>())),
@@ -491,10 +474,7 @@ void main() {
         'name': 'echo',
         'arguments': <String, Object?>{},
       },
-      _context(
-        const <String>{'mcp.invoke'},
-        cancellation: cancellation,
-      ),
+      _context(const <String>{'mcp.invoke'}, cancellation: cancellation),
     );
 
     expect(result.ok, isTrue);
@@ -514,10 +494,7 @@ void main() {
           'name': 'echo',
           'arguments': <String, Object?>{},
         },
-        _context(
-          const <String>{'mcp.invoke'},
-          cancellation: cancellation,
-        ),
+        _context(const <String>{'mcp.invoke'}, cancellation: cancellation),
       );
 
       expect(result.error?.code, 'cancelled');
@@ -659,15 +636,11 @@ void main() {
       selectedTools: _SelectedLuaTools(),
     );
 
-    final read = await registry.invoke(
-      'host.lua.read',
-      const <String, Object?>{
-        'handle': 'cell-1',
-        'yield_time_ms': 90000,
-        'max_output_tokens': 200000,
-      },
-      _context(const <String>{'process.execute'}),
-    );
+    final read = await registry.invoke('host.lua.read', const <String, Object?>{
+      'handle': 'cell-1',
+      'yield_time_ms': 90000,
+      'max_output_tokens': 200000,
+    }, _context(const <String>{'process.execute'}));
     final terminate = await registry.invoke(
       'host.lua.terminate',
       const <String, Object?>{'handle': 'cell-1'},
@@ -729,10 +702,9 @@ void main() {
           },
         ],
       },
-      _context(
-        const <String>{'interaction.request'},
-        callId: 'model-tool-call',
-      ),
+      _context(const <String>{
+        'interaction.request',
+      }, callId: 'model-tool-call'),
     );
 
     expect(result.ok, isTrue);
@@ -785,7 +757,7 @@ HostPrimitiveContext _context(
 
 final class _MemoryHostPrimitiveRegistryFactory
     implements HostPrimitiveRegistryFactory {
-  const _MemoryHostPrimitiveRegistryFactory(this.fileSystem);
+  const new(this.fileSystem);
 
   final FileSystem fileSystem;
 
@@ -824,7 +796,7 @@ final class _MemoryHostPrimitiveRegistryFactory
       luaCodeMode: luaCodeMode,
       selectedTools: selectedTools,
       fileSystem: fileSystem,
-      platform: FakePlatform(operatingSystem: 'linux'),
+      platform: TestPlatform.native(operatingSystem: 'linux'),
     ),
   );
 }
@@ -864,7 +836,7 @@ final class _UnusedAttachmentPublisher implements AttachmentPublisher {
 }
 
 final class _FixedAttachmentPublisher implements AttachmentPublisher {
-  const _FixedAttachmentPublisher(this.attachment);
+  const new(this.attachment);
 
   final ConversationAttachment attachment;
 
@@ -878,7 +850,7 @@ final class _UnusedAttachmentReader implements AttachmentReader {
 }
 
 final class _FixedAttachmentReader implements AttachmentReader {
-  const _FixedAttachmentReader(this.attachment);
+  const new(this.attachment);
 
   final ConversationAttachment attachment;
 
@@ -964,7 +936,7 @@ final class _UnusedProcesses implements ExecSessionHost {
 }
 
 final class _RecordingProcesses implements ExecSessionHost {
-  _RecordingProcesses({_RecordingExecSession? session})
+  new({_RecordingExecSession? session})
     : session = session ?? _RecordingExecSession();
 
   final _RecordingExecSession session;
@@ -1005,7 +977,7 @@ final class _RecordingProcesses implements ExecSessionHost {
 }
 
 final class _RecordingExecSession implements ExecSession {
-  _RecordingExecSession({this.blockReads = false});
+  new({this.blockReads = false});
 
   final bool blockReads;
   final List<String> writes = <String>[];
@@ -1030,7 +1002,7 @@ final class _RecordingExecSession implements ExecSession {
   @override
   Future<ExecSessionChunk> read(Duration yieldTime) async {
     if (!readStarted.isCompleted) readStarted.complete();
-    if (blockReads) return _blockedRead.future;
+    if (blockReads) return await _blockedRead.future;
     expect(yieldTime, const Duration(milliseconds: 25));
     return const ExecSessionChunk(
       output: 'chunk',
@@ -1062,10 +1034,7 @@ final class _FixedSkills implements SkillCatalog, ImplicitSkillDocumentSource {
   @override
   List<ImplicitSkillDocument> implicitSkillDocuments() =>
       const <ImplicitSkillDocument>[
-        ImplicitSkillDocument(
-          name: 'sample',
-          instructions: '# Instructions',
-        ),
+        ImplicitSkillDocument(name: 'sample', instructions: '# Instructions'),
       ];
 
   @override
@@ -1124,7 +1093,7 @@ final class _SelectedLuaTools implements SelectedLuaToolInvoker {
 }
 
 final class _RecordingLuaCodeModeHost implements LuaCodeModeHost {
-  _RecordingLuaCodeModeHost({
+  new({
     this.executeResult = const LuaCellChunk(cellId: 'cell', output: ''),
     this.waitResult = const LuaCellChunk(cellId: 'cell', output: ''),
   });
@@ -1171,10 +1140,7 @@ final class _RecordingMcpGateway implements McpHostPrimitiveGateway {
   }) async {
     invocations.add(arguments);
     this.cancellation = cancellation;
-    return const <String, Object?>{
-      'content': <Object?>[],
-      'isError': false,
-    };
+    return const <String, Object?>{'content': <Object?>[], 'isError': false};
   }
 
   @override

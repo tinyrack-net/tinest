@@ -179,9 +179,8 @@ void main() {
     () async {
       final service = RelayService();
       expect(
-        (await service.call(
-          Request('GET', Uri.parse('http://x/nope')),
-        )).statusCode,
+        (await service.call(Request('GET', Uri.parse('http://x/nope'))))
+            .statusCode,
         404,
       );
       final oversized = 'x' * 129;
@@ -189,9 +188,7 @@ void main() {
         (await service.call(
           Request(
             'GET',
-            Uri.parse(
-              'http://x/v1/ws?role=daemon&serverId=$oversized',
-            ),
+            Uri.parse('http://x/v1/ws?role=daemon&serverId=$oversized'),
           ),
         )).statusCode,
         400,
@@ -214,15 +211,12 @@ Future<void> _awaitDaemonAttached(RelayService service, String serverId) =>
       onTimeout: () => fail('Daemon $serverId never attached to the registry.'),
     );
 
-Uri _webSocketUri(
-  Uri base, {
-  required String role,
-  required String serverId,
-}) => base.replace(
-  scheme: 'ws',
-  path: '/v1/ws',
-  queryParameters: <String, String>{'role': role, 'serverId': serverId},
-);
+Uri _webSocketUri(Uri base, {required String role, required String serverId}) =>
+    base.replace(
+      scheme: 'ws',
+      path: '/v1/ws',
+      queryParameters: <String, String>{'role': role, 'serverId': serverId},
+    );
 
 Future<String> _get(Uri uri) async {
   final client = HttpClient();

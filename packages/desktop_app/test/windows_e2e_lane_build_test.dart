@@ -11,9 +11,7 @@ void main() {
       final root = await Directory.systemTemp.createTemp(
         'tinest-windows-e2e-project-cache-',
       );
-      final project = Directory(
-        '${root.path}${Platform.pathSeparator}project',
-      );
+      final project = Directory('${root.path}${Platform.pathSeparator}project');
       final flutterBuildCache = Directory(
         '${project.path}${Platform.pathSeparator}.dart_tool'
         '${Platform.pathSeparator}flutter_build',
@@ -50,9 +48,7 @@ void main() {
     final root = await Directory.systemTemp.createTemp(
       'tinest-windows-e2e-project-cache-link-',
     );
-    final project = Directory(
-      '${root.path}${Platform.pathSeparator}project',
-    );
+    final project = Directory('${root.path}${Platform.pathSeparator}project');
     final outside = Directory(
       '${root.path}${Platform.pathSeparator}outside-cache',
     );
@@ -89,9 +85,7 @@ void main() {
     final root = await Directory.systemTemp.createTemp(
       'tinest-windows-e2e-project-parent-link-',
     );
-    final project = Directory(
-      '${root.path}${Platform.pathSeparator}project',
-    );
+    final project = Directory('${root.path}${Platform.pathSeparator}project');
     final outside = Directory(
       '${root.path}${Platform.pathSeparator}outside-dart-tool',
     );
@@ -129,9 +123,7 @@ void main() {
       final root = await Directory.systemTemp.createTemp(
         'tinest-windows-e2e-ordinary-',
       );
-      final project = Directory(
-        '${root.path}${Platform.pathSeparator}project',
-      );
+      final project = Directory('${root.path}${Platform.pathSeparator}project');
       final lane = Directory(
         '${project.path}${Platform.pathSeparator}build'
         '${Platform.pathSeparator}e2e${Platform.pathSeparator}lane-0'
@@ -148,9 +140,8 @@ void main() {
       );
       addTearDown(() => root.delete(recursive: true));
       await lane.create(recursive: true);
-      await File(
-        '${lane.path}${Platform.pathSeparator}stale.txt',
-      ).writeAsString('stale');
+      await File('${lane.path}${Platform.pathSeparator}stale.txt')
+          .writeAsString('stale');
       await sibling.create(recursive: true);
       await sibling.writeAsString('keep');
       await ephemeral.create(recursive: true);
@@ -175,9 +166,7 @@ void main() {
       final root = await Directory.systemTemp.createTemp(
         'tinest-windows-e2e-missing-',
       );
-      final project = Directory(
-        '${root.path}${Platform.pathSeparator}project',
-      );
+      final project = Directory('${root.path}${Platform.pathSeparator}project');
       addTearDown(() => root.delete(recursive: true));
       await project.create();
       final ephemeral = Directory(
@@ -200,21 +189,14 @@ void main() {
     final root = await Directory.systemTemp.createTemp(
       'tinest-windows-e2e-file-',
     );
-    final project = Directory(
-      '${root.path}${Platform.pathSeparator}project',
-    );
-    final build = File(
-      '${project.path}${Platform.pathSeparator}build',
-    );
+    final project = Directory('${root.path}${Platform.pathSeparator}project');
+    final build = File('${project.path}${Platform.pathSeparator}build');
     addTearDown(() => root.delete(recursive: true));
     await project.create();
     await build.writeAsString('must survive');
 
     await expectLater(
-      resetWindowsE2eLaneBuild(
-        projectDirectory: project.path,
-        laneIndex: 0,
-      ),
+      resetWindowsE2eLaneBuild(projectDirectory: project.path, laneIndex: 0),
       throwsStateError,
     );
     expect(build.readAsStringSync(), 'must survive');
@@ -224,12 +206,8 @@ void main() {
     final root = await Directory.systemTemp.createTemp(
       'tinest-windows-e2e-reset-',
     );
-    final project = Directory(
-      '${root.path}${Platform.pathSeparator}project',
-    );
-    final outside = Directory(
-      '${root.path}${Platform.pathSeparator}outside',
-    );
+    final project = Directory('${root.path}${Platform.pathSeparator}project');
+    final outside = Directory('${root.path}${Platform.pathSeparator}outside');
     final sentinel = File(
       '${outside.path}${Platform.pathSeparator}sentinel.txt',
     );
@@ -254,10 +232,7 @@ void main() {
       FileSystemEntityType.link,
     );
     await expectLater(
-      resetWindowsE2eLaneBuild(
-        projectDirectory: project.path,
-        laneIndex: 0,
-      ),
+      resetWindowsE2eLaneBuild(projectDirectory: project.path, laneIndex: 0),
       throwsStateError,
     );
     expect(sentinel.readAsStringSync(), 'must survive');
@@ -271,9 +246,7 @@ void main() {
     final root = await Directory.systemTemp.createTemp(
       'tinest-windows-e2e-parent-link-',
     );
-    final project = Directory(
-      '${root.path}${Platform.pathSeparator}project',
-    );
+    final project = Directory('${root.path}${Platform.pathSeparator}project');
     final outsideBuild = Directory(
       '${root.path}${Platform.pathSeparator}outside-build',
     );
@@ -301,10 +274,7 @@ void main() {
       FileSystemEntityType.link,
     );
     await expectLater(
-      resetWindowsE2eLaneBuild(
-        projectDirectory: project.path,
-        laneIndex: 0,
-      ),
+      resetWindowsE2eLaneBuild(projectDirectory: project.path, laneIndex: 0),
       throwsStateError,
     );
     expect(sentinel.readAsStringSync(), 'must survive');
@@ -320,12 +290,8 @@ void main() {
       final root = await Directory.systemTemp.createTemp(
         'tinest-windows-e2e-ephemeral-link-',
       );
-      final project = Directory(
-        '${root.path}${Platform.pathSeparator}project',
-      );
-      final outside = Directory(
-        '${root.path}${Platform.pathSeparator}outside',
-      );
+      final project = Directory('${root.path}${Platform.pathSeparator}project');
+      final outside = Directory('${root.path}${Platform.pathSeparator}outside');
       final sentinel = File(
         '${outside.path}${Platform.pathSeparator}sentinel.txt',
       );
@@ -373,9 +339,5 @@ Future<void> _createDirectoryLink({
     link,
     target,
   ]);
-  expect(
-    result.exitCode,
-    0,
-    reason: '${result.stdout}\n${result.stderr}',
-  );
+  expect(result.exitCode, 0, reason: '${result.stdout}\n${result.stderr}');
 }

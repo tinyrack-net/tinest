@@ -5,7 +5,7 @@ import 'package:client/client.dart';
 /// The capability-bearing URL is retained for the pairing port but deliberately
 /// omitted from [toString] so diagnostics cannot accidentally disclose it.
 final class PairingIntent {
-  const PairingIntent._({
+  const new _({
     required this.pairingUrl,
     required this.serverId,
     required this.relayUri,
@@ -13,7 +13,7 @@ final class PairingIntent {
   });
 
   /// Parses the canonical HTTPS pairing URL and rejects expired capabilities.
-  factory PairingIntent.parse(Uri uri, {required DateTime nowUtc}) {
+  factory parse(Uri uri, {required DateTime nowUtc}) {
     if (uri.scheme != 'https' ||
         uri.host != 'tinest.tinyrack.net' ||
         uri.path != '/pair' ||

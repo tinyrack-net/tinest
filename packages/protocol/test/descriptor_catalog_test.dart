@@ -39,10 +39,7 @@ void main() {
     expect(systemHelloProcedure.encodeResultObject(server), server.toJson());
     expect(systemHelloProcedure.decodeResultObject(server.toJson()), server);
     expect(agentsChangedNotification.encodeObject(changed), changed.toJson());
-    expect(
-      agentsChangedNotification.decodeObject(changed.toJson()),
-      changed,
-    );
+    expect(agentsChangedNotification.decodeObject(changed.toJson()), changed);
     expect(agentsChangedNotification.eventType, EmptyResultDto);
   });
 }

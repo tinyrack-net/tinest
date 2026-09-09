@@ -24,7 +24,7 @@ class SelectionRestoreController extends _$SelectionRestoreController {
 /// Catalogs from every host, kept separate by app-local host identity.
 final class UnifiedWorkspaceCatalogState {
   /// Creates a unified catalog snapshot.
-  const UnifiedWorkspaceCatalogState({
+  const new({
     required this.hosts,
     required this.catalogs,
     this.refreshingHostIds = const <String>{},
@@ -242,10 +242,7 @@ class WorkspaceCatalogController extends _$WorkspaceCatalogController {
       UnifiedWorkspaceCatalogState(
         hosts: loaded.hosts,
         catalogs: Map<String, WorkspaceCatalogDto>.unmodifiable(
-          <String, WorkspaceCatalogDto>{
-            ...loaded.catalogs,
-            hostId: catalog,
-          },
+          <String, WorkspaceCatalogDto>{...loaded.catalogs, hostId: catalog},
         ),
         refreshingHostIds: Set<String>.unmodifiable(
           loaded.refreshingHostIds.difference(<String>{hostId}),
@@ -285,14 +282,11 @@ Future<List<GitBranchDto>> gitBranches(
   String workspaceId,
 ) async {
   final api = await watchHostApi(ref, hostId);
-  return api.workspaces.listGitBranches(workspaceId);
+  return await api.workspaces.listGitBranches(workspaceId);
 }
 
 /// One session that belongs to no project, with the checkout that runs it.
-typedef HomeSessionEntry = ({
-  WorkspaceSelection selection,
-  SessionDto session,
-});
+typedef HomeSessionEntry = ({WorkspaceSelection selection, SessionDto session});
 
 /// Orders home sessions newest first, so a fresh one leads the section.
 ///
@@ -311,7 +305,7 @@ class ProjectSettingsController extends _$ProjectSettingsController {
     String workspaceId,
   ) async {
     final api = await watchHostApi(ref, hostId);
-    return api.workspaces.getProjectSettings(workspaceId);
+    return await api.workspaces.getProjectSettings(workspaceId);
   }
 
   /// Replaces the worktree hook section on the daemon host.

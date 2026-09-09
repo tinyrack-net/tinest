@@ -170,9 +170,7 @@ void main() {
 
   test('the pending first-turn registry records and forgets prompts', () {
     final container = ProviderContainer(
-      overrides: [
-        appClockProvider.overrideWithValue(_FixedClock(now)),
-      ],
+      overrides: [appClockProvider.overrideWithValue(_FixedClock(now))],
     );
     addTearDown(container.dispose);
     final notifier = container.read(pendingFirstTurnsProvider.notifier)
@@ -198,7 +196,7 @@ void main() {
 }
 
 final class _FixedClock implements AppClock {
-  const _FixedClock(this.value);
+  const new(this.value);
 
   final DateTime value;
 
@@ -207,7 +205,7 @@ final class _FixedClock implements AppClock {
 }
 
 final class _FailedTurnAttachmentInput implements AttachmentInputPort {
-  const _FailedTurnAttachmentInput();
+  const new();
 
   @override
   bool get supportsDrop => false;

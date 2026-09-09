@@ -89,130 +89,118 @@ Widget _group({String? footer}) => SettingsScaffold(
 );
 
 void main() {
-  testWidgets(
-    'SettingsAsyncContent preserves stale data across refresh',
-    (tester) async {
-      final loads = <Completer<String>>[];
-      final provider = FutureProvider<String>((ref) {
-        final load = Completer<String>();
-        loads.add(load);
-        return load.future;
-      });
-      await tester.pumpWidget(
-        ProviderScope(
-          child: MaterialApp(
-            locale: testLocale,
-            localizationsDelegates: testLocalizationsDelegates,
-            supportedLocales: testSupportedLocales,
-            theme: testLightTheme,
-            home: Consumer(
-              builder: (context, ref, _) => SettingsAsyncContent<String>(
-                state: ref.watch(provider),
-                loading: const SettingsSkeletonLayout.form(
-                  semanticLabel: '설정 불러오는 중',
-                ),
-                error: (error, _) => TRText.inherit('$error'),
-                data: (value) => Center(
-                  child: TRButton(
-                    onPressed: () => ref.invalidate(provider),
-                    child: TRText.inherit(value),
-                  ),
+  testWidgets('SettingsAsyncContent preserves stale data across refresh', (
+    tester,
+  ) async {
+    final loads = <Completer<String>>[];
+    final provider = FutureProvider<String>((ref) {
+      final load = Completer<String>();
+      loads.add(load);
+      return load.future;
+    });
+    await tester.pumpWidget(
+      ProviderScope(
+        child: MaterialApp(
+          locale: testLocale,
+          localizationsDelegates: testLocalizationsDelegates,
+          supportedLocales: testSupportedLocales,
+          theme: testLightTheme,
+          home: Consumer(
+            builder: (context, ref, _) => SettingsAsyncContent<String>(
+              state: ref.watch(provider),
+              loading: const SettingsSkeletonLayout.form(
+                semanticLabel: '설정 불러오는 중',
+              ),
+              error: (error, _) => TRText.inherit('$error'),
+              data: (value) => Center(
+                child: TRButton(
+                  onPressed: () => ref.invalidate(provider),
+                  child: TRText.inherit(value),
                 ),
               ),
             ),
           ),
         ),
-      );
-      expect(find.byType(TRSkeleton), findsWidgets);
+      ),
+    );
+    expect(find.byType(TRSkeleton), findsWidgets);
 
-      loads.single.complete('Ready');
-      await tester.pump();
-      await tester.pump();
-      expect(find.text('Ready'), findsOneWidget);
+    loads.single.complete('Ready');
+    await tester.pump();
+    await tester.pump();
+    expect(find.text('Ready'), findsOneWidget);
 
-      await tester.tap(find.text('Ready'));
-      await tester.pump();
-      expect(find.text('Ready'), findsOneWidget);
-      expect(find.byType(SettingsSkeletonLayout), findsNothing);
+    await tester.tap(find.text('Ready'));
+    await tester.pump();
+    expect(find.text('Ready'), findsOneWidget);
+    expect(find.byType(SettingsSkeletonLayout), findsNothing);
 
-      loads.last.completeError(Exception('refresh failed'));
-      await tester.pump();
-      await tester.pump();
-      expect(find.text('Ready'), findsOneWidget);
-      expect(
-        find.byKey(const ValueKey<String>('settings-refresh-error')),
-        findsOneWidget,
-      );
-    },
-    tags: const <String>['feature_test__settings_async_loading__widget'],
-  );
+    loads.last.completeError(Exception('refresh failed'));
+    await tester.pump();
+    await tester.pump();
+    expect(find.text('Ready'), findsOneWidget);
+    expect(
+      find.byKey(const ValueKey<String>('settings-refresh-error')),
+      findsOneWidget,
+    );
+  }, tags: const <String>['feature_test__settings_async_loading__widget']);
 
   group('SettingsSkeletonLayout', () {
-    testWidgets(
-      'renders an inert labelled form skeleton',
-      (tester) async {
-        await tester.pumpWidget(
-          _host(
-            const SettingsSkeletonLayout.form(
-              semanticLabel: 'Loading settings',
-            ),
-          ),
-        );
+    testWidgets('renders an inert labelled form skeleton', (tester) async {
+      await tester.pumpWidget(
+        _host(
+          const SettingsSkeletonLayout.form(semanticLabel: 'Loading settings'),
+        ),
+      );
 
-        expect(
-          find.byKey(const ValueKey<String>('settings-skeleton-form')),
-          findsOneWidget,
-        );
-        expect(find.byType(TRSkeleton), findsWidgets);
-        expect(find.bySemanticsLabel('Loading settings'), findsOneWidget);
-        expect(
-          find.descendant(
-            of: find.byType(SettingsSkeletonLayout),
-            matching: find.byType(Focus),
-          ),
-          findsNothing,
-        );
-      },
-      tags: const <String>['feature_test__settings_async_loading__widget'],
-    );
+      expect(
+        find.byKey(const ValueKey<String>('settings-skeleton-form')),
+        findsOneWidget,
+      );
+      expect(find.byType(TRSkeleton), findsWidgets);
+      expect(find.bySemanticsLabel('Loading settings'), findsOneWidget);
+      expect(
+        find.descendant(
+          of: find.byType(SettingsSkeletonLayout),
+          matching: find.byType(Focus),
+        ),
+        findsNothing,
+      );
+    }, tags: const <String>['feature_test__settings_async_loading__widget']);
 
-    testWidgets(
-      'supplies independent collection and detail placeholders',
-      (
-        tester,
-      ) async {
-        await tester.pumpWidget(
-          _host(
-            const Row(
-              children: <Widget>[
-                SizedBox(
-                  width: TinestLayoutMetrics.settingsCollectionWidth,
-                  child: SettingsSkeletonLayout.collection(
-                    semanticLabel: 'Loading collection',
-                  ),
+    testWidgets('supplies independent collection and detail placeholders', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _host(
+          const Row(
+            children: <Widget>[
+              SizedBox(
+                width: TinestLayoutMetrics.settingsCollectionWidth,
+                child: SettingsSkeletonLayout.collection(
+                  semanticLabel: 'Loading collection',
                 ),
-                Expanded(
-                  child: SettingsSkeletonLayout.detail(
-                    semanticLabel: 'Loading detail',
-                  ),
+              ),
+              Expanded(
+                child: SettingsSkeletonLayout.detail(
+                  semanticLabel: 'Loading detail',
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-        );
-        expect(
-          find.byKey(const ValueKey<String>('settings-skeleton-list-pane')),
-          findsOneWidget,
-        );
-        expect(
-          find.byKey(const ValueKey<String>('settings-skeleton-detail-pane')),
-          findsOneWidget,
-        );
-        expect(find.bySemanticsLabel('Loading collection'), findsOneWidget);
-        expect(find.bySemanticsLabel('Loading detail'), findsOneWidget);
-      },
-      tags: const <String>['feature_test__settings_async_loading__widget'],
-    );
+        ),
+      );
+      expect(
+        find.byKey(const ValueKey<String>('settings-skeleton-list-pane')),
+        findsOneWidget,
+      );
+      expect(
+        find.byKey(const ValueKey<String>('settings-skeleton-detail-pane')),
+        findsOneWidget,
+      );
+      expect(find.bySemanticsLabel('Loading collection'), findsOneWidget);
+      expect(find.bySemanticsLabel('Loading detail'), findsOneWidget);
+    }, tags: const <String>['feature_test__settings_async_loading__widget']);
   });
 
   test(
@@ -290,70 +278,66 @@ void main() {
     tags: const <String>['feature_test__app_navigation__widget'],
   );
 
-  testWidgets(
-    'a split detail does not consume Back, since it hides nothing',
-    (tester) async {
-      final controller = SettingsPaneController<String>();
-      addTearDown(controller.dispose);
-      await tester.pumpWidget(
-        _host(
-          TRAdaptiveLayoutScope(
-            widthClass: TRAdaptiveWidthClass.large,
-            child: SettingsListDetailHost(
-              coordinator: controller,
-              collection: const TRText.inherit('Collection'),
-              detail: const TRText.inherit('Detail'),
-            ),
+  testWidgets('a split detail does not consume Back, since it hides nothing', (
+    tester,
+  ) async {
+    final controller = SettingsPaneController<String>();
+    addTearDown(controller.dispose);
+    await tester.pumpWidget(
+      _host(
+        TRAdaptiveLayoutScope(
+          widthClass: TRAdaptiveWidthClass.large,
+          child: SettingsListDetailHost(
+            coordinator: controller,
+            collection: const TRText.inherit('Collection'),
+            detail: const TRText.inherit('Detail'),
           ),
         ),
-      );
+      ),
+    );
 
-      controller.showDetail('A');
-      await tester.pumpAndSettle();
+    controller.showDetail('A');
+    await tester.pumpAndSettle();
 
-      await tester.binding.handlePopRoute();
-      await tester.pumpAndSettle();
+    await tester.binding.handlePopRoute();
+    await tester.pumpAndSettle();
 
-      // Back belongs to whatever encloses Settings: the collection is already
-      // on screen next to the detail, so there is nothing here to return to.
-      expect(controller.selection, 'A');
-      expect(controller.hasDetail, isTrue);
-    },
-    tags: const <String>['feature_test__app_navigation__widget'],
-  );
+    // Back belongs to whatever encloses Settings: the collection is already
+    // on screen next to the detail, so there is nothing here to return to.
+    expect(controller.selection, 'A');
+    expect(controller.hasDetail, isTrue);
+  }, tags: const <String>['feature_test__app_navigation__widget']);
 
-  testWidgets(
-    'large list-detail uses the dedicated collection width token',
-    (tester) async {
-      final controller = SettingsPaneController<String>();
-      addTearDown(controller.dispose);
-      await tester.pumpWidget(
-        _host(
-          TRAdaptiveLayoutScope(
-            widthClass: TRAdaptiveWidthClass.large,
-            child: SettingsListDetailHost(
-              coordinator: controller,
-              collection: const SizedBox(
-                key: ValueKey<String>('collection-pane-content'),
-                height: double.infinity,
-              ),
-              detail: const SizedBox.expand(),
+  testWidgets('large list-detail uses the dedicated collection width token', (
+    tester,
+  ) async {
+    final controller = SettingsPaneController<String>();
+    addTearDown(controller.dispose);
+    await tester.pumpWidget(
+      _host(
+        TRAdaptiveLayoutScope(
+          widthClass: TRAdaptiveWidthClass.large,
+          child: SettingsListDetailHost(
+            coordinator: controller,
+            collection: const SizedBox(
+              key: ValueKey<String>('collection-pane-content'),
+              height: double.infinity,
             ),
+            detail: const SizedBox.expand(),
           ),
         ),
-      );
+      ),
+    );
 
-      expect(
-        tester
-            .getSize(
-              find.byKey(const ValueKey<String>('collection-pane-content')),
-            )
-            .width,
-        TinestLayoutMetrics.settingsCollectionWidth,
-      );
-    },
-    tags: const <String>['feature_test__app_navigation__widget'],
-  );
+    expect(
+      tester
+          .getSize(
+            find.byKey(const ValueKey<String>('collection-pane-content')),
+          )
+          .width,
+      TinestLayoutMetrics.settingsCollectionWidth,
+    );
+  }, tags: const <String>['feature_test__app_navigation__widget']);
 
   testWidgets(
     'large detail replacement keeps collection fixed and outgoing content '
@@ -401,9 +385,7 @@ void main() {
 
       controller.showDetail('A');
       await tester.pumpAndSettle();
-      final collection = find.byKey(
-        const ValueKey<String>('fixed-collection'),
-      );
+      final collection = find.byKey(const ValueKey<String>('fixed-collection'));
       final collectionState = tester.state(collection);
       final collectionRect = tester.getRect(collection);
 
@@ -413,10 +395,7 @@ void main() {
       expect(tester.state(collection), same(collectionState));
       expect(tester.getRect(collection), collectionRect);
       expect(
-        find.byKey(
-          const ValueKey<String>('detail-B'),
-          skipOffstage: false,
-        ),
+        find.byKey(const ValueKey<String>('detail-B'), skipOffstage: false),
         findsNWidgets(2),
       );
       final interactiveDetail = find
@@ -445,10 +424,7 @@ void main() {
 
       await tester.pumpAndSettle();
       expect(
-        find.byKey(
-          const ValueKey<String>('detail-B'),
-          skipOffstage: false,
-        ),
+        find.byKey(const ValueKey<String>('detail-B'), skipOffstage: false),
         findsOneWidget,
       );
       semantics.dispose();
@@ -790,10 +766,8 @@ void main() {
             builder: (context, child) => ValueListenableBuilder<EdgeInsets>(
               valueListenable: viewInsets,
               builder: (context, insets, _) => MediaQuery(
-                data: MediaQuery.of(context).copyWith(
-                  size: viewport,
-                  viewInsets: insets,
-                ),
+                data: MediaQuery.of(context)
+                    .copyWith(size: viewport, viewInsets: insets),
                 child: child!,
               ),
             ),
@@ -1086,9 +1060,7 @@ void main() {
 
       expect(
         tester
-            .widget<TRText>(
-              find.widgetWithText(TRText, 'Default permissions'),
-            )
+            .widget<TRText>(find.widgetWithText(TRText, 'Default permissions'))
             .variant,
         TRTextVariant.headingSm,
       );
@@ -1578,10 +1550,7 @@ void main() {
         ),
       );
 
-      expect(
-        tester.getRect(find.text('Projects')).left,
-        TRSpacing.extraLarge,
-      );
+      expect(tester.getRect(find.text('Projects')).left, TRSpacing.extraLarge);
     });
 
     testWidgets('aligns a detail header with the pane body beneath it', (
@@ -1617,9 +1586,7 @@ void main() {
 
     testWidgets(
       'aligns a compact detail header with its section leading line',
-      (
-        tester,
-      ) async {
+      (tester) async {
         await tester.pumpWidget(
           _host(
             const TRUiDensityScope(
@@ -1651,10 +1618,7 @@ void main() {
             epsilon: 0.5,
           ),
         );
-        expect(
-          tester.getRect(find.text('Tinest')).left,
-          TRSpacing.extraLarge,
-        );
+        expect(tester.getRect(find.text('Tinest')).left, TRSpacing.extraLarge);
       },
     );
 
@@ -1770,10 +1734,7 @@ void main() {
                       children: <Widget>[
                         for (var index = 0; index < 7; index += 1)
                           TRTextField(label: 'Field $index'),
-                        const TRTextField(
-                          key: fieldKey,
-                          label: 'Final field',
-                        ),
+                        const TRTextField(key: fieldKey, label: 'Final field'),
                       ],
                     ),
                     actions: <TRButton>[
@@ -1877,7 +1838,7 @@ void main() {
 }
 
 class _CollectionIdentityProbe extends StatefulWidget {
-  const _CollectionIdentityProbe({super.key});
+  const new({super.key});
 
   @override
   State<_CollectionIdentityProbe> createState() =>

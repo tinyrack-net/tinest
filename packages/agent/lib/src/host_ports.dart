@@ -4,6 +4,7 @@ import 'package:agent/src/model.dart';
 import 'package:file/file.dart' as file_api;
 import 'package:file/local.dart';
 import 'package:platform/platform.dart';
+import 'package:platform/testing.dart';
 
 /// Copies a workspace file into daemon-owned immutable attachment storage.
 abstract interface class AttachmentPublisher {
@@ -20,10 +21,10 @@ abstract interface class AttachmentReader {
 /// Resolves workspace paths without permitting lexical or linked escapes.
 final class WorkspacePathGuard {
   /// Creates a guard for [workspaceRoot].
-  WorkspacePathGuard(
+  new(
     String workspaceRoot, {
     file_api.FileSystem fileSystem = const LocalFileSystem(),
-    this._platform = const LocalPlatform(),
+    this._platform = const Platform(),
   }) : _fileSystem = fileSystem,
        _workspaceRoot = fileSystem
            .directory(workspaceRoot)
@@ -99,16 +100,13 @@ abstract interface class AgentClock {
   DateTime nowUtc();
 
   /// Waits until elapsed, interrupted by input, or cancelled.
-  Future<SleepOutcome> sleep(
-    Duration duration,
-    CancellationToken cancellation,
-  );
+  Future<SleepOutcome> sleep(Duration duration, CancellationToken cancellation);
 }
 
 /// One drain of a live [ExecSession].
 final class ExecSessionChunk {
   /// Creates a process output chunk.
-  const ExecSessionChunk({
+  const new({
     required this.output,
     required this.isRunning,
     this.exitCode,

@@ -9,7 +9,7 @@ const int relayProtocolVersion = 1;
 @immutable
 final class RelayPairingOffer {
   /// Creates a validated version-one offer.
-  RelayPairingOffer({
+  new({
     required this.serverId,
     required this.relayUri,
     required List<int> daemonPublicKey,
@@ -22,7 +22,7 @@ final class RelayPairingOffer {
   }
 
   /// Decodes and validates an offer JSON object.
-  factory RelayPairingOffer.fromJson(Map<String, Object?> json) {
+  factory fromJson(Map<String, Object?> json) {
     if (json['v'] != relayProtocolVersion) {
       throw const FormatException('Unsupported relay offer version.');
     }
@@ -44,7 +44,7 @@ final class RelayPairingOffer {
   }
 
   /// Reads an offer exclusively from [uri]'s fragment.
-  factory RelayPairingOffer.parseUrl(Uri uri) {
+  factory parseUrl(Uri uri) {
     const prefix = 'offer=';
     if (!uri.fragment.startsWith(prefix)) {
       throw const FormatException('Pairing URL has no offer fragment.');

@@ -1,7 +1,7 @@
 /// Test-suite workload used to divide a global process budget.
 final class PackageWorkload {
   /// Creates one named package workload.
-  const PackageWorkload({required this.name, required this.suites});
+  const new({required this.name, required this.suites});
 
   /// Pub package name.
   final String name;

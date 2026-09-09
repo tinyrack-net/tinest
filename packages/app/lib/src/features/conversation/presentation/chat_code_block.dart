@@ -11,7 +11,7 @@ import 'package:tinyrack_ui/tinyrack_ui.dart';
 /// stall a frame.
 class ChatCodeBlock extends StatelessWidget {
   /// Creates a code block.
-  const ChatCodeBlock({
+  const new({
     required this.text,
     this.language,
     this.maxLines = 24,

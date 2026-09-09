@@ -41,7 +41,7 @@ abstract interface class ProviderUsageGateway {
 /// Provider-neutral quota payload returned by a usage transport.
 final class ProviderUsagePayload {
   /// Creates a parsed quota payload.
-  const ProviderUsagePayload({
+  const new({
     required this.provider,
     required this.windows,
     this.plan,
@@ -68,11 +68,11 @@ final class ProviderUsagePayload {
 /// Signals that a quota endpoint rejected the current access token.
 final class ProviderUsageAuthorizationFailure implements Exception {
   /// Creates an authorization failure.
-  const ProviderUsageAuthorizationFailure();
+  const new();
 }
 
 /// Safe transport failure with no vendor response body or credentials.
 final class ProviderUsageUnavailable implements Exception {
   /// Creates an unavailable failure.
-  const ProviderUsageUnavailable();
+  const new();
 }

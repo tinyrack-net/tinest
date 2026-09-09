@@ -18,7 +18,7 @@ part 'conversation_controller.g.dart';
 /// the active turn settles instead of being rejected or silently dropped.
 final class QueuedTurn {
   /// Creates a [QueuedTurn].
-  const QueuedTurn({
+  const new({
     required this.id,
     required this.text,
     required this.attachments,
@@ -67,7 +67,7 @@ final class QueuedTurn {
 /// other, and cancelling one turn must not erase another turn's prompt.
 final class PendingTurn {
   /// Creates a [PendingTurn].
-  const PendingTurn({
+  const new({
     required this.turnId,
     required this.prompt,
     required this.createdAt,
@@ -86,7 +86,7 @@ final class PendingTurn {
 /// ConversationState defines a public contract.
 final class ConversationState {
   /// Creates a [ConversationState].
-  const ConversationState({
+  const new({
     this.timeline = const <TimelineEventDto>[],
     this.approvals = const <String, ApprovalRequestDto>{},
     this.queued = const <QueuedTurn>[],
@@ -906,9 +906,7 @@ class ConversationController extends _$ConversationController {
         questions.remove(event.data['requestId']);
       }
     }
-    questions.removeWhere(
-      (_, request) => terminated.contains(request.turnId),
-    );
+    questions.removeWhere((_, request) => terminated.contains(request.turnId));
     return questions;
   }
 
