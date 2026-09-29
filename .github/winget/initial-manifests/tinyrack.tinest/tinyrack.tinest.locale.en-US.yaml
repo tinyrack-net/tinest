@@ -1,8 +1,8 @@
 # yaml-language-server: $schema=https://aka.ms/winget-manifest.defaultLocale.1.12.0.schema.json
-PackageIdentifier: Tinyrack.Tinest
+PackageIdentifier: tinyrack.tinest
 PackageVersion: __VERSION__
 PackageLocale: en-US
-Publisher: Tinyrack
+Publisher: tinyrack
 PublisherUrl: https://github.com/tinyrack-net
 PublisherSupportUrl: https://github.com/tinyrack-net/tinest/issues
 PackageName: Tinest

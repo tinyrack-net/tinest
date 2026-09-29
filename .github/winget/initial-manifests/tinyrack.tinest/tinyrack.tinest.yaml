@@ -1,5 +1,5 @@
 # yaml-language-server: $schema=https://aka.ms/winget-manifest.version.1.12.0.schema.json
-PackageIdentifier: Tinyrack.TinestCLI
+PackageIdentifier: tinyrack.tinest
 PackageVersion: __VERSION__
 DefaultLocale: en-US
 ManifestType: version
