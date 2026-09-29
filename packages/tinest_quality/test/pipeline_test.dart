@@ -575,8 +575,21 @@ void main() {
     expect(publishWinget, contains('.github/scripts/publish-winget.ps1'));
     final publishWingetScript = File('.github/scripts/publish-winget.ps1')
         .readAsStringSync();
-    expect(publishWingetScript, contains('Tinyrack.Tinest'));
-    expect(publishWingetScript, contains('Tinyrack.TinestCLI'));
+    expect(
+      publishWingetScript,
+      contains(
+        "Publish-WinGetPackage 'tinyrack.tinest' "
+        "'Tinest-setup-win-x64.exe'",
+      ),
+    );
+    expect(
+      publishWingetScript,
+      contains(
+        "Publish-WinGetPackage 'tinyrack.tinest-cli' "
+        "'tinest-cli-windows-x64.zip'",
+      ),
+    );
+    expect(publishWingetScript, isNot(contains('Tinyrack.')));
     expect(publishWingetScript, contains('wingetcreate.exe update'));
     expect(publishWingetScript, contains('wingetcreate.exe submit'));
     expect(
@@ -584,6 +597,20 @@ void main() {
       contains('api.github.com/repos/microsoft/winget-pkgs/contents'),
     );
     expect(publishWingetScript, contains('.github/winget/initial-manifests'));
+
+    const templateIds = <String>['tinyrack.tinest', 'tinyrack.tinest-cli'];
+    for (final packageId in templateIds) {
+      final template = Directory('.github/winget/initial-manifests/$packageId');
+      expect(
+        template.existsSync(),
+        isTrue,
+        reason: 'the $packageId template is missing',
+      );
+      expect(
+        File('${template.path}/$packageId.installer.yaml').readAsStringSync(),
+        contains('PackageIdentifier: $packageId'),
+      );
+    }
   });
 
   test('a failed WinGet publication can recover from a release tag', () {

@@ -88,5 +88,5 @@ function Publish-WinGetPackage {
   Submit-InitialManifest $PackageIdentifier $AssetName
 }
 
-Publish-WinGetPackage 'Tinyrack.Tinest' 'Tinest-setup-win-x64.exe'
-Publish-WinGetPackage 'Tinyrack.TinestCLI' 'tinest-cli-windows-x64.zip'
+Publish-WinGetPackage 'tinyrack.tinest' 'Tinest-setup-win-x64.exe'
+Publish-WinGetPackage 'tinyrack.tinest-cli' 'tinest-cli-windows-x64.zip'
